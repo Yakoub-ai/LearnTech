@@ -182,7 +182,7 @@ export function setObjectiveComplete(roleId, level, objectiveIndex, complete = t
   }
 
   levelProgress.objectives[objectiveIndex] = {
-    completed,
+    completed: complete,
     completedAt: complete ? new Date().toISOString() : null
   };
 
@@ -246,7 +246,7 @@ export function setResourceComplete(roleId, level, resourceIndex, complete = tru
   }
 
   levelProgress.resources[resourceIndex] = {
-    completed,
+    completed: complete,
     completedAt: complete ? new Date().toISOString() : null
   };
 

@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react'
+import React, { useState, lazy, Suspense } from 'react'
 import { Play, RotateCcw, Copy, Check } from 'lucide-react'
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react'))
