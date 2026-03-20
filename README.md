@@ -39,6 +39,7 @@ npm run dev
 2. In the Vercel project dashboard, go to **Settings → Environment Variables** and add:
    - `VITE_SUPABASE_URL` — your Supabase project URL
    - `VITE_SUPABASE_ANON_KEY` — your Supabase anon/public key
+   - `VITE_APP_URL` — your deployed Vercel URL (e.g. `https://your-app.vercel.app`)
 3. Deploy — Vercel will automatically build and deploy on every push to `main`
 
 The `vercel.json` in this repo configures SPA rewrites (all routes → `index.html`) and security headers including CSP, HSTS, X-Frame-Options, and immutable asset caching.
