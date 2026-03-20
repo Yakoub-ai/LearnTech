@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'LFRubrik2';
+  src: url('/fonts/LFRubrik2-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('/fonts/IBMPlexSans-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --font-heading: 'LFRubrik2', 'Segoe UI', Roboto, Arial, sans-serif;
+    --font-body: 'IBMPlexSans', 'Segoe UI', Roboto, Arial, sans-serif;
+
+    --color-primary: #005aa0;
+    --color-primary-light: #4495d1;
+    --color-primary-dark: #004580;
+    --color-accent: #e30613;
+    --color-accent-light: #f15c5b;
+    --color-surface: #ffffff;
+    --color-surface-2: #f7f8fa;
+    --color-surface-3: #eef1f5;
+    --color-text: #1a1a2e;
+    --color-text-secondary: #5a6577;
+    --color-border: #dde2ea;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #e30613;
+    --color-info: #4495d1;
+  }
+
+  .dark {
+    --color-primary: #4495d1;
+    --color-primary-light: #6fb3e0;
+    --color-primary-dark: #005aa0;
+    --color-accent: #f15c5b;
+    --color-accent-light: #f78b8a;
+    --color-surface: #0d1117;
+    --color-surface-2: #161b22;
+    --color-surface-3: #21262d;
+    --color-text: #f0f2f5;
+    --color-text-secondary: #8b949e;
+    --color-border: #30363d;
+    --color-success: #34d399;
+    --color-warning: #fbbf24;
+    --color-danger: #f15c5b;
+    --color-info: #6fb3e0;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .prose h2 {
+    @apply text-2xl font-semibold mt-8 mb-4 text-[var(--color-text)] scroll-mt-20;
+    font-family: var(--font-heading);
+  }
+  .prose h3 {
+    @apply text-xl font-semibold mt-6 mb-3 text-[var(--color-text)];
+    font-family: var(--font-heading);
+  }
+  .prose p {
+    @apply mb-4 leading-relaxed text-[var(--color-text-secondary)];
+  }
+  .prose ul {
+    @apply mb-4 pl-6 space-y-1;
+  }
+  .prose li {
+    @apply text-[var(--color-text-secondary)] leading-relaxed;
+  }
+  .prose strong {
+    @apply text-[var(--color-text)] font-semibold;
+  }
+  .prose code {
+    @apply bg-[var(--color-surface-3)] text-[var(--color-primary)] px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+  .prose pre {
+    @apply bg-[var(--color-surface-2)] border border-[var(--color-border)] rounded-lg p-4 mb-4 overflow-x-auto;
+  }
+  .prose pre code {
+    @apply bg-transparent p-0 text-[var(--color-text)];
+  }
+  .prose a {
+    @apply text-[var(--color-primary)] hover:text-[var(--color-primary-light)] underline decoration-[var(--color-primary)]/30 hover:decoration-[var(--color-primary)] transition-colors;
+  }
+  .prose table {
+    @apply w-full border-collapse mb-6;
+  }
+  .prose th {
+    @apply text-left p-3 bg-[var(--color-surface-3)] border-b-2 border-[var(--color-border)] font-semibold text-sm text-[var(--color-text)];
+  }
+  .prose td {
+    @apply p-3 border-b border-[var(--color-border)] text-sm;
+  }
+  .prose hr {
+    @apply my-8 border-[var(--color-border)];
+  }
+  .prose blockquote {
+    @apply border-l-4 border-[var(--color-primary)] pl-4 py-2 my-4 bg-[var(--color-primary)]/5 rounded-r-lg italic text-[var(--color-text-secondary)];
+  }
+
+  .callout {
+    @apply rounded-lg border p-4 mb-4;
+  }
+  .callout-info {
+    @apply bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800;
+  }
+  .callout-warning {
+    @apply bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800;
+  }
+  .callout-success {
+    @apply bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800;
+  }
+  .callout-danger {
+    @apply bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800;
+  }
+}
