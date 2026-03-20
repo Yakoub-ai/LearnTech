@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { getRoleById } from '../data/roles'
+import PageHelmet from '../components/seo/PageHelmet'
 import {
   loadLanguageMarkdownContent,
   loadLanguageQuizzes,
@@ -106,6 +107,12 @@ export default function LanguagePage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
+      <PageHelmet
+        title={`${language.name} Learning Path`}
+        description={language.description || `Learn ${language.name} from beginner to senior with structured roadmaps, quizzes, and interactive labs.`}
+        path={`/language/${languageId}`}
+        ogType="article"
+      />
       <Link to="/languages" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" />
         All Languages
@@ -145,10 +152,14 @@ export default function LanguagePage() {
         </div>
       </motion.div>
 
-      <div className="flex gap-1 mb-8 overflow-x-auto border-b border-[var(--color-border)] pb-px">
+      <div role="tablist" aria-label="Language content tabs" className="flex gap-1 mb-8 overflow-x-auto border-b border-[var(--color-border)] pb-px">
         {tabs.map(({ id, label, icon: TabIcon }) => (
           <button
             key={id}
+            role="tab"
+            aria-selected={activeTab === id}
+            aria-controls={`tabpanel-${id}`}
+            id={`tab-${id}`}
             onClick={() => setActiveTab(id)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer bg-transparent whitespace-nowrap ${
               activeTab === id
@@ -163,97 +174,107 @@ export default function LanguagePage() {
       </div>
 
       {activeTab === 'roadmap' && (
-        contentLoading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : (
-          <div className="space-y-10">
-            {language.levels.map((level) => {
-              const levelKey = level.toLowerCase()
-              const levelContent = content ? content[levelKey] : null
-              const levelQuizzes = langQuizzes ? langQuizzes[levelKey] : null
-              return (
-                <div key={level}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <Badge variant={levelKey}>{level}</Badge>
-                    <Link
-                      to={`/language/${languageId}/${levelKey}`}
-                      className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline"
-                    >
-                      View full guide →
-                    </Link>
+        <div role="tabpanel" id="tabpanel-roadmap" aria-labelledby="tab-roadmap">
+          {contentLoading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            <div className="space-y-10">
+              {language.levels.map((level) => {
+                const levelKey = level.toLowerCase()
+                const levelContent = content ? content[levelKey] : null
+                const levelQuizzes = langQuizzes ? langQuizzes[levelKey] : null
+                return (
+                  <div key={level}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Badge variant={levelKey}>{level}</Badge>
+                      <Link
+                        to={`/language/${languageId}/${levelKey}`}
+                        className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline"
+                      >
+                        View full guide →
+                      </Link>
+                    </div>
+                    {levelContent ? (
+                      <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](/language/' + languageId + '/' + levelKey + ')*'} />
+                    ) : (
+                      <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
+                        <p className="text-[var(--color-text-secondary)]">Content coming soon for {language.name} {level}</p>
+                      </div>
+                    )}
+                    {levelQuizzes && levelQuizzes.length > 0 && (
+                      <div className="mt-6">
+                        <QuizBlock
+                          questions={levelQuizzes}
+                          roleId={languageId}
+                          level={levelKey}
+                          onComplete={() => {}}
+                        />
+                      </div>
+                    )}
                   </div>
-                  {levelContent ? (
-                    <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](/language/' + languageId + '/' + levelKey + ')*'} />
-                  ) : (
-                    <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
-                      <p className="text-[var(--color-text-secondary)]">Content coming soon for {language.name} {level}</p>
-                    </div>
-                  )}
-                  {levelQuizzes && levelQuizzes.length > 0 && (
-                    <div className="mt-6">
-                      <QuizBlock
-                        questions={levelQuizzes}
-                        roleId={languageId}
-                        level={levelKey}
-                        onComplete={() => {}}
-                      />
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )
+                )
+              })}
+            </div>
+          )}
+        </div>
       )}
 
       {activeTab === 'diagram' && (
-        diagram ? (
-          <SkillDiagram diagram={diagram} title={`${language.name} Skill Roadmap`} />
-        ) : (
-          <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
-            <BrainCircuit className="w-12 h-12 mx-auto text-[var(--color-text-secondary)]/30 mb-4" />
-            <p className="text-[var(--color-text-secondary)]">Skill diagram coming soon</p>
-          </div>
-        )
+        <div role="tabpanel" id="tabpanel-diagram" aria-labelledby="tab-diagram">
+          {diagram ? (
+            <SkillDiagram diagram={diagram} title={`${language.name} Skill Roadmap`} />
+          ) : (
+            <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
+              <BrainCircuit className="w-12 h-12 mx-auto text-[var(--color-text-secondary)]/30 mb-4" />
+              <p className="text-[var(--color-text-secondary)]">Skill diagram coming soon</p>
+            </div>
+          )}
+        </div>
       )}
 
       {activeTab === 'sandbox' && (
-        examples && examples.length > 0 ? (
-          <CodeSandbox examples={examples} roleId={languageId} />
-        ) : (
-          <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
-            <Code2 className="w-12 h-12 mx-auto text-[var(--color-text-secondary)]/30 mb-4" />
-            <p className="text-[var(--color-text-secondary)]">Code examples coming soon</p>
-          </div>
-        )
+        <div role="tabpanel" id="tabpanel-sandbox" aria-labelledby="tab-sandbox">
+          {examples && examples.length > 0 ? (
+            <CodeSandbox examples={examples} roleId={languageId} />
+          ) : (
+            <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
+              <Code2 className="w-12 h-12 mx-auto text-[var(--color-text-secondary)]/30 mb-4" />
+              <p className="text-[var(--color-text-secondary)]">Code examples coming soon</p>
+            </div>
+          )}
+        </div>
       )}
 
       {activeTab === 'labs' && (
-        labs && labs.length > 0 ? (
-          <div className="space-y-6">
-            {labs.map((lab) => (
-              <InteractiveLab key={lab.id} lab={lab} />
-            ))}
-          </div>
-        ) : (
-          <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
-            <FlaskConical className="w-12 h-12 mx-auto text-[var(--color-text-secondary)]/30 mb-4" />
-            <p className="text-[var(--color-text-secondary)]">Interactive labs coming soon</p>
-          </div>
-        )
+        <div role="tabpanel" id="tabpanel-labs" aria-labelledby="tab-labs">
+          {labs && labs.length > 0 ? (
+            <div className="space-y-6">
+              {labs.map((lab) => (
+                <InteractiveLab key={lab.id} lab={lab} />
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
+              <FlaskConical className="w-12 h-12 mx-auto text-[var(--color-text-secondary)]/30 mb-4" />
+              <p className="text-[var(--color-text-secondary)]">Interactive labs coming soon</p>
+            </div>
+          )}
+        </div>
       )}
 
       {activeTab === 'setup' && (
-        setupGuide ? (
-          <SetupGuide guide={setupGuide} roleId={languageId} />
-        ) : (
-          <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
-            <Wrench className="w-12 h-12 mx-auto text-[var(--color-text-secondary)]/30 mb-4" />
-            <p className="text-[var(--color-text-secondary)]">Dev setup guide coming soon</p>
-          </div>
-        )
+        <div role="tabpanel" id="tabpanel-setup" aria-labelledby="tab-setup">
+          {setupGuide ? (
+            <SetupGuide guide={setupGuide} roleId={languageId} />
+          ) : (
+            <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
+              <Wrench className="w-12 h-12 mx-auto text-[var(--color-text-secondary)]/30 mb-4" />
+              <p className="text-[var(--color-text-secondary)]">Dev setup guide coming soon</p>
+            </div>
+          )}
+        </div>
       )}
     </div>
   )

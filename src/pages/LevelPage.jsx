@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, BookOpen, List } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
+import PageHelmet from '../components/seo/PageHelmet'
 import { loadRoleMarkdownContent } from '../data/loaders/roleDataLoader'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import Badge from '../components/common/Badge'
@@ -93,6 +94,12 @@ export default function LevelPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
+      <PageHelmet
+        title={`${role.name} - ${levelCapitalized} Level`}
+        description={`${levelCapitalized} level resources and objectives for ${role.name}. Structured learning path with hands-on exercises.`}
+        path={`/role/${roleId}/${level}`}
+        ogType="article"
+      />
       <Link
         to={`/role/${roleId}`}
         className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors"

@@ -3,10 +3,16 @@ import { Code2, Sparkles } from 'lucide-react'
 import { languages } from '../data/languages'
 import { getRoleById } from '../data/roles'
 import LanguageCard from '../components/home/LanguageCard'
+import PageHelmet from '../components/seo/PageHelmet'
 
 export default function LanguagesPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <PageHelmet
+        title="Language Learning Paths"
+        description="Master Python, JavaScript, TypeScript, SQL, and Go with structured learning paths, quizzes, and interactive labs."
+        path="/languages"
+      />
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

@@ -7,6 +7,7 @@ import { loadLanguageMarkdownContent, loadLanguageQuizzes } from '../data/loader
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import QuizBlock from '../components/interactive/QuizBlock'
 import Badge from '../components/common/Badge'
+import PageHelmet from '../components/seo/PageHelmet'
 
 const colorMap = {
   blue: 'from-blue-500 to-blue-600',
@@ -61,6 +62,12 @@ export default function LanguageLevelPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
+      <PageHelmet
+        title={`${language.name} - ${levelCapitalized} Level`}
+        description={`${levelCapitalized} level ${language.name} learning guide with structured content, quizzes, and exercises.`}
+        path={`/language/${languageId}/${level}`}
+        ogType="article"
+      />
       <div className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)] mb-6">
         <Link to="/languages" className="hover:text-[var(--color-primary)] no-underline transition-colors">
           Languages

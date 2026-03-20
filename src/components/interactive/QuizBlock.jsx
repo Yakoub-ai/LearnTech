@@ -48,6 +48,21 @@ export default function QuizBlock({ questions = [], roleId, level, onComplete })
     setAnswers([])
   }
 
+  function handleAnswerKeyDown(e, index, totalAnswers) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault()
+      const next = (index + 1) % totalAnswers
+      setSelected(next)
+      document.getElementById(`answer-${next}`)?.focus()
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault()
+      const prev = (index - 1 + totalAnswers) % totalAnswers
+      setSelected(prev)
+      document.getElementById(`answer-${prev}`)?.focus()
+    }
+  }
+
   if (finished) {
     const percentage = Math.round((score / questions.length) * 100)
     return (
@@ -68,7 +83,7 @@ export default function QuizBlock({ questions = [], roleId, level, onComplete })
   }
 
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+    <div role="form" aria-label="Quiz" className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
       <div className="flex items-center justify-between px-5 py-3 bg-[var(--color-surface-2)] border-b border-[var(--color-border)]">
         <h4 className="text-sm font-semibold text-[var(--color-text)]">Knowledge Check</h4>
         <span className="text-xs text-[var(--color-text-secondary)]">
@@ -86,9 +101,9 @@ export default function QuizBlock({ questions = [], roleId, level, onComplete })
 
         <AnimatePresence mode="wait">
           <motion.div key={currentQ} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <p className="text-[var(--color-text)] font-medium mb-5 leading-relaxed">{question.question}</p>
+            <p id="quiz-question" className="text-[var(--color-text)] font-medium mb-5 leading-relaxed">{question.question}</p>
 
-            <div className="space-y-2.5 mb-5">
+            <div className="space-y-2.5 mb-5" role="group" aria-labelledby="quiz-question">
               {question.options.map((option, i) => {
                 let styles = 'border-[var(--color-border)] hover:border-[var(--color-primary)]/50'
                 if (showResult) {
@@ -106,7 +121,11 @@ export default function QuizBlock({ questions = [], roleId, level, onComplete })
                 return (
                   <button
                     key={i}
+                    id={`answer-${i}`}
                     onClick={() => handleSelect(i)}
+                    onKeyDown={(e) => handleAnswerKeyDown(e, i, question.options.length)}
+                    aria-pressed={selected === i}
+                    aria-describedby={showResult ? 'quiz-result' : undefined}
                     className={`w-full flex items-center gap-3 p-3.5 rounded-lg border-2 transition-all cursor-pointer bg-transparent text-left ${styles}`}
                     disabled={showResult}
                   >
@@ -126,7 +145,7 @@ export default function QuizBlock({ questions = [], roleId, level, onComplete })
             </div>
 
             {showResult && question.explanation && (
-              <div className="p-4 rounded-lg bg-[var(--color-surface-2)] border border-[var(--color-border)] mb-4">
+              <div id="quiz-result" className="p-4 rounded-lg bg-[var(--color-surface-2)] border border-[var(--color-border)] mb-4">
                 <p className="text-sm text-[var(--color-text-secondary)]">
                   <strong className="text-[var(--color-text)]">Explanation:</strong> {question.explanation}
                 </p>
@@ -138,6 +157,7 @@ export default function QuizBlock({ questions = [], roleId, level, onComplete })
                 <button
                   onClick={handleSubmit}
                   disabled={selected === null}
+                  aria-disabled={selected === null}
                   className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-colors border-none cursor-pointer ${
                     selected !== null
                       ? 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]'

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { BookOpen, GitBranch, Code2, Shield, Users, GitPullRequest, Scale, Lock } from 'lucide-react'
 import { roleMarkdownContent } from '../data/markdownContent'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
+import PageHelmet from '../components/seo/PageHelmet'
 
 const sections = [
   { id: 'overview', title: 'Prerequisites Overview', icon: BookOpen, key: 'prerequisites' },
@@ -24,6 +25,11 @@ export default function PrerequisitesPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
+      <PageHelmet
+        title="Prerequisites & Setup"
+        description="Essential tools, configurations, and guides needed before starting any role-based learning path on LearnTech."
+        path="/prerequisites"
+      />
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
