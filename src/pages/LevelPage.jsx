@@ -50,10 +50,21 @@ export default function LevelPage() {
   const role = getRoleById(roleId)
   const { isObjectiveComplete, toggleObjective, roleProgress } = useProgress(roleId)
   const [markdownContent, setMarkdownContent] = useState({})
+  const [loadError, setLoadError] = useState(null)
+  const [contentLoading, setContentLoading] = useState(true)
 
   useEffect(() => {
     if (role?.fileName) {
-      loadRoleMarkdownContent(role.fileName).then(setMarkdownContent)
+      setContentLoading(true)
+      loadRoleMarkdownContent(role.fileName)
+        .then((data) => {
+          setMarkdownContent(data)
+          setContentLoading(false)
+        })
+        .catch(() => {
+          setLoadError('Failed to load content. Please refresh.')
+          setContentLoading(false)
+        })
     }
   }, [role?.fileName])
 
@@ -90,6 +101,10 @@ export default function LevelPage() {
         {role.name}
       </Link>
 
+      {loadError && (
+        <div className="p-4 text-red-500 text-center">{loadError}</div>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -121,7 +136,11 @@ export default function LevelPage() {
         </div>
       )}
 
-      {content ? (
+      {contentLoading ? (
+        <div className="flex items-center justify-center py-16">
+          <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : content ? (
         <>
           <TableOfContents content={content} />
           <MarkdownRenderer content={content} />

@@ -22,14 +22,22 @@ export default function LanguageLevelPage() {
 
   const [content, setContent] = useState(null)
   const [levelQuizzes, setLevelQuizzes] = useState([])
+  const [loadError, setLoadError] = useState(null)
+  const [contentLoading, setContentLoading] = useState(true)
 
   useEffect(() => {
     if (!language) return
-    loadLanguageMarkdownContent(languageId).then((data) => {
+    setContentLoading(true)
+    Promise.all([
+      loadLanguageMarkdownContent(languageId),
+      loadLanguageQuizzes(languageId)
+    ]).then(([data, quizData]) => {
       setContent(data[level] || '')
-    })
-    loadLanguageQuizzes(languageId).then((data) => {
-      setLevelQuizzes(data[level] || [])
+      setLevelQuizzes(quizData[level] || [])
+      setContentLoading(false)
+    }).catch(() => {
+      setLoadError('Failed to load content. Please refresh.')
+      setContentLoading(false)
     })
   }, [languageId, level, language])
 
@@ -46,7 +54,7 @@ export default function LanguageLevelPage() {
   const gradient = colorMap[language.color] || colorMap.blue
   const levelCapitalized = level ? level.charAt(0).toUpperCase() + level.slice(1) : ''
 
-  const levelOrder = ['beginner', 'mid', 'senior']
+  const levelOrder = language?.levels?.map(l => l.toLowerCase()) || ['beginner', 'mid', 'senior']
   const currentIndex = levelOrder.indexOf(level)
   const prevLevel = currentIndex > 0 ? levelOrder[currentIndex - 1] : null
   const nextLevel = currentIndex < levelOrder.length - 1 ? levelOrder[currentIndex + 1] : null
@@ -64,6 +72,10 @@ export default function LanguageLevelPage() {
         <ChevronRight className="w-3.5 h-3.5" />
         <span className="text-[var(--color-text)]">{levelCapitalized}</span>
       </div>
+
+      {loadError && (
+        <div className="p-4 text-red-500 text-center">{loadError}</div>
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -88,7 +100,11 @@ export default function LanguageLevelPage() {
         </div>
       </motion.div>
 
-      {content ? (
+      {contentLoading ? (
+        <div className="flex items-center justify-center py-16">
+          <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : content ? (
         <MarkdownRenderer content={content} />
       ) : (
         <div className="p-12 text-center rounded-lg border border-dashed border-[var(--color-border)]">

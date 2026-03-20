@@ -43,32 +43,52 @@ export default function LanguagePage() {
 
   const [content, setContent] = useState(null)
   const [langQuizzes, setLangQuizzes] = useState(null)
-  const [diagram, setDiagram] = useState(null)
-  const [examples, setExamples] = useState(null)
-  const [labs, setLabs] = useState(null)
-  const [setupGuide, setSetupGuide] = useState(null)
+  const [diagram, setDiagram] = useState(undefined)
+  const [examples, setExamples] = useState(undefined)
+  const [labs, setLabs] = useState(undefined)
+  const [setupGuide, setSetupGuide] = useState(undefined)
+  const [loadError, setLoadError] = useState(null)
+  const [contentLoading, setContentLoading] = useState(true)
+
+  // Reset tab data when language changes
+  useEffect(() => {
+    setDiagram(undefined)
+    setExamples(undefined)
+    setLabs(undefined)
+    setSetupGuide(undefined)
+  }, [languageId])
 
   // Load markdown content and quizzes on mount (needed for roadmap tab)
   useEffect(() => {
     if (!language) return
-    loadLanguageMarkdownContent(languageId).then(setContent)
-    loadLanguageQuizzes(languageId).then(setLangQuizzes)
+    setContentLoading(true)
+    Promise.all([
+      loadLanguageMarkdownContent(languageId),
+      loadLanguageQuizzes(languageId)
+    ]).then(([c, q]) => {
+      setContent(c)
+      setLangQuizzes(q)
+      setContentLoading(false)
+    }).catch(() => {
+      setLoadError('Failed to load content. Please refresh.')
+      setContentLoading(false)
+    })
   }, [languageId, language])
 
   // Load tab-specific data only when that tab is selected
   useEffect(() => {
     if (!language) return
-    if (activeTab === 'diagram' && diagram === null) {
-      loadLanguageSkillDiagram(languageId).then(setDiagram)
+    if (activeTab === 'diagram' && diagram === undefined) {
+      loadLanguageSkillDiagram(languageId).then(setDiagram).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-    if (activeTab === 'sandbox' && examples === null) {
-      loadLanguageCodeSandbox(languageId).then((data) => setExamples(data || []))
+    if (activeTab === 'sandbox' && examples === undefined) {
+      loadLanguageCodeSandbox(languageId).then((data) => setExamples(data || [])).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-    if (activeTab === 'labs' && labs === null) {
-      loadLanguageLabs(languageId).then(setLabs)
+    if (activeTab === 'labs' && labs === undefined) {
+      loadLanguageLabs(languageId).then(setLabs).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-    if (activeTab === 'setup' && setupGuide === null) {
-      loadLanguageSetupGuide(languageId).then(setSetupGuide)
+    if (activeTab === 'setup' && setupGuide === undefined) {
+      loadLanguageSetupGuide(languageId).then(setSetupGuide).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
   }, [activeTab, languageId, language, diagram, examples, labs, setupGuide])
 
@@ -90,6 +110,10 @@ export default function LanguagePage() {
         <ArrowLeft className="w-4 h-4" />
         All Languages
       </Link>
+
+      {loadError && (
+        <div className="p-4 text-red-500 text-center">{loadError}</div>
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -139,43 +163,49 @@ export default function LanguagePage() {
       </div>
 
       {activeTab === 'roadmap' && (
-        <div className="space-y-10">
-          {language.levels.map((level) => {
-            const levelKey = level.toLowerCase()
-            const levelContent = content ? content[levelKey] : null
-            const levelQuizzes = langQuizzes ? langQuizzes[levelKey] : null
-            return (
-              <div key={level}>
-                <div className="flex items-center gap-3 mb-4">
-                  <Badge variant={levelKey}>{level}</Badge>
-                  <Link
-                    to={`/language/${languageId}/${levelKey}`}
-                    className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline"
-                  >
-                    View full guide →
-                  </Link>
+        contentLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <div className="space-y-10">
+            {language.levels.map((level) => {
+              const levelKey = level.toLowerCase()
+              const levelContent = content ? content[levelKey] : null
+              const levelQuizzes = langQuizzes ? langQuizzes[levelKey] : null
+              return (
+                <div key={level}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <Badge variant={levelKey}>{level}</Badge>
+                    <Link
+                      to={`/language/${languageId}/${levelKey}`}
+                      className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline"
+                    >
+                      View full guide →
+                    </Link>
+                  </div>
+                  {levelContent ? (
+                    <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](/language/' + languageId + '/' + levelKey + ')*'} />
+                  ) : (
+                    <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
+                      <p className="text-[var(--color-text-secondary)]">Content coming soon for {language.name} {level}</p>
+                    </div>
+                  )}
+                  {levelQuizzes && levelQuizzes.length > 0 && (
+                    <div className="mt-6">
+                      <QuizBlock
+                        questions={levelQuizzes}
+                        roleId={languageId}
+                        level={levelKey}
+                        onComplete={() => {}}
+                      />
+                    </div>
+                  )}
                 </div>
-                {levelContent ? (
-                  <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](/language/' + languageId + '/' + levelKey + ')*'} />
-                ) : (
-                  <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
-                    <p className="text-[var(--color-text-secondary)]">Content coming soon for {language.name} {level}</p>
-                  </div>
-                )}
-                {levelQuizzes && levelQuizzes.length > 0 && (
-                  <div className="mt-6">
-                    <QuizBlock
-                      questions={levelQuizzes}
-                      roleId={languageId}
-                      level={levelKey}
-                      onComplete={() => {}}
-                    />
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </div>
+        )
       )}
 
       {activeTab === 'diagram' && (

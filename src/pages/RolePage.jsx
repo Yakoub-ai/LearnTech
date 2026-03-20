@@ -37,32 +37,52 @@ export default function RolePage() {
 
   const [markdownContent, setMarkdownContent] = useState(null)
   const [quizzes, setQuizzes] = useState(null)
-  const [diagram, setDiagram] = useState(null)
-  const [examples, setExamples] = useState(null)
-  const [labs, setLabs] = useState(null)
-  const [setupGuide, setSetupGuide] = useState(null)
+  const [diagram, setDiagram] = useState(undefined)
+  const [examples, setExamples] = useState(undefined)
+  const [labs, setLabs] = useState(undefined)
+  const [setupGuide, setSetupGuide] = useState(undefined)
+  const [loadError, setLoadError] = useState(null)
+  const [contentLoading, setContentLoading] = useState(true)
+
+  // Reset tab data when role changes
+  useEffect(() => {
+    setDiagram(undefined)
+    setExamples(undefined)
+    setLabs(undefined)
+    setSetupGuide(undefined)
+  }, [roleId])
 
   // Load markdown content on mount (needed for roadmap tab)
   useEffect(() => {
     if (!role) return
-    loadRoleMarkdownContent(role.fileName).then(setMarkdownContent)
-    loadRoleQuizzes(roleId).then(setQuizzes)
+    setContentLoading(true)
+    Promise.all([
+      loadRoleMarkdownContent(role.fileName),
+      loadRoleQuizzes(roleId)
+    ]).then(([content, q]) => {
+      setMarkdownContent(content)
+      setQuizzes(q)
+      setContentLoading(false)
+    }).catch(() => {
+      setLoadError('Failed to load content. Please refresh.')
+      setContentLoading(false)
+    })
   }, [roleId, role])
 
   // Load tab-specific data only when that tab is selected
   useEffect(() => {
     if (!role) return
-    if (activeTab === 'diagram' && diagram === null) {
-      loadRoleSkillDiagram(roleId).then(setDiagram)
+    if (activeTab === 'diagram' && diagram === undefined) {
+      loadRoleSkillDiagram(roleId).then(setDiagram).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-    if (activeTab === 'sandbox' && examples === null) {
-      loadRoleCodeSandbox(roleId).then((data) => setExamples(data || []))
+    if (activeTab === 'sandbox' && examples === undefined) {
+      loadRoleCodeSandbox(roleId).then((data) => setExamples(data || [])).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-    if (activeTab === 'labs' && labs === null) {
-      loadRoleLabs(roleId).then(setLabs)
+    if (activeTab === 'labs' && labs === undefined) {
+      loadRoleLabs(roleId).then(setLabs).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-    if (activeTab === 'setup' && setupGuide === null) {
-      loadRoleSetupGuide(roleId).then(setSetupGuide)
+    if (activeTab === 'setup' && setupGuide === undefined) {
+      loadRoleSetupGuide(roleId).then(setSetupGuide).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
   }, [activeTab, roleId, role, diagram, examples, labs, setupGuide])
 
@@ -98,6 +118,10 @@ export default function RolePage() {
         All Roles
       </Link>
 
+      {loadError && (
+        <div className="p-4 text-red-500 text-center">{loadError}</div>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -132,38 +156,44 @@ export default function RolePage() {
       </div>
 
       {activeTab === 'roadmap' && (
-        <div className="space-y-10">
-          <RoadmapTimeline roleId={roleId} levels={role.levels} />
+        contentLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <div className="space-y-10">
+            <RoadmapTimeline roleId={roleId} levels={role.levels} />
 
-          {role.levels.map((level) => {
-            const ld = levelData[level.toLowerCase()] || {}
-            return (
-              <div key={level}>
-                <LevelSection
-                  roleId={roleId}
-                  level={level}
-                  resources={ld.resources}
-                  objectives={ld.objectives}
-                  isResourceComplete={isResourceComplete}
-                  isObjectiveComplete={isObjectiveComplete}
-                  toggleResource={toggleResource}
-                  toggleObjective={toggleObjective}
-                />
+            {role.levels.map((level) => {
+              const ld = levelData[level.toLowerCase()] || {}
+              return (
+                <div key={level}>
+                  <LevelSection
+                    roleId={roleId}
+                    level={level}
+                    resources={ld.resources}
+                    objectives={ld.objectives}
+                    isResourceComplete={isResourceComplete}
+                    isObjectiveComplete={isObjectiveComplete}
+                    toggleResource={toggleResource}
+                    toggleObjective={toggleObjective}
+                  />
 
-                {quizzes && quizzes[level.toLowerCase()] && (
-                  <div className="mt-6">
-                    <QuizBlock
-                      questions={quizzes[level.toLowerCase()]}
-                      roleId={roleId}
-                      level={level.toLowerCase()}
-                      onComplete={(score) => saveQuizScore(level.toLowerCase(), score)}
-                    />
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+                  {quizzes && quizzes[level.toLowerCase()] && (
+                    <div className="mt-6">
+                      <QuizBlock
+                        questions={quizzes[level.toLowerCase()]}
+                        roleId={roleId}
+                        level={level.toLowerCase()}
+                        onComplete={(score) => saveQuizScore(level.toLowerCase(), score)}
+                      />
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )
       )}
 
       {activeTab === 'diagram' && (
