@@ -2,6 +2,17 @@ import { supabase } from '../lib/supabase'
 import { getProgress, saveProgress } from './progressStorage'
 
 /**
+ * Extracts the boolean completed value from a progress item.
+ * localStorage stores items as objects { completed, completedAt } but may
+ * contain legacy plain booleans; handle both gracefully.
+ */
+function isCompleted(item) {
+  if (typeof item === 'boolean') return item
+  if (item && typeof item === 'object') return !!item.completed
+  return false
+}
+
+/**
  * Merges localStorage progress into Supabase on first login.
  * Supabase is source of truth; localStorage data only used to fill gaps.
  */
@@ -17,11 +28,13 @@ export async function syncLocalProgressToCloud(userId) {
   for (const [roleId, roleData] of Object.entries(local.roles || {})) {
     for (const [level, levelData] of Object.entries(roleData)) {
       if (!levelData) continue
-      ;(levelData.objectives || []).forEach((completed, index) => {
-        rows.push({ user_id: userId, category: 'role', item_id: roleId, level, item_type: 'objective', item_index: index, completed: !!completed, completed_at: completed ? new Date().toISOString() : null })
+      ;(levelData.objectives || []).forEach((item, index) => {
+        const completed = isCompleted(item)
+        rows.push({ user_id: userId, category: 'role', item_id: roleId, level, item_type: 'objective', item_index: index, completed, completed_at: completed ? new Date().toISOString() : null })
       })
-      ;(levelData.resources || []).forEach((completed, index) => {
-        rows.push({ user_id: userId, category: 'role', item_id: roleId, level, item_type: 'resource', item_index: index, completed: !!completed, completed_at: completed ? new Date().toISOString() : null })
+      ;(levelData.resources || []).forEach((item, index) => {
+        const completed = isCompleted(item)
+        rows.push({ user_id: userId, category: 'role', item_id: roleId, level, item_type: 'resource', item_index: index, completed, completed_at: completed ? new Date().toISOString() : null })
       })
     }
   }
@@ -29,11 +42,13 @@ export async function syncLocalProgressToCloud(userId) {
   for (const [langId, langData] of Object.entries(local.languages || {})) {
     for (const [level, levelData] of Object.entries(langData)) {
       if (!levelData) continue
-      ;(levelData.objectives || []).forEach((completed, index) => {
-        rows.push({ user_id: userId, category: 'language', item_id: langId, level, item_type: 'objective', item_index: index, completed: !!completed, completed_at: completed ? new Date().toISOString() : null })
+      ;(levelData.objectives || []).forEach((item, index) => {
+        const completed = isCompleted(item)
+        rows.push({ user_id: userId, category: 'language', item_id: langId, level, item_type: 'objective', item_index: index, completed, completed_at: completed ? new Date().toISOString() : null })
       })
-      ;(levelData.resources || []).forEach((completed, index) => {
-        rows.push({ user_id: userId, category: 'language', item_id: langId, level, item_type: 'resource', item_index: index, completed: !!completed, completed_at: completed ? new Date().toISOString() : null })
+      ;(levelData.resources || []).forEach((item, index) => {
+        const completed = isCompleted(item)
+        rows.push({ user_id: userId, category: 'language', item_id: langId, level, item_type: 'resource', item_index: index, completed, completed_at: completed ? new Date().toISOString() : null })
       })
     }
   }
@@ -61,12 +76,13 @@ export async function syncCloudProgressToLocal(userId) {
   const progress = getProgress() || { roles: {}, languages: {}, labs: {}, lastUpdated: new Date().toISOString() }
 
   for (const row of data) {
-    const { category, item_id, level, item_type, item_index, completed } = row
+    const { category, item_id, level, item_type, item_index, completed, completed_at } = row
     const target = category === 'role' ? progress.roles : progress.languages
     if (!target[item_id]) target[item_id] = {}
     if (!target[item_id][level]) target[item_id][level] = { objectives: [], resources: [], quizScore: null }
     const arr = item_type === 'objective' ? target[item_id][level].objectives : target[item_id][level].resources
-    arr[item_index] = completed
+    // Write in the same format progressStorage uses: { completed, completedAt }
+    arr[item_index] = { completed: !!completed, completedAt: completed_at ?? null }
   }
 
   progress.lastUpdated = new Date().toISOString()

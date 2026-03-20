@@ -14,17 +14,13 @@ export function AuthProvider({ children }) {
       return
     }
 
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // onAuthStateChange fires INITIAL_SESSION as its first event, so we
+    // don't need a separate getSession() call (which would cause a race).
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session)
       setUser(session?.user ?? null)
+      // Set loading false after the first event (INITIAL_SESSION)
       setLoading(false)
-    })
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
     })
 
     return () => subscription.unsubscribe()
@@ -48,7 +44,7 @@ export function AuthProvider({ children }) {
     if (!supabase) throw new Error('Supabase not configured')
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
-      options: { redirectTo: window.location.origin }
+      options: { redirectTo: import.meta.env.VITE_APP_URL || window.location.origin }
     })
     if (error) throw error
   }
@@ -57,7 +53,7 @@ export function AuthProvider({ children }) {
     if (!supabase) throw new Error('Supabase not configured')
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin }
+      options: { redirectTo: import.meta.env.VITE_APP_URL || window.location.origin }
     })
     if (error) throw error
   }

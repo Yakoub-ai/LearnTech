@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 
 /**
@@ -62,7 +62,7 @@ export function useSupabaseProgress(userId) {
     if (error) console.error('Supabase lab progress upsert error:', error)
   }, [userId])
 
-  async function loadProgressFromCloud() {
+  const loadProgressFromCloud = useCallback(async () => {
     if (!supabase || !userId) return null
 
     const [progressResult, quizResult, labResult] = await Promise.all([
@@ -81,7 +81,14 @@ export function useSupabaseProgress(userId) {
       quizScores: quizResult.data,
       labProgress: labResult.data
     }
-  }
+  }, [userId])
+
+  useEffect(() => {
+    const timers = debounceTimers.current
+    return () => {
+      Object.values(timers).forEach(clearTimeout)
+    }
+  }, [userId])
 
   return { debouncedUpsert, saveQuizScoreToCloud, saveLabProgressToCloud, loadProgressFromCloud }
 }

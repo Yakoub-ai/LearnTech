@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Github, Chrome } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 
@@ -10,6 +10,8 @@ export default function LoginModal({ onClose }) {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(null)
+
+  const handleKeyDown = (e) => { if (e.key === 'Escape') onClose() }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -31,16 +33,19 @@ export default function LoginModal({ onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose} onKeyDown={handleKeyDown}>
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="login-modal-title"
         className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-6 w-full max-w-md shadow-xl"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-[var(--color-text)]">
+          <h2 id="login-modal-title" className="text-xl font-bold text-[var(--color-text)]">
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           </h2>
-          <button onClick={onClose} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text)] bg-transparent border-none cursor-pointer">
+          <button onClick={onClose} aria-label="Close" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text)] bg-transparent border-none cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -57,6 +62,7 @@ export default function LoginModal({ onClose }) {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
+                  autoFocus
                   className="w-full px-3 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
               </div>
