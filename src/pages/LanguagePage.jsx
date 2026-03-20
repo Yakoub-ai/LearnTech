@@ -1,15 +1,17 @@
 import { useParams, Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { getRoleById } from '../data/roles'
-import { languageMarkdownContent } from '../data/languageMarkdownContent'
-import { languageSkillDiagrams } from '../data/languageSkillDiagrams'
-import { languageDevSetupGuides } from '../data/languageDevSetupGuides'
-import { languageCodeSandboxExamples } from '../data/languageCodeSandboxExamples'
-import { languageQuizzes } from '../data/languageQuizzes'
-import { interactiveLabs } from '../data/interactiveLabs'
+import {
+  loadLanguageMarkdownContent,
+  loadLanguageQuizzes,
+  loadLanguageSkillDiagram,
+  loadLanguageCodeSandbox,
+  loadLanguageLabs,
+  loadLanguageSetupGuide,
+} from '../data/loaders/languageDataLoader'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import SkillDiagram from '../components/roadmap/SkillDiagram'
 import CodeSandbox from '../components/interactive/CodeSandbox'
@@ -39,6 +41,37 @@ export default function LanguagePage() {
   const language = getLanguageById(languageId)
   const [activeTab, setActiveTab] = useState('roadmap')
 
+  const [content, setContent] = useState(null)
+  const [langQuizzes, setLangQuizzes] = useState(null)
+  const [diagram, setDiagram] = useState(null)
+  const [examples, setExamples] = useState(null)
+  const [labs, setLabs] = useState(null)
+  const [setupGuide, setSetupGuide] = useState(null)
+
+  // Load markdown content and quizzes on mount (needed for roadmap tab)
+  useEffect(() => {
+    if (!language) return
+    loadLanguageMarkdownContent(languageId).then(setContent)
+    loadLanguageQuizzes(languageId).then(setLangQuizzes)
+  }, [languageId, language])
+
+  // Load tab-specific data only when that tab is selected
+  useEffect(() => {
+    if (!language) return
+    if (activeTab === 'diagram' && diagram === null) {
+      loadLanguageSkillDiagram(languageId).then(setDiagram)
+    }
+    if (activeTab === 'sandbox' && examples === null) {
+      loadLanguageCodeSandbox(languageId).then((data) => setExamples(data || []))
+    }
+    if (activeTab === 'labs' && labs === null) {
+      loadLanguageLabs(languageId).then(setLabs)
+    }
+    if (activeTab === 'setup' && setupGuide === null) {
+      loadLanguageSetupGuide(languageId).then(setSetupGuide)
+    }
+  }, [activeTab, languageId, language, diagram, examples, labs, setupGuide])
+
   if (!language) {
     return (
       <div className="p-8 text-center">
@@ -50,12 +83,6 @@ export default function LanguagePage() {
 
   const Icon = getLanguageIcon(language.icon)
   const gradient = colorMap[language.color] || colorMap.blue
-  const content = languageMarkdownContent[language.fileName] || {}
-  const diagram = languageSkillDiagrams[languageId]
-  const setupGuide = languageDevSetupGuides[languageId]
-  const examples = languageCodeSandboxExamples[languageId] || []
-  const langQuizzes = languageQuizzes[languageId] || {}
-  const labs = interactiveLabs.filter(l => l.languageId === languageId)
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
@@ -115,8 +142,8 @@ export default function LanguagePage() {
         <div className="space-y-10">
           {language.levels.map((level) => {
             const levelKey = level.toLowerCase()
-            const levelContent = content[levelKey]
-            const levelQuizzes = langQuizzes[levelKey]
+            const levelContent = content ? content[levelKey] : null
+            const levelQuizzes = langQuizzes ? langQuizzes[levelKey] : null
             return (
               <div key={level}>
                 <div className="flex items-center gap-3 mb-4">
@@ -163,7 +190,7 @@ export default function LanguagePage() {
       )}
 
       {activeTab === 'sandbox' && (
-        examples.length > 0 ? (
+        examples && examples.length > 0 ? (
           <CodeSandbox examples={examples} roleId={languageId} />
         ) : (
           <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
@@ -174,7 +201,7 @@ export default function LanguagePage() {
       )}
 
       {activeTab === 'labs' && (
-        labs.length > 0 ? (
+        labs && labs.length > 0 ? (
           <div className="space-y-6">
             {labs.map((lab) => (
               <InteractiveLab key={lab.id} lab={lab} />

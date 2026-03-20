@@ -3,13 +3,15 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
-import { skillDiagrams } from '../data/skillDiagrams'
-import { devSetupGuides } from '../data/devSetupGuides'
-import { codeSandboxExamples } from '../data/codeSandboxExamples'
-import { quizzes } from '../data/quizzes'
-import { interactiveLabs } from '../data/interactiveLabs'
-import { roleMarkdownContent } from '../data/markdownContent'
 import { parseResourceTable, parseObjectives } from '../utils/markdownLoader'
+import {
+  loadRoleMarkdownContent,
+  loadRoleQuizzes,
+  loadRoleSkillDiagram,
+  loadRoleCodeSandbox,
+  loadRoleLabs,
+  loadRoleSetupGuide,
+} from '../data/loaders/roleDataLoader'
 import RoadmapTimeline from '../components/roadmap/RoadmapTimeline'
 import LevelSection from '../components/roadmap/LevelSection'
 import SkillDiagram from '../components/roadmap/SkillDiagram'
@@ -33,6 +35,37 @@ export default function RolePage() {
   const [activeTab, setActiveTab] = useState('roadmap')
   const { isObjectiveComplete, isResourceComplete, toggleObjective, toggleResource, saveQuizScore } = useProgress(roleId)
 
+  const [markdownContent, setMarkdownContent] = useState(null)
+  const [quizzes, setQuizzes] = useState(null)
+  const [diagram, setDiagram] = useState(null)
+  const [examples, setExamples] = useState(null)
+  const [labs, setLabs] = useState(null)
+  const [setupGuide, setSetupGuide] = useState(null)
+
+  // Load markdown content on mount (needed for roadmap tab)
+  useEffect(() => {
+    if (!role) return
+    loadRoleMarkdownContent(role.fileName).then(setMarkdownContent)
+    loadRoleQuizzes(roleId).then(setQuizzes)
+  }, [roleId, role])
+
+  // Load tab-specific data only when that tab is selected
+  useEffect(() => {
+    if (!role) return
+    if (activeTab === 'diagram' && diagram === null) {
+      loadRoleSkillDiagram(roleId).then(setDiagram)
+    }
+    if (activeTab === 'sandbox' && examples === null) {
+      loadRoleCodeSandbox(roleId).then((data) => setExamples(data || []))
+    }
+    if (activeTab === 'labs' && labs === null) {
+      loadRoleLabs(roleId).then(setLabs)
+    }
+    if (activeTab === 'setup' && setupGuide === null) {
+      loadRoleSetupGuide(roleId).then(setSetupGuide)
+    }
+  }, [activeTab, roleId, role, diagram, examples, labs, setupGuide])
+
   if (!role) {
     return (
       <div className="p-8 text-center">
@@ -43,26 +76,20 @@ export default function RolePage() {
   }
 
   const Icon = getRoleIcon(role.icon)
-  const overview = roleMarkdownContent[role.fileName]?.overview || ''
+
+  const overview = markdownContent?.overview || ''
   const levelData = {}
 
   for (const level of role.levels) {
-    const content = roleMarkdownContent[role.fileName]?.overview || ''
     const levelLower = level.toLowerCase()
     const levelRegex = new RegExp(`## ${level}([\\s\\S]*?)(?=\\n## |---\\s*\\n\\s*Return|$)`, 'i')
-    const match = content.match(levelRegex)
+    const match = overview.match(levelRegex)
     const section = match ? match[0] : ''
     levelData[levelLower] = {
       resources: parseResourceTable(section),
       objectives: parseObjectives(section),
     }
   }
-
-  const diagram = skillDiagrams[roleId]
-  const setupGuide = devSetupGuides[roleId]
-  const examples = codeSandboxExamples[roleId] || []
-  const roleQuizzes = quizzes[roleId] || {}
-  const roleLabs = interactiveLabs.filter(l => l.roleId === roleId)
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
@@ -123,10 +150,10 @@ export default function RolePage() {
                   toggleObjective={toggleObjective}
                 />
 
-                {roleQuizzes[level.toLowerCase()] && (
+                {quizzes && quizzes[level.toLowerCase()] && (
                   <div className="mt-6">
                     <QuizBlock
-                      questions={roleQuizzes[level.toLowerCase()]}
+                      questions={quizzes[level.toLowerCase()]}
                       roleId={roleId}
                       level={level.toLowerCase()}
                       onComplete={(score) => saveQuizScore(level.toLowerCase(), score)}
@@ -144,13 +171,13 @@ export default function RolePage() {
       )}
 
       {activeTab === 'sandbox' && (
-        <CodeSandbox examples={examples} roleId={roleId} />
+        <CodeSandbox examples={examples || []} roleId={roleId} />
       )}
 
       {activeTab === 'labs' && (
-        roleLabs.length > 0 ? (
+        labs && labs.length > 0 ? (
           <div className="space-y-6">
-            {roleLabs.map((lab) => (
+            {labs.map((lab) => (
               <InteractiveLab key={lab.id} lab={lab} />
             ))}
           </div>

@@ -1,9 +1,9 @@
 import { useParams, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
-import { languageMarkdownContent } from '../data/languageMarkdownContent'
-import { languageQuizzes } from '../data/languageQuizzes'
+import { loadLanguageMarkdownContent, loadLanguageQuizzes } from '../data/loaders/languageDataLoader'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import QuizBlock from '../components/interactive/QuizBlock'
 import Badge from '../components/common/Badge'
@@ -20,6 +20,19 @@ export default function LanguageLevelPage() {
   const { languageId, level } = useParams()
   const language = getLanguageById(languageId)
 
+  const [content, setContent] = useState(null)
+  const [levelQuizzes, setLevelQuizzes] = useState([])
+
+  useEffect(() => {
+    if (!language) return
+    loadLanguageMarkdownContent(languageId).then((data) => {
+      setContent(data[level] || '')
+    })
+    loadLanguageQuizzes(languageId).then((data) => {
+      setLevelQuizzes(data[level] || [])
+    })
+  }, [languageId, level, language])
+
   if (!language) {
     return (
       <div className="p-8 text-center">
@@ -31,8 +44,6 @@ export default function LanguageLevelPage() {
 
   const Icon = getLanguageIcon(language.icon)
   const gradient = colorMap[language.color] || colorMap.blue
-  const content = languageMarkdownContent[language.fileName]?.[level] || ''
-  const levelQuizzes = languageQuizzes[languageId]?.[level] || []
   const levelCapitalized = level ? level.charAt(0).toUpperCase() + level.slice(1) : ''
 
   const levelOrder = ['beginner', 'mid', 'senior']
