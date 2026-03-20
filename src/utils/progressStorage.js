@@ -70,7 +70,7 @@ export function getProgress() {
  * @param {object} progress - The progress object to save
  * @returns {boolean} Success status
  */
-function saveProgress(progress) {
+export function saveProgress(progress) {
   try {
     progress.lastUpdated = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));

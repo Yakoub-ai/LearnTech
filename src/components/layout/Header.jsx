@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Sun, Moon, Search, BarChart3, Menu, X } from 'lucide-react'
 import { ThemeContext } from '../../App'
 import SearchModal from '../common/SearchModal'
+import AuthButton from '../auth/AuthButton'
 
 export default function Header() {
   const { darkMode, setDarkMode } = useContext(ThemeContext)
@@ -40,6 +41,7 @@ export default function Header() {
             </nav>
 
             <div className="flex items-center gap-2">
+              <AuthButton />
               <button
                 onClick={() => setSearchOpen(true)}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] text-sm hover:border-[var(--color-primary)] transition-colors cursor-pointer"
