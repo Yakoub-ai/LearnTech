@@ -6,3 +6,7 @@ dist/
 .vercel
 *.log
 .DS_Store
+coverage/
+.env*.local
+.env.development
+.env.staging

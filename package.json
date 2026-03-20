@@ -8,8 +8,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
