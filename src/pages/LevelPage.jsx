@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, BookOpen, List } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
-import { roleMarkdownContent } from '../data/markdownContent'
+import { loadRoleMarkdownContent } from '../data/loaders/roleDataLoader'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import Badge from '../components/common/Badge'
 import ProgressBar from '../components/progress/ProgressBar'
@@ -49,6 +49,13 @@ export default function LevelPage() {
   const { roleId, level } = useParams()
   const role = getRoleById(roleId)
   const { isObjectiveComplete, toggleObjective, roleProgress } = useProgress(roleId)
+  const [markdownContent, setMarkdownContent] = useState({})
+
+  useEffect(() => {
+    if (role?.fileName) {
+      loadRoleMarkdownContent(role.fileName).then(setMarkdownContent)
+    }
+  }, [role?.fileName])
 
   if (!role) {
     return (
@@ -60,10 +67,10 @@ export default function LevelPage() {
   }
 
   const levelCapitalized = level.charAt(0).toUpperCase() + level.slice(1)
-  const content = roleMarkdownContent[role.fileName]?.[level] || ''
+  const content = markdownContent?.[level] || ''
   const Icon = getRoleIcon(role.icon)
 
-  const overviewContent = roleMarkdownContent[role.fileName]?.overview || ''
+  const overviewContent = markdownContent?.overview || ''
   const levelRegex = new RegExp(`## ${levelCapitalized}([\\s\\S]*?)(?=\\n## |---\\s*\\n\\s*Return|$)`, 'i')
   const overviewMatch = overviewContent.match(levelRegex)
   const overviewSection = overviewMatch ? overviewMatch[0] : ''
