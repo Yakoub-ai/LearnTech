@@ -34,12 +34,12 @@ export default function AdminPage() {
   const [counts, setCounts] = useState({ pending: 0, approved: 0, denied: 0 })
   const [progressKey, setProgressKey] = useState(0)
   const [analyticsKey, setAnalyticsKey] = useState(0)
-
-  if (!isAdmin) return <Navigate to="/dashboard" replace />
+  const [error, setError] = useState(null)
 
   const fetchUsers = useCallback(async () => {
     if (!supabase) return
     setLoading(true)
+    setError(null)
 
     const query = supabase
       .from('user_approvals')
@@ -50,8 +50,13 @@ export default function AdminPage() {
       query.eq('status', activeTab)
     }
 
-    const { data } = await query
-    setUsers(data || [])
+    const { data, error: queryError } = await query
+    if (queryError) {
+      console.error('Failed to fetch users:', queryError)
+      setError('Failed to load users. Please try again.')
+    } else {
+      setUsers(data || [])
+    }
     setLoading(false)
   }, [activeTab])
 
@@ -78,13 +83,19 @@ export default function AdminPage() {
     fetchCounts()
   }, [fetchCounts, users])
 
+  // Guard after all hooks — placing it earlier violates Rules of Hooks
+  if (!isAdmin) return <Navigate to="/dashboard" replace />
+
   async function updateStatus(userId, status) {
     if (!supabase) return
     setActionLoading(userId)
-    await supabase
+    const { error: updateError } = await supabase
       .from('user_approvals')
       .update({ status, reviewed_at: new Date().toISOString(), reviewed_by: user.id })
       .eq('id', userId)
+    if (updateError) {
+      console.error('Failed to update user status:', updateError)
+    }
     await fetchUsers()
     setActionLoading(null)
   }
@@ -122,7 +133,7 @@ export default function AdminPage() {
       </div>
 
       {/* Section nav */}
-      <div className="flex gap-1 border-b border-[var(--color-border)] mb-6">
+      <div className="flex gap-1 border-b border-[var(--color-border)] mb-6" role="tablist" aria-label="Admin sections">
         {[
           { id: 'users', label: 'Users', badge: counts.pending > 0 ? counts.pending : null },
           { id: 'progress', label: 'Progress' },
@@ -130,6 +141,9 @@ export default function AdminPage() {
         ].map(({ id, label, badge }) => (
           <button
             key={id}
+            role="tab"
+            aria-selected={activeSection === id}
+            aria-controls={`section-${id}`}
             onClick={() => setActiveSection(id)}
             className={`px-4 py-2 text-sm font-medium cursor-pointer border-none bg-transparent transition-colors border-b-2 -mb-px ${
               activeSection === id
@@ -147,7 +161,12 @@ export default function AdminPage() {
 
       {/* Users section */}
       {activeSection === 'users' && (
-        <>
+        <div id="section-users" role="tabpanel">
+          {error && (
+            <div className="mb-4 px-4 py-3 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm">
+              {error}
+            </div>
+          )}
           {/* Summary cards */}
           <div className="grid grid-cols-3 gap-4 mb-6">
             {[
@@ -164,10 +183,12 @@ export default function AdminPage() {
           </div>
 
           {/* Status tabs */}
-          <div className="flex gap-1 mb-6 border-b border-[var(--color-border)]">
+          <div className="flex gap-1 mb-6 border-b border-[var(--color-border)]" role="tablist" aria-label="User status filter">
             {STATUS_TABS.map((tab) => (
               <button
                 key={tab}
+                role="tab"
+                aria-selected={activeTab === tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 text-sm font-medium capitalize cursor-pointer border-none bg-transparent transition-colors border-b-2 -mb-px ${
                   activeTab === tab
@@ -197,7 +218,7 @@ export default function AdminPage() {
             </div>
           ) : (
             <div className="border border-[var(--color-border)] rounded-xl overflow-hidden">
-              <table className="w-full">
+              <table className="w-full" aria-label="User approvals">
                 <thead>
                   <tr className="bg-[var(--color-surface-2)] border-b border-[var(--color-border)]">
                     <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">User</th>
@@ -254,14 +275,22 @@ export default function AdminPage() {
               </table>
             </div>
           )}
-        </>
+        </div>
       )}
 
       {/* Progress section */}
-      {activeSection === 'progress' && <UserProgressTable key={progressKey} />}
+      {activeSection === 'progress' && (
+        <div id="section-progress" role="tabpanel">
+          <UserProgressTable key={progressKey} />
+        </div>
+      )}
 
       {/* Analytics section */}
-      {activeSection === 'analytics' && <UsageStats key={analyticsKey} />}
+      {activeSection === 'analytics' && (
+        <div id="section-analytics" role="tabpanel">
+          <UsageStats key={analyticsKey} />
+        </div>
+      )}
     </div>
   )
 }

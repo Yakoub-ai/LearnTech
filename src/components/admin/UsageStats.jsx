@@ -2,14 +2,17 @@ import { useState, useEffect } from 'react'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { Users, TrendingUp, Trophy, Activity } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { formatRoleName } from '../../utils/formatters'
 
 export default function UsageStats() {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return }
     async function load() {
+      try {
       const now = new Date()
       const ago7d = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString()
 
@@ -27,6 +30,10 @@ export default function UsageStats() {
         supabase.from('user_events').select('user_id, created_at').gte('created_at', ago7d).order('created_at'),
       ])
 
+      for (const res of [activeUsersRes, roleVisitsRes, quizEventsRes, dailyActiveRes]) {
+        if (res.error) throw res.error
+      }
+
       // Role visit counts
       const roleCounts = {}
       for (const row of (roleVisitsRes.data || [])) {
@@ -37,7 +44,7 @@ export default function UsageStats() {
         .sort((a, b) => b[1] - a[1])
         .slice(0, 8)
         .map(([role, visits]) => ({
-          role: role.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' '),
+          role: formatRoleName(role),
           visits,
         }))
 
@@ -59,7 +66,7 @@ export default function UsageStats() {
       }
       const quizChartData = Object.entries(quizByRole)
         .map(([role, roleScores]) => ({
-          role: role.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' '),
+          role: formatRoleName(role),
           avgScore: Math.round(roleScores.reduce((a, b) => a + b, 0) / roleScores.length),
         }))
         .sort((a, b) => b.avgScore - a.avgScore)
@@ -91,6 +98,10 @@ export default function UsageStats() {
         quizChartData,
         dailyActiveData,
       })
+      } catch (err) {
+        console.error('Failed to load analytics:', err)
+        setError('Failed to load analytics. Please try again.')
+      }
       setLoading(false)
     }
     load()
@@ -107,6 +118,12 @@ export default function UsageStats() {
   if (loading) return (
     <div className="flex justify-center py-16">
       <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
+
+  if (error) return (
+    <div className="px-4 py-3 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm">
+      {error}
     </div>
   )
 

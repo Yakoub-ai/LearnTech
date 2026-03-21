@@ -8,7 +8,6 @@ import {
   syncProgressItemToSupabase,
 } from '../../utils/progressStorage'
 import { useAuth } from '../../contexts/AuthContext'
-import { useSupabaseProgress } from '../../hooks/useSupabaseProgress'
 import { supabase } from '../../lib/supabase'
 
 const emptyProgress = { beginner: 0, mid: 0, senior: 0, overall: 0 }
@@ -16,7 +15,6 @@ const emptyProgress = { beginner: 0, mid: 0, senior: 0, overall: 0 }
 export default function useProgress(roleId) {
   const [, setTick] = useState(0)
   const { user } = useAuth()
-  const { debouncedUpsert, saveQuizScoreToCloud } = useSupabaseProgress(user?.id)
 
   const refresh = useCallback(() => setTick((t) => t + 1), [])
 
@@ -25,46 +23,24 @@ export default function useProgress(roleId) {
     const current = progress?.roles?.[roleId]?.[level]?.objectives?.[index]?.completed || false
     const newCompleted = !current
     setObjectiveComplete(roleId, level, index, newCompleted)
-    debouncedUpsert({
-      category: 'role',
-      itemId: roleId,
-      level: level,
-      itemType: 'objective',
-      itemIndex: index,
-      completed: newCompleted,
-    })
     syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'objective', String(index), { completed: newCompleted, completedAt: newCompleted ? new Date().toISOString() : null })
     refresh()
-  }, [roleId, refresh, debouncedUpsert, user])
+  }, [roleId, refresh, user])
 
   const toggleResource = useCallback((level, index) => {
     const progress = getProgress()
     const current = progress?.roles?.[roleId]?.[level]?.resources?.[index]?.completed || false
     const newCompleted = !current
     setResourceComplete(roleId, level, index, newCompleted)
-    debouncedUpsert({
-      category: 'role',
-      itemId: roleId,
-      level: level,
-      itemType: 'resource',
-      itemIndex: index,
-      completed: newCompleted,
-    })
     syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'resource', String(index), { completed: newCompleted, completedAt: newCompleted ? new Date().toISOString() : null })
     refresh()
-  }, [roleId, refresh, debouncedUpsert, user])
+  }, [roleId, refresh, user])
 
   const saveQuizScore = useCallback((level, score) => {
     setQuizScore(roleId, level, score)
-    saveQuizScoreToCloud({
-      category: 'role',
-      itemId: roleId,
-      level: level,
-      score: score,
-    })
     syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
     refresh()
-  }, [roleId, refresh, saveQuizScoreToCloud, user])
+  }, [roleId, refresh, user])
 
   const isObjectiveComplete = useCallback((level, index) => {
     const progress = getProgress()

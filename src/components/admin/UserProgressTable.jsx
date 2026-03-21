@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ChevronDown, ChevronRight, BookOpen, Trophy, Target } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { formatRoleName } from '../../utils/formatters'
 
 // Compute summary stats from a user's progress rows for a given role
 function computeRoleStats(rows) {
@@ -52,15 +53,20 @@ function ProgressBar({ value }) {
 export default function UserProgressTable() {
   const [data, setData] = useState([]) // array of { user: {id, email, display_name}, roles: { roleId: stats } }
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [expanded, setExpanded] = useState({}) // userId -> roleId -> bool
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return }
     async function load() {
+      try {
       const [progressRes, usersRes] = await Promise.all([
         supabase.from('user_progress').select('*').order('updated_at', { ascending: false }),
         supabase.from('user_approvals').select('id, email, display_name').eq('status', 'approved'),
       ])
+
+      if (progressRes.error) throw progressRes.error
+      if (usersRes.error) throw usersRes.error
 
       const progressRows = progressRes.data || []
       const users = usersRes.data || []
@@ -81,6 +87,10 @@ export default function UserProgressTable() {
       })).filter(u => Object.keys(u.roles).length > 0)
 
       setData(result)
+      } catch (err) {
+        console.error('Failed to load progress data:', err)
+        setError('Failed to load progress data. Please try again.')
+      }
       setLoading(false)
     }
     load()
@@ -93,11 +103,15 @@ export default function UserProgressTable() {
     }))
   }
 
-  const formatRole = (roleId) => roleId.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')
-
   if (loading) return (
     <div className="flex justify-center py-16">
       <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
+
+  if (error) return (
+    <div className="px-4 py-3 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm">
+      {error}
     </div>
   )
 
@@ -125,13 +139,14 @@ export default function UserProgressTable() {
                 {/* Role row */}
                 <button
                   onClick={() => toggleExpand(user.id, roleId)}
+                  aria-expanded={!!expanded[user.id]?.[roleId]}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--color-surface-2)]/50 transition-colors cursor-pointer bg-transparent border-none text-left"
                 >
                   {expanded[user.id]?.[roleId]
                     ? <ChevronDown className="w-4 h-4 text-[var(--color-text-secondary)] flex-shrink-0" />
                     : <ChevronRight className="w-4 h-4 text-[var(--color-text-secondary)] flex-shrink-0" />
                   }
-                  <span className="text-sm font-medium text-[var(--color-text)] flex-1">{formatRole(roleId)}</span>
+                  <span className="text-sm font-medium text-[var(--color-text)] flex-1">{formatRoleName(roleId)}</span>
                   <div className="flex items-center gap-3 ml-4">
                     <div className="w-32">
                       <ProgressBar value={stats.overall} />

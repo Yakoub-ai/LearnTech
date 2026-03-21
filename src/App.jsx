@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, Suspense, lazy, useRef } from 'react'
+import React, { useState, useEffect, createContext, Suspense, lazy } from 'react'
 import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import LandingLayout from './components/layout/LandingLayout'
@@ -8,6 +8,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import { useAuth } from './contexts/AuthContext'
 import { trackEvent } from './utils/eventTracking'
+import { supabase } from './lib/supabase'
 
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 const RolePage = lazy(() => import('./pages/RolePage'))
@@ -26,17 +27,9 @@ export const ThemeContext = createContext()
 function PageTracker() {
   const location = useLocation()
   const { user } = useAuth()
-  const supabaseRef = useRef(null)
 
   useEffect(() => {
-    // lazy import to avoid circular deps
-    import('./lib/supabase').then(({ supabase }) => {
-      supabaseRef.current = supabase
-    })
-  }, [])
-
-  useEffect(() => {
-    trackEvent(supabaseRef.current, user?.id ?? null, 'page_view', { path: location.pathname })
+    trackEvent(supabase, user?.id ?? null, 'page_view', { path: location.pathname })
   }, [location.pathname, user?.id])
 
   return null
