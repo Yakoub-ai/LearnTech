@@ -1329,7 +1329,7 @@ print(f"Sorted circles: {[c.radius for c in sorted(circles)]}")
 # 4. Add a @classmethod to BankAccount that creates an account from a dict.
 \`\`\`
 
-**Best practice:** For data-holding classes, prefer \\`@dataclass\\` (shown in the Type Hints section) over manually writing \\`__init__\\`, \\`__repr__\\`, and \\`__eq__\\`. Dataclasses generate these methods automatically and integrate well with type hints.
+**Best practice:** For data-holding classes, prefer \`@dataclass\` (shown in the Type Hints section) over manually writing \`__init__\`, \`__repr__\`, and \`__eq__\`. Dataclasses generate these methods automatically and integrate well with type hints.
 
 **Why it matters:** OOP is the dominant paradigm for structuring large applications. Understanding classes, inheritance, and dunder methods lets you write Pythonic code that integrates naturally with the language.
 
