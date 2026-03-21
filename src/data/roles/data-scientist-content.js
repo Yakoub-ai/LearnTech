@@ -11,7 +11,6 @@ Data Scientists analyse data to generate insights and build predictive models. T
 
 | Topic | Resource | Type |
 |---|---|---|
-| Python Foundations | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python Foundations | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
 | ML Overview | [All ML Concepts Explained in 22 min](https://www.youtube.com/watch?v=Fa_V9fP2tpU) | Video |
 | Python for Data Science | [Python Full Course for Beginners – Programming with Mosh](https://www.youtube.com/watch?v=_uQrJ0TkZlc) | Video |
@@ -42,9 +41,6 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Data
 | Intermediate ML | [Kaggle Learn – Intermediate ML](https://www.kaggle.com/learn/intermediate-machine-learning) | Interactive |
 | Relational Databases | [freeCodeCamp – Relational Databases](https://www.freecodecamp.org/learn/relational-databases-v9/) | Interactive |
 | SQL for Data Science | [SQLBolt – Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
-| Algorithms and Data Structures | [Algorithms and Data Structures Pt.1 – Pluralsight](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) | Course |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
-| Generative AI for Data Science | [Generative AI for Data Science – Pluralsight](https://app.pluralsight.com/paths/skills/generative-ai-for-data-science) | Course |
 | Time-Series Analysis | [Kaggle Learn – Time Series](https://www.kaggle.com/learn/time-series) | Interactive |
 | Class Imbalance | [imbalanced-learn Documentation](https://imbalanced-learn.org/stable/) | Docs |
 
@@ -66,13 +62,7 @@ For deep explanations of each concept, see the [Mid Concept Reference](Data-Scie
 |---|---|---|
 | ML Foundations for AI Engineers | [ML Foundations for AI Engineers (34 min)](https://www.youtube.com/watch?v=BUTjcAjfMgY) | Video |
 | MLOps | [End-to-end MLOps with Azure ML – Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow/) | Interactive |
-| RAG Systems | [RAG for Developers – Pluralsight](https://app.pluralsight.com/paths/skills/retrieval-augmented-generation-rag-for-developers) | Course |
-| Context Engineering | [Context Engineering – Pluralsight](https://app.pluralsight.com/paths/skills/context-engineering) | Course |
-| LangGraph | [LangGraph – Pluralsight](https://app.pluralsight.com/paths/skills/langgraph) | Course |
-| AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
 | LLM Security | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Explainable AI (XAI) | [SHAP Documentation](https://shap.readthedocs.io/en/latest/) | Docs |
 | Survival Analysis | [lifelines Documentation](https://lifelines.readthedocs.io/en/latest/) | Docs |
@@ -96,6 +86,56 @@ Return to the [Role Roadmap index](README.md).
 # Data Scientist – Beginner Concept Reference
 
 This document gives in-depth explanations of the core concepts covered in the Beginner level of the Data Scientist learning path. Use it alongside the linked resources to build a solid mental model before moving to Mid-level material.
+
+---
+
+## Video: AI, ML, Deep Learning and GenAI Explained (IBM Technology)
+
+> [AI, ML, Deep Learning and GenAI Explained – IBM Technology](https://www.youtube.com/watch?v=qYNweeDHiyU)
+
+This video from IBM Technology traces the full landscape from traditional AI to modern generative AI, using clear analogies and a Venn-diagram framing. The key mental model it builds is one of nested fields: AI is the broadest umbrella (any technique that makes a machine simulate human intelligence), machine learning is a subset of AI that learns from data rather than following hand-coded rules, deep learning is a subset of ML that uses layered neural networks inspired by the brain, and generative AI (large language models, image generators, deep fakes) sits at the cutting edge of deep learning.
+
+The presenter is candid about what makes deep learning hard to interpret: because there are so many hidden layers of neural network, it can be difficult to decompose exactly why a result was produced. This unpredictability mirrors how human brains work — and is a key reason why explainability techniques (covered at Senior level) matter so much in practice.
+
+On generative AI, the video makes an important philosophical point: even though generative models recombine existing patterns rather than creating from scratch, that does not make them non-creative. Just as all music recombines notes that already exist, LLMs and image generators can produce genuinely novel outputs. The appropriate framing is not "is it original?" but "is it useful and safe?"
+
+**Why it matters:** This framing — AI ⊃ ML ⊃ Deep Learning ⊃ Generative AI — is the mental map every data scientist needs to navigate job descriptions, tooling decisions, and stakeholder conversations. When a colleague says "we should use AI for this", knowing where your proposed solution sits on this map tells you immediately what the feasibility, data requirements, and interpretability trade-offs are.
+
+---
+
+## Video: Machine Learning Simply Explained
+
+> [Machine Learning Simply Explained](https://www.youtube.com/watch?v=Au1OxVSyGas)
+
+This video breaks machine learning down into four core components — data, algorithms, models, and training and evaluation — and explains them through concrete analogies that stick. Some key insights worth anchoring early:
+
+**Data quality beats data quantity.** The video is emphatic: "you put garbage data in, you often get garbage data out." A dataset full of errors, biases, or irrelevant features cannot be rescued by a more sophisticated algorithm. This is the primary reason data analyst and data scientist roles exist — someone has to ensure quality before modelling begins.
+
+**Algorithms are the chef; data is the ingredients; the model is the dish.** This layered analogy makes the relationships concrete: the algorithm (chef) processes the data (ingredients) to produce a trained model (dish) that can then be served to make predictions. The complexity of the dish depends on the complexity of the goal — from a simple linear regression line to a deep network with billions of parameters.
+
+**A loss function is the model's feedback signal.** During training, a loss function measures how wrong the model's predictions are. An optimiser (such as gradient descent) then adjusts the model's internal parameters in the direction that reduces that loss. This cycle — predict, measure error, adjust — repeats across many passes through the training data until performance reaches an acceptable level. The video compares it to tuning an AM/FM radio: tiny nudges until the station comes through clearly.
+
+**The four types of machine learning.** The video covers supervised learning (learning from labelled examples — classification and regression), unsupervised learning (finding structure in unlabelled data — clustering and anomaly detection), reinforcement learning (trial-and-error learning with rewards and penalties), and semi-supervised learning (a mix of labelled and unlabelled data). Supervised learning dominates most business applications.
+
+**Why it matters:** These four components — data, algorithm, model, training/evaluation — are the checklist you return to every time a model underperforms. Bad data? Fix the data first. Wrong algorithm for the problem type? Switch the chef. Poor training procedure? Adjust the loss function or the number of epochs. Having this mental framework makes debugging methodical rather than guesswork.
+
+---
+
+## Video: All ML Concepts Explained in 22 Minutes
+
+> [All ML Concepts Explained in 22 min](https://www.youtube.com/watch?v=Fa_V9fP2tpU)
+
+This rapid-fire glossary video is a reference companion rather than a narrative. It is most useful as a vocabulary check: by the end of the Beginner level you should be able to recall and explain every term it covers. Some of the most important concepts it defines, with additional depth:
+
+**The bias-variance trade-off is one of the most central concepts in ML.** The video states this explicitly, and it is worth understanding deeply. A model with high bias makes oversimplified assumptions (underfitting — poor performance on both training and test data). A model with high variance is overly sensitive to training data (overfitting — good training performance, poor test performance). The goal is to find a model complex enough to capture real patterns but not so complex it memorises noise. Learning curves — plotting error against training set size — are the most direct way to diagnose which problem you have.
+
+**Parameters vs hyperparameters.** Parameters (weights and biases) are learned during training from the data. Hyperparameters (learning rate, number of layers, batch size, regularisation strength) are set by the practitioner before training begins and control how training unfolds. Confusing these two categories leads to wasted effort: you cannot tune a parameter by hand, and you cannot train a hyperparameter with gradient descent.
+
+**Gradient descent is how almost all modern ML models learn.** The algorithm calculates the direction in which the loss function decreases most steeply (the gradient), then takes a step in that direction scaled by the learning rate. Too large a learning rate and the model overshoots the minimum; too small and training takes unnecessarily long or gets stuck. Variants like momentum-based gradient descent (inspired by a ball rolling down a mountain that can overshoot local minima) address the local minima problem.
+
+**Validation vs test sets serve different purposes.** The validation set is used during development to tune hyperparameters and make modelling decisions. The test set is held out until the very end and used only once to estimate how the final model will perform on truly unseen data. Using the test set repeatedly for decisions converts it into a de facto validation set and produces overly optimistic estimates.
+
+**Why it matters:** The concepts in this video are the shared language of the ML community. Job interviews, research papers, library documentation, and team code reviews all assume fluency with these terms. Treating this video as a vocabulary test — pausing and trying to define each term before the video does — is a productive way to identify gaps before they become blockers.
 
 ---
 
@@ -306,6 +346,55 @@ Machine learning is the engine behind predictive analytics, personalisation, aut
 # Data Scientist – Mid Concept Reference
 
 This document gives in-depth explanations of the core concepts covered in the Mid level of the Data Scientist learning path. It assumes you are comfortable with the Beginner material and are ready to work with more complex modelling and data engineering tasks.
+
+---
+
+## Video: All ML Algorithms Explained in 17 Minutes
+
+> [All ML Algorithms Explained in 17 min](https://www.youtube.com/watch?v=E0Hmnixke2g)
+
+This video by an experienced data scientist and ML bootcamp instructor provides exactly the practical orientation needed at Mid level: a decision framework for choosing an algorithm, not just a catalogue of what they are.
+
+The presenter opens with a strategic point that is easy to overlook: there is no universally best algorithm. Every family makes different assumptions and involves different trade-offs across dataset size, problem type, interpretability requirements, and training speed. The skill is matching the right tool to the problem.
+
+**The supervised/unsupervised split is the first decision.** Before choosing an algorithm, you must know whether you have labelled data (supervised) or not (unsupervised). Within supervised learning, the second decision is regression (continuous target) vs classification (categorical target). This two-level decision tree narrows your options dramatically.
+
+**Linear and logistic regression are foundational, not simplistic.** The video explains that linear regression is the "mother of all ML algorithms" because almost all complex models — including neural networks — are extensions of it. Neural networks add hidden layers of intermediate features, implicitly engineering representations that linear regression cannot. Understanding the linear case first gives you a foundation for understanding everything else.
+
+**Tree-based ensembles are the workhorse for tabular data.** The video explains bagging (Random Forests — parallel trees on random subsets, voting on the output) and boosting (Gradient Boosting — sequential trees, each correcting the errors of the last) as the two main ensemble strategies. Boosted trees often reach higher accuracy but are more prone to overfitting; Random Forests are more robust by default. For most structured business data problems, one of these two approaches will be your starting point.
+
+**SVMs and kernel functions enable non-linear boundaries.** The video explains the kernel trick as a way of implicitly creating non-linear features without computing them explicitly — making SVMs powerful in high-dimensional spaces where linear boundaries are insufficient.
+
+**Unsupervised learning: clustering vs dimensionality reduction.** K-means clustering groups data points by similarity without labels. PCA (Principal Component Analysis) reduces dimensionality by finding the directions of maximum variance and projecting data onto a smaller number of components, removing redundant correlated features. Both are preprocessing tools as much as they are end goals.
+
+**Why it matters:** Mid-level data scientists are expected to select and justify algorithm choices, not just execute a tutorial. This video gives you the vocabulary and decision logic to do that. When asked "why did you choose XGBoost over Random Forest?", you should be able to answer in terms of the trade-offs the video covers: boosting vs bagging, overfitting risk, training speed, and hyperparameter sensitivity.
+
+---
+
+## Video: Machine Learning Concepts – Animated Reference
+
+> [Machine Learning Concepts – Animated Reference](https://www.youtube.com/watch?v=PcbuKRNtCUc)
+
+> ⚠️ No auto-transcript available for this video. Watch it for supplementary context.
+
+This animated reference covers the full vocabulary of machine learning — including terms that the other videos introduce but do not fully define. It is best used as a glossary companion at the mid level, particularly for the following concepts that become important in more complex modelling work:
+
+- **Cross-validation** — splitting data into multiple subsets and evaluating the model on different combinations to produce a more reliable performance estimate than a single split
+- **Dropout** — a regularisation technique for neural networks that randomly disables neurons during training, forcing the network to learn redundant representations and reducing overfitting
+- **Confusion matrix** — a table that shows the breakdown of true positives, false positives, true negatives, and false negatives, enabling calculation of precision, recall, and F1
+- **AUC-ROC** — the area under the receiver operating characteristic curve, measuring aggregate classification performance across all possible thresholds; a useful summary metric when class balance varies
+- **Grid search** — exhaustive hyperparameter tuning by evaluating all combinations of specified values; effective but computationally expensive for large search spaces
+- **Anomaly detection** — identifying data points that deviate significantly from the majority of the data, with applications in fraud detection and system monitoring
+
+**Why it matters:** At Mid level, you will encounter these terms in library documentation, code reviews, and model evaluation conversations. Having clean definitions anchored by visual examples accelerates the integration of these concepts into working memory.
+
+---
+
+## Note: Scikit-Learn Course
+
+> ⚠️ No auto-transcript available for this video. Watch it for supplementary context.
+
+The [Scikit-Learn Course – Machine Learning in Python – freeCodeCamp](https://www.youtube.com/watch?v=pqNCD_5r0IU) is a comprehensive hands-on walkthrough of Scikit-learn's API covering preprocessing, model training, cross-validation, and pipelines. Work through it alongside the Kaggle Intermediate ML course for maximum practical reinforcement.
 
 ---
 
@@ -570,6 +659,26 @@ This document gives in-depth explanations of the core concepts covered in the Se
 
 ---
 
+## Video: ML Foundations for AI Engineers
+
+> [ML Foundations for AI Engineers (34 min)](https://www.youtube.com/watch?v=BUTjcAjfMgY)
+
+This video is aimed specifically at engineers who are familiar with building AI systems and want to solidify their understanding of the ML foundations underneath. It bridges the gap between practical ML skills and production AI engineering — which is exactly the transition Senior data scientists need to make.
+
+Several themes in the video connect directly to senior-level work:
+
+**Supervised learning has a ceiling imposed by human expertise.** The video uses AlphaGo as its canonical example: the supervised learning version learned from human grandmaster games and quickly became very strong — but never exceeded human grandmaster level, because it was bounded by the quality of the labels it learned from. The reinforcement learning version started poorly but, by playing itself millions of times and discovering its own strategies, eventually surpassed every human player in history. The lesson for senior practitioners is profound: when you hit the ceiling of supervised learning performance, the bottleneck is often the labelling, not the algorithm. Reinforcement learning, self-supervised learning, and synthetic data generation are the levers for going beyond that ceiling.
+
+**Neural networks perform implicit feature engineering.** The video reinforces the key insight from the All Algorithms video: unlike linear models where a practitioner manually defines which features to include, deep neural networks automatically learn hierarchical feature representations from raw inputs. This is why they dominate image, text, and audio tasks where hand-engineering features is impractical. Understanding this distinction helps senior engineers decide when a deep learning approach is justified versus when a well-engineered tabular feature set with gradient boosting is more efficient.
+
+**Model evaluation design is a senior-level responsibility.** At the senior level, you are not just running evaluation — you are designing the evaluation framework for the team. This includes deciding the right metrics for the business problem (not just accuracy), designing train/validation/test splits that reflect production conditions, setting evaluation standards before development begins, and communicating results to non-technical stakeholders in ways that support good decisions.
+
+**Production ML requires operational thinking from the start.** The video emphasises that moving from research to production requires a different mindset: thinking about latency, throughput, monitoring, versioning, and graceful degradation. This directly motivates the MLOps material that follows.
+
+**Why it matters:** Senior data scientists are expected to reason about ML systems from first principles, not just apply recipes. This video builds the foundational intuition — about learning types, feature representations, and evaluation design — that supports that deeper reasoning.
+
+---
+
 ## MLOps – Model Deployment, Versioning, Monitoring and Retraining
 
 MLOps (Machine Learning Operations) is the set of practices and tools that bridge the gap between experimental model development and reliable production operation. A model that performs well in a notebook is not a finished product; it needs to be packaged, versioned, deployed, monitored, and eventually retrained. Without MLOps discipline, models silently degrade in production and failures are hard to diagnose.
@@ -785,7 +894,7 @@ Insurance is fundamentally about modelling when events occur and how likely they
 
 ## AI Policy — Organisational Principles
 
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
+The organisation's AI Policy establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
 
 The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
 

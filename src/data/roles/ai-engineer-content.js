@@ -12,12 +12,9 @@ AI Engineers build applications powered by large language models and generative 
 | Topic | Resource | Type |
 |---|---|---|
 | AI vs ML vs Deep Learning | [AI, ML, Deep Learning and GenAI Explained](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
-| Python | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
 | APIs Overview | [Every Popular API Style Explained](https://www.youtube.com/watch?v=4vLxWqE94l4) | Video |
-| Generative AI Intro | [Generative AI for Data Science – Pluralsight](https://app.pluralsight.com/paths/skills/generative-ai-for-data-science) | Course |
 | ML Literacy | [Machine Learning Explained Simply (12 min)](https://www.youtube.com/watch?v=Au1OxVSyGas) | Video |
-| Prompt Basics | [Prompt Engineering and GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/prompt-engineering-and-generative-ai) | Course |
 
 ### After completing Beginner you should be able to:
 
@@ -36,10 +33,6 @@ For deep explanations of each concept, see the [Beginner Concept Reference](AI-E
 | Topic | Resource | Type |
 |---|---|---|
 | ML Foundations for AI Engineers | [ML Foundations for AI Engineers (34 min)](https://www.youtube.com/watch?v=BUTjcAjfMgY) | Video |
-| Context Engineering | [Context Engineering – Pluralsight](https://app.pluralsight.com/paths/skills/context-engineering) | Course |
-| RAG Development | [RAG for Developers – Pluralsight](https://app.pluralsight.com/paths/skills/retrieval-augmented-generation-rag-for-developers) | Course |
-| LangGraph | [LangGraph – Pluralsight](https://app.pluralsight.com/paths/skills/langgraph) | Course |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 | Generative AI Patterns | [All ML Concepts Explained in 22 min](https://www.youtube.com/watch?v=Fa_V9fP2tpU) | Video |
 
 ### After completing Mid you should be able to:
@@ -60,14 +53,10 @@ For deep explanations of each concept, see the [Mid Concept Reference](AI-Engine
 |---|---|---|
 | LLM Agent Architecture | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
 | Prompt Injection Patterns | [Design Patterns for Securing LLM Agents](https://arxiv.org/abs/2506.08837) | Paper |
-| AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
-| Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | OWASP LLM Security | [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/) | Reference |
 | LLM Evaluation | [RAGAS Documentation](https://docs.ragas.io/) | Docs |
 | Fine-Tuning / PEFT | [Hugging Face – PEFT Documentation](https://huggingface.co/docs/peft/) | Docs |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
 
 ### After completing Senior you should be able to:
 
@@ -86,33 +75,36 @@ Return to the [Role Roadmap index](README.md).
 `,
   beginner: `# AI Engineer – Beginner Concept Reference
 
+This level is your foundation. Before you write a single line of AI code, you need to understand the landscape: what AI, machine learning, deep learning, and generative AI actually are and how they relate to each other. You also need to know how the tools you will use every day — APIs and Python — work at a mechanical level. Think of this level as learning what the ingredients are before you start cooking. By the end, you should be able to explain these concepts clearly to a colleague who has never heard the terms, and write simple Python scripts that call an LLM API and get a useful response.
 
-This document provides in-depth explanations of the core concepts covered at the Beginner level of the AI Engineer learning path. Each section describes what a concept is, why it matters in practice, what you need to understand about it, and the mistakes engineers most commonly make when encountering it for the first time.
+## Learning Objectives
+
+- Explain the relationship between AI, machine learning, deep learning, and generative AI using plain language
+- Describe how large language models generate text and why they sometimes produce incorrect answers
+- Understand what an API is and identify the differences between REST, GraphQL, gRPC, WebSocket, and Webhook
+- Write basic Python scripts that call external APIs
+- Write prompts using zero-shot and few-shot techniques to get useful outputs from an LLM
 
 ---
 
-## What is Generative AI
+## What is Generative AI — and Where Does It Fit?
 
-Generative AI refers to a category of artificial intelligence systems that create new content — text, images, audio, code, video — rather than simply classifying, predicting, or retrieving existing information. It is the subset of AI that has driven the current wave of industry transformation, and it is the foundation of the AI Engineer role.
+Think of the AI landscape as a set of nested circles, like Russian dolls. The outermost is **Artificial Intelligence** — any technique that enables a machine to perform tasks that normally require human intelligence. Inside AI sits **Machine Learning** — a subset where instead of hand-coding rules, you feed the system examples and let it learn the rules itself. Inside ML sits **Deep Learning** — a subset that uses layered neural networks modelled loosely on the human brain. Inside deep learning sits **Generative AI** — systems that create new content (text, images, audio, video, code) rather than just classifying or predicting.
 
-Understanding where generative AI sits in the broader AI landscape is essential. Artificial intelligence (AI) is the broadest term — any technique that enables machines to perform tasks requiring human-like intelligence. Machine learning (ML) is a subset of AI where systems learn from data rather than following hand-coded rules. Deep learning is a subset of ML using neural networks with many layers. Generative AI is a subset of deep learning focused on content generation.
+A chess engine that follows hand-coded rules is AI but not ML. A spam filter trained on labelled emails is ML. An image classifier built on a convolutional neural network is deep learning. A system that writes a cover letter or generates an image from a text description is generative AI.
 
-The dominant architecture behind modern generative AI is the transformer, introduced in 2017. Large language models (LLMs) such as frontier models from OpenAI and Anthropic are transformer-based models trained on vast quantities of text. They generate output by predicting the most likely next token in a sequence, producing text that is statistically consistent with their training data. This means LLMs do not retrieve facts or truly "understand" — they produce plausible continuations of input text.
+The key insight for AI Engineers: **LLMs do not retrieve answers from a database.** They generate text by predicting the most statistically likely next token (a small chunk of text) given everything that came before. Think of the phone's autocomplete feature — but instead of predicting the next word, an LLM predicts the next sentence, the next paragraph, or the entire document. This is why LLMs can confidently produce text that sounds correct but is factually wrong — a phenomenon called hallucination.
 
-Other forms of generative AI include image generation models (diffusion models), audio synthesis, and video generation. While the AI Engineer role focuses primarily on LLM-based applications, understanding the broader generative AI landscape helps in evaluating which technology fits a given problem.
+> **What you'll learn watching this:** This video unpacks the relationship between AI, ML, deep learning, and generative AI, then explains foundation models and LLMs using an analogy that compares generating new content to composing new music from existing notes.
 
-**Why it matters:** As an AI Engineer, everything you build is powered by generative AI. Understanding what it is, what it can do, and — critically — what it cannot do is the foundation for every design decision you will make. Engineers who treat LLMs as magic text boxes build brittle systems; engineers who understand the underlying mechanics build robust ones.
+https://www.youtube.com/watch?v=qYNweeDHiyU
 
-**Key things to understand:**
-- Generative AI creates new content; it does not retrieve or look up facts.
-- LLMs generate text by predicting the next token — they do not have a database of answers.
-- The transformer architecture enables LLMs to process sequences in parallel and capture long-range dependencies.
-- Not all AI problems require generative AI — many are better solved with traditional ML or even rule-based systems.
-
-**Common pitfalls:**
-- Assuming LLMs "know" things — they generate statistically plausible text, which may be factually wrong (hallucination).
-- Using generative AI for tasks that are better solved with traditional search, databases, or rule-based logic.
-- Conflating "AI" with "generative AI" in technical discussions, which obscures what is actually being built.
+**Why it matters:**
+- Engineers who understand the nested structure of AI make better decisions about which tool to use — not every problem needs an LLM
+- Knowing that LLMs predict tokens (not retrieve facts) explains hallucination and helps you design systems that verify outputs
+- Foundation models like GPT-4 and Claude changed the AI adoption curve by making powerful AI accessible through an API call — this is the shift that created the AI Engineer role
+- Generative AI's apparent ability to "understand" is statistical — it produces plausible continuations, which is genuinely useful but fundamentally different from human understanding
+- Deep fakes, chatbots, and code generation tools all come from the same generative AI family — understanding the common origin helps you reason about their shared limitations
 
 ---
 
@@ -120,257 +112,378 @@ Other forms of generative AI include image generation models (diffusion models),
 
 Large language models are neural networks trained on massive text datasets to predict the next token in a sequence. Understanding the basics of how they work — without needing to implement one — is essential for building applications on top of them.
 
-**Architecture.** Modern LLMs use the transformer architecture. The key innovation is the self-attention mechanism, which allows the model to weigh the importance of every other token in the input when processing each token. This means the model can capture relationships between words that are far apart in a sentence. Transformers process input in parallel (unlike older recurrent networks that processed sequentially), making them much faster to train at scale.
+**Architecture.** Modern LLMs use the transformer architecture introduced in 2017. The key innovation is the self-attention mechanism, which allows the model to weigh the importance of every other token in the input when processing each token. This enables the model to capture relationships between words that are far apart in a sentence. Transformers process input in parallel (unlike older recurrent networks that processed tokens one at a time), making them much faster to train at scale.
 
-**Tokenisation.** Before an LLM processes text, it must be converted into tokens — numerical representations the model operates on. Tokenisers use subword algorithms (such as byte-pair encoding) that split text into pieces that balance vocabulary size with coverage. A common English word might be one token; a rare or compound word might be split into several tokens. Whitespace, punctuation, and casing all affect tokenisation. Tokens are not words — this distinction matters when estimating costs and managing context window limits.
+**Tokenisation.** Before an LLM processes text, it converts it into tokens — numerical representations the model operates on. Tokenisers use subword algorithms (such as byte-pair encoding) that split text into pieces balancing vocabulary size with coverage. A common English word might be one token; a rare or compound word might be split into several. Whitespace, punctuation, and casing all affect tokenisation. Tokens are not words — this distinction matters when estimating API costs and managing context window limits.
 
 **Context window.** The context window is the maximum number of tokens the model can process in a single request. It includes everything: the system prompt, conversation history, any retrieved documents, and the user's current message. Content beyond the context window is simply invisible to the model. Managing what goes into the context window is one of the most important practical skills for an AI Engineer.
 
 **Inference.** When you send a prompt to an LLM, the model generates output one token at a time. At each step, it produces a probability distribution over its entire vocabulary and selects the next token using a sampling strategy. Temperature controls the randomness: low temperature (close to 0) produces more deterministic, focused output; high temperature produces more varied, creative output. This autoregressive generation continues until a stopping condition is met.
 
-**Why it matters:** You do not need to train LLMs, but you need to understand how they work to use them effectively. Knowing about tokenisation helps you estimate costs and avoid truncation. Understanding the context window helps you design applications that provide the right information to the model. Understanding temperature and sampling helps you tune output for different use cases.
+**Why it matters:** You do not need to train LLMs — you need to understand how they work to use them effectively. Knowing about tokenisation helps you estimate costs and avoid truncation. Understanding the context window helps you design applications that provide the right information to the model at the right time.
 
 **Key things to understand:**
-- LLMs predict the next token based on statistical patterns learned during training — they do not reason the way humans do.
-- The context window is a hard limit — anything beyond it is invisible to the model.
-- Token count determines API cost and latency — shorter, more focused prompts are cheaper and faster.
-- Temperature is the primary control for output variability: low for factual tasks, higher for creative tasks.
+- LLMs predict the next token based on statistical patterns — they do not reason the way humans do
+- The context window is a hard limit — anything beyond it is invisible to the model
+- Token count determines API cost and latency — shorter, more focused prompts are cheaper and faster
+- Temperature is the primary control for output variability: low for factual tasks, higher for creative tasks
 
 **Common pitfalls:**
-- Assuming the model "remembers" previous conversations — each API call is independent unless you explicitly include conversation history in the context.
-- Ignoring tokenisation when estimating whether content fits in the context window, leading to unexpected truncation.
-- Setting temperature too high for factual tasks, producing unreliable output, or too low for creative tasks, producing repetitive output.
+- Assuming the model "remembers" previous conversations — each API call is independent unless you explicitly include conversation history
+- Ignoring tokenisation when estimating whether content fits in the context window, leading to unexpected truncation
+- Setting temperature too high for factual tasks, producing unreliable output
 
 ---
 
-## APIs and AI Services
+## Machine Learning Literacy — What You Need as an AI Engineer
 
-AI Engineers interact with LLMs primarily through APIs (Application Programming Interfaces). Understanding how APIs work — and specifically how LLM APIs differ from traditional APIs — is a foundational skill.
+You do not need to build ML models, but you do need to understand what machine learning is and how it relates to what you build. AI Engineers use LLMs, which are themselves the product of ML training. Understanding the vocabulary and core ideas prevents confusion when you encounter terms like training, inference, overfitting, and model parameters in documentation, papers, and team discussions.
 
-**What is an API.** An API is a contract between two software systems that defines how they communicate. A REST API uses HTTP methods (GET, POST, PUT, DELETE) to perform operations on resources identified by URLs. The client sends a request with headers and a body; the server processes it and returns a response with a status code and a body. JSON is the standard data format for both request and response bodies.
+Machine learning, at its core, is teaching computers to learn from examples rather than explicit instructions. Instead of programming a rule that says "if the email contains the word 'free money' it is spam", you show the system thousands of spam and non-spam emails and let it figure out the patterns. The more quality examples you give it, the better its pattern-recognition becomes.
 
-**How LLM APIs work.** LLM APIs (such as those provided by OpenAI, Anthropic, and Azure OpenAI) follow the REST pattern but have specific characteristics. You send a POST request containing the conversation messages (system prompt, user messages, assistant messages), model parameters (temperature, max tokens), and optionally tool definitions. The API returns the model's generated response, along with metadata such as token usage. Streaming APIs return the response token by token for lower perceived latency.
+The four components of any ML system are: **data** (the examples the model learns from), **algorithm** (the mathematical process for learning patterns), **model** (the trained function that maps inputs to outputs), and **training and evaluation** (the cycle of teaching the model and measuring how well it works).
 
-**Token-based pricing.** LLM APIs charge per token — both input tokens (your prompt) and output tokens (the model's response). This means every token in the context window has a direct cost. Optimising prompt length, managing conversation history, and choosing the right model size for each task are practical economic decisions, not just technical ones.
+Machine learning comes in three main flavours. **Supervised learning** uses labelled examples — photos tagged as "cat" or "dog", emails tagged as "spam" or "not spam". The model learns to predict the label for new, unseen examples. **Unsupervised learning** finds patterns in data without labels — grouping customers with similar buying habits, for example. **Reinforcement learning** learns through trial and error, receiving rewards for good actions and penalties for poor ones — how AlphaGo learned to beat human Go champions.
 
-**Consuming APIs with Python.** The \`requests\` library is the standard way to make HTTP calls in Python. For LLM APIs specifically, provider SDKs (such as the \`openai\` or \`anthropic\` Python packages) wrap the HTTP calls with convenience methods, type safety, and error handling. Understanding both the raw HTTP layer and the SDK layer is important — the SDK abstracts the HTTP details, but when things go wrong, you need to understand what is happening underneath.
+> **What you'll learn watching this:** This video walks through the four core components of machine learning — data, algorithms, models, and training — using analogies like tuning a radio and training a boxer, then explains supervised, unsupervised, and reinforcement learning with worked examples.
 
-**Why it matters:** APIs are the primary interface between your application and the LLM. Understanding how they work, what they cost, and how to use them efficiently is not optional — it is the mechanical foundation of everything you build as an AI Engineer.
+https://www.youtube.com/watch?v=Au1OxVSyGas
+
+**Why it matters:**
+- Data quality is the single most important factor in ML model performance — "garbage in, garbage out" applies directly to any model you train or fine-tune
+- Understanding the difference between training and inference helps you reason about LLM API calls, which are inference (not training)
+- Supervised learning makes up roughly 70% of real-world ML applications — recognising it helps you understand most AI systems you will encounter
+- The loss function and gradient descent concepts underpin how LLMs were trained — knowing these terms at a conceptual level helps you read model documentation
+- Reinforcement learning, combined with human feedback (RLHF), is what makes LLMs follow instructions and avoid harmful outputs — this is a critical piece of how modern LLMs work
+
+---
+
+## APIs and AI Services — How Systems Talk to Each Other
+
+An API (Application Programming Interface) is a contract between two software systems that defines how they communicate. Think of an API as a restaurant menu: it tells you what you can order (available operations), what information you need to provide (request format), and what you will receive back (response format). You do not need to know what happens in the kitchen.
+
+As an AI Engineer, every LLM you use will be accessed through an API. You send your prompt over the network, the model processes it, and the response comes back. Understanding how APIs work — at the HTTP level — means you can debug problems, optimise performance, and build robust applications.
+
+There are several API styles, each suited to different use cases:
+
+**REST** is the backbone of the web. It uses standard HTTP methods (GET to retrieve, POST to create, PUT to update, DELETE to remove) and JSON for data. Most LLM APIs (OpenAI, Anthropic) are REST APIs. REST is simple, widely understood, and suitable for most request-response interactions.
+
+**GraphQL** was developed by Facebook to solve a specific REST problem: over-fetching and under-fetching. With REST, a single endpoint often returns more data than you need (over-fetching) or forces multiple requests to assemble what you need (under-fetching). GraphQL lets the client specify exactly what fields it wants. Companies like GitHub and Shopify use it for complex data requirements.
+
+**gRPC** is a high-performance protocol that uses binary encoding (Protocol Buffers) rather than JSON. It is faster and more efficient than REST but requires more setup and has limited browser support. Netflix uses it for inter-service communication at scale — a microservices scenario, not a browser UI.
+
+**WebSocket** enables real-time, bidirectional communication over a persistent connection. Chat applications and live dashboards use WebSocket because HTTP request-response would be too slow. Streaming LLM responses (where tokens appear one by one) uses a related mechanism.
+
+**Webhook** is event-driven: instead of your code asking "did anything happen?", the remote service calls your endpoint when something does. GitHub webhooks notify your CI pipeline when code is pushed.
+
+> **What you'll learn watching this:** This video compares all six major API styles — SOAP, REST, GraphQL, gRPC, WebSocket, and Webhook — with concrete real-world examples for each, including which companies use them and why.
+
+https://www.youtube.com/watch?v=4vLxWqE94l4
+
+**Why it matters:**
+- LLM APIs are REST APIs — knowing how REST works at the HTTP level helps you debug authentication failures, parse error codes, and understand rate limiting
+- Choosing the wrong API style for a use case creates significant technical debt — gRPC inside a browser, or WebSocket for a batch job, are common mismatches
+- Token-based pricing means every byte you send in a REST request to an LLM has a cost — understanding request structure helps you optimise
+- Webhooks are increasingly used in AI pipelines for event-driven triggers (a document uploaded, a form submitted) — knowing how they work lets you design async workflows
+- GraphQL is used by several developer platforms you will integrate with as an AI Engineer — recognising it prevents confusion when their API behaves differently from REST
 
 **Key things to understand:**
-- REST APIs use HTTP methods and JSON — learn the basics before using any LLM SDK.
-- LLM API calls are stateless — the model has no memory between calls unless you explicitly send conversation history.
-- Token usage determines cost — monitor and optimise both input and output tokens.
-- Error handling (rate limits, timeouts, API errors) must be built into any production application.
+- REST APIs use HTTP methods and JSON — learn these before using any LLM SDK
+- LLM API calls are stateless — the model has no memory between calls unless you include conversation history
+- Token usage determines cost — monitor and optimise both input and output tokens
+- Error handling (rate limits, timeouts, API errors) must be built into any production application
 
 **Common pitfalls:**
-- Not handling API rate limits, causing applications to fail under load.
-- Sending unnecessary context (full conversation history, redundant instructions) in every API call, inflating costs.
-- Using raw HTTP calls when an SDK would be more reliable, or using only the SDK without understanding the underlying HTTP behaviour.
+- Not handling API rate limits, causing applications to fail under load
+- Sending unnecessary context in every API call, inflating costs
+- Using only the SDK without understanding the underlying HTTP behaviour — when things break, you need to know what is happening underneath
 
 ---
 
 ## Introduction to Prompt Engineering
 
-Prompt engineering is the practice of designing input text that elicits the desired output from a language model. For AI Engineers, it is the first and most accessible tool for controlling LLM behaviour — and it is often sufficient for a wide range of tasks before reaching for more complex solutions.
+Prompt engineering is the practice of designing input text that elicits the desired output from a language model. Think of it like giving instructions to an extremely capable but very literal intern: the quality of what you get back depends almost entirely on how clearly you explain what you want.
 
-**Zero-shot prompting** is the simplest technique: you describe the task directly without providing any examples. "Summarise this document in three bullet points" is a zero-shot prompt. It works well for straightforward tasks where the model's pre-training provides enough context to understand what is expected.
+**Zero-shot prompting** is the simplest approach: describe the task directly without providing examples. "Summarise this document in three bullet points" is a zero-shot prompt. It works well for straightforward tasks where the model's training provides enough context to understand the expected format and style.
 
-**Few-shot prompting** provides two to five worked examples before the actual request. The examples establish the expected input-output format, style, and level of detail. Few-shot prompting is remarkably effective at steering model output — often more effective than verbose instructions — because the model infers the pattern from the examples.
+**Few-shot prompting** provides two to five worked examples before the actual request. The examples establish the expected input-output format, style, and level of detail. Few-shot prompting is often more effective than adding more instructions, because the model infers the pattern from the examples rather than trying to parse verbose prose instructions.
 
-**Role prompting** frames the model as a particular persona: "You are a senior insurance claims analyst." This influences the model's vocabulary, level of detail, and perspective. Role prompting is a simple but effective way to tailor output for specific audiences or domains.
+**Role prompting** frames the model as a particular persona: "You are a senior claims analyst with 10 years of experience." This influences the model's vocabulary, level of technical detail, and perspective — a useful way to target a specific audience or domain without writing long style instructions.
 
 **Structured output.** Asking the model to respond in a specific format — JSON, a numbered list, a markdown table — reduces ambiguity and makes output easier to parse programmatically. Being explicit about the desired format ("Respond with a JSON object containing the keys: summary, confidence, sources") produces more consistent results than leaving the format open.
 
-**Why it matters:** The prompt is your primary control surface for LLM behaviour. Mastering basic prompt engineering techniques — zero-shot, few-shot, role prompting, and structured output — gives you the tools to solve a wide range of problems before reaching for more complex approaches like RAG or fine-tuning.
+**Why it matters:** The prompt is your primary control surface for LLM behaviour. Mastering these basic techniques gives you the tools to solve a wide range of problems before reaching for more complex approaches like RAG or fine-tuning.
 
 **Key things to understand:**
-- Start simple (zero-shot) and add complexity (few-shot, structured output) only when needed.
-- Few-shot examples influence the model's behaviour more strongly than many engineers expect — the format and style of examples are often replicated closely.
-- Positive instructions ("respond only with...") are more reliable than negative ones ("do not include...").
-- Prompts are not deterministic — the same prompt can produce different output across runs due to sampling.
+- Start simple (zero-shot) and add complexity (few-shot, structured output) only when needed
+- Few-shot examples influence the model's output format and tone more strongly than explicit instructions in many cases
+- Positive instructions ("respond only with...") are more reliable than negative ones ("do not include...")
+- Prompts are not deterministic — the same prompt can produce different output across runs
 
 **Common pitfalls:**
-- Over-engineering prompts for simple tasks where a direct instruction would suffice.
-- Not testing prompts across a range of inputs — a prompt that works for one example may fail on edge cases.
-- Treating prompt engineering as a one-time task rather than an iterative process that requires testing and refinement.
+- Over-engineering prompts for simple tasks where a direct instruction would suffice
+- Not testing prompts across a range of inputs — a prompt that works for one example may fail on edge cases
+- Treating prompt engineering as a one-time task rather than an iterative process
+
+---
+
+## You're Ready for the Next Level When You Can...
+
+- Explain the difference between AI, ML, deep learning, and generative AI without referring to notes — including why LLMs hallucinate
+- Write a Python script that calls an LLM API, sends a prompt with a system message and user message, and prints the response
+- Describe what REST, GraphQL, gRPC, WebSocket, and Webhook are and give a real-world use case for each
+- Write a zero-shot and a few-shot prompt for the same task and explain why the few-shot version produces more consistent output
+- Explain what a token is and why token count matters for cost and context window management
 `,
   mid: `# AI Engineer – Mid Concept Reference
 
+This level moves from understanding AI to building with it. You will go deeper into how LLMs actually work at a technical level — transformers, tokenisation, inference — and start connecting those mechanics to practical engineering decisions: how much does this prompt cost, why did the model ignore my instructions, why is the retrieval returning irrelevant results? You will also learn to build two of the most important architecture patterns in production AI engineering: RAG (Retrieval-Augmented Generation) and LangGraph-based agents. Think of this level as learning not just what the ingredients are, but how to combine them into something that reliably works.
 
-This document provides in-depth explanations of the core concepts covered at the Mid level of the AI Engineer learning path. It assumes familiarity with the Beginner concepts and focuses on LLM internals, embeddings, prompt and context engineering, RAG, agent frameworks, and AI-assisted development.
+## Learning Objectives
 
----
-
-## Large Language Models – Architecture, Tokenisation and Inference
-
-Large language models (LLMs) are neural networks trained on vast quantities of text to predict the next token in a sequence. Understanding their architecture and inference process helps engineers build systems that use them reliably.
-
-The dominant architecture for modern LLMs is the transformer, introduced in 2017. The transformer uses self-attention mechanisms that allow each token in a sequence to attend to every other token. This enables the model to capture long-range dependencies in text — something previous recurrent architectures struggled with. Stacking many transformer blocks, scaling parameters to billions, and training on trillions of tokens produces the emergent capabilities seen in frontier models from OpenAI and Anthropic.
-
-Tokenisation is the process of converting raw text into the integer tokens the model operates on. Tokenisers do not split on word boundaries; they use subword algorithms (such as byte-pair encoding) that balance vocabulary size with the ability to represent rare or compound words. A single English word may be one token or several; whitespace, punctuation, and casing all affect tokenisation. Tokens are not words — this distinction matters when estimating prompt cost and length.
-
-Inference is the process of generating output from a trained model. Given a prompt (a sequence of tokens), the model produces a probability distribution over the vocabulary at each position, and a sampling strategy (greedy, top-k, nucleus sampling) selects the next token. This is repeated autoregressively until a stopping condition is met. Temperature controls the randomness of sampling: low temperature makes output more deterministic and focused, high temperature makes it more diverse and creative.
-
-**Why it matters:** LLMs are the foundation of most GenAI applications. Understanding how they actually work — rather than treating them as magic text boxes — is essential for diagnosing failures, optimising prompts, managing costs, and making sound architectural decisions about when to use them.
-
-**Key things to understand:**
-- LLMs do not retrieve facts — they generate text that is statistically consistent with their training data.
-- The context window limits how much text the model can process at once; content beyond the window is invisible to the model.
-- Token count affects cost and latency for API-based models — optimise prompt length deliberately.
-- Temperature controls randomness: lower = more deterministic, higher = more varied output.
-
-**Common pitfalls:**
-- Treating LLM output as factual without verification — models hallucinate plausible-sounding but incorrect information.
-- Assuming the model "understands" instructions the same way a human would — LLMs process instructions differently from humans. They can perform multi-step reasoning within limits but lack grounded understanding, and their failure modes differ from human failures.
-- Ignoring tokenisation when measuring prompt length, leading to unexpected truncation.
+- Explain how transformer self-attention enables LLMs to capture long-range context, and why this matters for prompt design
+- Describe what embeddings are and use cosine similarity to explain how semantic search works
+- Implement a RAG pipeline from scratch: chunking, embedding, retrieval, and generation
+- Build a simple LangGraph agent with state, conditional edges, and tool use
+- Apply chain-of-thought prompting and context engineering techniques to improve LLM output quality
+- Describe the training, loss function, gradient descent, and reinforcement learning concepts that underpin modern LLMs
 
 ---
 
-## Embeddings – What They Are and Why They Enable Semantic Search
+## ML Foundations for AI Engineers — Training, Deep Learning, and Reinforcement Learning
 
-An embedding is a dense numerical vector that represents a piece of data — a word, sentence, document, or image — in a high-dimensional space. The defining property of a good embedding space is that semantically similar items are geometrically close to each other.
+As an AI Engineer, you did not train the LLMs you use — but you need to understand how they were trained to use them well. This section covers the machine learning concepts that explain why LLMs behave the way they do: why they sometimes confidently produce wrong answers, why fine-tuned models can outperform general models on narrow tasks, and why models trained with reinforcement learning from human feedback (RLHF) follow instructions better than base models.
 
-Embedding models are trained to produce these representations. For text, a sentence embedding captures meaning rather than surface form: the sentences "the bank closed at five" and "the financial institution shut its doors in the evening" will have similar embeddings, even though they share no words. This is in contrast to keyword-based search, which matches exact terms and misses synonyms, paraphrases, and conceptual relationships.
+**Training and inference.** Every ML model has two phases. In training, the model is shown labelled examples and adjusts its parameters to minimise a loss function — the measure of how wrong its predictions are. In inference, those trained parameters are fixed and the model uses them to make predictions on new inputs. When you call an LLM API, you are doing inference, not training.
 
-Semantic search uses embeddings to find the most relevant documents for a query. The query is embedded into the same vector space as the documents, and similarity is measured using cosine similarity — which measures the angle between vectors rather than their magnitude, making it scale-invariant. Vector databases (such as Azure AI Search, Pinecone, Qdrant, Weaviate, Chroma, or pgvector) store and index these embeddings for efficient approximate nearest-neighbour retrieval at scale.
+**Deep learning and neural networks.** Deep learning uses layered neural networks. The fundamental unit is a neuron: it takes inputs, multiplies them by weights, adds a bias, and passes the result through a nonlinear activation function. Stacking many neurons into layers, and many layers into networks, produces models that can learn complex patterns directly from raw data — without manual feature engineering. The transformer architecture uses a specific type of layer called an attention layer, which enables each token to "look at" all other tokens when computing its representation.
 
-Embeddings are also the foundation of retrieval-augmented generation. Before an LLM generates a response, relevant documents are retrieved from a vector store based on embedding similarity and injected into the prompt as context.
+**Gradient descent.** This is how neural networks learn. The training algorithm computes the gradient of the loss function — the direction in the parameter space that increases the error most steeply — then takes a step in the opposite direction. This process, repeated millions of times on batches of training data, gradually finds parameter values that produce accurate predictions. The learning rate controls step size: too large and training overshoots; too small and training never converges. Modern LLMs use Adam (adaptive momentum estimation), a smarter variant that accounts for the history of gradients to stabilise training.
 
-**Why it matters:** Embeddings unlock semantic understanding in applications that would otherwise rely on brittle keyword matching. They are the core mechanism behind RAG, recommendation systems, and similarity search — all of which are foundational patterns in production AI systems.
+**Reinforcement learning.** In supervised learning, a human labels correct answers and the model learns to reproduce them. In reinforcement learning (RL), the model learns by interacting with an environment and receiving rewards for good actions and penalties for poor ones. The key advantage: RL models are not bounded by what human labellers can produce. They can discover strategies that exceed human performance — as AlphaGo demonstrated by surpassing human Go champions through self-play. In LLM training, RLHF (reinforcement learning from human feedback) is used to teach models to follow instructions and avoid harmful outputs. Human raters compare model responses, creating a reward signal that guides the model toward preferred behaviour.
 
-**Key things to understand:**
-- Embedding dimensionality (typically 384 to 4096) determines the richness of the representation.
-- The embedding model must be consistent: if you embed your knowledge base with one model, you must embed queries with the same model.
-- Cosine similarity is scale-invariant; it measures the angle between vectors, not their magnitude. Semantically similar content will have cosine similarity close to 1.
+> **What you'll learn watching this:** This 34-minute video covers machine learning fundamentals specifically for AI Engineers — from linear models and loss functions through deep learning, neural network anatomy, gradient descent variants, and reinforcement learning — using the AlphaGo example to illustrate why RL can exceed supervised learning.
 
-**Common pitfalls:**
-- Using different embedding models for indexing and querying, producing nonsensical similarity scores.
-- Embedding very long documents as a single vector — chunking strategies significantly affect retrieval quality.
-- Assuming high cosine similarity implies semantic equivalence — it implies relatedness, which is a weaker claim.
+https://www.youtube.com/watch?v=BUTjcAjfMgY
 
----
-
-## Prompt Engineering – Techniques, Patterns and Limitations
-
-Prompt engineering is the practice of designing input text that elicits the desired output from a language model. It is partly craft and partly systematic technique.
-
-Core techniques include: zero-shot prompting (asking the model to perform a task with no examples), few-shot prompting (providing two to five worked examples before the actual request), chain-of-thought prompting (instructing the model to reason step by step before producing an answer), and role prompting (framing the model as a particular persona to influence its style and priorities).
-
-Structural patterns help with consistency. Separating instructions from content using delimiters (XML tags, triple quotes, or headers) reduces ambiguity. Being explicit about output format — asking for JSON, a numbered list, or a specific schema — reduces post-processing effort. Negative instructions ("do not include...") are generally less effective than positive ones ("respond only with...").
-
-Limitations are real and must be understood. Prompts do not deterministically control model behaviour — they shift probabilities. Long prompts can cause the model to lose focus on earlier instructions (the "lost in the middle" effect). Prompts cannot reliably override a model's safety training or fundamental architecture constraints.
-
-**Why it matters:** The prompt is your primary interface with a language model. Poor prompt design produces inconsistent, unusable output regardless of the underlying model's capability. Prompt engineering is the fastest lever available for improving a GenAI system before reaching for more expensive solutions like fine-tuning.
-
-**Key things to understand:**
-- Prompt changes have non-linear effects — a small wording change can significantly alter output.
-- Few-shot examples influence the model's output format and tone more than explicit instructions in many cases.
-- Chain-of-thought improves accuracy on reasoning tasks but adds output length and therefore cost.
-
-**Common pitfalls:**
-- Over-engineering a prompt when the task is simple and a direct instruction would suffice.
-- Not versioning prompts alongside code — production prompt changes should be treated as code changes.
-- Expecting a prompt to be stable across model versions; prompts often need revision when the underlying model changes.
+**Why it matters:**
+- Understanding gradient descent and loss functions explains why more training data generally produces better models — and why bad data produces bad models regardless of algorithm sophistication
+- Knowing the difference between training and inference helps you make cost and latency decisions: inference is cheap; training is expensive
+- The concept of overfitting (a model that memorises training data instead of generalising) directly affects how you evaluate and monitor LLM applications
+- Reinforcement learning explains why ChatGPT follows instructions more reliably than base GPT models — RLHF is the mechanism that aligned the model to user intent
+- Hyperparameters like learning rate, batch size, and dropout are terms you will encounter in fine-tuning documentation — knowing what they do at a conceptual level lets you evaluate fine-tuning configurations
 
 ---
 
-## Context Engineering – Managing Context Windows Effectively
+## Machine Learning Concepts — The Vocabulary You Need
 
-Context engineering extends prompt engineering to the problem of deciding what information to include in the context window, in what order, and in what form. As models are applied to more complex tasks, what is in the context matters as much as how the model is instructed.
+The ML landscape has a dense vocabulary. Understanding the core terms prevents you from being lost in documentation, papers, and team discussions. This is not about implementing these concepts — it is about knowing enough to reason clearly.
 
-The context window is the total input a model can process at once, measured in tokens. It includes the system prompt, conversation history, retrieved documents, tool outputs, and the current user message. Exceeding the window causes truncation, silently dropping content the model needed to answer correctly.
+**Supervised, unsupervised, and reinforcement learning** are the three main paradigms. Supervised learning (roughly 70% of real-world ML) uses labelled data. Unsupervised learning finds structure in unlabelled data — clustering customers by behaviour, for example. Reinforcement learning learns through trial and error with rewards.
 
-Effective context engineering involves: selecting the most relevant retrieved chunks rather than returning everything, placing the most critical information in positions the model attends to most reliably (typically the beginning and end of the context), compressing verbose content through summarisation, and managing multi-turn conversation history by pruning or summarising older turns.
+**The bias-variance tradeoff** is one of the most important concepts in ML. A high-bias model (like a linear regression on clearly non-linear data) is too simple — it underfits. A high-variance model (like a very deep network on a small dataset) is too complex — it overfits, memorising training noise instead of learning generalizable patterns. Finding the right complexity is the goal of model selection and regularisation.
 
-Context order matters. Research has shown that models attend less reliably to information placed in the middle of a long context than to information at the edges. Critical instructions and the most relevant retrieved content should be positioned accordingly.
+**Overfitting and underfitting** translate directly to LLM applications. An LLM that has been fine-tuned on too little data will overfit — it will parrot training examples instead of generalising. A model used for a task it was not trained for will underfit — it will miss patterns it never had the opportunity to learn.
 
-**Why it matters:** In complex GenAI applications, what goes into the context window is often more important than the prompt instructions themselves. Poor context engineering fills the window with noise, causes truncation of important content, and leads to unfocused or incorrect responses — problems that cannot be fixed by adjusting instructions alone.
+**Parameters and hyperparameters** are distinct. Parameters are the values the model learns from data (weights and biases). Hyperparameters are the settings you configure before training begins — learning rate, batch size, number of epochs, dropout rate. Getting hyperparameters right requires experimentation; getting parameters right is what training does automatically.
 
-**Key things to understand:**
-- Every token in the context window has a cost in latency and money (for API-based models) — include only what is necessary.
-- Conversation history grows with each turn; without pruning, it will eventually exhaust the context window.
-- Structured context (using headers, labels, and clear delimiters) helps the model parse multi-source input correctly.
+> **What you'll learn watching this:** This video covers all foundational ML terms in 22 minutes — algorithms, models, features, labels, training/test data, overfitting, bias-variance tradeoff, regularisation, gradient descent, evaluation metrics — with worked examples and clear visual analogies.
 
-**Common pitfalls:**
-- Including full documents when only a paragraph is relevant, diluting the signal with noise.
-- Prepending all retrieved context before the user question, which can cause the model to anchor on retrieval rather than the actual request.
-- Not testing context strategies across a range of query lengths and types.
+https://www.youtube.com/watch?v=Fa_V9fP2tpU
 
----
-
-## Retrieval-Augmented Generation (RAG) – Architecture and Components
-
-RAG is an architecture pattern that combines a retrieval system with a language model to ground generated responses in a specific, updatable knowledge base. It addresses the core limitations of LLMs — static training data and hallucination — without the cost and complexity of fine-tuning.
-
-The architecture has two main phases. At indexing time, documents are split into chunks, each chunk is embedded using an embedding model, and the resulting vectors are stored in a vector database alongside the original text. At query time, the user's question is embedded using the same model, the vector database is searched for the most similar chunks, and those chunks are injected into the LLM's context window as grounding material before the model generates a response.
-
-The quality of a RAG system depends on each component in the pipeline. Chunking strategy (how documents are split) directly affects whether the retrieved context contains the information needed to answer the query. Retrieval quality determines whether the right chunks are surfaced. Prompt design determines whether the model uses the retrieved context faithfully or ignores it in favour of its parametric knowledge.
-
-**Why it matters:** RAG is the default starting point for most enterprise knowledge retrieval applications. It enables LLMs to answer questions about proprietary, domain-specific, or recently updated information without retraining. It also reduces hallucination by grounding the model's response in real retrieved text — though it does not eliminate it entirely.
-
-**Key things to understand:**
-- RAG does not prevent hallucination entirely — if retrieval fails to surface relevant context, the model may still fabricate.
-- Hybrid search (combining vector similarity with keyword search such as BM25) typically outperforms pure vector search.
-- Reranking retrieved chunks before injecting them into the prompt is a common technique to improve relevance.
-
-**Common pitfalls:**
-- Using fixed-size chunking without considering sentence or paragraph boundaries, splitting context mid-thought.
-- Returning too many chunks, filling the context window with noise that obscures the relevant content.
-- Not evaluating retrieval quality independently of generation quality — poor retrieval cannot be compensated by a better prompt.
+**Why it matters:**
+- The bias-variance tradeoff underpins every decision about model complexity — from choosing a RAG chunk size to deciding whether fine-tuning is appropriate
+- Knowing what a loss function is helps you interpret training logs and understand why a model improves (or fails to) during fine-tuning
+- Feature engineering, though less relevant for LLMs than for traditional ML, still matters for structured data tasks you may build alongside an LLM pipeline
+- Evaluation metrics (accuracy, precision, recall, F1, mean squared error) appear in LLM evaluation frameworks — you need to know what they measure
+- Understanding data leakage (inadvertently including test data in training) explains why naive evaluation of LLM applications can produce misleadingly positive results
 
 ---
 
-## LangGraph – Agent Graphs, State and Tool Use
+## Large Language Models — Architecture, Tokenisation and Inference (Deep Dive)
 
-LangGraph is a framework for building stateful, multi-step agent workflows using a graph-based execution model. It addresses the limitations of linear chain-based agent frameworks by allowing branching, looping, and conditional logic.
+At the Mid level, you need to go beyond the Beginner-level overview and understand LLM internals well enough to make architectural decisions. This section builds on what you already know.
 
-In LangGraph, a workflow is defined as a directed graph where nodes are processing steps (LLM calls, tool calls, or custom functions) and edges define the transitions between them. Edges can be conditional — the next node is selected based on the current state. This enables loops (retrying a tool call until it succeeds), branching (choosing between different response strategies), and human-in-the-loop patterns (pausing execution for human review).
+The transformer architecture uses **self-attention** to allow each token to weigh the relevance of every other token in the input. In practice, this is what enables an LLM to correctly resolve pronouns, follow instructions given earlier in the prompt, and connect concepts separated by hundreds of words. Earlier architectures (recurrent networks) processed tokens sequentially and struggled with long-range dependencies. Stacking many transformer blocks, scaling to billions of parameters, and training on trillions of tokens produces the emergent capabilities seen in frontier models.
 
-State is the central concept. LangGraph maintains a typed state object that persists across all nodes in the graph. Each node reads from and writes to this state. Because state is explicit and inspectable, debugging is more tractable than in agent systems where state is implicit.
+**Tokenisation** matters more than most engineers realise. A GPT-family tokeniser produces roughly 1.3 tokens per English word on average — but unusual words, code, non-Latin scripts, and numbers often tokenise inefficiently. The sentence "the year 2024 was notable" may tokenise very differently from "2024". Understanding tokenisation helps you estimate whether a document fits in the context window, optimise prompts for cost, and avoid subtle bugs caused by tokenisation surprises.
 
-Tool use is implemented by registering functions as tools the LLM can call. The LLM generates a tool call with arguments, LangGraph routes execution to the corresponding function, captures the result, and routes it back to the LLM for the next step.
+**Inference sampling** determines how the model chooses the next token at each step. Temperature above 1.0 makes the probability distribution more uniform (more creative, more varied, more prone to hallucination). Temperature below 1.0 makes it more peaked (more deterministic, more focused, potentially more repetitive). Top-p sampling (nucleus sampling) restricts the candidate tokens to those whose cumulative probability exceeds a threshold. Both controls are available in most LLM APIs.
 
-**Why it matters:** Most real agent workflows are not linear. They require loops, conditional logic, retries, and parallel execution. LangGraph provides the explicit graph structure needed to build these workflows reliably, with inspectable state that makes debugging practical.
+**Why it matters:** Understanding these mechanics lets you diagnose specific failure modes — a prompt that works at temperature 0.2 may fail at 0.9, a context window overflow may silently drop the most important instructions, a tokenisation mismatch may cause a retrieval system to miscalculate similarity scores.
 
 **Key things to understand:**
-- Defining the state schema precisely is the most important design decision in a LangGraph agent.
-- Conditional edges should handle all possible state values — unhandled transitions cause runtime errors.
-- LangGraph supports checkpointing, which allows workflows to be paused and resumed across process boundaries.
+- LLMs do not retrieve facts — they generate text statistically consistent with their training
+- The context window is a hard limit — exceeding it silently drops content
+- Token count affects cost and latency — optimise prompt length deliberately
+- Temperature controls randomness; use lower values for factual, higher for creative tasks
 
 **Common pitfalls:**
-- Building deeply nested graphs that are difficult to reason about — prefer flat graphs with well-named nodes.
-- Not handling tool call failures explicitly, allowing errors to propagate and corrupt agent state.
-- Conflating the graph structure with business logic — keep nodes focused on a single responsibility.
+- Treating LLM output as factual without verification — hallucination is a design constraint, not a bug to be fixed
+- Ignoring tokenisation when measuring prompt length, leading to unexpected truncation
+- Assuming the model "understands" in a human sense — it pattern-matches against training, which produces different failure modes than human understanding
 
 ---
 
-## AI-Assisted Development – Practical Workflow Integration
+## Embeddings — What They Are and Why They Enable Semantic Search
 
-AI-assisted development refers to using LLM-powered tools — code completions, chat interfaces, inline suggestions — as active collaborators in the software development process. Used well, these tools accelerate routine tasks and free engineers to focus on higher-order design decisions.
+An embedding is a dense numerical vector that represents a piece of text (or an image, or audio) in a high-dimensional space. The defining property of a good embedding space is that semantically similar items are geometrically close to each other.
 
-Effective use requires developing an understanding of where these tools are reliable and where they are not. Code generation is strongest for well-defined, self-contained tasks: writing unit tests, implementing a known algorithm, converting between data formats, generating boilerplate. It is weakest for tasks that require deep understanding of a specific codebase's conventions, subtle business logic, or novel algorithms the model has not seen.
+To understand why this matters, contrast keyword search with semantic search. Keyword search finds documents that share exact words with the query. A search for "policy cancellation procedure" would miss a document titled "steps to terminate coverage" — even though they describe the same thing. Semantic search embeds both the query and the documents into the same vector space, then finds the documents whose vectors are most similar to the query vector. Semantically equivalent phrases end up near each other in the space, regardless of vocabulary.
 
-Prompt quality determines output quality. Providing the function signature, the expected behaviour, relevant type definitions, and an example of the desired output style consistently produces better results than a vague request. Iterative refinement — accepting a partial result and then asking for specific improvements — is often more effective than trying to specify everything upfront.
+Similarity is measured using **cosine similarity** — the cosine of the angle between two vectors. A cosine similarity of 1.0 means the vectors point in exactly the same direction (maximally similar). A score near 0 means they are unrelated. This measure is scale-invariant: a short query and a long document can still score high similarity if they discuss the same concepts.
 
-Security awareness is essential. AI-generated code should be reviewed with the same rigour as any other code. Models can produce code with subtle security vulnerabilities, use deprecated APIs, or introduce logic errors that pass superficial review. Never merge AI-generated code without understanding what it does.
+The embedding model must be consistent: if you embed your knowledge base with one model, you must embed queries with the same model. Switching models (even to a newer, better one) requires re-embedding the entire knowledge base.
 
-**Why it matters:** AI coding tools are now a standard part of the development workflow. Engineers who use them effectively compound their output; engineers who use them carelessly introduce subtle bugs that are expensive to find later. The skill is learning when to trust, when to verify, and when to ignore the suggestion.
+**Why it matters:** Embeddings are the core mechanism behind RAG, recommendation systems, duplicate detection, and similarity search. Without them, LLM applications that access external knowledge would be limited to brittle keyword matching.
 
 **Key things to understand:**
-- AI coding tools are multipliers, not replacements — they amplify the productivity of engineers who already understand what they are building.
-- Accepting suggestions without reading them carefully is the primary way AI assistance introduces bugs.
-- These tools work best when your codebase is well-structured and well-named; they struggle with tangled, ambiguous code.
+- Embedding dimensionality (typically 384–4096) determines representation richness
+- The same embedding model must be used for both indexing and querying
+- Cosine similarity close to 1 means semantically similar, not identical
 
 **Common pitfalls:**
-- Using generated code in security-sensitive contexts without a thorough manual review.
-- Letting AI tools become a crutch that prevents developing genuine understanding of the systems being built.
-- Not customising tool configuration (such as included context or code style rules) to match the project's conventions.
+- Embedding entire long documents as a single vector — chunking strategies significantly affect retrieval quality
+- Using different embedding models for indexing and querying — produces nonsensical similarity scores
+- Assuming high cosine similarity means factually correct — it means topically related, which is a weaker claim
+
+---
+
+## Prompt Engineering — Techniques, Patterns and Limitations
+
+At the Mid level, you extend Beginner-level prompt engineering with more powerful techniques and a clearer understanding of the limits.
+
+**Chain-of-thought (CoT) prompting** instructs the model to reason step by step before producing the final answer. Instead of "What is the best coverage for a small business?", you write "Think through the relevant risk factors step by step, then recommend coverage." CoT reliably improves accuracy on multi-step reasoning tasks, at the cost of longer outputs and higher token costs.
+
+**Structural patterns.** Separate instructions from content using delimiters — XML tags (\`<document>...</document>\`), triple quotes, or markdown headers. This reduces ambiguity about what is instruction versus what is data. A system prompt that says \`Summarise the document below. <document>{{doc}}</document>\` is clearer than one that mixes instructions and content in flowing prose.
+
+**Limitations are real.** Prompts shift probabilities — they do not deterministically control behaviour. The "lost in the middle" effect is well-documented: models attend less reliably to information placed in the middle of a long context than to information at the edges. Long prompts can cause earlier instructions to lose influence. No prompt can reliably override a model's safety training.
+
+**Why it matters:** The prompt is your primary interface with the model. At the Mid level, you are building systems that process diverse real-world inputs — you need techniques robust enough to handle edge cases, not just the happy path.
+
+**Key things to understand:**
+- Prompt changes have non-linear effects — a small wording change can significantly alter output
+- Chain-of-thought improves reasoning accuracy but adds output tokens and cost
+- Version and test prompts like code — production prompt changes should be treated as code changes
+
+**Common pitfalls:**
+- Not testing prompts across a range of inputs — a prompt that works on one example may fail on edge cases
+- Expecting prompts to be stable across model versions — prompts often need revision when the underlying model changes
+- Over-engineering prompts for simple tasks where a direct instruction would suffice
+
+---
+
+## Context Engineering — Managing Context Windows Effectively
+
+Context engineering is the discipline of deciding what information to include in the context window, in what order, and in what form. As LLM applications grow more complex, this becomes as important as the instructions themselves.
+
+The context window is bounded — typically between 8,000 and 200,000 tokens depending on the model. It includes the system prompt, conversation history, retrieved documents, tool outputs, and the current user message. Exceeding the window causes truncation, silently dropping content the model needed to answer correctly.
+
+Effective context engineering involves: selecting the most relevant retrieved chunks rather than returning everything, placing critical information at the beginning or end of the context (where models attend most reliably), compressing verbose content through summarisation, and pruning multi-turn conversation history to prevent it from consuming the entire window.
+
+**Why it matters:** In complex applications, what goes into the context window is often more important than the prompt instructions. Poor context engineering fills the window with noise, causes truncation of important content, and produces unfocused responses that cannot be fixed by instruction changes alone.
+
+**Key things to understand:**
+- Every token in the context window costs money and latency — include only what is necessary
+- Conversation history grows with each turn; prune or summarise older turns proactively
+- Structured context (headers, labels, delimiters) helps the model parse multi-source input
+
+**Common pitfalls:**
+- Including full documents when only a paragraph is relevant, diluting the signal with noise
+- Not testing context strategies across a range of query lengths and types
+
+---
+
+## Retrieval-Augmented Generation (RAG) — Architecture and Components
+
+RAG is an architecture pattern that combines a retrieval system with a language model to ground generated responses in a specific, updatable knowledge base. It addresses the two core limitations of LLMs: their training data has a knowledge cutoff, and they hallucinate.
+
+**How RAG works.** At indexing time, documents are split into chunks, each chunk is embedded with an embedding model, and the resulting vectors are stored in a vector database alongside the original text. At query time, the user's question is embedded with the same model, the vector database finds the most similar chunks, and those chunks are injected into the LLM's context window as grounding material before the model generates a response. The model is instructed to answer based on the retrieved context, not its parametric memory.
+
+**The pipeline has five failure points.** Chunking (splitting documents at the wrong boundaries can separate the information needed to answer the query). Embedding (using the wrong model, or a model mismatched to the domain, degrades retrieval). Retrieval (pure vector search misses exact-match queries that keyword search handles well — hybrid search combines both). Context injection (injecting too many chunks fills the window with noise). Generation (even with good context, the model may ignore it in favour of its training data if the prompt is not designed to prioritise retrieval).
+
+**Why it matters:** RAG is the default starting point for most enterprise knowledge retrieval applications. It enables LLMs to answer questions about proprietary or recently updated information without retraining. It is faster and cheaper to iterate than fine-tuning, and it provides a natural audit trail (you can inspect what was retrieved).
+
+**Key things to understand:**
+- RAG does not prevent hallucination entirely — if retrieval fails, the model may still fabricate
+- Hybrid search (vector + BM25 keyword) typically outperforms pure vector search
+- Reranking retrieved chunks before injection is a common technique to improve relevance
+
+**Common pitfalls:**
+- Using fixed-size chunking without considering sentence or paragraph boundaries
+- Returning too many chunks, filling the context window with noise
+- Not evaluating retrieval quality independently — poor retrieval cannot be fixed by a better prompt
+
+---
+
+## LangGraph — Agent Graphs, State and Tool Use
+
+LangGraph is a framework for building stateful, multi-step agent workflows as explicit directed graphs. It addresses the limitations of linear chain-based frameworks by allowing branching, looping, and conditional logic.
+
+In LangGraph, a workflow is a graph where nodes are processing steps (LLM calls, tool calls, or custom functions) and edges define transitions between them. Edges can be conditional — the next node is selected based on the current state value. This enables: loops (retry a tool call until it succeeds), branching (choose between response strategies based on the model's output), and human-in-the-loop patterns (pause execution for human review before taking a consequential action).
+
+State is the central concept. LangGraph maintains a typed state object that persists across all nodes. Each node reads from and writes to this state. Because state is explicit and inspectable, debugging is far more tractable than in agent systems where state is implicit.
+
+Tool use is implemented by registering Python functions as tools the LLM can call. The LLM generates a structured tool call with arguments; LangGraph routes execution to the corresponding function, captures the result, and routes it back to the LLM for the next step.
+
+**Why it matters:** Most real agent workflows are not linear — they require loops, conditional logic, retries, and parallel steps. LangGraph provides the explicit graph structure needed to build these reliably, with inspectable state that makes debugging practical.
+
+**Key things to understand:**
+- Defining the state schema precisely is the most important design decision
+- Conditional edges must handle all possible state values — unhandled transitions cause runtime errors
+- LangGraph supports checkpointing — workflows can be paused and resumed across process boundaries
+
+**Common pitfalls:**
+- Building deeply nested graphs that are difficult to reason about — prefer flat graphs with well-named nodes
+- Not handling tool call failures explicitly, allowing errors to corrupt agent state
+- Conflating graph structure with business logic — nodes should have a single, clear responsibility
+
+---
+
+## AI-Assisted Development — Practical Workflow Integration
+
+AI coding tools (GitHub Copilot, Claude, Cursor) are now standard in engineering workflows. Used well, they accelerate routine tasks; used carelessly, they introduce subtle bugs that are expensive to find later.
+
+Code generation is strongest for well-defined, self-contained tasks: unit tests, known algorithms, format conversions, boilerplate. It is weakest for tasks requiring deep understanding of your specific codebase's conventions, subtle business logic, or novel algorithms. The more context you provide — function signature, expected behaviour, type definitions, example output — the better the results.
+
+Security awareness is non-negotiable. AI-generated code should be reviewed with the same rigour as any other code. Models produce code with subtle security vulnerabilities, use deprecated APIs, and introduce logic errors that pass superficial review. Never merge code you do not understand.
+
+**Why it matters:** AI coding tools multiply the output of engineers who understand what they are building, and multiply the risk for engineers who do not. The skill is learning when to trust, when to verify, and when to override the suggestion.
+
+**Key things to understand:**
+- These tools are multipliers, not replacements — they amplify productivity of engineers who already understand the problem
+- Accepting suggestions without reading them is the primary way AI assistance introduces bugs
+- Tools work best when your codebase is well-structured and well-named
+
+**Common pitfalls:**
+- Using generated code in security-sensitive contexts without thorough review
+- Letting AI tools become a crutch that prevents developing genuine understanding of the system
+- Not customising tool configuration to match the project's conventions
+
+---
+
+## You're Ready for the Next Level When You Can...
+
+- Explain how transformer self-attention enables long-range context capture, and why the "lost in the middle" effect occurs
+- Implement a working RAG pipeline: chunk a document, embed the chunks, store in a vector index, retrieve by cosine similarity, inject context, and generate a grounded response
+- Build a LangGraph agent with at least two conditional edges and one tool call, and explain how state flows through the graph
+- Explain what gradient descent is and why the learning rate matters, without needing to implement it
+- Describe the difference between supervised learning and reinforcement learning, and explain why RLHF produces more instruction-following LLMs
+- Apply chain-of-thought prompting and explain the trade-off in output length and cost
 `,
   senior: `# AI Engineer – Senior Concept Reference
 
+This level is about production engineering and organisational impact. You can already build RAG pipelines and agents — now you need to build them in ways that are secure, reliable, measurable, and defensible to both engineers and regulators. At this level you are also expected to make architectural recommendations, evaluate governance trade-offs, and understand the legal landscape that governs AI systems in your organisation. Think of the difference between someone who can cook a meal and a professional chef who runs a kitchen: the technical skills overlap, but the senior role requires broader judgment, risk awareness, and accountability.
 
-This document provides in-depth explanations of the core concepts covered at the Senior level of the AI Engineer learning path. It assumes fluency with the Beginner and Mid concepts and focuses on production agent architecture, security, evaluation, fine-tuning, enterprise governance, and regulatory compliance.
+## Learning Objectives
+
+- Design a production-grade LLM agent architecture with appropriate guardrails, least-privilege tool access, and human-in-the-loop checkpoints
+- Identify direct and indirect prompt injection vulnerabilities and apply layered mitigation strategies
+- Evaluate RAG pipeline quality using RAGAS metrics and explain what each metric measures
+- Explain when fine-tuning is appropriate versus prompt engineering or RAG, and describe the LoRA approach at a conceptual level
+- Apply AI architecture patterns to system design and justify the choice between RAG, fine-tuning, agents, and hybrid approaches
+- Describe the EU AI Act's risk classification and explain what high-risk status means for insurance AI systems
+- Apply the Secure AI Framework's nine areas to a real project
 
 ---
 
@@ -522,7 +635,7 @@ Controls must be applied at multiple layers: data (validate and sanitise trainin
 
 ## AI Policy — Organisational Principles
 
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
+The organisation's AI Policy establishes the governance framework for all AI use within the organisation. The policy document is available via your organisation's internal intranet. Key principles are summarised here.
 
 The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
 

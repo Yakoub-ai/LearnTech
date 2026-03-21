@@ -942,6 +942,8 @@ flowchart TD
 
 The default index type is a B-tree (balanced tree). It keeps data sorted, enabling efficient lookups, range scans, and ordering.
 
+The B-tree is *balanced* — all leaf nodes live at the same depth. This guarantees that finding any value takes the same number of steps regardless of where it falls in the distribution. Leaf nodes form a doubly-linked list, which is what makes range scans efficient: the database finds the starting value via tree traversal, then walks through the linked leaf nodes until the range ends.
+
 \`\`\`sql
 -- B-tree indexes support these operations efficiently:
 -- Equality: WHERE email = 'user@example.com'
@@ -952,6 +954,49 @@ The default index type is a B-tree (balanced tree). It keeps data sorted, enabli
 -- B-tree index on created_at enables efficient sorting
 CREATE INDEX idx_orders_created ON orders (created_at DESC);
 \`\`\`
+
+**Why it matters:** An index only stores the values of the indexed columns plus a row ID pointing back to the full row. It is not a copy of the table ordered differently. If your query needs columns that are not in the index, the database must fetch those extra columns from the table for each matching row. In some cases — when the match set is large — a full table scan batches those reads more efficiently than millions of individual heap fetches.
+
+### Function Calls Break Indexes
+
+One of the most common indexing mistakes is wrapping an indexed column inside a function. When a function is applied to a column in a WHERE clause, the database cannot use a standard index on that column — the output of the function has no connection to the index's sorted values.
+
+\`\`\`sql
+-- BAD: function on indexed column prevents index use
+SELECT SUM(total) FROM orders WHERE YEAR(order_date) = 2025;
+-- Performs a full table scan even when order_date is indexed!
+
+-- GOOD: rewrite as an explicit range so the B-tree is usable
+SELECT SUM(total) FROM orders
+WHERE order_date >= '2025-01-01' AND order_date < '2026-01-01';
+
+-- The same trap applies to LOWER(), UPPER(), date parts, and any transformation:
+-- BAD:  WHERE LOWER(email) = 'user@example.com'
+-- GOOD: Create an expression index, or store the value pre-lowercased
+CREATE INDEX idx_users_email_lower ON users (LOWER(email));
+SELECT * FROM users WHERE LOWER(email) = 'user@example.com';  -- Uses index
+\`\`\`
+
+### Column Order in Composite Indexes
+
+When an index covers multiple columns, the order determines which queries it can accelerate. A composite index is usable only from left to right — you cannot skip the leading column.
+
+\`\`\`sql
+-- Index on (status, order_date)
+CREATE INDEX idx_orders_status_date ON orders (status, order_date);
+
+-- Uses both columns (equality on leading column, range on second)
+SELECT * FROM orders WHERE status = 'pending' AND order_date > '2025-01-01';
+
+-- Uses only the leading column
+SELECT * FROM orders WHERE status = 'pending';
+
+-- CANNOT use this index: skips the leading column
+SELECT * FROM orders WHERE order_date > '2025-01-01';
+-- For this query you need a separate index on order_date alone
+\`\`\`
+
+A column with an inequality operator (\`>\`, \`<\`, \`BETWEEN\`) acts as the last usable column in the index — the database cannot filter on subsequent columns after an inequality. Rule of thumb: put equality filters first, inequality filters last in a composite index.
 
 ### EXPLAIN Basics
 
@@ -973,7 +1018,12 @@ EXPLAIN ANALYZE SELECT * FROM employees WHERE department = 'Engineering';
 --   Index Cond: (department = 'Engineering')
 \`\`\`
 
-**Why it matters:** EXPLAIN is how you diagnose slow queries. If you see "Seq Scan" on a large table where you expected an index to be used, something is wrong — perhaps the index does not exist, or the statistics are stale.
+Key things to look for in EXPLAIN output:
+- **Seq Scan** on a large table where you expected an index scan — often a missing index, a function masking the column, or wrong column order in a composite index
+- **rows** estimate: if the estimated rows are far off from actual rows, run \`ANALYZE\` to refresh planner statistics
+- **key** (MySQL) / **Index Cond** (PostgreSQL): confirms which index is actually used; NULL or absent means no index is being used
+
+**Why it matters:** EXPLAIN is how you diagnose slow queries methodically. A developer who can read an execution plan can fix a 30-second query in minutes; without it, performance tuning is guesswork.
 
 ### EXERCISE: Indexing
 
@@ -1162,9 +1212,7 @@ Next up in the Mid level: window functions, CTEs, transactions, views, and query
 
 ## Recommended Videos — Beginner
 
-- **Fireship** — "SQL Explained in 100 Seconds" — https://www.youtube.com/watch?v=zsjvFFKOm3c
 - **freeCodeCamp** — "SQL Tutorial – Full Database Course for Beginners" — https://www.youtube.com/watch?v=HXV3zeQKqGY
-- **freeCodeCamp** — "Database Design Course – Learn how to design and plan a database" — https://www.youtube.com/watch?v=ztHopE5Wnpc
 `,
   mid: `# SQL Deep Dive — Mid Level
 
@@ -2461,7 +2509,6 @@ Next up in the Senior level: execution plan internals, index internals, partitio
 
 - **Kai Sassnowski** — "Things every developer absolutely, positively needs to know about database indexing" — https://www.youtube.com/watch?v=HubezKbFL7E
 - **freeCodeCamp** — "SQL Tutorial – Full Database Course for Beginners" — https://www.youtube.com/watch?v=HXV3zeQKqGY
-- **freeCodeCamp** — "Database Design Course – Learn how to design and plan a database" — https://www.youtube.com/watch?v=ztHopE5Wnpc
 `,
   senior: `# SQL Deep Dive — Senior Level
 
@@ -3871,7 +3918,5 @@ These are the skills that enable you to design, maintain, and scale production d
 ## Recommended Videos — Senior Level
 
 - **Kai Sassnowski** — "Things every developer absolutely, positively needs to know about database indexing" — https://www.youtube.com/watch?v=HubezKbFL7E
-- **freeCodeCamp** — "Database Design Course – Learn how to design and plan a database" — https://www.youtube.com/watch?v=ztHopE5Wnpc
-- **Fireship** — "SQL Explained in 100 Seconds" — https://www.youtube.com/watch?v=zsjvFFKOm3c
 `,
 }
