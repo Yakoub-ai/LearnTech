@@ -50,7 +50,6 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Fron
 | APIs (REST / GraphQL) | [Every Popular API Style Explained](https://www.youtube.com/watch?v=xJFzPSAw4Fo) | Video |
 | CSS Flexbox | [Learn flexbox the easy way – Kevin Powell](https://www.youtube.com/watch?v=u044iM9xsWU) | Video |
 | CSS Grid | [Learn CSS Grid the easy way – Kevin Powell](https://www.youtube.com/watch?v=rg7Fvvl3taU) | Video |
-| GraphQL | [GraphQL Foundations – Pluralsight](https://www.pluralsight.com/courses/graphql-foundations) | Course |
 | System Design Basics | [System Design Concepts in 10 min](https://www.youtube.com/watch?v=i53Gi_K3o7I) | Video |
 | MDN Reference | [MDN Web Docs](https://developer.mozilla.org) | Docs |
 | Web Security | [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Scripting_Prevention_Cheat_Sheet.html) | Docs |
@@ -85,15 +84,9 @@ For deep explanations of each concept, see the [Mid Concept Reference](Frontend-
 |---|---|---|
 | Web Performance | [web.dev – Learn Performance](https://web.dev/learn/performance) | Interactive |
 | Accessibility | [web.dev – Learn Accessibility](https://web.dev/learn/accessibility) | Interactive |
-| Advanced AI Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
-| Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
 | API Design | [Design APIs Like a Senior Engineer](https://www.youtube.com/watch?v=7iHl71nt49o) | Video |
-| Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
-| Algorithms and Data Structures | [Algorithms and Data Structures Pt.1 – Pluralsight](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) | Course |
 | Next.js / SSR | [Next.js – Getting Started](https://nextjs.org/docs/getting-started) | Docs |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
 
 ### After completing Senior you should be able to:
 
@@ -108,7 +101,6 @@ For deep explanations of each concept, see the [Mid Concept Reference](Frontend-
 - Apply domain-driven design concepts to organise a frontend codebase around business domains rather than technical layers
 - Compare architecture patterns such as micro-frontends, monorepo organisation, and feature-based folder structures, and justify a choice for a given project context
 - Identify practical ways to integrate AI-assisted development tools into a daily frontend engineering workflow to improve productivity and code quality
-- Apply AI governance requirements (Secure AI Framework, AI Policy, AI Checklist) when building frontend applications that integrate AI features
 
 For deep explanations of each concept, see the [Senior Concept Reference](Frontend-Developer/Senior.md).
 
@@ -121,9 +113,9 @@ Return to the [Role Roadmap index](README.md).
 
 ## HTML – Structure and Semantics
 
-HTML (HyperText Markup Language) is the language used to describe the structure and content of a web page. Every visible element you see in a browser — headings, paragraphs, images, buttons — is defined by an HTML element.
+HTML (HyperText Markup Language) is the language used to describe the structure and content of a web page. As Fireship's "HTML in 100 Seconds" video explains, the language was created by Tim Berners-Lee in 1989 at CERN — he had just invented the world's first web browser and needed a publishing language to display content within it. He chose a syntax based on SGML, using opening and closing tags to give meaning to otherwise unorganised text: \`<h>\` for heading, \`<p>\` for paragraph, and most importantly \`<a>\` for anchor to link to other web pages.
 
-HTML elements are not just containers for content; they carry meaning. This is called semantics. A \`<h1>\` element does not just make text large — it tells the browser, search engines, and assistive technologies that this text is the primary heading of the page. Using the right element for the right purpose is one of the most important habits a frontend developer can build.
+Every visible element you see in a browser — headings, paragraphs, images, buttons — is defined by an HTML element. HTML elements are not just containers for content; they carry meaning. This is called semantics. A \`<h1>\` element does not just make text large — it tells the browser, search engines, and assistive technologies that this text is the primary heading of the page. Using the right element for the right purpose is one of the most important habits a frontend developer can build.
 
 **Why it matters:** Semantic HTML forms the foundation of accessibility. Screen readers rely on correct element choices to guide users through a page. It also improves search engine optimisation and makes code easier to read and maintain.
 
@@ -132,7 +124,8 @@ HTML elements are not just containers for content; they carry meaning. This is c
 - Block-level elements (such as \`<div>\`, \`<p>\`, \`<section>\`, \`<article>\`) start on a new line and take up the full width available. Inline elements (such as \`<span>\`, \`<a>\`, \`<strong>\`) sit within the flow of text.
 - Landmark elements such as \`<header>\`, \`<nav>\`, \`<main>\`, \`<footer>\`, and \`<aside>\` describe regions of a page and help screen reader users navigate.
 - Form elements — \`<input>\`, \`<label>\`, \`<button>\`, \`<select>\` — have built-in browser behaviour and accessibility support that custom \`<div>\`-based controls do not.
-- The \`<head>\` section of a document contains metadata (title, charset, viewport settings) that browsers and search engines use but do not display directly.
+- The \`<head>\` section contains metadata (title, charset, viewport settings) that browsers and search engines use but do not display directly. Self-closing elements like \`<meta>\` and \`<img>\` have no closing tag because they are fully self-contained.
+- Modern HTML includes tags to handle a wide variety of media types: \`<video>\`, \`<audio>\`, and \`<canvas>\` to draw custom graphics on the fly.
 
 **Common pitfalls:**
 
@@ -146,7 +139,7 @@ HTML elements are not just containers for content; they carry meaning. This is c
 
 The DOM is a programming interface created by the browser when it parses an HTML document. It represents the page as a tree of objects (called nodes), where each HTML element, text node, and attribute becomes an object in memory that JavaScript can read and modify.
 
-When a browser loads a page, it reads the HTML source and constructs this tree. JavaScript then interacts with the DOM to make the page dynamic — changing text, showing or hiding elements, updating styles, and responding to user actions.
+A web page starts with an \`<html>\` tag at the root and has exactly two children — a \`<head>\` and a \`<body>\`. JavaScript then interacts with this tree to make the page dynamic — changing text, showing or hiding elements, updating styles, and responding to user actions.
 
 **Why it matters:** Understanding the DOM explains how JavaScript controls a web page. Without this mental model, DOM manipulation feels like magic rather than a predictable system.
 
@@ -194,9 +187,11 @@ CSS (Cascading Style Sheets) controls the visual presentation of HTML elements. 
 
 Before Flexbox and Grid, CSS layouts relied on floats and positioning — techniques that were fragile and hard to maintain. Flexbox and Grid are purpose-built layout systems that solve the majority of common layout problems clearly and predictably.
 
-**Flexbox** is a one-dimensional layout model. You apply \`display: flex\` to a container element, and its direct children become flex items. You can control how those items are distributed along a main axis (horizontal or vertical) and aligned along the cross axis. Key properties include \`flex-direction\`, \`justify-content\`, \`align-items\`, \`flex-wrap\`, and the shorthand \`flex\` applied to individual items to control how they grow and shrink.
+**Flexbox** is a one-dimensional layout model. You apply \`display: flex\` to a container element, and its direct children become flex items — they are no longer block-level elements but flex items that obey a different set of rules. As Kevin Powell's "Learn flexbox the easy way" video explains, the key insight is that flex items want to be as small as they can while remaining on one line, based on their intrinsic max-content size. Two fundamental child properties control this: \`flex-grow\` (default: 0 — do not grow) and \`flex-shrink\` (default: 1 — allowed to shrink). When you write \`flex: 1\`, you are setting \`flex-grow: 1\` and \`flex-basis: 0\`, which causes all items to grow equally from a zero baseline — the cleanest way to get equal-width columns.
 
-**CSS Grid** is a two-dimensional layout model. You define rows and columns on a container and place items into the resulting cells. Grid is ideal for page-level layouts and complex component arrangements. Key properties include \`grid-template-columns\`, \`grid-template-rows\`, \`gap\`, \`grid-column\`, and \`grid-row\`.
+Key container properties include \`flex-direction\` (row or column, which determines the main axis), \`justify-content\` (distributes space along the main axis — only works when there is leftover space), \`align-items\` (aligns items along the cross axis), and \`flex-wrap\` (allows items to wrap onto a new line). The \`gap\` property adds space between items without the complexity of per-side margins.
+
+**CSS Grid** is a two-dimensional layout model. You define rows and columns on a container, and items are placed into the resulting cells. Kevin Powell's "Learn CSS Grid the easy way" video demonstrates the recommended workflow: declare \`display: grid\`, add a \`gap\`, then define columns using \`grid-template-columns\`. The \`fr\` unit — a fraction of the available space — is the primary unit for Grid, typically used as \`repeat(4, 1fr)\` to create four equal columns. Items that exceed the declared columns automatically create implicit rows, so you often do not need to declare \`grid-template-rows\`. For complex layouts, \`grid-template-areas\` lets you name regions and place items by name, which makes media-query-driven layout changes very clean — you only redefine the areas on the parent rather than touching each child.
 
 **Why it matters:** The majority of modern UI layouts — navigation bars, card grids, sidebars, form layouts — are solved naturally with Flexbox or Grid. Choosing the right tool for each job produces simpler, more maintainable CSS.
 
@@ -206,11 +201,13 @@ Before Flexbox and Grid, CSS layouts relied on floats and positioning — techni
 - Grid is suited for two-dimensional arrangements: a photo gallery, a dashboard with multiple panels, a full-page layout.
 - The two systems can be combined: a Grid layout for the page structure, with Flexbox used inside individual components.
 - The \`gap\` property works for both Flexbox and Grid and is generally preferred over margins for spacing between items.
+- \`justify-content\` on a flex container only has a visible effect when there is remaining space after items take their share — flex-grow consuming all space leaves nothing to justify.
 
 **Common pitfalls:**
 
 - Applying \`display: flex\` to every element regardless of whether it is the right tool.
 - Forgetting that Flexbox and Grid properties apply to the container, with a separate set of properties for the individual items.
+- Setting \`grid-template-rows\` explicitly when the grid's implicit row behaviour would handle it automatically.
 
 ---
 
@@ -232,6 +229,7 @@ Relative units such as percentages, \`em\`, \`rem\`, \`vw\`, and \`vh\` allow el
 - Common breakpoints are not fixed standards — they should reflect where your specific layout breaks, not arbitrary screen sizes.
 - Images should use \`max-width: 100%\` to prevent them from overflowing their containers on small screens.
 - CSS Grid and Flexbox with \`flex-wrap\` can handle a great deal of responsive behaviour without any media queries.
+- When using Grid with \`grid-template-areas\`, changing layouts at different breakpoints is as simple as redefining the areas string on the parent — no child selectors need to change.
 
 **Common pitfalls:**
 
@@ -243,13 +241,13 @@ Relative units such as percentages, \`em\`, \`rem\`, \`vw\`, and \`vh\` allow el
 
 ## JavaScript – Variables, Types and Functions
 
-JavaScript is the programming language of the web browser. It allows developers to add behaviour to a page: responding to user input, modifying the DOM, fetching data, and running logic.
+JavaScript is the programming language of the web browser. As Fireship's "JavaScript in 100 Seconds" video explains, it is a high-level, single-threaded, garbage-collected, interpreted or just-in-time compiled, prototype-based, multi-paradigm, dynamic language with a non-blocking event loop. It was created in 1995 in just one week by Brendan Eich with the goal of adding an easy-to-learn scripting language to the Netscape browser, originally named Mocha. It is most well known for building front-end web applications because it is the only language (besides WebAssembly) natively supported in browsers — but it has expanded to server-side (Node.js), mobile (React Native), and desktop (Electron) as well.
 
 **Variables** store values. In modern JavaScript, \`let\` declares a variable whose value can be reassigned, and \`const\` declares a variable whose binding cannot be reassigned (though the contents of objects and arrays declared with \`const\` can still be mutated). \`var\` is the older declaration and has function scope rather than block scope — it is generally avoided in modern code.
 
 **Types** in JavaScript include: \`string\`, \`number\`, \`bigint\`, \`boolean\`, \`null\`, \`undefined\`, \`object\`, and \`symbol\`. JavaScript is dynamically typed, meaning a variable can hold any type and the type can change at runtime. The \`typeof\` operator returns a string describing the type of a value.
 
-**Functions** are reusable blocks of code. They can be declared with the \`function\` keyword or written as arrow functions (\`=>\`). Functions can accept parameters and return values. Arrow functions are commonly preferred for their concise syntax and because they do not have their own \`this\` binding.
+**Functions** are reusable blocks of code. They can be declared with the \`function\` keyword or written as arrow functions (\`=>\`). The arrow function syntax is commonly preferred for its concise form and because arrow functions do not have their own \`this\` binding. Functions in JavaScript are first-class values — they can be assigned to variables, passed as arguments, and returned from other functions — which supports both functional and object-oriented programming patterns.
 
 **Why it matters:** Variables, types, and functions are the basic vocabulary of JavaScript. Everything else — DOM manipulation, API calls, React components — is built on top of them.
 
@@ -257,7 +255,7 @@ JavaScript is the programming language of the web browser. It allows developers 
 
 - \`null\` and \`undefined\` are distinct: \`undefined\` means a variable has been declared but not assigned a value; \`null\` is an explicit assignment indicating the absence of a value.
 - Type coercion — JavaScript automatically converting one type to another — is the source of many surprising bugs. Prefer strict equality (\`===\`) over loose equality (\`==\`).
-- Functions in JavaScript are first-class values: they can be assigned to variables, passed as arguments, and returned from other functions.
+- Even though JavaScript runs in the browser, it also runs on the server via the Node.js runtime — the same language knowledge applies in both environments.
 
 **Common pitfalls:**
 
@@ -273,7 +271,7 @@ DOM manipulation is the process of using JavaScript to read and change the conte
 
 To manipulate the DOM, you first select the element you want to work with using methods like \`document.querySelector\`. You can then read or set properties: \`element.textContent\` changes the text, \`element.style.color\` changes an inline style, \`element.classList.add('active')\` adds a CSS class, and \`element.setAttribute('aria-expanded', 'true')\` sets an attribute.
 
-To respond to events, you attach an event listener to an element using \`element.addEventListener('click', handlerFunction)\`. The browser calls the handler function whenever the event occurs, passing an event object that contains information about what happened.
+To respond to events, you attach an event listener to an element using \`element.addEventListener('click', handlerFunction)\`. The browser calls the handler function whenever the event occurs, passing an event object that contains information about what happened. As demonstrated in the JavaScript in 100 Seconds video, you can grab a button element from the DOM and add an event listener to make it interactive — the event loop executes the handler function whenever a new click occurs.
 
 **Why it matters:** DOM manipulation and events are how JavaScript makes a page interactive. Every dropdown menu, form validation message, modal dialog, and live search field relies on these mechanisms.
 
@@ -287,14 +285,14 @@ To respond to events, you attach an event listener to an element using \`element
 **Common pitfalls:**
 
 - Attaching event listeners inside loops, which creates one listener per iteration rather than one shared listener.
-- Forgetting that \`innerHTML\` accepts HTML strings and can introduce cross-site scripting vulnerabilities if it is populated with user-supplied data. Use \`textContent\` for plain text.
+- Setting \`innerHTML\` to user-supplied content without sanitising it first — this can allow injected scripts to execute. Use \`textContent\` for plain text values; only set HTML content from trusted, sanitised sources.
 - Not removing event listeners when elements are removed from the DOM, which can cause memory leaks.
 
 ---
 
 ## JavaScript – Asynchronous Programming (callbacks, promises, async/await)
 
-JavaScript runs on a single thread, meaning it can only do one thing at a time. However, many operations — fetching data from an API, reading a file, waiting for a timer — would block the thread for an unacceptable amount of time if done synchronously. Asynchronous programming is the set of patterns JavaScript uses to initiate these operations, continue with other work, and handle the result when it arrives.
+JavaScript runs on a single thread, meaning it can only do one thing at a time. However, many operations — fetching data from an API, reading a file, waiting for a timer — would block the thread for an unacceptable amount of time if done synchronously. As the JavaScript in 100 Seconds video explains, JavaScript handles this through a non-blocking event loop that can queue work in the background without blocking the main thread — making it excellent at handling I/O-intensive jobs despite being single-threaded.
 
 **Callbacks** were the original approach. You pass a function as an argument to an asynchronous operation, and that function is called when the operation completes. The problem is that nested callbacks become deeply indented and hard to read — a situation nicknamed "callback hell".
 
@@ -490,11 +488,11 @@ Playwright also supports API testing (making HTTP requests and asserting on resp
 
 ## REST APIs – Consuming and Handling Responses
 
-A REST API (Representational State Transfer) is an architectural style for exposing data and operations over HTTP. A frontend application consumes a REST API by making HTTP requests to specific URLs (endpoints) and handling the JSON responses.
+A REST API (Representational State Transfer) is an architectural style for exposing data and operations over HTTP. As the "Every Popular API Style Explained" video describes, REST has been the de facto standard since the early 2000s — it organises data into resources, each represented by its own URL. A resource is essentially a noun: users, orders, products, each with its own endpoint. The client interacts with those resources using HTTP verbs: GET to read, POST to create, PATCH or PUT to update, DELETE to remove. Crucially, REST is stateless — the server does not keep track of past requests, so every request must include all the information needed to process it (such as sending an auth token with every request).
 
-The browser's built-in \`fetch\` function is the standard way to make HTTP requests from JavaScript. You pass it a URL and an optional configuration object specifying the HTTP method (\`GET\`, \`POST\`, \`PUT\`, \`DELETE\`), headers (such as \`Authorization\` and \`Content-Type\`), and request body. \`fetch\` returns a promise that resolves to a \`Response\` object. You then call \`response.json()\` to parse the body as JSON — this is itself asynchronous.
+The browser's built-in \`fetch\` function is the standard way to make HTTP requests from JavaScript. You pass it a URL and an optional configuration object specifying the HTTP method, headers (such as \`Authorization\` and \`Content-Type\`), and request body. \`fetch\` returns a promise that resolves to a \`Response\` object. You then call \`response.json()\` to parse the body as JSON — this is itself asynchronous.
 
-HTTP status codes communicate the outcome of a request. \`2xx\` codes indicate success. \`4xx\` codes indicate a client error (the request was malformed or unauthorised). \`5xx\` codes indicate a server error. Important detail: \`fetch\` only rejects its promise for network failures, not for \`4xx\` or \`5xx\` responses. You must check \`response.ok\` (a boolean that is true for \`2xx\` status codes) manually.
+HTTP status codes communicate the outcome of a request: \`2xx\` indicates success, \`4xx\` indicates a client error (the request was malformed or unauthorised), \`5xx\` indicates a server error. Important detail: \`fetch\` only rejects its promise for network failures, not for \`4xx\` or \`5xx\` responses. You must check \`response.ok\` (a boolean that is true for \`2xx\` status codes) manually.
 
 **Why it matters:** Almost every frontend application communicates with a backend API. Correctly handling loading states, success states, and error states is essential for a good user experience.
 
@@ -514,41 +512,43 @@ HTTP status codes communicate the outcome of a request. \`2xx\` codes indicate s
 
 ## GraphQL – Queries, Mutations and the Differences from REST
 
-GraphQL is a query language for APIs and a runtime for executing those queries. Unlike REST, where the server defines a set of fixed endpoints each returning a fixed data shape, GraphQL exposes a single endpoint and allows the client to specify exactly what data it needs in each request.
+GraphQL is a query language for APIs developed by Facebook. As the "Every Popular API Style Explained" video explains, it was created to solve a fundamental REST problem called over-fetching and under-fetching: REST returns a fixed shape for every endpoint, so you either receive more data than you need or you have to make multiple requests to assemble what you need. GraphQL flips this model — instead of the server deciding what data you get, the client tells the server exactly what it wants, in a single request, from a single endpoint.
 
-A **query** is a read operation. The client writes a query document describing the fields it wants, and the server returns a JSON object with exactly those fields — no more, no less. This eliminates over-fetching (receiving more data than needed) and under-fetching (needing to make multiple requests to assemble required data).
+A **query** is a read operation. The client writes a query document describing the fields it wants, and the server returns a JSON object with exactly those fields — no more, no less.
 
 A **mutation** is a write operation — creating, updating, or deleting data. Like queries, mutations specify what fields should be returned after the operation completes.
 
-A **schema** defines the types available in the API and the queries and mutations that can be performed on them. The schema is the contract between the frontend and backend.
+A **schema** defines the types available in the API and the queries and mutations that can be performed on them. The schema is the contract between the frontend and backend, and it is introspectable — tools can query the schema itself to discover available types and operations, enabling powerful tooling like auto-completion.
 
 On the client side, libraries like Apollo Client manage sending GraphQL requests, caching responses, and providing hooks (such as \`useQuery\` and \`useMutation\`) that integrate with React's rendering model.
 
-**Why it matters:** GraphQL is widely used in modern frontend development. Understanding its concepts allows you to work with APIs that use it and to evaluate when it is the right choice over REST.
+**Why it matters:** GraphQL gives client developers a lot of flexibility and is widely used in modern frontend development. However, that flexibility adds complexity on the server side — the server must carefully limit queries and manage performance to prevent clients from accidentally overloading it.
 
 **Key things to understand:**
 
 - GraphQL requests are typically sent over HTTP as \`POST\` requests, even for read operations (queries).
-- The schema is introspectable — tools can query the schema itself to discover available types and operations, enabling powerful tooling like auto-completion in editors.
 - GraphQL does not automatically solve N+1 query problems on the server side; that requires additional patterns like DataLoader.
 
 **Common pitfalls:**
 
 - Requesting every available field in a query (effectively treating it like a REST endpoint), which eliminates the bandwidth advantages of GraphQL.
-- Confusing GraphQL's single endpoint with a lack of structure — the schema provides strong typing and clear contracts.
 - Assuming GraphQL is always better than REST — for simple, resource-oriented APIs with stable data shapes, REST is often simpler.
 
 ---
 
 ## System Design Basics for Frontend (component architecture, data flow, performance considerations)
 
-System design for frontend engineers is about making deliberate decisions on how to structure a UI application so that it remains maintainable, performant, and understandable as it grows. Unlike backend system design (which focuses on servers and databases), frontend system design focuses on component architecture, data flow, and browser performance.
+System design for frontend engineers is about making deliberate decisions on how to structure a UI application so that it remains maintainable, performant, and understandable as it grows. The NeetCode "System Design Concepts" video covers the wider landscape of system design — networking, CDNs, load balancers, databases, caching layers — that a frontend developer should understand as context for how their code fits into the broader architecture.
 
-**Component architecture** is the practice of deciding how to decompose a UI into components. Presentational (or "dumb") components focus on rendering; they receive props and produce output with no knowledge of where the data comes from. Container (or "smart") components manage state and data fetching and pass data down to presentational components. Feature-based organisation groups all files related to a feature — components, hooks, styles, tests — together rather than grouping by type.
+From a frontend perspective, the most important system design concepts are:
 
-**Data flow** refers to how state is managed and how it moves through the application. Local state lives in a single component. Shared state must be lifted to a common ancestor or moved into a global store. Choosing the right level for each piece of state is a key architectural decision. Unidirectional data flow — where data moves in a predictable direction and UI reflects state — makes applications easier to reason about.
+**Component architecture** — deciding how to decompose a UI into components. Presentational (or "dumb") components focus on rendering; they receive props and produce output with no knowledge of where the data comes from. Container (or "smart") components manage state and data fetching and pass data down to presentational components. Feature-based organisation groups all files related to a feature — components, hooks, styles, tests — together rather than grouping by type.
 
-**Performance considerations** at the design stage include: avoiding unnecessarily large component trees that re-render frequently; choosing when to split code into separate bundles so the initial load is smaller; and deciding how data is fetched — at the page level or within individual components — to avoid request waterfalls.
+**Data flow** — how state is managed and how it moves through the application. Local state lives in a single component. Shared state must be lifted to a common ancestor or moved into a global store. Unidirectional data flow — where data moves in a predictable direction and UI reflects state — makes applications easier to reason about.
+
+**Caching and CDNs** — understanding that static assets (JavaScript bundles, images, fonts) benefit from being served from a CDN close to the user, and that cache-busting via content hashes allows those assets to be cached for very long periods. The browser has its own cache layers too; understanding Cache-Control headers is essential for performance.
+
+**API patterns** — REST remains the most common pattern for frontends, GraphQL excels when clients need flexibility, and WebSockets are used for real-time bidirectional communication (live chat, collaborative tools). Choosing the right API pattern is a system design decision that affects frontend complexity.
 
 **Why it matters:** Individual components that work correctly can still combine into an application that is slow, hard to maintain, or confusing. System design thinking bridges the gap between writing correct code and building a good product.
 
@@ -571,23 +571,23 @@ Frontend security is the practice of protecting web applications from attacks th
 
 The three most important frontend security concepts are Cross-Site Scripting (XSS), Cross-Site Request Forgery (CSRF), and Content Security Policy (CSP). Understanding these is essential because frontend developers are the first line of defence — the code you write determines whether user input is handled safely and whether the application is vulnerable to injection attacks.
 
-**Why it matters:** A single XSS vulnerability can allow an attacker to steal user session tokens, redirect users to phishing sites, or modify the page content to trick users into revealing sensitive information. For an insurance company handling personal and financial data, frontend security vulnerabilities are a direct path to data breaches and regulatory penalties.
+**Why it matters:** A single XSS vulnerability can allow an attacker to steal user session tokens, redirect users to phishing sites, or modify the page content to trick users into revealing sensitive information. Frontend security vulnerabilities are a direct path to data breaches and regulatory penalties.
 
 **Key things to understand:**
 
 - Cross-Site Scripting (XSS): occurs when an attacker injects malicious JavaScript that executes in another user's browser. Three types: Stored XSS (malicious script saved in the database and served to other users), Reflected XSS (malicious script in a URL parameter reflected in the page), DOM-based XSS (malicious script manipulates the client-side DOM directly).
-- React's built-in protection: React escapes values embedded in JSX by default, preventing most XSS attacks. However, \`dangerouslySetInnerHTML\` bypasses this protection — never use it with untrusted data. Links with \`javascript:\` protocol and dynamic \`href\` values are also attack vectors.
+- React's built-in XSS protection: React escapes values embedded in JSX by default, preventing most injection attacks. However, the \`dangerouslySetInnerHTML\` prop bypasses React's escaping — it must only be used with content that has been sanitised by a library like DOMPurify. Never pass untrusted user input to this prop. Links with \`javascript:\` protocol and dynamic \`href\` values are also attack vectors.
 - Cross-Site Request Forgery (CSRF): tricks an authenticated user's browser into making unwanted requests to a site where they are logged in. Mitigations: CSRF tokens (synchroniser tokens), SameSite cookie attribute, checking the Origin header.
-- Content Security Policy (CSP): an HTTP header that tells the browser which sources of content (scripts, styles, images, fonts) are allowed. CSP prevents XSS by blocking inline scripts and restricting script sources to trusted domains. Start with a report-only policy to identify violations before enforcing.
-- Secure cookies: session cookies should always be set with HttpOnly (not accessible via JavaScript), Secure (only sent over HTTPS), and SameSite=Strict or SameSite=Lax (prevents CSRF). Frontend developers should understand these attributes even though they are typically set by the backend.
-- Input sanitisation vs output encoding: sanitise input when you must accept HTML (rich text editors), and always encode output when rendering user-provided content. Libraries like DOMPurify sanitise HTML safely.
+- Content Security Policy (CSP): an HTTP header that tells the browser which sources of content (scripts, styles, images, fonts) are allowed. CSP limits XSS impact by blocking inline scripts and restricting script sources to trusted domains. Start with a report-only policy to identify violations before enforcing.
+- Secure cookies: session cookies should always be set with HttpOnly (not accessible via JavaScript), Secure (only sent over HTTPS), and SameSite=Strict or SameSite=Lax. Frontend developers should understand these attributes even though they are typically set by the backend.
+- Input sanitisation vs output encoding: sanitise input when you must accept HTML (rich text editors), and always encode output when rendering user-provided content. Libraries like DOMPurify sanitise HTML strings safely before rendering.
 
 **Common pitfalls:**
 
-- Assuming React prevents all XSS — \`dangerouslySetInnerHTML\`, URL injection via \`href\`, and third-party libraries that manipulate the DOM directly can all introduce XSS vulnerabilities.
-- Not setting a Content Security Policy because "our app works without it" — CSP is a defence-in-depth measure that limits the damage if an XSS vulnerability is exploited.
+- Assuming React prevents all XSS — the \`dangerouslySetInnerHTML\` prop, URL injection via \`href\`, and third-party libraries that manipulate the DOM directly can all introduce vulnerabilities if used carelessly.
+- Not setting a Content Security Policy because "our app works without it" — CSP is a defence-in-depth measure that limits damage if an XSS vulnerability is exploited.
 - Using \`target="_blank"\` on links without \`rel="noopener noreferrer"\` — the opened page can access \`window.opener\` and redirect the original page (tabnapping).
-- Storing sensitive data (tokens, personal data) in localStorage, which is accessible to any JavaScript on the page including XSS payloads. Use HttpOnly cookies for session tokens.
+- Storing sensitive data (tokens, personal data) in localStorage, which is accessible to any JavaScript on the page. Use HttpOnly cookies for session tokens instead.
 
 ---
 
@@ -735,7 +735,7 @@ Accessibility testing is the process of verifying that an interface meets WCAG c
 
 ## API Design – Principles a Frontend Senior Should Understand
 
-Senior frontend developers do not just consume APIs — they collaborate on their design, advocate for frontend needs in API discussions, and identify design decisions that will create problems during implementation. Understanding API design from a consumer's perspective makes you a more effective collaborator with backend engineers.
+Senior frontend developers do not just consume APIs — they collaborate on their design, advocate for frontend needs in API discussions, and identify design decisions that will create problems during implementation. The "Design APIs Like a Senior Engineer" video provides a practical framework for this perspective.
 
 **Consistency** is the most valuable property of an API. Consistent naming conventions, consistent error response shapes, and consistent pagination styles dramatically reduce the cognitive overhead of integration. A senior frontend developer should push back on APIs that are inconsistent across resources.
 
@@ -832,33 +832,6 @@ AI-assisted development tools — code completion assistants, conversational cod
 - Accepting generated code without reading and understanding it, which transfers knowledge debt to future maintainers.
 - Using AI-generated test cases as a substitute for thinking about what needs to be tested — the AI may generate tests that pass trivially without covering meaningful behaviour.
 - Not updating AI tool guidelines as the tools evolve rapidly, leaving the team with outdated practices.
-
----
-
-## AI Policy — Organisational Principles
-
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
-
-The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
-
-Responsible AI principles are embedded throughout the policy. These include diversity and non-discrimination (AI systems must not produce biased or discriminatory outcomes), transparency (users and affected parties must understand when and how AI is used), robustness (AI systems must perform reliably and handle errors gracefully), security (AI systems must be protected against adversarial manipulation and data breaches), and privacy (personal data must be handled in accordance with GDPR and internal data classification policies).
-
-The AI Register requires that all AI use cases within the organisation are registered and classified by risk level. This classification determines the governance requirements — from lightweight documentation for low-risk use cases to full conformity assessments for high-risk systems. High-risk AI systems require conformity assessments demonstrating compliance with transparency, human oversight, data quality, and technical robustness requirements.
-
-Staff using AI tools and systems must understand the limitations of AI technology and the requirements of the policy. This applies to all roles — from developers building AI-powered frontend features to engineers using AI-assisted development tools.
-
-**Why it matters:** The AI Policy is the organisation's binding commitment to responsible AI use. For frontend engineers, this matters when building interfaces that display AI-generated content, collecting user data that feeds into AI systems, or integrating AI-powered features such as chatbots, recommendations, or content generation. The policy's transparency requirements — informing users when they interact with AI — are directly implemented in the frontend.
-
-**Key things to understand:**
-- Every AI use case must be registered in the AI Register with a risk classification before development begins.
-- The risk classification determines governance requirements: low-risk use cases need basic documentation; high-risk use cases need conformity assessments.
-- Transparency obligations require the frontend to clearly communicate when users are interacting with AI-generated content or AI-powered features.
-- GDPR obligations apply to data collected through AI-powered interfaces — consent management and data minimisation are frontend concerns.
-
-**Common pitfalls:**
-- Building a frontend AI feature (chatbot, AI-generated content) without ensuring the use case is registered in the AI Register.
-- Not implementing the transparency requirements — users must be clearly informed when content is AI-generated or when they are interacting with an AI system.
-- Treating the AI Policy as a backend-only concern; frontend design decisions around data collection, user consent, and AI feature presentation are directly governed by the policy.
 
 ---
 
