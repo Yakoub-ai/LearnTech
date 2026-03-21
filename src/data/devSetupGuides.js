@@ -2,7 +2,7 @@ export const devSetupGuides = {
   'ai-engineer': {
     title: 'AI Engineer Development Setup',
     prerequisites: [
-      'Python 3.9+',
+      'Python 3.12+',
       'pip package manager',
       'Git for version control',
       'Text editor or IDE (VS Code, PyCharm)'
@@ -14,7 +14,7 @@ export const devSetupGuides = {
         commands: [
           {
             cmd: 'python --version',
-            description: 'Verify Python is installed (should be 3.9 or higher)'
+            description: 'Verify Python is installed (should be 3.12 or higher)'
           },
           {
             cmd: 'python -m venv ai-env',
@@ -116,7 +116,7 @@ export const devSetupGuides = {
   'backend-developer': {
     title: 'Backend Developer Development Setup',
     prerequisites: [
-      'Python 3.10+',
+      'Python 3.12+',
       'pip package manager',
       'Git for version control',
       'PostgreSQL or SQLite (optional for databases)',
@@ -130,7 +130,7 @@ export const devSetupGuides = {
         commands: [
           {
             cmd: 'python --version',
-            description: 'Verify Python 3.10+ is installed'
+            description: 'Verify Python 3.12+ is installed'
           },
           {
             cmd: 'python -m venv backend-env',
@@ -232,7 +232,7 @@ export const devSetupGuides = {
   'data-engineer': {
     title: 'Data Engineer Development Setup',
     prerequisites: [
-      'Python 3.9+',
+      'Python 3.12+',
       'Java 8+ (for Spark)',
       'pip package manager',
       'Git for version control',
@@ -344,7 +344,7 @@ export const devSetupGuides = {
   'data-scientist': {
     title: 'Data Scientist Development Setup',
     prerequisites: [
-      'Python 3.9+',
+      'Python 3.12+',
       'pip package manager',
       'Jupyter Notebook or JupyterLab',
       'Git for version control',
@@ -455,11 +455,11 @@ export const devSetupGuides = {
   'devops-platform-engineer': {
     title: 'DevOps / Platform Engineer Development Setup',
     prerequisites: [
-      'Docker Desktop',
+      'Docker Desktop 4.x',
       'Git for version control',
       'Azure CLI (if using Azure)',
-      'kubectl (for Kubernetes)',
-      'Terraform or Bicep (IaC tools)',
+      'kubectl 1.30+ (for Kubernetes)',
+      'Terraform 1.9+ or Bicep (IaC tools)',
       'Text editor or IDE'
     ],
     steps: [
@@ -589,7 +589,7 @@ export const devSetupGuides = {
   'frontend-developer': {
     title: 'Frontend Developer Development Setup',
     prerequisites: [
-      'Node.js 18+ with npm',
+      'Node.js 22 LTS with npm',
       'Git for version control',
       'VS Code or preferred code editor',
       'Browser DevTools familiarity',
@@ -602,7 +602,7 @@ export const devSetupGuides = {
         commands: [
           {
             cmd: 'node --version',
-            description: 'Check Node.js version (should be 18+)'
+            description: 'Check Node.js version (should be 22 LTS)'
           },
           {
             cmd: 'npm --version',
@@ -722,7 +722,7 @@ export const devSetupGuides = {
   'ml-engineer': {
     title: 'ML Engineer Development Setup',
     prerequisites: [
-      'Python 3.10+',
+      'Python 3.12+',
       'pip package manager',
       'Jupyter Notebook or JupyterLab',
       'Git for version control',
@@ -744,7 +744,7 @@ export const devSetupGuides = {
         ],
         verification: {
           cmd: 'python --version',
-          expected: 'Should show Python 3.10+'
+          expected: 'Should show Python 3.12+'
         }
       },
       {
@@ -833,7 +833,7 @@ export const devSetupGuides = {
   'marketing-technology-developer': {
     title: 'Marketing Technology Developer Development Setup',
     prerequisites: [
-      'Python 3.9+',
+      'Python 3.12+',
       'pip package manager',
       'Google Analytics account (for testing)',
       'Postman or curl (for API testing)',
@@ -944,8 +944,8 @@ export const devSetupGuides = {
   'qa-test-engineer': {
     title: 'QA / Test Engineer Development Setup',
     prerequisites: [
-      'Node.js 16+ with npm',
-      'Python 3.9+',
+      'Node.js 22 LTS with npm',
+      'Python 3.12+',
       'Git for version control',
       'VS Code or IDE with debugging support',
       'Chrome/Firefox browsers'
@@ -957,7 +957,7 @@ export const devSetupGuides = {
         commands: [
           {
             cmd: 'node --version',
-            description: 'Verify Node.js 16+ is installed'
+            description: 'Verify Node.js 22 LTS is installed'
           },
           {
             cmd: 'npm init -y',
@@ -1070,9 +1070,9 @@ export const devSetupGuides = {
     title: 'Security Engineer Development Setup',
     prerequisites: [
       'Linux system (native or VM)',
-      'Python 3.9+',
+      'Python 3.12+',
       'Git for version control',
-      'Docker (for vulnerable app testing)',
+      'Docker Desktop 4.x (for vulnerable app testing)',
       'Network analysis tools (Wireshark optional)'
     ],
     steps: [
