@@ -1205,6 +1205,19 @@ type ResolvedUser = Awaited<UserPromise>;
 
 type DeepPromise = Promise<Promise<Promise<string>>>;
 type DeepResolved = Awaited<DeepPromise>;
+
+// NoInfer (TS 5.4) — prevents a type parameter from being inferred from a specific argument
+function createFSM<S extends string>(config: {
+    initial: NoInfer<S>;
+    states: S[];
+}) {
+    return config;
+}
+
+// Without NoInfer, TypeScript would infer S from "idle" AND from the states array
+// With NoInfer on initial, S is inferred only from states, and "idle" is checked against it
+createFSM({ initial: "idle", states: ["idle", "loading", "done"] }); // OK
+// createFSM({ initial: "invalid", states: ["idle", "loading", "done"] }); // Error
 \`\`\`
 
 \`\`\`mermaid
@@ -1231,7 +1244,76 @@ graph TD
 
 ---
 
-## 3. Mapped Types and Conditional Types
+## 3. The \\\`satisfies\\\` Operator (TypeScript 5.0+)
+
+The \\\`satisfies\\\` operator validates that a value matches a type without widening it. This gives you the best of both worlds: type checking AND precise inference.
+
+### The Problem \\\`satisfies\\\` Solves
+
+\\\`\\\`\\\`typescript
+interface ColorConfig {
+    primary: string;
+    secondary: string;
+    accent: string;
+}
+
+// With type annotation: value is widened to ColorConfig
+const colors1: ColorConfig = {
+    primary: "#ff0000",
+    secondary: "#00ff00",
+    accent: "#0000ff"
+};
+// colors1.primary is string — no literal type info
+
+// With satisfies: value is validated BUT retains literal types
+const colors2 = {
+    primary: "#ff0000",
+    secondary: "#00ff00",
+    accent: "#0000ff"
+} satisfies ColorConfig;
+// colors2.primary is "#ff0000" — literal type preserved!
+
+// With as const + satisfies: readonly AND validated
+const colors3 = {
+    primary: "#ff0000",
+    secondary: "#00ff00",
+    accent: "#0000ff"
+} as const satisfies ColorConfig;
+\\\`\\\`\\\`
+
+### Practical Uses
+
+\\\`\\\`\\\`typescript
+// Type-safe configuration with precise inference
+type Route = {
+    path: string;
+    method: "GET" | "POST" | "PUT" | "DELETE";
+};
+
+const routes = {
+    getUser: { path: "/users/:id", method: "GET" },
+    createUser: { path: "/users", method: "POST" },
+    deleteUser: { path: "/users/:id", method: "DELETE" },
+} satisfies Record<string, Route>;
+
+// routes.getUser.method is "GET" (not just string)
+
+// Ensuring exhaustive record keys
+type Theme = "light" | "dark" | "system";
+
+const themeLabels = {
+    light: "Light Mode",
+    dark: "Dark Mode",
+    system: "System Default",
+} satisfies Record<Theme, string>;
+// If you forget a key, TypeScript errors at compile time
+\\\`\\\`\\\`
+
+**Why it matters:** Before \\\`satisfies\\\`, you had to choose between type validation (annotation) and precise inference (\\\`as const\\\`). The \\\`satisfies\\\` operator removes this trade-off. Use it for configuration objects, route definitions, theme values, and any constant data that should be validated against a type while retaining its literal types.
+
+---
+
+## 4. Mapped Types and Conditional Types
 
 Mapped types and conditional types are the programmable layer of TypeScript's type system. They let you transform types algorithmically.
 
@@ -1339,7 +1421,7 @@ graph TD
 
 ---
 
-## 4. Strict Mode and Compiler Flags
+## 5. Strict Mode and Compiler Flags
 
 Understanding compiler flags beyond \`strict: true\` gives you fine-grained control over type safety.
 
@@ -1395,7 +1477,7 @@ import { type User, createUser } from "./module";
 
 ---
 
-## 5. Discriminated Unions and Exhaustive Checking
+## 6. Discriminated Unions and Exhaustive Checking
 
 Discriminated unions are arguably TypeScript's most important pattern for modeling real-world domain logic.
 

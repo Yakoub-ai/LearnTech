@@ -4,13 +4,14 @@
 
 ## Topics Covered
 
-- Semantic HTML Elements
+- Semantic HTML Elements (including `<dialog>` and Popover API)
 - Forms and Input Types
 - CSS Selectors and Specificity
 - The Box Model
 - Flexbox Layout
 - CSS Grid Layout
 - Responsive Design and Media Queries
+- Links, Images & Media
 
 ## Prerequisites
 

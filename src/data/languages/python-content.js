@@ -1329,6 +1329,8 @@ print(f"Sorted circles: {[c.radius for c in sorted(circles)]}")
 # 4. Add a @classmethod to BankAccount that creates an account from a dict.
 \`\`\`
 
+**Best practice:** For data-holding classes, prefer \\`@dataclass\\` (shown in the Type Hints section) over manually writing \\`__init__\\`, \\`__repr__\\`, and \\`__eq__\\`. Dataclasses generate these methods automatically and integrate well with type hints.
+
 **Why it matters:** OOP is the dominant paradigm for structuring large applications. Understanding classes, inheritance, and dunder methods lets you write Pythonic code that integrates naturally with the language.
 
 \`\`\`mermaid
@@ -2049,7 +2051,7 @@ pi: float = 3.14159
 names: list[str] = ["Alice", "Bob"]  # Python 3.9+ lowercase generics
 
 # --- Optional and Union ---
-def find_user(user_id: int) -> Optional[dict]:
+def find_user(user_id: int) -> dict | None:
     """Find a user by ID. Returns None if not found."""
     users = {1: {"name": "Alice"}, 2: {"name": "Bob"}}
     return users.get(user_id)
@@ -2090,13 +2092,26 @@ print(f"Doubled: {doubled}")
 # --- TypeVar: generic functions ---
 T = TypeVar("T")
 
-def first(items: list[T]) -> Optional[T]:
+def first(items: list[T]) -> T | None:
     """Return the first element or None."""
     return items[0] if items else None
 
 # The return type matches the input type
-name: Optional[str] = first(["Alice", "Bob"])    # str
-number: Optional[int] = first([1, 2, 3])         # int
+name: str | None = first(["Alice", "Bob"])    # str
+number: int | None = first([1, 2, 3])         # int
+
+# --- PEP 695 (Python 3.12+): new type parameter syntax ---
+# The modern way to write the same generic function:
+#
+#   def first[T](items: list[T]) -> T | None:
+#       return items[0] if items else None
+#
+#   class Stack[T]:
+#       def push(self, item: T) -> None: ...
+#
+#   type Vector = list[float]  # type alias (PEP 695)
+#
+# PEP 695 is cleaner and avoids the need for explicit TypeVar declarations.
 
 # --- Dataclasses with type hints ---
 @dataclass
@@ -2130,7 +2145,7 @@ class Stack(Generic[T]):
             raise IndexError("Stack is empty")
         return self._items.pop()
 
-    def peek(self) -> Optional[T]:
+    def peek(self) -> T | None:
         return self._items[-1] if self._items else None
 
     def __len__(self) -> int:

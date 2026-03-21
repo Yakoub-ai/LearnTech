@@ -200,22 +200,25 @@ function storeFirstTouchUTM() {
 
 ---
 
-## APIs – How They Work and Why Marketing Platforms Use Them
+## APIs – Styles, HTTP, and How Marketing Platforms Communicate
 
 An API (Application Programming Interface) is a defined contract that lets one piece of software communicate with another. In the context of marketing technology, APIs are the primary mechanism by which data moves between platforms — for example, pulling impressions from an advertising platform, pushing audience segments to an email tool, or triggering a personalisation engine when a user visits a website.
 
-Understanding APIs means you can integrate marketing tools without relying on manual exports, and you can build automation that keeps systems in sync in near real time.
+Understanding APIs — not just REST but the full landscape of communication styles — means you can integrate marketing tools without relying on manual exports, build automation that keeps systems in sync, and diagnose problems when integrations fail.
 
-**Why it matters:** Modern marketing stacks are made up of many specialised tools — ad platforms, email systems, CRMs, analytics tools — none of which are built to talk to each other by default. APIs are the connective tissue. A marketing technology developer who understands APIs can automate data flows, build integrations, and reduce the manual work that would otherwise fall on analysts or campaign managers.
+**Why it matters:** Modern marketing stacks are made up of many specialised tools — ad platforms, email systems, CRMs, analytics tools — none of which are built to talk to each other by default. APIs are the connective tissue. A marketing technology developer who understands the different API styles can automate data flows, build integrations, and reduce the manual work that would otherwise fall on analysts or campaign managers.
 
 **Key things to understand:**
 
-- REST APIs are stateless — each request contains all the information needed to process it. Resources are identified by URLs, and the HTTP method determines the action: `GET` reads data, `POST` creates a new resource, `PUT` replaces an existing resource, `PATCH` partially updates a resource, and `DELETE` removes it. Data is most commonly exchanged in JSON format.
+- **REST** (Representational State Transfer) has been the dominant API style for over two decades. It organises data into resources, each identified by a URL. The HTTP method tells the server what to do: `GET` reads data, `POST` creates a resource, `PATCH` partially updates it, `PUT` replaces it entirely, and `DELETE` removes it. REST is stateless — every request must carry all the information needed to process it, including authentication. Responses are typically JSON. Most advertising platform APIs (Google Ads, Meta, LinkedIn), CRM APIs, and CDP APIs are REST.
+- **SOAP** (Simple Object Access Protocol) wraps every message in XML and enforces a strict contract defined by a WSDL (Web Services Description Language) document. It is verbose but highly standardised and provides built-in standards for security and transactions. Legacy enterprise systems — especially in finance and insurance — frequently use SOAP. You may encounter it when integrating with older CRM or ERP systems.
+- **GraphQL** was developed by Facebook to solve over-fetching and under-fetching: with REST you often get more data than you need (wasting bandwidth) or must make multiple calls to assemble a complete view. With GraphQL, the client specifies exactly what fields it wants in a single query and gets precisely that back. This is particularly valuable in mobile contexts where bandwidth efficiency matters. The trade-off is added server complexity.
+- **gRPC** uses Protocol Buffers (a compact binary format) instead of text-based JSON, making it significantly faster and more efficient than REST. Services and methods are defined in a `.proto` file, and client and server code is generated automatically, enabling strongly-typed communication across services written in different programming languages. gRPC is the choice for high-throughput internal microservice communication — not typically used for public-facing APIs.
+- **Webhooks** invert the traditional API model: instead of your system polling an API repeatedly asking "has anything changed?", the external platform calls your endpoint when an event occurs. When a payment is processed, a user signs up, or a form is submitted, the source system fires an HTTP POST to a URL you have registered. Webhooks are used extensively in marketing — Stripe payment webhooks, Segment event webhooks, email platform delivery notifications. Your endpoint must be publicly reachable, respond quickly, and handle duplicates gracefully.
+- **WebSockets** open a persistent two-way connection between client and server, enabling real-time bidirectional communication without repeated request–response cycles. They power live chat, real-time dashboards, and collaborative editing tools. Less common in batch marketing data work but relevant for real-time personalisation engines and live analytics dashboards.
 - Authentication is typically handled with API keys, OAuth tokens, or service accounts; credentials must never be stored in code repositories.
-- Rate limits control how many requests you can make in a given time window; exceeding them returns error codes such as 429 and requires retry logic with exponential back-off.
+- Rate limits control how many requests you can make in a given time window; exceeding them returns a 429 status code and requires retry logic with exponential back-off.
 - Pagination is used when an endpoint returns large datasets in chunks; you must iterate through pages to retrieve all records.
-- API documentation describes available endpoints, required parameters, expected responses, and error codes — reading it carefully before writing code saves significant debugging time.
-- Webhooks are the reverse of a standard API call: the external platform pushes data to your endpoint when an event occurs, rather than you polling for updates.
 
 **Code walkthrough:**
 
@@ -271,7 +274,8 @@ function handleConsentDecision(analytics, advertising) {
 - Not validating API responses before using the data, assuming the schema will always match documentation.
 - Storing API keys in plain text in scripts or notebooks that end up in source control.
 - Not implementing retry logic, so a single transient failure breaks an entire nightly pipeline.
-- Confusing REST with GraphQL or SOAP; different platforms use different styles, and the calling pattern differs.
+- Polling an API at high frequency when a webhook would deliver the same data more efficiently and with lower latency.
+- Assuming all APIs use REST; encountering SOAP or GraphQL without prior knowledge creates confusion about the calling pattern.
 
 ---
 

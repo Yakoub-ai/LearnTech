@@ -1538,6 +1538,122 @@ class WorkerPool {
 
 ---
 
+## 7. ES2024/ES2025 Advanced Features
+
+Senior engineers must stay current with the evolving language. These features are shipping in engines now (2024-2025).
+
+### Set Methods (ES2025)
+
+\`\`\`javascript
+// Set finally gets first-class set operations — no more manual loops
+const frontend = new Set(["Alice", "Bob", "Charlie"]);
+const backend  = new Set(["Bob", "Diana", "Charlie"]);
+
+frontend.intersection(backend);      // Set {"Bob", "Charlie"}
+frontend.union(backend);             // Set {"Alice", "Bob", "Charlie", "Diana"}
+frontend.difference(backend);        // Set {"Alice"}
+frontend.symmetricDifference(backend); // Set {"Alice", "Diana"}
+frontend.isSubsetOf(backend);        // false
+frontend.isSupersetOf(backend);      // false
+frontend.isDisjointFrom(new Set(["Eve"])); // true
+\`\`\`
+
+### Iterator Helpers (ES2025)
+
+\`\`\`javascript
+// Lazy iterator methods — no intermediate arrays, process on demand
+function* fibonacci() {
+  let a = 0, b = 1;
+  while (true) { yield a; [a, b] = [b, a + b]; }
+}
+
+// .take(), .filter(), .map(), .drop(), .forEach(), .reduce(), .toArray()
+const result = fibonacci()
+  .filter(n => n % 2 === 0)
+  .map(n => n * 10)
+  .take(5)
+  .toArray();
+// [0, 20, 80, 340, 1440] — first 5 even Fibonacci numbers × 10
+// No infinite array was ever created — lazy evaluation
+\`\`\`
+
+### Explicit Resource Management — \`using\` Declarations (ES2025)
+
+\`\`\`javascript
+// 'using' ensures cleanup runs when the scope exits (like RAII in C++ or 'with' in Python)
+// Requires Symbol.dispose (sync) or Symbol.asyncDispose (async)
+
+class DatabaseConnection {
+  constructor(url) { this.url = url; console.log(\`Connected to \${url}\`); }
+  query(sql) { /* ... */ }
+  [Symbol.dispose]() { console.log(\`Disconnected from \${this.url}\`); }
+}
+
+function runQuery() {
+  using conn = new DatabaseConnection("postgres://localhost/mydb");
+  conn.query("SELECT * FROM users");
+  // conn[Symbol.dispose]() is called automatically when scope exits
+  // Even if an exception is thrown — like try/finally but built into the language
+}
+
+// Async version with 'await using'
+class FileHandle {
+  [Symbol.asyncDispose]() { return this.close(); }
+  async close() { /* flush and close */ }
+}
+
+async function processFile() {
+  await using file = await openFile("data.csv");
+  // file is automatically closed when scope exits
+}
+\`\`\`
+
+### Decorators (Stage 3 / ES2025)
+
+\`\`\`javascript
+// Decorators modify class elements declaratively
+function logged(originalMethod, context) {
+  return function(...args) {
+    console.log(\`Calling \${context.name} with\`, args);
+    const result = originalMethod.call(this, ...args);
+    console.log(\`\${context.name} returned\`, result);
+    return result;
+  };
+}
+
+class Calculator {
+  @logged
+  add(a, b) { return a + b; }
+}
+
+const calc = new Calculator();
+calc.add(2, 3);
+// Logs: "Calling add with [2, 3]"
+// Logs: "add returned 5"
+\`\`\`
+
+### Temporal API (Stage 3, progressing toward inclusion)
+
+\`\`\`javascript
+// Temporal replaces the broken Date object with an immutable, timezone-aware API
+// Available behind flags or via polyfill — track progress at tc39.es/proposal-temporal
+// Temporal.PlainDate — no time, no timezone
+const date = Temporal.PlainDate.from("2026-03-21");
+const nextWeek = date.add({ days: 7 }); // 2026-03-28 — immutable, returns new object
+
+// Temporal.ZonedDateTime — full timezone support
+const meeting = Temporal.ZonedDateTime.from({
+  timeZone: "America/New_York",
+  year: 2026, month: 3, day: 21, hour: 14,
+});
+const inTokyo = meeting.withTimeZone("Asia/Tokyo");
+// Correctly handles DST, leap seconds, and calendar differences
+\`\`\`
+
+**Why it matters:** These features represent the maturation of JavaScript as a systems-capable language. \`using\` declarations eliminate an entire class of resource leak bugs. Set methods and Iterator helpers bring JavaScript closer to parity with Python and Rust for data manipulation. Temporal finally fixes the 25-year-old Date mess.
+
+---
+
 ## Summary
 
 | Topic | Key Takeaway |
@@ -1548,6 +1664,7 @@ class WorkerPool {
 | Design Patterns | Observer for decoupled events; Strategy to replace if/else chains; Proxy for validation |
 | Security | \`textContent\` for user text; DOMPurify for HTML; guard prototype pollution; CSRF tokens |
 | Web Workers | Offload CPU work to background threads; use transferables for large binary data |
+| ES2024/2025 | Set methods, Iterator helpers, \`using\` for resource management, decorators, Temporal API |
 
 ---
 

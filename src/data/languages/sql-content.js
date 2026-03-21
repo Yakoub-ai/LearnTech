@@ -703,9 +703,9 @@ flowchart TD
 
 ---
 
-## 5. Aggregate Functions
+## 6. Aggregate Functions
 
-Aggregate functions compute a single result from a set of input rows. They are essential for reporting and analytics.
+Aggregate functions compute a single result from a set of input rows. They are essential for reporting and analytics. Note that most aggregate functions ignore NULL values — \`COUNT(*)\` counts all rows, but \`COUNT(column)\` only counts non-NULL values in that column.
 
 ### COUNT, SUM, AVG, MIN, MAX
 
@@ -832,7 +832,7 @@ ORDER BY avg_salary DESC;
 
 ---
 
-## 6. Subqueries
+## 7. Subqueries
 
 A subquery is a query nested inside another query. They enable powerful multi-step logic within a single SQL statement.
 
@@ -953,7 +953,7 @@ WHERE NOT EXISTS (
 
 ---
 
-## 7. Basic Indexing
+## 8. Basic Indexing
 
 Indexes are data structures that speed up data retrieval. Without indexes, the database must scan every row in a table to find matches — a "sequential scan" or "full table scan."
 
@@ -1099,7 +1099,7 @@ Key things to look for in EXPLAIN output:
 
 ---
 
-## 8. Data Types & Constraints
+## 9. Data Types & Constraints
 
 ### Common Data Types
 
@@ -1261,7 +1261,8 @@ You now have a solid foundation in SQL:
 - **SELECT** to retrieve data with filtering, sorting, and pagination
 - **Filtering** with comparison operators, logical operators, and pattern matching
 - **DML** operations to insert, update, and delete data safely
-- **JOINs** to combine data across related tables
+- **SQL injection prevention** using parameterized queries
+- **JOINs** to combine data across related tables (using explicit JOIN ... ON syntax)
 - **Aggregations** for summarizing data into reports
 - **Subqueries** for multi-step logic within a single query
 - **Indexes** to speed up queries on large tables

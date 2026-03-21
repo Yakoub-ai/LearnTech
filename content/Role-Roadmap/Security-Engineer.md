@@ -14,8 +14,8 @@ Security Engineers protect systems, applications, and data by identifying vulner
 | OWASP Top 10 | [OWASP Top Ten](https://owasp.org/www-project-top-ten/) | Docs |
 | Web Security Basics | [Web Security Academy – PortSwigger](https://portswigger.net/web-security) | Interactive |
 | Networking Fundamentals | [Computer Networking Full Course (9h)](https://www.youtube.com/watch?v=qiQR5rTSshw) | Video |
-| Linux Security Basics | [roadmap.sh – Linux](https://roadmap.sh/linux) | Interactive |
 | Cryptography Explained | [Secret Key Exchange (Diffie-Hellman) – Computerphile](https://www.youtube.com/watch?v=NmM9HA2MQGI) | Video |
+| Linux Security Basics | [roadmap.sh – Linux](https://roadmap.sh/linux) | Interactive |
 | Security+ Foundations | [Professor Messer – CompTIA Security+ Course](https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/sy0-701-comptia-security-plus-course/) | Video |
 | Hands-on Security Labs | [TryHackMe – Introduction to Cyber Security](https://tryhackme.com/path/outline/introtocyber) | Interactive |
 | Cryptography Basics | [Khan Academy – Cryptography](https://www.khanacademy.org/computing/computer-science/cryptography) | Interactive |
