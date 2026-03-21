@@ -4,9 +4,7 @@ import { motion } from 'framer-motion'
 import { Helmet } from 'react-helmet-async'
 import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
-import PageHelmet from '../components/seo/PageHelmet'
-
-const SITE_URL = import.meta.env.VITE_APP_URL || 'https://learntech.vercel.app'
+import PageHelmet, { SITE_URL } from '../components/seo/PageHelmet'
 import { parseResourceTable, parseObjectives } from '../utils/markdownLoader'
 import {
   loadRoleMarkdownContent,

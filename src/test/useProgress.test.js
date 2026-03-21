@@ -3,6 +3,19 @@ import useProgress from '../components/progress/useProgress'
 
 const STORAGE_KEY = 'tech-hub-learning-progress'
 
+// Mock AuthContext so useProgress can call useAuth() without a provider
+vi.mock('../contexts/AuthContext', () => ({
+  useAuth: () => ({ user: null }),
+}))
+
+// Mock useSupabaseProgress so no real Supabase calls are made
+vi.mock('../hooks/useSupabaseProgress', () => ({
+  useSupabaseProgress: () => ({
+    debouncedUpsert: vi.fn(),
+    saveQuizScoreToCloud: vi.fn(),
+  }),
+}))
+
 beforeEach(() => {
   localStorage.clear()
 })

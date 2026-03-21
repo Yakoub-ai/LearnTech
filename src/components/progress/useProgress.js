@@ -6,32 +6,60 @@ import {
   setQuizScore,
   getRoleProgress as getStoredRoleProgress,
 } from '../../utils/progressStorage'
+import { useAuth } from '../../contexts/AuthContext'
+import { useSupabaseProgress } from '../../hooks/useSupabaseProgress'
 
 const emptyProgress = { beginner: 0, mid: 0, senior: 0, overall: 0 }
 
 export default function useProgress(roleId) {
   const [, setTick] = useState(0)
+  const { user } = useAuth()
+  const { debouncedUpsert, saveQuizScoreToCloud } = useSupabaseProgress(user?.id)
 
   const refresh = useCallback(() => setTick((t) => t + 1), [])
 
   const toggleObjective = useCallback((level, index) => {
     const progress = getProgress()
     const current = progress?.roles?.[roleId]?.[level]?.objectives?.[index]?.completed || false
-    setObjectiveComplete(roleId, level, index, !current)
+    const newCompleted = !current
+    setObjectiveComplete(roleId, level, index, newCompleted)
+    debouncedUpsert({
+      category: 'role',
+      itemId: roleId,
+      level: level,
+      itemType: 'objective',
+      itemIndex: index,
+      completed: newCompleted,
+    })
     refresh()
-  }, [roleId, refresh])
+  }, [roleId, refresh, debouncedUpsert])
 
   const toggleResource = useCallback((level, index) => {
     const progress = getProgress()
     const current = progress?.roles?.[roleId]?.[level]?.resources?.[index]?.completed || false
-    setResourceComplete(roleId, level, index, !current)
+    const newCompleted = !current
+    setResourceComplete(roleId, level, index, newCompleted)
+    debouncedUpsert({
+      category: 'role',
+      itemId: roleId,
+      level: level,
+      itemType: 'resource',
+      itemIndex: index,
+      completed: newCompleted,
+    })
     refresh()
-  }, [roleId, refresh])
+  }, [roleId, refresh, debouncedUpsert])
 
   const saveQuizScore = useCallback((level, score) => {
     setQuizScore(roleId, level, score)
+    saveQuizScoreToCloud({
+      category: 'role',
+      itemId: roleId,
+      level: level,
+      score: score,
+    })
     refresh()
-  }, [roleId, refresh])
+  }, [roleId, refresh, saveQuizScoreToCloud])
 
   const isObjectiveComplete = useCallback((level, index) => {
     const progress = getProgress()
