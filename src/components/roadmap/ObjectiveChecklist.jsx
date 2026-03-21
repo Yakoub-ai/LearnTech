@@ -1,7 +1,14 @@
-import { CheckCircle2, Circle } from 'lucide-react'
+import { CheckCircle2, Circle, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-export default function ObjectiveChecklist({ objectives, level, isObjectiveComplete, toggleObjective }) {
+/**
+ * @param {string[]} objectives - list of objective text strings
+ * @param {string} level - 'beginner' | 'mid' | 'senior'
+ * @param {(level, index) => boolean} isObjectiveComplete
+ * @param {(level, index) => void} toggleObjective
+ * @param {Set<number>} [quizLinkedIndexes] - objective indices auto-completed by topic quizzes (not manually toggleable)
+ */
+export default function ObjectiveChecklist({ objectives, level, isObjectiveComplete, toggleObjective, quizLinkedIndexes }) {
   if (!objectives || objectives.length === 0) return null
 
   const completedCount = objectives.filter((_, i) => isObjectiveComplete?.(level, i)).length
@@ -19,6 +26,41 @@ export default function ObjectiveChecklist({ objectives, level, isObjectiveCompl
       <div className="p-4 space-y-2">
         {objectives.map((objective, index) => {
           const isComplete = isObjectiveComplete?.(level, index)
+          const isQuizLinked = quizLinkedIndexes?.has(index)
+
+          if (isQuizLinked) {
+            // Quiz-linked objectives: not manually toggleable, show sparkle badge when complete
+            return (
+              <div
+                key={index}
+                className={`w-full flex items-start gap-3 p-3 rounded-lg ${
+                  isComplete ? 'bg-[var(--color-success)]/5' : 'bg-transparent'
+                }`}
+              >
+                {isComplete ? (
+                  <CheckCircle2 className="w-5 h-5 text-[var(--color-success)] shrink-0 mt-0.5" />
+                ) : (
+                  <Circle className="w-5 h-5 text-[var(--color-text-secondary)]/40 shrink-0 mt-0.5" />
+                )}
+                <span className={`text-sm leading-relaxed flex-1 ${
+                  isComplete
+                    ? 'text-[var(--color-success)] line-through opacity-70'
+                    : 'text-[var(--color-text)]'
+                }`}>
+                  {objective}
+                </span>
+                <span
+                  title="Completed by topic quiz"
+                  className="shrink-0 flex items-center gap-1 text-xs text-[var(--color-text-secondary)] mt-0.5"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Quiz</span>
+                </span>
+              </div>
+            )
+          }
+
+          // Standard manually-toggleable objective
           return (
             <motion.button
               key={index}

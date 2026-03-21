@@ -16,7 +16,7 @@ import {
   resetAllProgress,
 } from '../utils/progressStorage'
 
-const STORAGE_KEY = 'tech-hub-learning-progress'
+const STORAGE_KEY = 'tech-hubben-learning-progress'
 
 beforeEach(() => {
   localStorage.clear()

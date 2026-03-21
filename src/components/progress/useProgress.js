@@ -4,6 +4,8 @@ import {
   setObjectiveComplete,
   setResourceComplete,
   setQuizScore,
+  setTopicQuizScore,
+  setLevelExamScore,
   getRoleProgress as getStoredRoleProgress,
   syncProgressItemToSupabase,
 } from '../../utils/progressStorage'
@@ -42,6 +44,22 @@ export default function useProgress(roleId) {
     refresh()
   }, [roleId, refresh, user])
 
+  // completeTopicQuiz: saves topic quiz score AND auto-marks the mapped objective complete
+  const completeTopicQuiz = useCallback((level, topicId, objectiveIndex, score) => {
+    const now = new Date().toISOString()
+    setTopicQuizScore(roleId, level, topicId, score)
+    setObjectiveComplete(roleId, level, objectiveIndex, true)
+    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'topic_quiz', topicId, { score, scoredAt: now })
+    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'objective', String(objectiveIndex), { completed: true, completedAt: now })
+    refresh()
+  }, [roleId, refresh, user])
+
+  const saveLevelExamScore = useCallback((level, score) => {
+    setLevelExamScore(roleId, level, score)
+    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'level_exam', 'score', { score, scoredAt: new Date().toISOString() })
+    refresh()
+  }, [roleId, refresh, user])
+
   const isObjectiveComplete = useCallback((level, index) => {
     const progress = getProgress()
     return progress?.roles?.[roleId]?.[level]?.objectives?.[index]?.completed || false
@@ -55,6 +73,16 @@ export default function useProgress(roleId) {
   const getQuizScoreValue = useCallback((level) => {
     const progress = getProgress()
     return progress?.roles?.[roleId]?.[level]?.quizScore?.score ?? null
+  }, [roleId])
+
+  const getTopicQuizScore = useCallback((level, topicId) => {
+    const progress = getProgress()
+    return progress?.roles?.[roleId]?.[level]?.topicQuizzes?.[topicId]?.score ?? null
+  }, [roleId])
+
+  const getLevelExamScore = useCallback((level) => {
+    const progress = getProgress()
+    return progress?.roles?.[roleId]?.[level]?.levelExam?.score ?? null
   }, [roleId])
 
   const stored = getStoredRoleProgress(roleId)
@@ -72,9 +100,13 @@ export default function useProgress(roleId) {
     toggleObjective,
     toggleResource,
     saveQuizScore,
+    completeTopicQuiz,
+    saveLevelExamScore,
     isObjectiveComplete,
     isResourceComplete,
     getQuizScoreValue,
+    getTopicQuizScore,
+    getLevelExamScore,
     refresh,
   }
 }

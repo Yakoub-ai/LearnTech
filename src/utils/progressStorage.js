@@ -498,6 +498,46 @@ export function importProgressData(jsonData) {
 }
 
 // ──────────────────────────────────────────────────
+// Topic Quiz & Level Exam Progress (Roles)
+// ──────────────────────────────────────────────────
+
+/**
+ * Store a topic quiz score for a role level.
+ *
+ * @param {string} roleId
+ * @param {string} level - 'beginner' | 'mid' | 'senior'
+ * @param {string} topicId - slug matching the content section heading
+ * @param {number} score - 0-100
+ */
+export function setTopicQuizScore(roleId, level, topicId, score) {
+  const progress = getProgress()
+  if (!progress.roles[roleId]) progress.roles[roleId] = getInitialRoleProgress()
+  const levelProgress = progress.roles[roleId][level] ||
+    { objectives: [], resources: [], quizScore: null, completed: false, startedAt: null, completedAt: null }
+  progress.roles[roleId][level] = levelProgress
+  if (!levelProgress.topicQuizzes) levelProgress.topicQuizzes = {}
+  levelProgress.topicQuizzes[topicId] = { score, scoredAt: new Date().toISOString() }
+  return saveProgress(progress)
+}
+
+/**
+ * Store the level exam score for a role level.
+ *
+ * @param {string} roleId
+ * @param {string} level
+ * @param {number} score - 0-100
+ */
+export function setLevelExamScore(roleId, level, score) {
+  const progress = getProgress()
+  if (!progress.roles[roleId]) progress.roles[roleId] = getInitialRoleProgress()
+  const levelProgress = progress.roles[roleId][level] ||
+    { objectives: [], resources: [], quizScore: null, completed: false, startedAt: null, completedAt: null }
+  progress.roles[roleId][level] = levelProgress
+  levelProgress.levelExam = { score, scoredAt: new Date().toISOString() }
+  return saveProgress(progress)
+}
+
+// ──────────────────────────────────────────────────
 // Language Progress
 // ──────────────────────────────────────────────────
 
@@ -551,6 +591,35 @@ export function setLanguageQuizScore(languageId, level, score) {
   }
   progress.languages[languageId][level].quizScore = { score, scoredAt: new Date().toISOString() };
   return saveProgress(progress);
+}
+
+/**
+ * Store a topic quiz score for a language level.
+ */
+export function setLanguageTopicQuizScore(languageId, level, topicId, score) {
+  const progress = getProgress()
+  if (!progress.languages) progress.languages = {}
+  if (!progress.languages[languageId]) progress.languages[languageId] = getInitialRoleProgress()
+  const levelProgress = progress.languages[languageId][level] ||
+    { objectives: [], resources: [], quizScore: null, completed: false, startedAt: null, completedAt: null }
+  progress.languages[languageId][level] = levelProgress
+  if (!levelProgress.topicQuizzes) levelProgress.topicQuizzes = {}
+  levelProgress.topicQuizzes[topicId] = { score, scoredAt: new Date().toISOString() }
+  return saveProgress(progress)
+}
+
+/**
+ * Store the level exam score for a language level.
+ */
+export function setLanguageLevelExamScore(languageId, level, score) {
+  const progress = getProgress()
+  if (!progress.languages) progress.languages = {}
+  if (!progress.languages[languageId]) progress.languages[languageId] = getInitialRoleProgress()
+  const levelProgress = progress.languages[languageId][level] ||
+    { objectives: [], resources: [], quizScore: null, completed: false, startedAt: null, completedAt: null }
+  progress.languages[languageId][level] = levelProgress
+  levelProgress.levelExam = { score, scoredAt: new Date().toISOString() }
+  return saveProgress(progress)
 }
 
 // ──────────────────────────────────────────────────
@@ -660,6 +729,16 @@ export async function syncAllProgressToSupabase(supabase, userId) {
           // quiz
           if (levelData.quizScore) {
             rows.push({ user_id: userId, role_id: roleId, level, type: 'quiz', item_key: 'score', value: levelData.quizScore, updated_at: now })
+          }
+
+          // topic quizzes
+          for (const [topicId, topicData] of Object.entries(levelData.topicQuizzes || {})) {
+            rows.push({ user_id: userId, role_id: roleId, level, type: 'topic_quiz', item_key: topicId, value: topicData, updated_at: now })
+          }
+
+          // level exam
+          if (levelData.levelExam) {
+            rows.push({ user_id: userId, role_id: roleId, level, type: 'level_exam', item_key: 'score', value: levelData.levelExam, updated_at: now })
           }
         }
       }

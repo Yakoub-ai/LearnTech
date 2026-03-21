@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { CheckCircle2, XCircle, RotateCcw, Trophy } from 'lucide-react'
+import { CheckCircle2, XCircle, RotateCcw, Trophy, Flag } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function QuizBlock({ questions = [], roleId, level, onComplete }) {
+export default function QuizBlock({ questions = [], roleId, level, onComplete, topicTitle, onReport }) {
   const [currentQ, setCurrentQ] = useState(0)
   const [selected, setSelected] = useState(null)
   const [showResult, setShowResult] = useState(false)
@@ -84,12 +84,30 @@ export default function QuizBlock({ questions = [], roleId, level, onComplete })
   }
 
   return (
-    <div role="form" aria-label="Quiz" className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3 bg-[var(--color-surface-2)] border-b border-[var(--color-border)]">
+    <div role="form" aria-label={topicTitle ? `Quiz: ${topicTitle}` : 'Quiz'} className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+      {topicTitle && (
+        <div className="px-5 pt-4 pb-0">
+          <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)] mb-1">Topic Quiz</p>
+          <h4 className="text-base font-semibold text-[var(--color-text)]">{topicTitle}</h4>
+        </div>
+      )}
+      <div className={`flex items-center justify-between px-5 py-3 bg-[var(--color-surface-2)] border-b border-[var(--color-border)]${topicTitle ? ' mt-3' : ''}`}>
         <h4 className="text-sm font-semibold text-[var(--color-text)]">Knowledge Check</h4>
-        <span className="text-xs text-[var(--color-text-secondary)]">
-          Question {currentQ + 1} of {questions.length}
-        </span>
+        <div className="flex items-center gap-3">
+          {onReport && (
+            <button
+              onClick={() => onReport(currentQ, question.question)}
+              title="Report an issue with this question"
+              className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-danger)] transition-colors cursor-pointer border-none bg-transparent p-0"
+            >
+              <Flag className="w-3.5 h-3.5" />
+              Report
+            </button>
+          )}
+          <span className="text-xs text-[var(--color-text-secondary)]">
+            Question {currentQ + 1} of {questions.length}
+          </span>
+        </div>
       </div>
 
       <div className="p-5">

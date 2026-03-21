@@ -36,3 +36,12 @@ export async function loadLanguageSetupGuide(languageId) {
   const { languageDevSetupGuides } = await import('../languageDevSetupGuides.js')
   return languageDevSetupGuides[languageId] || null
 }
+
+export async function loadLanguageTopicQuizzes(languageId) {
+  try {
+    const mod = await import(`../languageQuizzes/${languageId}-topics.js`)
+    return mod.topicQuizzes || {}
+  } catch {
+    return {}
+  }
+}

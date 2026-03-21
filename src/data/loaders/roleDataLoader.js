@@ -37,3 +37,12 @@ export async function loadRoleSetupGuide(roleId) {
   const { devSetupGuides } = await import('../devSetupGuides.js')
   return devSetupGuides[roleId] || null
 }
+
+export async function loadRoleTopicQuizzes(roleId) {
+  try {
+    const mod = await import(`../quizzes/${roleId}-topics.js`)
+    return mod.topicQuizzes || {}
+  } catch {
+    return {}
+  }
+}
