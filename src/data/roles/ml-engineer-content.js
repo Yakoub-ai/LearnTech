@@ -46,7 +46,6 @@ For deep explanations of each concept, see the [Beginner Concept Reference](ML-E
 | Neural Networks / Deep Learning | [PyTorch – Official Tutorials](https://pytorch.org/tutorials/) | Docs |
 | Experiment Tracking | [MLflow – Getting Started](https://mlflow.org/docs/latest/getting-started/index.html) | Docs |
 | MLOps | [End-to-end MLOps with Azure ML – Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow/) | Interactive |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 
 ### After completing Mid you should be able to:
 
@@ -70,8 +69,6 @@ For deep explanations of each concept, see the [Mid Concept Reference](ML-Engine
 | Model Monitoring | [Microsoft Learn – Monitor models with Azure ML](https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-monitoring) | Docs |
 | Responsible AI | [Fairlearn – Fairness in ML](https://fairlearn.org/) | Docs |
 | Dynamic Programming | [Dynamic Programming – Full Course](https://www.youtube.com/watch?v=66hDgWottdA) | Video |
-| AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
-| Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 
 ### After completing Senior you should be able to:

@@ -77,7 +77,6 @@ For deep explanations of each concept, see the [Mid Concept Reference](Data-Engi
 | GDPR for Data Engineers | [GDPR Overview – gdpr-info.eu](https://gdpr-info.eu/) | Reference |
 | Microsoft Fabric | [Microsoft Learn – Get Started with Microsoft Fabric](https://learn.microsoft.com/en-us/training/paths/get-started-fabric/) | Interactive |
 | Change Data Capture | [Debezium – Getting Started](https://debezium.io/documentation/reference/stable/tutorial.html) | Docs |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 
 ### After completing Senior you should be able to:
 
