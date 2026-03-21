@@ -1,6 +1,17 @@
 export const additions = {
   beginner: [
     {
+      question: 'In the freeCodeCamp "APIs for Beginners" course, the restaurant analogy is used to explain how APIs work. What role does the API play in this analogy?',
+      options: [
+        'The kitchen — it processes the order and prepares the data',
+        'The customer — it initiates the request and receives the response',
+        'The waiter — it carries the request from the client to the server and brings the response back, without the client needing to know how the server works internally',
+        'The menu — it describes the available data but does not participate in the exchange'
+      ],
+      correctIndex: 2,
+      explanation: 'The course describes the API as the waiter in a restaurant: you (the client) tell the waiter (the API) what you want, and the waiter communicates your order to the kitchen (the server), then brings the result back to you. Critically, you as the customer never need to go into the kitchen or understand how the food is prepared — the waiter abstracts all of that. This maps precisely to how APIs work: the client sends a structured request to the API endpoint, the server processes it according to its own logic, and the API returns the result in a defined format. You do not need to know the server\'s internal implementation to consume the API.'
+    },
+    {
       question: 'According to the "Every Popular API Style Explained" video, what problem does GraphQL solve that REST cannot address efficiently?',
       options: [
         'GraphQL is more secure than REST because it uses binary encoding',
@@ -35,6 +46,17 @@ export const additions = {
     },
   ],
   mid: [
+    {
+      question: 'The Analytics Mania "Google Analytics 4 Tutorial for Beginners" explains that GA4 uses an event-based data model rather than the session-based model used by Universal Analytics. What does this mean in practice for how you implement marketing tracking?',
+      options: [
+        'All pageviews must now be tracked manually because GA4 no longer detects them automatically',
+        'Every user interaction — pageview, click, scroll, form submission, purchase — is recorded as an individual event with a name and parameters, meaning you design your tracking schema around events and their properties rather than sessions and pageviews',
+        'Sessions are still the primary unit of measurement in GA4; the event model only applies to app tracking',
+        'GA4 events can only be sent from server-side code, so client-side tag managers like Google Tag Manager are no longer needed'
+      ],
+      correctIndex: 1,
+      explanation: 'GA4\'s shift to an event-based model fundamentally changes how tracking is architected. Rather than treating a session as the primary container and pageviews as the main metric, every meaningful interaction is an event — including pageviews, which are just an event named "page_view." Each event can carry parameters (e.g., item_name, value, campaign_source) that give context to the interaction. This means a marketing technology developer must think in terms of event schemas: what events need to fire, what parameters each event should carry, and how those events map to the conversions and audiences that campaigns are optimised against. GA4 auto-collects some events via Enhanced Measurement, but custom business events (lead submissions, funnel steps, content engagement) must be designed and implemented deliberately.'
+    },
     {
       question: 'You are building a marketing pipeline that must react within seconds when a customer submits a form on the company website. Which API integration pattern is most appropriate and why?',
       options: [

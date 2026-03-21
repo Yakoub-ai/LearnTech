@@ -20,6 +20,16 @@ Security Engineers protect systems, applications, and data by identifying vulner
 | Security+ Foundations | [Professor Messer – CompTIA Security+ Course](https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/sy0-701-comptia-security-plus-course/) | Video |
 | Hands-on Security Labs | [TryHackMe – Introduction to Cyber Security](https://tryhackme.com/path/outline/introtocyber) | Interactive |
 | Cryptography Basics | [Khan Academy – Cryptography](https://www.khanacademy.org/computing/computer-science/cryptography) | Interactive |
+| Public Key Cryptography | [Public Key Cryptography – Art of the Problem](https://www.youtube.com/watch?v=YEBfamv-_do) | Video |
+
+> **What you'll learn watching this:** How Diffie-Hellman key exchange allows two parties to agree on a shared secret over a public channel using modular arithmetic, without ever transmitting the secret itself — illustrated first with colours, then with the discrete logarithm problem.
+
+**Why it matters:**
+- The paint-colour analogy makes the core insight immediately intuitive: mixing is easy, un-mixing is hard — this asymmetry is the foundation of all public-key cryptography
+- You will see exactly why the discrete logarithm problem is computationally hard for large prime moduli, giving you a genuine understanding of why RSA and Diffie-Hellman are secure
+- The video explains why two people who have never met can nonetheless establish a shared encryption key — a prerequisite to understanding TLS, HTTPS, and every secure internet connection
+- Understanding this mechanism lets you explain to developers why key length matters and what "breaking encryption" would actually require
+- The historical framing (NORAD, early networking) shows why this was a revolutionary breakthrough and why the problem it solves is fundamental to the internet
 
 ### After completing Beginner you should be able to:
 
@@ -53,6 +63,16 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Secu
 | SIEM / Sentinel | [Microsoft Learn – Microsoft Sentinel Fundamentals](https://learn.microsoft.com/en-us/training/paths/security-ops-sentinel/) | Interactive |
 | Secrets Management | [Microsoft Learn – Azure Key Vault](https://learn.microsoft.com/en-us/training/modules/configure-and-manage-azure-key-vault/) | Interactive |
 | GDPR | [GDPR Overview – gdpr-info.eu](https://gdpr-info.eu/) | Reference |
+| TLS / HTTPS Deep Dive | [SSL, TLS, HTTPS Explained – ByteByteGo](https://www.youtube.com/watch?v=j9QmMEWmcfo) | Video |
+
+> **What you'll learn watching this:** How the TLS handshake works step by step — from TCP connection through cipher-suite negotiation, certificate exchange, asymmetric key exchange, and symmetric session encryption — and why HTTPS is not just HTTP with a padlock.
+
+**Why it matters:**
+- The video walks through each phase of the TLS 1.2 handshake in order, letting you trace exactly where each security property (authentication, confidentiality, integrity) is established
+- The explanation of asymmetric vs symmetric encryption and why TLS switches between them (asymmetric is computationally expensive) is directly relevant to designing secure APIs and understanding performance trade-offs
+- Understanding the session key exchange via RSA or Diffie-Hellman makes certificate pinning, MITM attack vectors, and downgrade attacks comprehensible at a mechanical level
+- The comparison of TLS 1.2 (two round trips) with TLS 1.3 (one round trip) explains why upgrading TLS versions improves both security and performance
+- Security engineers who can explain the TLS handshake can reason about misconfigurations, weak cipher suites, expired certificates, and what information an attacker could extract from intercepted traffic
 
 ### After completing Mid you should be able to:
 

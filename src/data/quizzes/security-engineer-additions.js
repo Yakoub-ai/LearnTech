@@ -1,6 +1,28 @@
 export const additions = {
   beginner: [
     {
+      question: 'In the "Public Key Cryptography" video by Art of the Problem, the paint-colour analogy illustrates a one-way function. What property makes a one-way function suitable for cryptography?',
+      options: [
+        'It can be computed in both directions in roughly equal time, providing symmetry',
+        'It is easy to perform in one direction but computationally infeasible to reverse — just as mixing paint colours is trivial but un-mixing them is practically impossible',
+        'It requires a trusted third party to verify the result, making eavesdropping detectable',
+        'It encrypts data using a shared secret that both parties must agree on in advance'
+      ],
+      correctIndex: 1,
+      explanation: 'The video uses paint mixing as a concrete illustration of a one-way function: combining two colours is instant and deterministic, but given only the final mixture it is practically impossible to identify the exact component colours. In the mathematical implementation, this asymmetry comes from the discrete logarithm problem: computing 3^x mod 17 is trivial for any x, but given the result it is computationally infeasible to find x for large prime moduli. This property — easy forward, hard reverse — is what makes Diffie-Hellman and all public-key cryptography secure.'
+    },
+    {
+      question: 'The Art of the Problem "Public Key Cryptography" video shows that Alice and Bob each combine their private number with the other\'s public result to derive the same shared secret. Why can Eve not reproduce this shared secret even though she sees all the public transmissions?',
+      options: [
+        'Eve does not have access to the public prime modulus and generator that Alice and Bob agreed on',
+        'Eve would need one of the private exponents (Alice\'s or Bob\'s) to compute the shared secret, and extracting a private exponent from the public result requires solving the discrete logarithm problem — computationally infeasible for large enough parameters',
+        'Eve cannot perform modular arithmetic without specialised hardware that Alice and Bob possess',
+        'The shared secret is transmitted encrypted using a symmetric key that Eve does not have'
+      ],
+      correctIndex: 1,
+      explanation: 'The video makes this explicit: Eve sees the public prime, the generator, and both parties\' public results (e.g., 6 and 12), but to reconstruct the shared secret she must find the private exponents — which means solving the discrete logarithm problem. With a prime modulus hundreds of digits long, this would take thousands of years even with all computational power on Earth. This is the mathematical guarantee that makes Diffie-Hellman key exchange secure over a public network. The public modulus and generator are intentionally shared — the security comes entirely from the hardness of the discrete logarithm.'
+    },
+    {
       question: 'In the Computerphile "Secret Key Exchange" video, Dr Mike Pound explains that Diffie-Hellman does not actually exchange a key. What does it do instead?',
       options: [
         'It encrypts the key using RSA and sends it securely over the network',
@@ -35,6 +57,28 @@ export const additions = {
     },
   ],
   mid: [
+    {
+      question: 'In the ByteByteGo "SSL, TLS, HTTPS Explained" video, why does the TLS handshake use asymmetric encryption to exchange a session key and then switch to symmetric encryption for the rest of the session?',
+      options: [
+        'Asymmetric encryption is more secure than symmetric encryption, so the switch is a deliberate trade-off in security for performance',
+        'Symmetric encryption cannot be used to encrypt a session key; it can only encrypt application data',
+        'Asymmetric encryption is computationally expensive and not suitable for bulk data transmission; symmetric encryption is fast, so asymmetric is used only for the key exchange and symmetric takes over for the data',
+        'TLS requires two different encryption algorithms to satisfy regulatory requirements for financial applications'
+      ],
+      correctIndex: 2,
+      explanation: 'The video states this directly: "asymmetric encryption is computationally expensive, it is not really suitable for bulk data transmission." The TLS design uses asymmetric encryption (RSA or Diffie-Hellman) for the initial handshake only — specifically to securely transmit or derive a shared symmetric session key over an untrusted network. Once both sides have the session key, all application data is encrypted and decrypted using fast symmetric encryption (e.g., AES). This hybrid approach gives you the security of asymmetric key exchange with the performance of symmetric bulk encryption.'
+    },
+    {
+      question: 'According to the ByteByteGo "SSL, TLS, HTTPS Explained" video, what improvement does TLS 1.3 make over TLS 1.2, and why was TLS 1.2 chosen as the primary example in the video?',
+      options: [
+        'TLS 1.3 removes the need for certificates entirely; TLS 1.2 was chosen because certificates are still widely used',
+        'TLS 1.3 reduces the handshake from two network round trips to one, improving latency; TLS 1.2 was chosen because TLS 1.3 is an optimisation that is harder to explain, and the core concepts still apply to both',
+        'TLS 1.3 uses symmetric encryption exclusively, eliminating asymmetric encryption; TLS 1.2 was chosen to show both encryption types',
+        'TLS 1.3 requires client certificates for mutual authentication; TLS 1.2 is simpler because it only requires the server certificate'
+      ],
+      correctIndex: 1,
+      explanation: 'The video explicitly states: "TLS 1.3 is supported on all major browsers" and "TLS 1.2 takes two network round trips to complete — this is one of the major improvements of TLS 1.3, which optimises the handshake to reduce the number of network round trips to one." The video chose to explain TLS 1.2 first because "we reviewed TLS 1.3 as an optimisation — as with most optimisations, it is a bit harder to explain." For a security engineer, knowing that TLS 1.3 is both more secure (dropping weak cipher suites like RSA key exchange) and faster (one fewer round trip) is important when reviewing TLS configurations and recommending protocol versions.'
+    },
     {
       question: 'When integrating SAST into a CI/CD pipeline, what is the recommended approach to avoid blocking development velocity while still providing security value?',
       options: [

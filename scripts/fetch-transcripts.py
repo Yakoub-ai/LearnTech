@@ -18,7 +18,12 @@ VIDEO_IDS = [
   "V_Kr9OSfDeU","cCOL7MC4Pl0","dLPgQRbVquo","e-5obm1G_FY","hdI2bqOjy3c",
   "jS4aFq5-91M","jjMbPt_H3RQ","nViEqpgwxHE","pTB0EiLXUC8","pd-0G0MigUA",
   "rfscVS0vtbw","t5Bo1Je9EmE","vGVvJuazs84","x7X9w_GIm1s","zQnBQ4tB3ZA",
-  "zsjvFFKOm3c","ztHopE5Wnpc"
+  "zsjvFFKOm3c","ztHopE5Wnpc",
+  # Supplementary videos – under-resourced roles (Task 21)
+  "YEBfamv-_do",  # Art of the Problem – Public Key Cryptography (Diffie-Hellman)
+  "j9QmMEWmcfo",  # ByteByteGo – SSL, TLS, HTTPS Explained
+  "u_ECkoHVlZ8",  # Analytics Mania – Google Analytics 4 Tutorial for Beginners
+  "GZvSYJDk-us",  # freeCodeCamp – APIs for Beginners (full course)
 ]
 # Deduplicate preserving order
 VIDEO_IDS = list(dict.fromkeys(VIDEO_IDS))
@@ -30,7 +35,7 @@ os.makedirs(out_dir, exist_ok=True)
 index = {"available": [], "unavailable": []}
 for fname in os.listdir(out_dir):
   if fname.endswith('.json') and fname != '_index.json':
-    with open(os.path.join(out_dir, fname)) as f:
+    with open(os.path.join(out_dir, fname), encoding="utf-8") as f:
       data = json.load(f)
     if data.get("available"):
       index["available"].append(data["videoId"])

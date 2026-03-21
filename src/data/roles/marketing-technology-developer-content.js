@@ -18,6 +18,16 @@ Marketing Technology Developers apply software engineering and data science to m
 | HTTP Fundamentals | [HTTP Crash Course](https://www.youtube.com/watch?v=iYM2zFP3Zn0) | Video |
 | Networking Basics | [Networking for Developers](https://www.youtube.com/watch?v=qiQR5rTSshw) | Video |
 | Generative AI Overview | [Google – Introduction to Generative AI](https://www.cloudskillsboost.google/course_templates/536) | Course |
+| APIs in Practice | [APIs for Beginners – freeCodeCamp](https://www.youtube.com/watch?v=GZvSYJDk-us) | Video |
+
+> **What you'll learn watching this:** What APIs are, why they exist, and how to call real-world APIs including the Spotify and Twilio APIs — covering authentication, request structure, and response handling in a hands-on full-course format.
+
+**Why it matters:**
+- The course demystifies APIs using the restaurant analogy: you (client) order via the waiter (API), who communicates with the kitchen (server) — you get your result without knowing how the kitchen works
+- Hands-on exercises with live APIs like Spotify and Twilio give you the muscle memory of constructing authenticated requests and handling JSON responses — directly applicable to marketing platform integrations
+- You will learn the difference between API keys, OAuth tokens, and basic authentication so you can securely connect marketing tools to data sources without exposing credentials
+- The course covers REST APIs and HTTP methods in a practical context: GET to retrieve campaign data, POST to trigger events, DELETE to clean up records
+- Marketing technology developers work with APIs constantly — advertising APIs, CRM APIs, analytics collection endpoints, webhook receivers — and this course builds the foundational fluency to move quickly across all of them
 
 ### After completing Beginner you should be able to:
 
@@ -45,6 +55,16 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Mark
 | Customer Data Platforms | [Segment CDP Introduction](https://segment.com/docs/getting-started/) | Docs |
 | Analytics | [Google Analytics 4 – Developer Documentation](https://developers.google.com/analytics/devguides/collection/ga4) | Docs |
 | A/B Testing (Supplement) | [Evan Miller – How Not To Run an A/B Test](https://www.evanmiller.org/how-not-to-run-an-ab-test.html) | Article |
+| GA4 in Practice | [Google Analytics 4 Tutorial for Beginners – Analytics Mania](https://www.youtube.com/watch?v=u_ECkoHVlZ8) | Video |
+
+> **What you'll learn watching this:** How to set up and navigate Google Analytics 4 end to end — account and property structure, data streams, measurement IDs, event tracking, conversion configuration, and how to read the standard reports.
+
+**Why it matters:**
+- GA4's event-based data model is a fundamental shift from session-based Universal Analytics: every user interaction is an event with parameters, which changes how you design tracking schemas and query data
+- The tutorial covers data streams and measurement IDs, which are the integration points between your website or app and the GA4 property — understanding this is required to implement or debug any GA4 tracking code
+- You will see how to configure conversions, which transforms raw events into the business metrics (form submissions, purchases, sign-ups) that marketing campaigns are optimised against
+- Understanding the Explore reports and standard report navigation lets you independently verify that tracking is working correctly and answer stakeholder questions without relying on analysts
+- GA4 is the industry-standard analytics platform; marketing technology developers who can set it up, validate it, and query it are significantly more valuable than those who can only read pre-built dashboards
 
 ### After completing Mid you should be able to:
 
