@@ -12,18 +12,18 @@ Tech Leads and Architects guide technical direction, system design, and engineer
 | Topic | Resource | Type |
 |---|---|---|
 | System Design Intro | [System Design for Beginners Course](https://www.youtube.com/watch?v=m8Icp_Cid5o) | Video |
+| System Design – 20 Concepts | [20 System Design Concepts in 10 Minutes](https://www.youtube.com/watch?v=i53Gi_K3o7I) | Video |
 | AI / ML Literacy | [AI, ML, Deep Learning and GenAI Explained](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
-| DevOps Literacy | [DevOps Literacy – Pluralsight](https://app.pluralsight.com/paths/skills/devops-literacy) | Course |
 | APIs Overview | [Every Popular API Style Explained](https://www.youtube.com/watch?v=xJFzPSAw4Fo) | Video |
-| Generative AI for IT | [Generative AI for IT Pros – Pluralsight](https://app.pluralsight.com/paths/skill/generative-ai-for-it-pros) | Course |
 | Branching Strategy | [Branching Strategy](Prerequisites/Branching-Strategy.md) | Guide |
 | Code Review | [Code Review](Prerequisites/Code-Review.md) | Guide |
 
 ### After completing Beginner you should be able to:
 
 - Describe the main components of a distributed system and their responsibilities
+- Explain the difference between vertical and horizontal scaling, and when to use each
 - Explain what DevOps is and how CI/CD pipelines enable reliable delivery
-- Compare REST, GraphQL and event-driven API styles
+- Compare REST, GraphQL, gRPC and event-driven API styles
 - Explain what large language models are and where they fit in a system architecture
 - Apply the branching strategy and conduct a code review
 
@@ -36,11 +36,8 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Tech
 | Topic | Resource | Type |
 |---|---|---|
 | System Design – 30 Concepts | [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
-| Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
-| Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
-| Prompt Engineering | [Prompt Engineering and GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/prompt-engineering-and-generative-ai) | Course |
-| Leading Teams | [Leading Teams and Individuals – Pluralsight](https://app.pluralsight.com/paths/skills/leading-teams-and-individuals) | Course |
 | System Design Case Study | [Uber – System Design Interview](https://www.youtube.com/watch?v=DGtalg5efCw) | Video |
+| Domain-Driven Design | [DDD Crash Course](https://www.youtube.com/watch?v=4rhzdZIDX_k) | Video |
 | Security Architecture | [OWASP Top Ten](https://owasp.org/www-project-top-ten/) | Docs |
 | Azure Well-Architected Framework | [Microsoft Learn – Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/well-architected/) | Docs |
 | Cloud Adoption Framework | [Microsoft Learn – Cloud Adoption Framework](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/) | Docs |
@@ -50,10 +47,9 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Tech
 
 - Break down a complex system into bounded contexts using DDD
 - Select appropriate architecture patterns for given requirements
-- Facilitate a system design discussion with a team
+- Facilitate a system design discussion with a team, walking through functional and non-functional requirements
 - Lead a code review effectively
-- Identify and articulate security risks in a system design
-- Apply prompt engineering to improve AI integrations
+- Identify and articulate security risks in a system design using STRIDE and OWASP
 - Apply the five pillars of the Azure Well-Architected Framework to evaluate a system design
 - Write and maintain Architecture Decision Records (ADRs) to document significant technical choices
 
@@ -65,15 +61,10 @@ For deep explanations of each concept, see the [Mid Concept Reference](Tech-Lead
 
 | Topic | Resource | Type |
 |---|---|---|
-| Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | LLM Agent Architecture | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
 | LLM Security Patterns | [Design Patterns for Securing LLM Agents](https://arxiv.org/abs/2506.08837) | Paper |
 | LLM Security Reference | [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/) — Industry-standard security reference for LLM systems | Reference |
-| Context Engineering | [Context Engineering – Pluralsight](https://app.pluralsight.com/paths/skills/context-engineering) | Course |
-| Advanced AI-Assisted Dev | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
 | Incident Management | [PagerDuty Incident Response Documentation](https://response.pagerduty.com/) | Docs |
 
 ### After completing Senior you should be able to:
@@ -83,6 +74,7 @@ For deep explanations of each concept, see the [Mid Concept Reference](Tech-Lead
 - Design an LLM agent architecture with appropriate guardrails
 - Apply context engineering to production AI systems
 - Lead an incident response process and facilitate blameless post-mortems
+- Design a real-world, large-scale system end-to-end — decomposing requirements, selecting communication protocols, applying geospatial indexing and distributed locking patterns
 
 For deep explanations of each concept, see the [Senior Concept Reference](Tech-Lead-Architect/Senior.md).
 
@@ -101,16 +93,19 @@ This document provides detailed explanations of the foundational concepts covere
 
 System design is the process of defining the architecture, components, data flows and interactions of a system to satisfy a given set of requirements. For a tech lead or architect, understanding system design is not optional — it is the core skill that separates a senior individual contributor from someone who can guide an entire team or programme.
 
-A distributed system is a collection of independent components that work together and appear to the user as a single coherent system. Common components include clients (browsers, mobile apps, CLI tools), load balancers (which distribute traffic across servers), application servers (which execute business logic), databases (which persist state), caches (which store frequently read data in fast memory), message queues (which decouple producers and consumers), and content delivery networks (which serve static assets close to users).
+A distributed system is a collection of independent components that work together and appear to the user as a single coherent system. The "System Design for Beginners" video walks through the essential building blocks that appear again and again in real systems: clients (browsers, mobile apps, CLI tools), load balancers (which distribute traffic across servers), application servers (which execute business logic), databases (which persist state), caches (which store frequently read data in fast memory), message queues (which decouple producers and consumers), and content delivery networks (which serve static assets close to users).
 
 Each component has a clear responsibility, and part of an architect's job is to ensure that responsibilities are not mixed inappropriately — for example, having business logic leak into the database tier, or allowing the client to make decisions that belong on the server.
 
-System design always involves trade-offs. There is no universally correct architecture. Choosing a relational database gives you strong consistency and mature tooling but may limit horizontal scalability. Choosing an eventually consistent NoSQL store gives you write throughput but complicates application logic. Understanding the CAP theorem — which states that a distributed system can guarantee at most two of consistency (all nodes see the same data at the same time), availability (every request receives a response) and partition tolerance (the system continues operating despite network partitions between nodes) — gives you a framework for reasoning about these trade-offs honestly. In practice, network partitions are an unavoidable reality in any distributed system, so partition tolerance is not negotiable. The genuine trade-off is between consistency and availability: during a partition, do you refuse requests to protect data integrity, or do you serve potentially stale data to remain available? Importantly, CAP is a per-partition-event trade-off, not a permanent architectural choice — a system can favour consistency for some operations and availability for others, and the trade-off only materialises when a partition actually occurs.
+A request's journey through a typical web system begins when a client types a domain name. The Domain Name System (DNS) translates that human-readable name into an IP address — the unique identifier that lets the client locate and connect to the correct server. Once the IP address is known, the client establishes a TCP connection and sends an HTTP request, which includes a header (containing metadata such as the request type and authentication tokens) and optionally a body (containing the payload). The server processes the request, interacts with downstream services such as a database or cache, and returns an HTTP response. This request/response cycle is the backbone of almost every web application.
+
+System design always involves trade-offs. There is no universally correct architecture. Choosing a relational database gives you strong consistency and mature tooling but may limit horizontal scalability. Choosing an eventually consistent NoSQL store gives you write throughput but complicates application logic. Understanding the CAP theorem — which states that a distributed system can guarantee at most two of consistency (all nodes see the same data at the same time), availability (every request receives a response) and partition tolerance (the system continues operating despite network partitions between nodes) — gives you a framework for reasoning about these trade-offs honestly. In practice, network partitions are an unavoidable reality in any distributed system, so partition tolerance is not negotiable. The genuine trade-off is between consistency and availability: during a partition, do you refuse requests to protect data integrity, or do you serve potentially stale data to remain available?
 
 **Why it matters:** As a tech lead, every significant technical conversation eventually becomes a conversation about trade-offs. You need a shared vocabulary for these discussions — one that lets you articulate why a design choice has costs, not just benefits. The moment you can walk a team through a whiteboard diagram explaining what each component does and why it is there, you stop being a senior developer and start being an architect.
 
 **Key things to understand:**
 - The purpose of each major component type and when to use each
+- How DNS resolves a domain name and why this matters for system design
 - How data flows through a system end-to-end for a typical request
 - What trade-offs exist between consistency, availability, performance and cost
 - Why requirements drive architecture, not the other way around
@@ -127,11 +122,15 @@ System design always involves trade-offs. There is no universally correct archit
 
 Scalability is the ability of a system to handle increased load without a proportional increase in cost or degradation in performance. Reliability is the ability of a system to perform its intended function correctly and consistently over time. Availability is the proportion of time a system is operational and accessible. These three properties are related but distinct, and a tech lead must be able to reason about all of them when evaluating a design.
 
+The "20 System Design Concepts" video gives a concise mental model: start with a single server, add load. The first instinct is vertical scaling — give the machine more RAM, upgrade the CPU. It works, it is simple, and it has no code changes. But it hits a ceiling fast, and it is a single point of failure. The better long-term answer is horizontal scaling: add more machines, distribute the load with a load balancer, and accept that you now need to manage a pool of servers rather than one.
+
 Vertical scaling (scaling up) means giving an existing machine more resources: a faster CPU, more RAM, or faster storage. It is simple to implement because the application does not need to change. However, it has a hard ceiling — there is a maximum machine size — and it introduces a single point of failure if that one machine goes down.
 
-Horizontal scaling (scaling out) means adding more machines and distributing load across them. A load balancer sits in front of the pool of servers and routes incoming requests, typically using strategies such as round-robin, least-connections, or consistent hashing. Horizontal scaling removes the ceiling and improves resilience because losing one node does not take the whole system down. The cost is complexity: the application must be stateless or externalise state so that any instance can serve any request.
+Horizontal scaling (scaling out) means adding more machines and distributing load across them. A load balancer sits in front of the pool of servers and routes incoming requests, typically using strategies such as round-robin (cycling through servers in sequence), least-connections (routing to whichever server has the fewest active requests) or consistent hashing (mapping a request to a server based on a hash of a key, which is useful when session affinity is needed). Horizontal scaling removes the ceiling and improves resilience because losing one node does not take the whole system down. The cost is complexity: the application must be stateless or externalise state so that any instance can serve any request.
 
-Caching is one of the most effective scalability tools available. Storing the results of expensive computations or database reads in memory (for example with Redis) dramatically reduces the load on downstream systems. The main challenge is cache invalidation — knowing when a cached value is stale. Three common strategies are: time-to-live (the cached value expires after a fixed duration), write-through (the cache is updated whenever the source data is written) and cache-aside (the application checks the cache first and populates it on a miss).
+Caching is one of the most effective scalability tools available. Storing the results of expensive computations or database reads in memory (for example with Redis) dramatically reduces the load on downstream systems. The main challenge is cache invalidation — knowing when a cached value is stale. Three common strategies are: time-to-live (the cached value expires after a fixed duration), write-through (the cache is updated whenever the source data is written) and cache-aside (the application checks the cache first and populates it on a miss). The "20 System Design Concepts" video illustrates the cache hierarchy from CDN down to CPU cache — each layer trades capacity for speed, and every layer follows the same principle.
+
+Content Delivery Networks (CDNs) apply the same caching principle at a geographic scale. Static assets such as images, JavaScript files and videos are replicated to CDN servers distributed around the world. A user in Tokyo receives files from a Tokyo CDN node rather than waiting for data to travel from a data centre in Europe — reducing latency significantly without changing the application.
 
 Database scaling has its own vocabulary. Read replicas serve read traffic from copies of the primary database. Sharding splits data across multiple database instances by a key such as user ID. Both approaches add operational complexity and require careful design.
 
@@ -142,8 +141,9 @@ Reliability and availability are improved by eliminating single points of failur
 **Key things to understand:**
 - When vertical scaling is appropriate and where its limits lie
 - What statelessness means and why it is a prerequisite for horizontal scaling
-- How load balancers distribute traffic and why session affinity complicates horizontal scaling
+- How load balancers distribute traffic using round-robin, least-connections and consistent hashing
 - The role of caching and the challenges of cache invalidation
+- How CDNs extend caching to a global geographic scale
 - The difference between reliability (correct behaviour) and availability (uptime)
 - Basic database scaling strategies: read replicas and sharding
 
@@ -159,21 +159,25 @@ Reliability and availability are improved by eliminating single points of failur
 
 An API (application programming interface) defines how two software components communicate. Choosing the right API style for a given integration is an architectural decision with long-term consequences, and tech leads are routinely called on to make or ratify this choice.
 
-REST (Representational State Transfer) is the most widely used style for public-facing web APIs. It uses standard HTTP methods (GET, POST, PUT, DELETE) and URLs that represent resources. REST is stateless, cacheable and well understood, making it a safe default for most web integrations. Its main limitation is over-fetching (the client receives more data than it needs) or under-fetching (the client must make multiple requests to assemble a complete view).
+The "System Design for Beginners" course frames this clearly: HTTP is too low-level for most developers to work with directly — it handles individual data packets. We use higher-level application protocols like REST, GraphQL and gRPC to agree on how requests and responses are structured, what formats are used and how errors are communicated.
 
-GraphQL is a query language that allows the client to specify exactly what data it needs in a single request. This solves the over- and under-fetching problems of REST and is particularly valuable for complex UIs that aggregate data from many resources. The trade-off is a more complex server implementation and less natural use of HTTP caching.
+REST (Representational State Transfer) is the most widely used style for public-facing web APIs. It uses standard HTTP methods (GET, POST, PUT, DELETE) and URLs that represent resources. REST is stateless, cacheable and well understood, making it a safe default for most web integrations. Response codes carry meaning: 200 for success, 400-level codes for client errors, 500-level codes for server errors. REST's main limitation is over-fetching (the client receives more data than it needs) or under-fetching (the client must make multiple requests to assemble a complete view).
 
-gRPC is a high-performance remote procedure call framework that uses Protocol Buffers for serialisation. It is strongly typed and generates client and server code from a schema. gRPC is well suited for internal service-to-service communication where performance and type safety matter more than human readability.
+GraphQL is a query language that allows the client to specify exactly what data it needs in a single request. Introduced by Facebook in 2015, it solves the over- and under-fetching problems of REST and is particularly valuable for complex UIs that aggregate data from many resources. The trade-off is a more complex server implementation and less natural use of HTTP caching.
 
-Event-driven APIs decouple producers and consumers through a message broker such as Kafka or Azure Service Bus. Instead of one service calling another synchronously, it emits an event and any interested consumer processes it asynchronously. This improves resilience and scalability but makes the system harder to trace and debug.
+gRPC is a high-performance remote procedure call framework released by Google in 2016 that uses Protocol Buffers for serialisation. Protocol Buffers encode data in binary, making them more compact and faster to transmit than JSON. gRPC is strongly typed and generates client and server code from a schema. It is well suited for internal service-to-service communication where performance and type safety matter more than human readability.
+
+Event-driven APIs decouple producers and consumers through a message broker such as Kafka or Azure Service Bus. Instead of one service calling another synchronously, it emits an event and any interested consumer processes it asynchronously. WebSockets take a different approach to the synchronous/asynchronous distinction: they establish a persistent, bidirectional connection between client and server, enabling real-time push communication without polling. WebHooks provide server-to-server event notification via an HTTP POST to a pre-registered URL.
 
 **Why it matters:** A tech lead who defaults to REST for every integration will create the wrong tool for the job repeatedly. The choice of API style shapes the coupling between services, the performance characteristics of the system and the experience of the teams that consume your APIs. Understanding when each style is appropriate — and being able to explain that reasoning to a team — is a core architectural responsibility.
 
 **Key things to understand:**
 - The fundamental model of each API style and the problem it solves
+- How HTTP response codes communicate success and failure in REST APIs
 - When to choose each style based on consumer type, latency requirements and coupling tolerance
 - The difference between synchronous and asynchronous communication and the implications for error handling
 - Why event-driven communication introduces eventual consistency and what that means for the application
+- How WebSockets enable real-time bidirectional communication
 
 **Common pitfalls:**
 - Choosing GraphQL for simple CRUD APIs where REST is sufficient
@@ -266,6 +270,47 @@ Code review is not primarily about finding bugs — automated tests do that bett
 
 
 This document provides detailed explanations of the concepts covered in the Mid level of the Tech Lead / Architect learning path. At this level the focus shifts from understanding individual technologies to designing systems deliberately and leading the people who build them.
+
+---
+
+## System Design at Scale – The 30 Concepts That Separate Good from Great
+
+The "System Design was HARD until I Learned these 30 Concepts" video provides a comprehensive taxonomy of the patterns and techniques that appear in every large-scale system. Rather than treating these as independent facts, a tech lead should understand how they compose: each concept solves a specific problem, and real systems combine many of them.
+
+**Client-server architecture and the network layer.** Every web application rests on the client-server model. The client sends requests; the server processes and responds. DNS translates domain names to IP addresses. Reverse proxies (including load balancers) intercept requests before they reach application servers. HTTPS encrypts all traffic in transit using TLS, preventing interception of data in plain text. These primitives are the foundation; everything else builds on top.
+
+**Database scaling techniques.** The video enumerates five key database scaling techniques that a tech lead must be able to reason about:
+- *Indexing* is the first lever to pull. A database index — like the index at the back of a book — allows the engine to jump directly to matching rows without scanning the entire table. Indexes accelerate reads at the cost of slower writes and additional storage; they should be created on columns used frequently in queries.
+- *Replication* creates read replicas — copies of the primary database that handle read traffic. A primary replica accepts all writes and propagates changes to the read replicas. This improves read throughput and availability; if the primary fails, a replica can be promoted. Replication is the right tool for read-heavy workloads.
+- *Sharding* (horizontal partitioning) splits data across multiple database instances using a shard key such as user ID. Each shard handles a subset of the data, distributing both storage and write load. Sharding is complex — it complicates cross-shard queries and resharding — and should be a last resort after simpler techniques are exhausted.
+- *Vertical partitioning* splits a wide table into narrower ones, each containing a logically related subset of columns. This reduces the amount of data scanned per query when different workloads access different column subsets.
+- *Denormalisation* pre-joins frequently combined data into a single table, trading write overhead and storage for faster reads. It is commonly used in read-heavy analytical workloads where join latency is the bottleneck.
+
+**Caching and CDNs.** The video reinforces the cache-aside pattern: check the cache first; on a miss, fetch from the database and populate the cache with a TTL. This simple pattern, consistently applied, can absorb the majority of read load for many workloads. CDNs extend the same principle geographically for static content.
+
+**Blob storage and large files.** Traditional databases are not suited to storing large unstructured files. Object storage (such as Azure Blob Storage or Amazon S3) stores files in logical containers, assigns each a unique URL and replicates them automatically. This is the standard pattern for images, videos and documents in any cloud-native system. Pairing blob storage with a CDN eliminates latency for static media delivery.
+
+**Distributed system fundamentals.** The video connects these scaling techniques to the CAP theorem — at scale, you must choose between consistency and availability when a network partition occurs. This is not an abstract theorem; it surfaces in real architectural decisions such as whether a write that cannot reach a replica should block or succeed with eventual propagation.
+
+**Rate limiting and idempotency.** As systems grow, protecting them from overload and duplicate requests becomes critical. Rate limiting assigns a request quota per client (e.g. 100 requests per minute) and rejects requests that exceed it. Common algorithms include fixed window, sliding window and token bucket — each with different burst-handling characteristics. Idempotency ensures that retried requests produce the same outcome as the original: a payment retried due to a network timeout should not charge the customer twice. Implementing idempotency requires assigning a unique ID to each request and checking whether it has already been processed before acting on it.
+
+**API gateway.** A centralised API gateway handles cross-cutting concerns — authentication, rate limiting, logging, monitoring, request routing — for a suite of microservices. Rather than exposing each service directly to the internet and duplicating these concerns in every service, the gateway acts as a single entry point. This is the standard pattern in any microservices architecture.
+
+**Message queues and async communication.** Direct synchronous API calls between services create tight coupling and cascading failures. A message queue (such as Kafka or Azure Service Bus) introduces asynchronous decoupling: the producer places a message in the queue and returns; the consumer retrieves and processes it independently. This absorbs traffic spikes, prevents overload propagation and enables fan-out to multiple consumers.
+
+**Why it matters:** A tech lead who has internalised these 30 concepts can hold an intelligent technical conversation about any layer of a large system — from DNS resolution to database sharding to rate limiting to blob storage. More importantly, they can sequence these solutions correctly: do not shard before you have indexed; do not cache before you have profiled; do not go async before you understand the consistency implications.
+
+**Key things to understand:**
+- The five database scaling techniques and when to apply each in sequence
+- The CAP theorem as it applies to real sharding and replication decisions
+- Rate limiting algorithms and why idempotency is a prerequisite for safe retries
+- How an API gateway centralises cross-cutting concerns for microservices
+- When to introduce message queues and what consistency trade-offs they entail
+
+**Common pitfalls:**
+- Reaching for sharding or denormalisation before exhausting simpler techniques like indexing and replication
+- Implementing caching without a cache invalidation strategy, leading to stale data being served indefinitely
+- Adding rate limiting without first ensuring idempotency — a rate-limited retry can still cause duplicates if the original request partially succeeded
 
 ---
 
@@ -499,7 +544,7 @@ Retrieval-Augmented Generation (RAG) is an architectural pattern in which releva
 
 ## Azure Well-Architected Framework
 
-The Azure Well-Architected Framework (WAF) is Microsoft's set of guiding principles for designing and operating cloud workloads. It defines five pillars — Reliability, Security, Cost Optimisation, Operational Excellence, and Performance Efficiency — that provide a structured approach to evaluating architectural decisions. For LF, where Azure is the primary cloud platform and a defined set of approved services exists, WAF provides the framework for making consistent, defensible architectural choices.
+The Azure Well-Architected Framework (WAF) is Microsoft's set of guiding principles for designing and operating cloud workloads. It defines five pillars — Reliability, Security, Cost Optimisation, Operational Excellence, and Performance Efficiency — that provide a structured approach to evaluating architectural decisions.
 
 WAF is not just a Microsoft checklist — it codifies principles that apply to any cloud architecture. The framework includes design principles, design review checklists, Azure Advisor recommendations, and reference architectures. The Well-Architected Review is a structured assessment that evaluates a workload against all five pillars and produces prioritised recommendations.
 
@@ -509,12 +554,10 @@ The Cloud Adoption Framework (CAF) complements WAF by providing guidance for the
 
 **Key things to understand:**
 - Reliability: the ability of a system to recover from failures and continue to function. Design for failure: use availability zones, implement health probes, design retry policies, plan for disaster recovery. Key question: what happens when this component fails?
-- Security: protect the workload from threats through defence in depth. Identity-based access control (Azure Entra ID), network segmentation, encryption at rest and in transit, security monitoring. At LF, this aligns with the approved security services (Key Vault for secrets, PIM for privileged access, LF Root CA for certificates)
-- Cost Optimisation: deliver business value while minimising unnecessary spending. Right-size resources, use auto-scaling, choose appropriate pricing tiers, implement cost alerts. For LF, this means using approved services (Container Apps instead of full AKS where appropriate, Functions for event-driven workloads) which are pre-negotiated and well-understood
+- Security: protect the workload from threats through defence in depth. Identity-based access control, network segmentation, encryption at rest and in transit, security monitoring.
+- Cost Optimisation: deliver business value while minimising unnecessary spending. Right-size resources, use auto-scaling, choose appropriate pricing tiers, implement cost alerts.
 - Operational Excellence: the processes and practices that keep a workload running in production. Infrastructure as code, CI/CD, monitoring and alerting, incident management, documentation. Key question: can the team that inherits this system operate it successfully?
-- Performance Efficiency: the ability of a workload to scale and meet demand. Identify bottlenecks, implement caching, choose appropriate compute (Container Apps for HTTP workloads, Functions for event-driven), use CDN for static content, design for horizontal scaling
-- LF approved services alignment: architectural decisions should prioritise approved Azure services. Container Apps for containerised workloads, Azure Functions for event-driven compute, Azure SQL Database and CosmosDB for data, Key Vault for secrets and certificates, Azure Monitor for observability. Using approved services reduces operational burden and security risk
-- Design reviews: use the WAF design review checklists as a structured approach for evaluating system designs in architecture reviews. Walk through each pillar and assess how the design addresses reliability, security, cost, operations, and performance
+- Performance Efficiency: the ability of a workload to scale and meet demand. Identify bottlenecks, implement caching, choose appropriate compute, use CDN for static content, design for horizontal scaling.
 
 **Common pitfalls:**
 - Optimising for one pillar at the expense of others — a maximally reliable system may be prohibitively expensive. WAF is about finding the right balance for your specific workload and business requirements
@@ -526,6 +569,49 @@ The Cloud Adoption Framework (CAF) complements WAF by providing guidance for the
 
 
 This document provides detailed explanations of the concepts covered in the Senior level of the Tech Lead / Architect learning path. At this level the focus is on enterprise-scale decision-making, the architecture of AI-powered systems and the organisational practices that let those systems be built and governed responsibly.
+
+---
+
+## Real-World System Design – Lessons from the Uber Case Study
+
+The Uber system design video is one of the most instructive publicly available breakdowns of a production-scale, real-time system. Working through it rigorously provides a template for how senior architects approach any complex system design problem: start with requirements, model the data, define APIs, walk the key flows, then dive into the hard technical problems that the flows expose.
+
+**Requirements-first design.** The video begins not with components but with functional requirements (what the system must do) and non-functional requirements (how well it must do it). For Uber, the functional requirements are: ride requests with fare estimates, driver matching, real-time driver tracking and push notifications. The non-functional requirements are: support 100 million+ daily active users, high availability (24/7, minimal downtime), low latency (fast even on poor networks). This decomposition discipline prevents the most common system design error: jumping to solutions before understanding the problem.
+
+**Data modelling shapes the entire system.** The data model in the video — Riders, Drivers, Vehicles, Fares, Rides, Payments — is not an afterthought. The Rides table has a status field (requested, accepted, completed, cancelled) and a transactional integrity requirement (ride creation and payment must be atomic). This immediately points to a relational database with ACID guarantees (PostgreSQL) for the core transactional data, rather than a NoSQL store — because the operations that modify this data are financial in nature and consistency cannot be traded away.
+
+**Protocol selection is a design decision, not an implementation detail.** The video explicitly compares four real-time communication approaches for driver location updates — long polling, Server-Sent Events, WebSockets and QUIC — and selects WebSockets for two reasons: bidirectional communication (the driver sends location, the rider receives updates) and widespread understanding. The analysis matters more than the conclusion: a senior architect should be able to walk through this comparison for any real-time requirement, articulating the trade-offs of each option rather than defaulting to WebSockets automatically.
+
+**Geospatial indexing is a first-class concern.** Matching a rider to a nearby driver requires answering the question "which drivers are within X km of this location?" efficiently. The video compares three approaches:
+- *Geohashing* encodes latitude and longitude into a short alphanumeric string. The world is divided into a hierarchical grid; the longer the geohash prefix, the more granular the cell. Finding nearby drivers means searching the same geohash cell and its neighbours — a simple prefix query in Redis. It is straightforward to implement and sufficient for most ride-sharing use cases, though cell shapes become distorted at high latitudes.
+- *Quadtrees* use a hierarchical tree structure that recursively divides space into four quadrants. They adapt naturally to data density — a dense city block gets finer subdivision than a rural area — making them efficient when driver density varies significantly. The trade-off is higher implementation complexity.
+- *H3 (Uber's hexagonal index)* tessellates the globe with hexagons, which have better geometric properties than rectangles (more uniform area, better K-nearest-neighbour search behaviour). Uber uses H3 in production for this reason, but its implementation complexity is higher than geohashing.
+
+A senior architect chooses geohashing for a new system because it is simple, correct for the scale and debuggable. They know about H3 and can explain why Uber uses it — and they can describe the conditions under which migrating to H3 would be justified.
+
+**Distributed locking prevents race conditions at the critical path.** When the driver assignment service identifies candidate drivers and attempts to assign a ride, a race condition exists: two driver assignment service instances could simultaneously offer the same ride to the same driver. The solution is a Redis-based distributed lock. Before making a ride offer, the service acquires a lock on the ride ID. If the lock acquisition fails, another instance already holds it and the current instance moves to the next candidate. The lock is released when the driver accepts or declines. This pattern — acquire lock, perform critical section, release — is fundamental to distributed systems and appears in payment processing, inventory management and any scenario where duplicate action would be harmful.
+
+**Scaling a system like Uber.** The video's additional discussion points map to the same scaling techniques from the 30 Concepts video, now applied to a concrete system:
+- The location Redis cluster is sharded by region or driver ID with master-replica configurations and Redis Sentinel for failover.
+- The PostgreSQL database uses read replicas for reads and partitioning or sharding for write scaling.
+- WebSocket servers require sticky sessions or TCP-level load balancing to maintain persistent connections, along with heartbeat mechanisms to detect and clean up stale connections.
+- Monitoring uses Prometheus and Grafana for real-time metrics; centralised logging aggregates from all services; structured JSON logs enable fast querying.
+
+**Why it matters:** A senior architect does not just understand the building blocks of distributed systems in the abstract — they can apply them to a specific, constrained design problem under time pressure. The Uber case study demonstrates how requirements constrain technology choices, how data models interact with consistency requirements, how protocol selection follows from communication patterns and how the same scaling primitives (sharding, replication, caching, distributed locking) appear at every layer of a real system.
+
+**Key things to understand:**
+- How to decompose a system design problem into functional requirements, non-functional requirements, data model, API and key flows before touching implementation
+- Why ACID-compliant relational databases are the right choice for financial data, even in a high-scale system
+- The trade-offs between geohashing, quadtrees and H3 hexagonal indexing for geospatial proximity queries
+- How distributed locking with Redis prevents race conditions in concurrent distributed workflows
+- The scaling properties of WebSocket servers and why they require different load balancing strategies than HTTP servers
+- How to structure the monitoring and observability of a real-time, multi-service system
+
+**Common pitfalls:**
+- Beginning a system design with the technology stack rather than the requirements — the choice of database, protocol and data structure should follow from what the system must do
+- Treating geospatial indexing as a solved problem without understanding the accuracy vs. performance trade-offs of each approach
+- Using a single database for both transactional and location data — they have very different access patterns and scaling requirements
+- Designing distributed systems without a locking strategy for shared, mutable state
 
 ---
 
@@ -649,7 +735,7 @@ Internal AI policy defines what AI tools and models are approved for use, under 
 
 The Secure AI Framework (SAIF) provides a set of principles for building AI systems that are secure by design. Its core principles cover securing the AI supply chain (models, training data, third-party components), protecting AI systems at runtime (access controls, monitoring, adversarial input detection), ensuring model outputs are monitored and validated and maintaining the ability to detect and respond to model misbehaviour. As an architect, you translate SAIF principles into concrete design requirements: which threat models apply, which controls are implemented in infrastructure versus application code and how compliance is demonstrated.
 
-Regulatory context is evolving rapidly. The EU AI Act introduces risk-based obligations: high-risk AI systems (those that affect access to credit, employment, education or public services) face requirements around transparency, human oversight, data governance and conformity assessment. The August 2026 deadline for high-risk AI system compliance is particularly relevant to insurance, where AI used in credit decisions, claims assessment and underwriting falls squarely within the high-risk category. An architect working in a regulated industry must understand which risk tier applies to each system and what technical obligations follow.
+Regulatory context is evolving rapidly. The EU AI Act introduces risk-based obligations: high-risk AI systems (those that affect access to credit, employment, education or public services) face requirements around transparency, human oversight, data governance and conformity assessment. An architect working in a regulated industry must understand which risk tier applies to each system and what technical obligations follow.
 
 **Why it matters:** Policy and regulation are not the legal team's problem alone — they translate directly into architecture decisions. A system that cannot demonstrate which model version made a given decision, or that sends customer data to an unapproved model API, is both a compliance risk and a reputational one. A senior architect who understands the policy landscape can design compliance in from the start rather than retrofitting it under pressure before an audit.
 
@@ -691,33 +777,6 @@ The long-term value of ADRs is disproportionate to the effort of writing them. N
 - Writing ADRs as retrospective documentation rather than as part of the decision process — the value is in the thinking, not just the record
 - Storing ADRs in a wiki that is not co-located with the code — they become disconnected from the system they describe
 - Allowing the ADR backlog to grow stale without a regular review cycle, eroding trust in the records
-
----
-
-## AI Policy — Organisational Principles (English Summary)
-
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English to ensure all engineers can understand and apply them.
-
-The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
-
-Responsible AI principles are embedded throughout the policy. These include diversity and non-discrimination (AI systems must not produce biased or discriminatory outcomes), transparency (users and affected parties must understand when and how AI is used), robustness (AI systems must perform reliably and handle errors gracefully), security (AI systems must be protected against adversarial manipulation and data breaches), and privacy (personal data must be handled in accordance with GDPR and internal data classification policies).
-
-The AI Register requires that all AI use cases within the organisation are registered and classified by risk level. This classification determines the governance requirements — from lightweight documentation for low-risk use cases to full conformity assessments for high-risk systems. High-risk AI systems, particularly those affecting access to financial services such as insurance, require conformity assessments demonstrating compliance with transparency, human oversight, data quality, and technical robustness requirements.
-
-Staff using AI tools and systems must understand the limitations of AI technology and the requirements of the policy. This applies to all roles — from architects designing AI systems to developers building them and business users employing AI-assisted tools.
-
-**Why it matters:** As the section above on "AI Policy and the Secure AI Framework – Architect Responsibilities" describes, architects translate policy into architecture. This English summary ensures that the specific policy principles — particularly the AI Register, risk classification, responsible AI principles, and GDPR requirements — are accessible to all team members regardless of language, enabling consistent application across the organisation.
-
-**Key things to understand:**
-- Every AI use case must be registered in the AI Register with a risk classification before development begins.
-- The risk classification determines governance requirements: low-risk use cases need basic documentation; high-risk use cases need conformity assessments.
-- The responsible AI principles (non-discrimination, transparency, robustness, security, privacy) are design constraints that architects must embed in system architecture.
-- GDPR obligations apply throughout the AI lifecycle — from training data through inference to logged outputs.
-
-**Common pitfalls:**
-- Designing AI system architecture without consulting the AI Policy, then discovering compliance gaps during review.
-- Assuming that the AI Policy only applies to customer-facing AI systems; internal AI tools and development assistants are also in scope.
-- Not propagating policy requirements to development teams — the architect must ensure that policy constraints are reflected in technical specifications and design documents.
 
 ---
 
