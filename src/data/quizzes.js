@@ -1726,6 +1726,28 @@ export const quizzes = {
         ],
         correctIndex: 1,
         explanation: 'Parameterised queries (also called prepared statements) separate the SQL command from the user-supplied data at the database protocol level — the database engine never parses the user\'s input as SQL. Input validation can help as an additional layer but is not sufficient on its own because attackers can use encoding, Unicode normalisation, and other techniques to bypass character-level filters. Using parameterised queries removes the fundamental cause of SQL injection rather than trying to detect all possible attack payloads.'
+      },
+      {
+        question: 'In the "Public Key Cryptography" video by Art of the Problem, the paint-colour analogy illustrates a one-way function. What property makes a one-way function suitable for cryptography?',
+        options: [
+          'It can be computed in both directions in roughly equal time, providing symmetry',
+          'It is easy to perform in one direction but computationally infeasible to reverse — just as mixing paint colours is trivial but un-mixing them is practically impossible',
+          'It requires a trusted third party to verify the result, making eavesdropping detectable',
+          'It encrypts data using a shared secret that both parties must agree on in advance'
+        ],
+        correctIndex: 1,
+        explanation: 'The video uses paint mixing as a concrete illustration of a one-way function: combining two colours is instant and deterministic, but given only the final mixture it is practically impossible to identify the exact component colours. In the mathematical implementation, this asymmetry comes from the discrete logarithm problem: computing 3^x mod 17 is trivial for any x, but given the result it is computationally infeasible to find x for large prime moduli. This property — easy forward, hard reverse — is what makes Diffie-Hellman and all public-key cryptography secure.'
+      },
+      {
+        question: 'The Art of the Problem "Public Key Cryptography" video shows that Alice and Bob each combine their private number with the other\'s public result to derive the same shared secret. Why can Eve not reproduce this shared secret even though she sees all the public transmissions?',
+        options: [
+          'Eve does not have access to the public prime modulus and generator that Alice and Bob agreed on',
+          'Eve would need one of the private exponents (Alice\'s or Bob\'s) to compute the shared secret, and extracting a private exponent from the public result requires solving the discrete logarithm problem — computationally infeasible for large enough parameters',
+          'Eve cannot perform modular arithmetic without specialised hardware that Alice and Bob possess',
+          'The shared secret is transmitted encrypted using a symmetric key that Eve does not have'
+        ],
+        correctIndex: 1,
+        explanation: 'The video makes this explicit: Eve sees the public prime, the generator, and both parties\' public results (e.g., 6 and 12), but to reconstruct the shared secret she must find the private exponents — which means solving the discrete logarithm problem. With a prime modulus hundreds of digits long, this would take thousands of years even with all computational power on Earth. This is the mathematical guarantee that makes Diffie-Hellman key exchange secure over a public network. The public modulus and generator are intentionally shared — the security comes entirely from the hardness of the discrete logarithm.'
       }
     ],
     mid: [
@@ -1816,6 +1838,28 @@ export const quizzes = {
         ],
         correctIndex: 1,
         explanation: 'Spoofing in STRIDE means claiming an identity that does not belong to you. Replaying a valid token is a form of spoofing — the attacker presents legitimate credentials (the captured token) to impersonate the original user without modifying anything. Tampering would involve altering the token\'s contents (e.g., changing the user ID or permissions). Repudiation is about denying having performed an action. Elevation of Privilege specifically refers to gaining higher permissions than authorised — which may be a consequence of successful spoofing but is not the primary category for this scenario.'
+      },
+      {
+        question: 'In the ByteByteGo "SSL, TLS, HTTPS Explained" video, why does the TLS handshake use asymmetric encryption to exchange a session key and then switch to symmetric encryption for the rest of the session?',
+        options: [
+          'Asymmetric encryption is more secure than symmetric encryption, so the switch is a deliberate trade-off in security for performance',
+          'Symmetric encryption cannot be used to encrypt a session key; it can only encrypt application data',
+          'Asymmetric encryption is computationally expensive and not suitable for bulk data transmission; symmetric encryption is fast, so asymmetric is used only for the key exchange and symmetric takes over for the data',
+          'TLS requires two different encryption algorithms to satisfy regulatory requirements for financial applications'
+        ],
+        correctIndex: 2,
+        explanation: 'The video states this directly: "asymmetric encryption is computationally expensive, it is not really suitable for bulk data transmission." The TLS design uses asymmetric encryption (RSA or Diffie-Hellman) for the initial handshake only — specifically to securely transmit or derive a shared symmetric session key over an untrusted network. Once both sides have the session key, all application data is encrypted and decrypted using fast symmetric encryption (e.g., AES). This hybrid approach gives you the security of asymmetric key exchange with the performance of symmetric bulk encryption.'
+      },
+      {
+        question: 'According to the ByteByteGo "SSL, TLS, HTTPS Explained" video, what improvement does TLS 1.3 make over TLS 1.2, and why was TLS 1.2 chosen as the primary example in the video?',
+        options: [
+          'TLS 1.3 removes the need for certificates entirely; TLS 1.2 was chosen because certificates are still widely used',
+          'TLS 1.3 reduces the handshake from two network round trips to one, improving latency; TLS 1.2 was chosen because TLS 1.3 is an optimisation that is harder to explain, and the core concepts still apply to both',
+          'TLS 1.3 uses symmetric encryption exclusively, eliminating asymmetric encryption; TLS 1.2 was chosen to show both encryption types',
+          'TLS 1.3 requires client certificates for mutual authentication; TLS 1.2 is simpler because it only requires the server certificate'
+        ],
+        correctIndex: 1,
+        explanation: 'The video explicitly states: "TLS 1.3 is supported on all major browsers" and "TLS 1.2 takes two network round trips to complete — this is one of the major improvements of TLS 1.3, which optimises the handshake to reduce the number of network round trips to one." The video chose to explain TLS 1.2 first because "we reviewed TLS 1.3 as an optimisation — as with most optimisations, it is a bit harder to explain." For a security engineer, knowing that TLS 1.3 is both more secure (dropping weak cipher suites like RSA key exchange) and faster (one fewer round trip) is important when reviewing TLS configurations and recommending protocol versions.'
       }
     ],
     senior: [
@@ -2815,6 +2859,17 @@ export const quizzes = {
         ],
         correctIndex: 2,
         explanation: 'The networking course explains that a hub is a Layer 1 device that simply replicates any incoming electrical signal to every other port — it has no awareness of addressing. A switch operates at Layer 2 (Data Link) and builds a table of MAC addresses mapped to ports. When a frame arrives, the switch checks its table and forwards the frame only to the port where the destination device is connected. This makes switches far more efficient and is why hubs are no longer used in modern networks.'
+      },
+      {
+        question: 'In the freeCodeCamp "APIs for Beginners" course, the restaurant analogy is used to explain how APIs work. What role does the API play in this analogy?',
+        options: [
+          'The kitchen — it processes the order and prepares the data',
+          'The customer — it initiates the request and receives the response',
+          'The waiter — it carries the request from the client to the server and brings the response back, without the client needing to know how the server works internally',
+          'The menu — it describes the available data but does not participate in the exchange'
+        ],
+        correctIndex: 2,
+        explanation: 'The course describes the API as the waiter in a restaurant: you (the client) tell the waiter (the API) what you want, and the waiter communicates your order to the kitchen (the server), then brings the result back to you. Critically, you as the customer never need to go into the kitchen or understand how the food is prepared — the waiter abstracts all of that. This maps precisely to how APIs work: the client sends a structured request to the API endpoint, the server processes it according to its own logic, and the API returns the result in a defined format. You do not need to know the server\'s internal implementation to consume the API.'
       }
     ],
     mid: [
@@ -2905,6 +2960,17 @@ export const quizzes = {
         ],
         correctIndex: 1,
         explanation: 'Peeking — checking significance repeatedly and stopping as soon as p < 0.05 appears — inflates the false positive rate well above the nominal 5% level. This is because if you check a test at many points in time, random fluctuations will occasionally produce a "significant" result purely by chance. A pre-specified sample size calculated before the test begins, combined with a commitment to run until that sample is reached, is what keeps the false positive rate at the intended level. Seasonality bias is also a real concern but is a separate issue from the statistical validity of stopping early.'
+      },
+      {
+        question: 'The Analytics Mania "Google Analytics 4 Tutorial for Beginners" explains that GA4 uses an event-based data model rather than the session-based model used by Universal Analytics. What does this mean in practice for how you implement marketing tracking?',
+        options: [
+          'All pageviews must now be tracked manually because GA4 no longer detects them automatically',
+          'Every user interaction — pageview, click, scroll, form submission, purchase — is recorded as an individual event with a name and parameters, meaning you design your tracking schema around events and their properties rather than sessions and pageviews',
+          'Sessions are still the primary unit of measurement in GA4; the event model only applies to app tracking',
+          'GA4 events can only be sent from server-side code, so client-side tag managers like Google Tag Manager are no longer needed'
+        ],
+        correctIndex: 1,
+        explanation: 'GA4\'s shift to an event-based model fundamentally changes how tracking is architected. Rather than treating a session as the primary container and pageviews as the main metric, every meaningful interaction is an event — including pageviews, which are just an event named "page_view." Each event can carry parameters (e.g., item_name, value, campaign_source) that give context to the interaction. This means a marketing technology developer must think in terms of event schemas: what events need to fire, what parameters each event should carry, and how those events map to the conversions and audiences that campaigns are optimised against. GA4 auto-collects some events via Enhanced Measurement, but custom business events (lead submissions, funnel steps, content engagement) must be designed and implemented deliberately.'
       }
     ],
     senior: [
