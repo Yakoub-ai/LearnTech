@@ -831,7 +831,7 @@ console.log('Observable pattern loaded');
   </main>
 
   <footer>
-    <p>&copy; 2025 Tech Hub Learning</p>
+    <p>&copy; 2025 Tech Hubben Learning</p>
   </footer>
 </body>
 </html>

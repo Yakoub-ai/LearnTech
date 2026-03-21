@@ -32,7 +32,7 @@ Before HTML5, developers structured pages almost entirely with \\\`<div>\\\` ele
   <!-- The <header> element represents introductory content -->
   <!-- Typically contains the site logo, title, and primary navigation -->
   <header>
-    <h1>Tech Hub Learning Platform</h1>
+    <h1>Tech Hubben Learning</h1>
     <nav aria-label="Primary navigation">
       <ul>
         <li><a href="/">Home</a></li>
@@ -86,7 +86,7 @@ Before HTML5, developers structured pages almost entirely with \\\`<div>\\\` ele
   <!-- The <footer> element represents the footer of its nearest -->
   <!-- sectioning content or the entire page -->
   <footer>
-    <p>&copy; 2026 Tech Hub Solutions. All rights reserved.</p>
+    <p>&copy; 2026 Tech Hubben Learning. All rights reserved.</p>
     <nav aria-label="Footer navigation">
       <a href="/privacy">Privacy Policy</a>
       <a href="/terms">Terms of Service</a>

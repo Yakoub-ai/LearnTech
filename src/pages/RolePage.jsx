@@ -128,7 +128,7 @@ export default function RolePage() {
           "description": role.description,
           "provider": {
             "@type": "Organization",
-            "name": "LearnTech"
+            "name": "Tech Hubben Learning"
           },
           "educationalLevel": "Beginner to Senior",
           "url": `${SITE_URL}/role/${roleId}`

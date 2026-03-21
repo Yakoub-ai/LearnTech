@@ -1,5 +1,5 @@
-const SITE_NAME = 'LearnTech'
-export const SITE_URL = import.meta.env.VITE_APP_URL || 'https://learntech.vercel.app'
+const SITE_NAME = 'Tech Hubben Learning'
+export const SITE_URL = import.meta.env.VITE_APP_URL || 'https://techhubb.se'
 const DEFAULT_DESCRIPTION = 'Interactive learning platform for tech roles and programming languages. Master AI engineering, backend development, DevOps, and more with structured roadmaps.'
 
 export default function PageHelmet({ title, description, path = '', ogType = 'website' }) {

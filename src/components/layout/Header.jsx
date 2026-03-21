@@ -28,7 +28,7 @@ export default function Header() {
           <div className="flex items-center justify-between h-16">
             <Link to="/dashboard" className="flex items-center gap-3 no-underline">
               <span className="font-bold text-lg text-[var(--color-text)]">
-                Tech Hub Learning
+                Tech Hubben Learning
               </span>
             </Link>
 

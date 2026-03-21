@@ -67,18 +67,23 @@ export function AuthProvider({ children }) {
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
+      try {
+        setSession(session)
+        setUser(session?.user ?? null)
 
-      if (session?.user) {
-        await fetchApprovalStatus(session.user)
-      } else {
+        if (session?.user) {
+          await fetchApprovalStatus(session.user)
+        } else {
+          setApprovalStatus(null)
+          setIsAdmin(false)
+          setPendingCount(0)
+        }
+      } catch (err) {
+        console.error('Auth state change error:', err)
         setApprovalStatus(null)
-        setIsAdmin(false)
-        setPendingCount(0)
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     })
 
     return () => subscription.unsubscribe()

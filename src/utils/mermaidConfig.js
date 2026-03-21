@@ -3,11 +3,11 @@ import mermaid from 'mermaid'
 mermaid.initialize({
   startOnLoad: false,
   theme: 'default',
-  securityLevel: 'strict',
+  securityLevel: 'loose',
   fontFamily: 'Inter, system-ui, sans-serif',
   flowchart: {
     useMaxWidth: true,
-    htmlLabels: false,
+    htmlLabels: true,
     curve: 'basis',
   },
   themeVariables: {

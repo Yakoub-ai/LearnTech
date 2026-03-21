@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <span className="font-bold text-[var(--color-text)]">Tech Hub Learning Platform</span>
+              <span className="font-bold text-[var(--color-text)]">Tech Hubben Learning</span>
             </div>
             <p className="text-sm text-[var(--color-text-secondary)] max-w-md">
               Interactive learning paths for 11 tech roles. From zero knowledge to production-ready skills
@@ -45,7 +45,7 @@ export default function Footer() {
 
         <div className="mt-8 pt-8 border-t border-[var(--color-border)] text-center">
           <p className="text-xs text-[var(--color-text-secondary)]">
-            Tech & Innovation Hub Solutions. Built for learners, by engineers.
+            Tech Hubben Learning. Built for learners, by engineers.
           </p>
         </div>
       </div>

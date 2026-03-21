@@ -3,7 +3,21 @@
  * localStorage-based tracking for learning progress, objectives, resources, and quizzes
  */
 
-const STORAGE_KEY = 'tech-hub-learning-progress';
+const STORAGE_KEY = 'tech-hubben-learning-progress';
+const LEGACY_STORAGE_KEY = 'tech-hub-learning-progress';
+
+// Migrate legacy key on first load
+(function migrateLegacyStorage() {
+  try {
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacy && !localStorage.getItem(STORAGE_KEY)) {
+      localStorage.setItem(STORAGE_KEY, legacy);
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+    }
+  } catch {
+    // ignore storage errors
+  }
+})();
 
 /**
  * Initialize progress storage structure

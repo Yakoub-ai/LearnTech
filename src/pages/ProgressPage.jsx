@@ -6,7 +6,7 @@ export default function ProgressPage() {
     <>
       <PageHelmet
         title="My Progress"
-        description="Track your learning progress across all tech roles and programming languages on LearnTech."
+        description="Track your learning progress across all tech roles and programming languages on Tech Hubben Learning."
         path="/progress"
       />
       <ProgressTracker />

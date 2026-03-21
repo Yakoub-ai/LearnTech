@@ -26,7 +26,7 @@ export default function PrerequisitesPage() {
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
       <PageHelmet
         title="Prerequisites & Setup"
-        description="Essential tools, configurations, and guides needed before starting any role-based learning path on LearnTech."
+        description="Essential tools, configurations, and guides needed before starting any role-based learning path on Tech Hubben Learning."
         path="/prerequisites"
       />
       <motion.div

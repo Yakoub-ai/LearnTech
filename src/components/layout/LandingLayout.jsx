@@ -17,7 +17,7 @@ export default function LandingLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3 no-underline">
-              <span className="font-bold text-lg text-[var(--color-text)]">Tech Hub Learning</span>
+              <span className="font-bold text-lg text-[var(--color-text)]">Tech Hubben Learning</span>
             </Link>
 
             <div className="flex items-center gap-3">
