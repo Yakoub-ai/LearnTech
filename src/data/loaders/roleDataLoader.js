@@ -4,8 +4,13 @@
  */
 
 export async function loadRoleMarkdownContent(roleFileName) {
-  const { roleMarkdownContent } = await import('../markdownContent.js')
-  return roleMarkdownContent[roleFileName] || {}
+  try {
+    const roleId = roleFileName.toLowerCase()
+    const mod = await import(`../roles/${roleId}-content.js`)
+    return mod.content || {}
+  } catch {
+    return {}
+  }
 }
 
 export async function loadRoleQuizzes(roleId) {
