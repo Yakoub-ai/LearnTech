@@ -1796,10 +1796,9 @@ def temporary_directory():
 
 with temporary_directory() as tmp:
     # Use the temporary directory
-    file_path = os.path.join(tmp, "test.txt")
-    with open(file_path, "w") as f:
-        f.write("temporary data")
-    print(f"  File exists: {os.path.exists(file_path)}")
+    file_path = Path(tmp) / "test.txt"
+    file_path.write_text("temporary data")
+    print(f"  File exists: {file_path.exists()}")
 # Directory is cleaned up here
 
 
