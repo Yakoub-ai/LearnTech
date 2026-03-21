@@ -94,7 +94,7 @@ For deep explanations of each concept, see the [Mid Concept Reference](Security-
 
 - Design a Zero Trust architecture and explain how identity, device, network, and data controls work together to enforce least-privilege access
 - Map real-world attack techniques to the MITRE ATT&CK framework and use it to identify detection gaps
-- Lead an incident response process following the NIST framework: preparation, detection, containment, eradication, recovery, and lessons learned
+- Lead an incident response process following the NIST SP 800-61r3 recommendations: preparation, detection and reporting, response coordination, and post-incident activities
 - Evaluate and implement supply chain security controls using frameworks like SLSA to protect build and deployment pipelines
 - Identify the OWASP Top 10 risks for LLM applications and design mitigations for prompt injection, data leakage, and insecure plugin execution
 - Define a security governance programme that integrates threat modelling, security testing, and compliance into the SDLC

@@ -92,7 +92,9 @@ For deep explanations of each concept, see the [Mid Concept Reference](Marketing
 | Architecture Patterns | [Martin Fowler – Patterns of Enterprise Application Architecture](https://martinfowler.com/eaaCatalog/) | Docs |
 | System Design | [System Design – 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
 | LLM Security Patterns | [Design Patterns for Securing LLM Agents](https://arxiv.org/abs/2506.08837) | Paper |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 | MLOps for Marketing | [Microsoft Learn – MLOps with Azure ML](https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow/) | Interactive |
 | EU AI Act Overview | [EU AI Act – Official Text Summary](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai) | Docs |
 

@@ -124,6 +124,39 @@ These elements provide native, interactive disclosure widgets without JavaScript
 <!-- at least one code example. -->
 \\\`\\\`\\\`
 
+### The \\\`<dialog>\\\` Element
+
+The \\\`<dialog>\\\` element provides a native modal or non-modal dialog box. It handles focus trapping, backdrop styling, and the Escape key automatically — no JavaScript library needed.
+
+\\\`\\\`\\\`html
+<!-- A native modal dialog -->
+<dialog id="myDialog">
+  <h2>Welcome!</h2>
+  <p>This is a native HTML dialog element.</p>
+  <form method="dialog">
+    <!-- method="dialog" closes the dialog on submit -->
+    <button>Close</button>
+  </form>
+</dialog>
+
+<button onclick="document.getElementById('myDialog').showModal()">
+  Open Dialog
+</button>
+\\\`\\\`\\\`
+
+### The Popover API
+
+The Popover API provides a declarative way to create tooltips, menus, and toggletips without JavaScript. Elements with the \\\`popover\\\` attribute are hidden by default and dismiss when clicking outside.
+
+\\\`\\\`\\\`html
+<!-- Declarative popover — no JavaScript required -->
+<button popovertarget="my-popover">Help</button>
+
+<div id="my-popover" popover>
+  <p>This is a popover with built-in light dismiss behavior.</p>
+</div>
+\\\`\\\`\\\`
+
 > **Role connection:** Front-end developers structure every page with these elements. Accessibility specialists audit sites for proper semantic usage. Even back-end developers writing server-rendered templates need to produce semantically correct HTML.
 
 ---
@@ -355,7 +388,7 @@ h1 {
 input[type="email"] {
   background-image: url('/icons/email.svg');
   background-repeat: no-repeat;
-  padding-left: 2rem;
+  padding-inline-start: 2rem;
 }
 
 a[href^="https://"] {
@@ -700,7 +733,7 @@ Flexbox is a one-dimensional layout model designed for distributing space among 
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 100dvh; /* dvh accounts for mobile browser chrome */
 }
 
 /* Card row that wraps */
@@ -945,6 +978,9 @@ Responsive design ensures your website works well on all screen sizes — from p
   %    — relative to parent's dimension
   vw   — 1% of viewport width
   vh   — 1% of viewport height
+  dvh  — 1% of dynamic viewport height (accounts for mobile browser chrome)
+  svh  — 1% of small viewport height (smallest possible viewport)
+  lvh  — 1% of large viewport height (largest possible viewport)
   vmin — 1% of the smaller viewport dimension
   vmax — 1% of the larger viewport dimension
   ch   — width of the "0" character in the current font

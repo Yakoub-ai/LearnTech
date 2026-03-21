@@ -137,7 +137,7 @@ Understanding the full landscape also helps you communicate effectively with dev
 
 ## Testing Fundamentals – The Test Pyramid, Test Types, and ISTQB Foundations
 
-The ISTQB (International Software Testing Qualifications Board) Foundation Level syllabus is the industry standard body of knowledge for software testing. It defines the vocabulary, principles, and techniques that form the common language of the profession. Even if you never take the certification exam, the syllabus provides a structured foundation that most testing literature and job descriptions assume you know.
+The ISTQB (International Software Testing Qualifications Board) Foundation Level syllabus (v4.0, released 2023) is the industry standard body of knowledge for software testing. It defines the vocabulary, principles, and techniques that form the common language of the profession. Even if you never take the certification exam, the syllabus provides a structured foundation that most testing literature and job descriptions assume you know.
 
 The test pyramid is a model that describes the ideal distribution of test types in a software project. At the base are unit tests -- fast, isolated, and numerous. In the middle are integration tests (sometimes called service tests) that verify the interaction between components. At the top are end-to-end (E2E) tests that exercise the full system through its user interface. The pyramid shape reflects the principle that you should have many fast, cheap tests at the bottom and fewer slow, expensive tests at the top.
 

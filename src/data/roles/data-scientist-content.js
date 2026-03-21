@@ -188,7 +188,7 @@ NumPy is the numerical backbone of the entire Python data science ecosystem. You
 
 **Common pitfalls:**
 - Confusing a 1-D array of shape \`(n,)\` with a 2-D column vector of shape \`(n, 1)\`. Many Scikit-learn functions require one form and not the other.
-- Modifying a slice of an array and being surprised that the original array also changed, because NumPy slices return views, not copies. Note that this is different from pandas, which since version 3.0 uses Copy-on-Write by default — NumPy arrays still share memory on slicing, so changes to a slice always affect the original array.
+- Modifying a slice of an array and being surprised that the original array also changed, because NumPy slices return views, not copies. Note that this is different from pandas, which since version 2.1 uses Copy-on-Write by default — NumPy arrays still share memory on slicing, so changes to a slice always affect the original array.
 - Using loops when a vectorised operation exists, negating the performance benefit of NumPy entirely.
 
 ---
@@ -209,7 +209,7 @@ Raw data is almost never clean or analysis-ready. Pandas is the primary tool for
 - \`groupby()\` is one of the most powerful operations: it splits the data by a key, applies a function, and combines the results. \`merge()\` joins two DataFrames on a key column (like SQL JOIN); \`join()\` merges on the index.
 
 **Common pitfalls:**
-- Chained assignment (e.g., \`df[df['x'] > 0]['y'] = 1\`) no longer works in pandas 3.0+, which adopted Copy-on-Write as the default behaviour. The old \`SettingWithCopyWarning\` no longer exists. The correct pattern is to use \`.loc\` on the original DataFrame directly (e.g., \`df.loc[df['x'] > 0, 'y'] = 1\`) for single-step assignment.
+- Chained assignment (e.g., \`df[df['x'] > 0]['y'] = 1\`) no longer works in pandas 2.1+, which adopted Copy-on-Write as the default behaviour. The old \`SettingWithCopyWarning\` no longer exists. The correct pattern is to use \`.loc\` on the original DataFrame directly (e.g., \`df.loc[df['x'] > 0, 'y'] = 1\`) for single-step assignment.
 - Forgetting that \`merge()\` defaults to an inner join, silently dropping rows that do not match.
 - Treating object-dtype columns as strings without checking for mixed types or unexpected values first.
 - Performing expensive operations row-by-row using \`iterrows\` instead of using vectorised Pandas methods.

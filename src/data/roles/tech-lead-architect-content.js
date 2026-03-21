@@ -14,7 +14,9 @@ Tech Leads and Architects guide technical direction, system design, and engineer
 | System Design Intro | [System Design for Beginners Course](https://www.youtube.com/watch?v=m8Icp_Cid5o) | Video |
 | System Design – 20 Concepts | [20 System Design Concepts in 10 Minutes](https://www.youtube.com/watch?v=i53Gi_K3o7I) | Video |
 | AI / ML Literacy | [AI, ML, Deep Learning and GenAI Explained](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
+| DevOps Literacy | [DevOps Literacy – Pluralsight](https://app.pluralsight.com/paths/skills/devops-literacy) | Course |
 | APIs Overview | [Every Popular API Style Explained](https://www.youtube.com/watch?v=xJFzPSAw4Fo) | Video |
+| Generative AI for IT | [Generative AI for IT Pros – Pluralsight](https://app.pluralsight.com/paths/skill/generative-ai-for-it-pros) | Course |
 | Branching Strategy | [Branching Strategy](Prerequisites/Branching-Strategy.md) | Guide |
 | Code Review | [Code Review](Prerequisites/Code-Review.md) | Guide |
 

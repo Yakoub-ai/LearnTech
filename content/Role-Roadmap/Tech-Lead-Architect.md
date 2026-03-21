@@ -11,6 +11,7 @@ Tech Leads and Architects guide technical direction, system design, and engineer
 | Topic | Resource | Type |
 |---|---|---|
 | System Design Intro | [System Design for Beginners Course](https://www.youtube.com/watch?v=m8Icp_Cid5o) | Video |
+| System Design – 20 Concepts | [20 System Design Concepts in 10 Minutes](https://www.youtube.com/watch?v=i53Gi_K3o7I) | Video |
 | AI / ML Literacy | [AI, ML, Deep Learning and GenAI Explained](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
 | DevOps Literacy | [DevOps Literacy – Pluralsight](https://app.pluralsight.com/paths/skills/devops-literacy) | Course |
 | APIs Overview | [Every Popular API Style Explained](https://www.youtube.com/watch?v=xJFzPSAw4Fo) | Video |
@@ -21,8 +22,9 @@ Tech Leads and Architects guide technical direction, system design, and engineer
 ### After completing Beginner you should be able to:
 
 - Describe the main components of a distributed system and their responsibilities
+- Explain the difference between vertical and horizontal scaling, and when to use each
 - Explain what DevOps is and how CI/CD pipelines enable reliable delivery
-- Compare REST, GraphQL and event-driven API styles
+- Compare REST, GraphQL, gRPC and event-driven API styles
 - Explain what large language models are and where they fit in a system architecture
 - Apply the branching strategy and conduct a code review
 

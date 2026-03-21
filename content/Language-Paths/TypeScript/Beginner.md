@@ -5,11 +5,13 @@
 ## Topics Covered
 
 - Type Annotations and Inference
-- Interfaces and Type Aliases
-- Enums (numeric and string)
+- Interfaces and Type Aliases (prefer `interface` for object shapes — `extends` is faster than `&`)
+- Enums vs `as const` (trade-offs and modern alternatives)
 - Union and Intersection Types
 - Generics (basics)
-- tsconfig Configuration
+- Function Types, `void`, `never`, and `unknown` (prefer `unknown` over `any`)
+- tsconfig Configuration (`strict: true`, `verbatimModuleSyntax`, `moduleResolution: bundler`)
+- Type Narrowing and Type Guards
 
 ## Prerequisites
 

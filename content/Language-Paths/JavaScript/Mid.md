@@ -4,12 +4,14 @@
 
 ## Topics Covered
 
-- Closures and Scope Chains
-- Prototypes and Prototypal Inheritance
-- Modules (ES Modules, CommonJS)
-- Fetch API and Async/Await Patterns
-- Testing (Jest, Vitest)
-- Functional Programming (map, reduce, composition)
+- Closures and Lexical Scope (including stale closure pitfalls)
+- Prototypes, Prototypal Inheritance, and ES6 Classes (private fields with `#`)
+- ES Modules (named/default exports, dynamic `import()`, tree-shaking)
+- Advanced Async: `Promise.all`, `Promise.allSettled`, `Promise.withResolvers` (ES2024), `AbortController`
+- Error Handling with custom error hierarchies and `instanceof` discrimination
+- Testing (Vitest/Jest) with mocking, async testing, and `beforeEach`/`afterEach`
+- Functional Programming (pure functions, immutability, composition, currying)
+- ES2024 Features: `Object.groupBy`, `Map.groupBy`, `structuredClone`
 
 ## Prerequisites
 

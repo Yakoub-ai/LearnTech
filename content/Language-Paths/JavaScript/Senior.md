@@ -4,12 +4,13 @@
 
 ## Topics Covered
 
-- Event Loop and Microtask Queue
-- Memory Management and Leak Detection
-- Web Workers and SharedArrayBuffer
-- Performance Optimization and Profiling
-- Design Patterns (observer, mediator, strategy)
-- Security (XSS, CSP, input sanitization)
+- Event Loop Internals: call stack, microtask queue, macrotask queue, render steps
+- Memory Management: leak detection, WeakMap/WeakRef, detached DOM nodes, DevTools profiling
+- Web Workers, SharedArrayBuffer, transferable objects, and Worker Pools
+- Performance Optimization: debounce, throttle, memoization, V8 hidden classes, IntersectionObserver
+- Design Patterns: Observer/EventEmitter, Strategy, Command (undo/redo), Proxy/Reflect
+- Security: XSS prevention, prototype pollution, CSRF tokens, CSP, Subresource Integrity
+- ES2024/ES2025 Features: Set methods, Iterator helpers, `using` declarations (explicit resource management), decorators, Temporal API progress
 
 ## Prerequisites
 

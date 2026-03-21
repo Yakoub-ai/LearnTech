@@ -96,20 +96,24 @@ For deep explanations of each concept, see the [Mid Concept Reference](Security-
 | MITRE ATT&CK | [MITRE ATT&CK Framework](https://attack.mitre.org/) | Docs |
 | Incident Response | [NIST Incident Response Recommendations (SP 800-61 Rev 3)](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | Docs |
 | Supply Chain Security | [SLSA Framework – Supply-chain Levels for Software Artifacts](https://slsa.dev/) | Docs |
-| LLM Security | [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/) | Docs |
+| LLM Security | [OWASP Top 10 for LLM Applications (2025)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) | Docs |
 | LLM Security | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
-| Security Architecture | [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework) | Docs |
+| Security Architecture | [NIST Cybersecurity Framework (CSF 2.0)](https://www.nist.gov/cyberframework) | Docs |
 | AI Security Framework | [Google Secure AI Framework (SAIF)](https://safety.google/cybersecurity-advancements/saif/) | Docs |
+| Enterprise GenAI Security | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal (Internal – requires company access) |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal (Internal – requires company access) |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | DORA | [EUR-Lex – Digital Operational Resilience Act](https://eur-lex.europa.eu/eli/reg/2022/2554/oj) | Reference |
 | NIS2 Directive | [EUR-Lex – NIS 2 Directive](https://eur-lex.europa.eu/eli/dir/2022/2555/oj) | Reference |
 | Kubernetes Security | [OWASP Kubernetes Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Kubernetes_Security_Cheat_Sheet.html) | Docs |
+| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 
 ### After completing Senior you should be able to:
 
 - Design a Zero Trust architecture and explain how identity, device, network, and data controls work together to enforce least-privilege access
 - Map real-world attack techniques to the MITRE ATT&CK framework and use it to identify detection gaps
-- Lead an incident response process following the NIST framework: preparation, detection, containment, eradication, recovery, and lessons learned
+- Lead an incident response process following the NIST SP 800-61r3 recommendations: preparation, detection and reporting, response coordination, and post-incident activities
 - Evaluate and implement supply chain security controls using frameworks like SLSA to protect build and deployment pipelines
 - Identify the OWASP Top 10 risks for LLM applications and design mitigations for prompt injection, data leakage, and insecure plugin execution
 - Define a security governance programme that integrates threat modelling, security testing, and compliance into the SDLC

@@ -100,20 +100,20 @@ Functions are first-class objects in JavaScript — they can be stored in variab
 \`\`\`javascript
 // 1. Function declaration — hoisted, callable before definition in the source file
 function greet(name) {
-  return "Hello, " + name + "!";
+  return \`Hello, \${name}!\`;
 }
 
 // 2. Function expression — NOT hoisted, assigned to a variable
 const greetExpr = function(name) {
-  return "Hello, " + name + "!";
+  return \`Hello, \${name}!\`;
 };
 
 // 3. Arrow function — concise, no own 'this' binding, not usable as constructor
-const greetArrow = (name) => "Hello, " + name + "!";
+const greetArrow = (name) => \`Hello, \${name}!\`;
 // Single expression: implicit return, no braces needed
 // Multiple statements require braces + explicit return
 const greetVerbose = (name) => {
-  const msg = "Hello, " + name + "!";
+  const msg = \`Hello, \${name}!\`;
   return msg;
 };
 
@@ -214,6 +214,14 @@ const entries = Object.entries(user);// [["name","Alice"],["age",30],...]
 // Check if property exists
 console.log("name" in user);              // true — checks own AND prototype
 console.log(Object.hasOwn(user, "name")); // true — own properties only (modern)
+
+// Deep cloning — structuredClone (built-in, no library needed)
+const original = { name: "Alice", address: { city: "Stockholm" } };
+const deepCopy = structuredClone(original);
+deepCopy.address.city = "Oslo";
+console.log(original.address.city); // "Stockholm" — original is untouched
+// structuredClone handles nested objects, arrays, Maps, Sets, Dates, RegExps
+// It does NOT clone functions, DOM nodes, or symbols
 \`\`\`
 
 **Why it matters:** \`map\`, \`filter\`, and \`reduce\` replace imperative loops with declarable transformations that are readable and composable. Optional chaining (\`?.\`) eliminates the endless \`if (x && x.y && x.y.z)\` guards that made older JavaScript hard to read.
@@ -542,7 +550,7 @@ const user2 = {
 | Variables | \`const\` by default, \`let\` when reassigning, never \`var\` |
 | Types | 7 primitives; \`typeof null === "object"\` is a known bug |
 | Functions | Arrow functions for callbacks; closures for private state |
-| Arrays | Master \`map\`, \`filter\`, \`reduce\` over raw \`for\` loops; watch out for mutation |
+| Arrays | Master \`map\`, \`filter\`, \`reduce\` over raw \`for\` loops; \`structuredClone\` for deep copies |
 | DOM | \`querySelector\` + \`addEventListener\`; \`textContent\` not \`innerHTML\` |
 | Events | Use event delegation for dynamic content |
 | Async | \`async/await\` with \`try/catch\`; \`Promise.all\` for parallel work |
