@@ -589,7 +589,7 @@ A closure is a function that remembers the variables from the scope it was defin
 // Classic closure — createGreeter closes over "greeting"
 function createGreeter(greeting) {
   return function(name) {
-    return greeting + ", " + name + "!";
+    return \`\${greeting}, \${name}!\`;
   };
 }
 const sayHello = createGreeter("Hello");
@@ -1009,6 +1009,44 @@ const processOrders = (orders) =>
 
 ---
 
+## 8. ES2024 Features You Should Know
+
+ES2024 introduced several features that are now available in all major browsers and Node.js 22+.
+
+\`\`\`javascript
+// Object.groupBy — group array items by a key (ES2024)
+// NOTE: This is Object.groupBy, NOT Array.prototype.groupBy (the proposal changed)
+const people = [
+  { name: "Alice", dept: "eng" },
+  { name: "Bob", dept: "sales" },
+  { name: "Charlie", dept: "eng" },
+];
+const byDept = Object.groupBy(people, (person) => person.dept);
+// { eng: [{ name: "Alice", ... }, { name: "Charlie", ... }], sales: [{ name: "Bob", ... }] }
+
+// Map.groupBy — same but returns a Map (useful when keys aren't strings)
+const byLength = Map.groupBy(["hi", "hey", "hello"], (word) => word.length);
+// Map { 2 => ["hi"], 3 => ["hey"], 5 => ["hello"] }
+
+// Promise.withResolvers — extract resolve/reject without the executor callback
+const { promise, resolve, reject } = Promise.withResolvers();
+// Equivalent to: let resolve, reject; const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
+// Useful when resolve/reject need to be called from a different scope
+setTimeout(() => resolve("done"), 1000);
+const result = await promise; // "done"
+
+// structuredClone — deep copy built into the language
+const original = { nested: { value: 42 }, date: new Date(), set: new Set([1, 2]) };
+const clone = structuredClone(original);
+clone.nested.value = 99;
+console.log(original.nested.value); // 42 — untouched
+// Handles Date, Map, Set, ArrayBuffer, RegExp — NOT functions or DOM nodes
+\`\`\`
+
+**Why it matters:** \`Object.groupBy\` eliminates one of the most common \`reduce\` patterns. \`Promise.withResolvers\` cleans up the awkward pattern of extracting \`resolve\`/\`reject\` via closure. \`structuredClone\` replaces the \`JSON.parse(JSON.stringify(x))\` hack for deep copying.
+
+---
+
 ## Summary
 
 | Topic | Key Takeaway |
@@ -1020,6 +1058,7 @@ const processOrders = (orders) =>
 | Async | \`Promise.all\` for parallel; \`AbortController\` for cancellation; \`allSettled\` for partial data |
 | Testing | Mock dependencies; \`beforeEach\`/\`afterEach\` for isolation; test behavior not implementation |
 | FP | Pure functions + immutability = predictable, composable, testable code |
+| ES2024 | \`Object.groupBy\`, \`Promise.withResolvers\`, \`structuredClone\` — modern built-ins |
 
 ---
 

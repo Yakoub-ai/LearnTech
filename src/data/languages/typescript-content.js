@@ -193,7 +193,7 @@ graph TD
 **Key things to understand:**
 - **Interfaces** support declaration merging — two interfaces with the same name combine. Type aliases cannot merge.
 - **Type aliases** can represent unions, tuples, primitives, and computed types. Interfaces cannot.
-- For object shapes, both work. Pick one convention and stick with it across your project.
+- For object shapes, **prefer \`interface\`** — \`extends\` is faster for the compiler than type intersection (\`&\`). The TypeScript compiler caches interface relationships but must recompute intersections each time.
 - The TypeScript team generally recommends \`interface\` for public API shapes and \`type\` for everything else.
 - Avoid the pattern of creating a separate \`types.ts\` file for every feature folder — co-locate types with the code that uses them and let inference carry them further.
 
@@ -707,6 +707,8 @@ The \`tsconfig.json\` file configures the TypeScript compiler. Understanding its
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
 
+        "verbatimModuleSyntax": true,
+
         "sourceMap": true,
         "declaration": true,
 
@@ -720,6 +722,10 @@ The \`tsconfig.json\` file configures the TypeScript compiler. Understanding its
 \`\`\`
 
 **Why it matters:** A misconfigured \`tsconfig.json\` can silently disable important type checks or cause hard-to-debug module resolution issues. The \`strict\` flag alone enables seven sub-flags that catch common bugs.
+
+**Key tsconfig options explained:**
+- \`moduleResolution: "bundler"\` (TS 5.0+) — matches how modern bundlers (Vite, esbuild, webpack) resolve imports. Use this instead of \`"node"\` or \`"node16"\` for bundled applications.
+- \`verbatimModuleSyntax\` (TS 5.0+) — enforces \`import type\` for type-only imports. Replaces the older \`isolatedModules\` flag. Required for correct behavior with esbuild, Vite, and SWC.
 
 ### What "strict" Enables
 

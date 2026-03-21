@@ -358,6 +358,25 @@ def calculate_bmi(weight_kg, height_m):
 # Access docstring programmatically
 print(calculate_bmi.__doc__)
 
+# --- PITFALL: Mutable default arguments ---
+# WRONG: the list is shared across ALL calls
+def add_item_bad(item, items=[]):
+    items.append(item)
+    return items
+
+print(add_item_bad("a"))  # ['a']
+print(add_item_bad("b"))  # ['a', 'b'] — BUG! Expected ['b']
+
+# CORRECT: use None and create a new list each call
+def add_item_good(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+print(add_item_good("a"))  # ['a']
+print(add_item_good("b"))  # ['b'] — Correct!
+
 # EXERCISE:
 # 1. Write a function that accepts a list of numbers and returns
 #    a tuple of (minimum, maximum, average).
@@ -470,8 +489,8 @@ overrides = {"host": "localhost", "debug": True}
 merged = {**defaults, **overrides}        # Spread operator
 print(f"Merged: {merged}")
 
-# Python 3.9+ merge operator
-# merged = defaults | overrides
+# Python 3.9+ merge operator (preferred in modern code)
+merged = defaults | overrides
 
 # Dict comprehension
 word = "mississippi"
@@ -744,13 +763,11 @@ for path in Path(".").glob("*.txt"):
 print(f"  example.txt exists: {Path('example.txt').exists()}")
 print(f"  data dir is dir: {data_dir.is_dir()}")
 
-# --- Cleanup ---
-import os
-for f in ["example.txt", "data.json", "people.csv"]:
-    if os.path.exists(f):
-        os.remove(f)
+# --- Cleanup (using pathlib instead of os.path) ---
+for fname in ["example.txt", "data.json", "people.csv"]:
+    Path(fname).unlink(missing_ok=True)
 if data_dir.exists():
-    output_file.unlink()
+    output_file.unlink(missing_ok=True)
     data_dir.rmdir()
 
 # EXERCISE:

@@ -2207,7 +2207,7 @@ Pseudo-elements create virtual elements you can style without adding HTML. Pseud
 .fancy-quote::before {
   content: '\\201C';
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: -0.25rem;
   font-size: 4rem;
   color: var(--color-primary);
@@ -2228,7 +2228,7 @@ Pseudo-elements create virtual elements you can style without adding HTML. Pseud
   padding-inline-start: 0;
 }
 
-.custom-list li {
+.custom-list li {  /* Using logical properties for RTL support */
   position: relative;
   padding-left: 1.75rem;
   margin-bottom: var(--space-2);
