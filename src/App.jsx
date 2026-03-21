@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, Suspense, lazy } from 'react'
+import React, { useState, useEffect, Suspense, lazy } from 'react'
 import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import LandingLayout from './components/layout/LandingLayout'
@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage'
 import NotFoundPage from './pages/NotFoundPage'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import { useAuth } from './contexts/AuthContext'
+import { ThemeContext } from './contexts/ThemeContext'
 import { trackEvent } from './utils/eventTracking'
 import { supabase } from './lib/supabase'
 
@@ -22,7 +23,6 @@ const PendingApprovalPage = lazy(() => import('./pages/PendingApprovalPage'))
 const DeniedPage = lazy(() => import('./pages/DeniedPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 
-export const ThemeContext = createContext()
 
 function PageTracker() {
   const location = useLocation()

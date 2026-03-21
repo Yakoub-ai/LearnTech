@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { CheckCircle2, XCircle, RotateCcw, Trophy, Flag } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function QuizBlock({ questions = [], roleId, level, onComplete, topicTitle, onReport }) {
+export default function QuizBlock({ questions = [], _roleId, _level, onComplete, topicTitle, onReport }) {
   const [currentQ, setCurrentQ] = useState(0)
   const [selected, setSelected] = useState(null)
   const [showResult, setShowResult] = useState(false)

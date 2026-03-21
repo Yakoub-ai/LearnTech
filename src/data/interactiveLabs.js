@@ -857,7 +857,7 @@ function Button({ variant = 'primary', size = 'md', children, onClick, disabled 
 // <Button variant="danger" size="sm" disabled>Delete</Button>`,
         hints: [
           'Use an object to map variant names to CSS class strings',
-          'Combine classes with template literals: \`\${variantStyles[variant]} \${sizeStyles[size]}\`',
+          'Combine classes with template literals: `${variantStyles[variant]} ${sizeStyles[size]}`',
           'Add disabled styles conditionally: disabled ? "opacity-50 cursor-not-allowed" : ""'
         ],
         expectedOutput: `<button class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>

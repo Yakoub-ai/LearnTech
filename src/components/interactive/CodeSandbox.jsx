@@ -3,7 +3,7 @@ import { Play, RotateCcw, Copy, Check } from 'lucide-react'
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react'))
 
-export default function CodeSandbox({ examples = [], roleId }) {
+export default function CodeSandbox({ examples = [], _roleId }) {
   const [activeExample, setActiveExample] = useState(0)
   const [code, setCode] = useState(examples[0]?.code || '')
   const [output, setOutput] = useState('')
@@ -13,7 +13,7 @@ export default function CodeSandbox({ examples = [], roleId }) {
     if (examples.length > 0 && !code) {
       setCode(examples[0].code)
     }
-  }, [examples])
+  }, [examples, code])
 
   const currentExample = examples[activeExample]
 
@@ -46,7 +46,7 @@ export default function CodeSandbox({ examples = [], roleId }) {
       }
       const langKey = (currentExample.language || '').toLowerCase()
       const hint = setupHints[langKey] || 'Copy this code and run it in your local development environment.'
-      setOutput(`// ${currentExample.language} cannot run directly in the browser.\n// \n// To run this code locally:\n// ${hint.replace(/\n/g, '\n// ')}`)
+      setOutput(`// ${currentExample.language} execution is not available in the browser.\n// \n// To run this code locally:\n// ${hint.replace(/\n/g, '\n// ')}`)
     }
   }
 

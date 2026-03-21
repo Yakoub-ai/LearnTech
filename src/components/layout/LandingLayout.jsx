@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
-import { ThemeContext } from '../../App'
+import { ThemeContext } from '../../contexts/ThemeContext'
 import { useAuth } from '../../contexts/AuthContext'
 import LoginModal from '../auth/LoginModal'
 import Footer from './Footer'

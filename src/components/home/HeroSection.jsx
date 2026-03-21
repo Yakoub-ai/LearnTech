@@ -79,16 +79,19 @@ export default function HeroSection({ onSignIn }) {
             { icon: BookOpen, label: '48 Guides', desc: 'Structured learning' },
             { icon: Code2, label: 'Interactive Labs', desc: 'Hands-on practice' },
             { icon: ShieldCheck, label: 'Private Access', desc: 'Curated community' },
-          ].map(({ icon: Icon, label, desc }, i) => (
-            <div
-              key={i}
-              className="p-4 rounded-xl bg-[var(--color-surface)]/70 backdrop-blur-sm border border-[var(--color-border)] text-center"
-            >
-              <Icon className="w-5 h-5 mx-auto mb-2 text-[var(--color-primary)]" />
-              <div className="text-sm font-semibold text-[var(--color-text)]">{label}</div>
-              <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">{desc}</div>
-            </div>
-          ))}
+          ].map((item, i) => {
+            const Icon = item.icon
+            return (
+              <div
+                key={i}
+                className="p-4 rounded-xl bg-[var(--color-surface)]/70 backdrop-blur-sm border border-[var(--color-border)] text-center"
+              >
+                <Icon className="w-5 h-5 mx-auto mb-2 text-[var(--color-primary)]" />
+                <div className="text-sm font-semibold text-[var(--color-text)]">{item.label}</div>
+                <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">{item.desc}</div>
+              </div>
+            )
+          })}
         </motion.div>
       </div>
     </section>

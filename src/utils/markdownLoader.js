@@ -124,14 +124,11 @@ export function parseObjectives(markdown) {
 export function parseDescription(markdown) {
   const lines = markdown.split('\n');
   let description = [];
-  let foundHeading = false;
-
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
     // Stop at first heading
     if (line.startsWith('#')) {
-      foundHeading = true;
       break;
     }
 

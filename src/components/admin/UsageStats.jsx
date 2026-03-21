@@ -151,13 +151,16 @@ export default function UsageStats() {
     <div className="space-y-6">
       {/* Summary cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {summaryCards.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)]">
-            <Icon className={`w-5 h-5 ${color} mb-2`} />
-            <div className="text-2xl font-bold text-[var(--color-text)]">{value}</div>
-            <div className="text-xs text-[var(--color-text-secondary)]">{label}</div>
-          </div>
-        ))}
+        {summaryCards.map((card) => {
+          const Icon = card.icon
+          return (
+            <div key={card.label} className="p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)]">
+              <Icon className={`w-5 h-5 ${card.color} mb-2`} />
+              <div className="text-2xl font-bold text-[var(--color-text)]">{card.value}</div>
+              <div className="text-xs text-[var(--color-text-secondary)]">{card.label}</div>
+            </div>
+          )
+        })}
       </div>
 
       {/* Daily active users */}

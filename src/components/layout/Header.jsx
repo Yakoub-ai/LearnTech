@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Sun, Moon, Search, BarChart3, Menu, X } from 'lucide-react'
-import { ThemeContext } from '../../App'
+import { ThemeContext } from '../../contexts/ThemeContext'
 import SearchModal from '../common/SearchModal'
 import AuthButton from '../auth/AuthButton'
 

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, Clock } from 'lucide-react'
@@ -14,7 +15,7 @@ const colorMap = {
 }
 
 export default function LanguageCard({ language, index }) {
-  const Icon = getLanguageIcon(language.icon)
+  const Icon = useMemo(() => getLanguageIcon(language.icon), [language.icon])
   const gradient = colorMap[language.color] || colorMap.blue
   const lp = getLanguageProgress(language.id)
   const progress = lp ? { overall: lp.overall || 0 } : { overall: 0 }

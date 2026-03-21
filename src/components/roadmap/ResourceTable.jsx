@@ -16,7 +16,7 @@ const typeIcons = {
   Internal: Building2,
 }
 
-export default function ResourceTable({ resources, roleId, level, isResourceComplete, toggleResource }) {
+export default function ResourceTable({ resources, _roleId, level, isResourceComplete, toggleResource }) {
   const [expandedVideo, setExpandedVideo] = useState(null)
 
   if (!resources || resources.length === 0) return null

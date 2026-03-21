@@ -1,5 +1,5 @@
 import { useEffect, useRef, useContext } from 'react'
-import { ThemeContext } from '../../App'
+import { ThemeContext } from '../../contexts/ThemeContext'
 
 const PARTICLE_COUNT_DESKTOP = 65
 const PARTICLE_COUNT_MOBILE = 30

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { X, Github, Chrome } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 

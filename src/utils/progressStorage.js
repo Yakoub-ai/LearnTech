@@ -327,7 +327,7 @@ export function getAllProgress() {
   const allProgress = getProgress();
   const result = {};
 
-  for (const [roleId, roleProgress] of Object.entries(allProgress.roles)) {
+  for (const [roleId] of Object.entries(allProgress.roles)) {
     result[roleId] = getRoleProgress(roleId);
   }
 

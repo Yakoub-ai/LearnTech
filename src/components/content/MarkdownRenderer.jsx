@@ -97,7 +97,6 @@ export default function MarkdownRenderer({ content, className = '' }) {
       return <p className="mb-4 leading-relaxed text-[var(--color-text-secondary)]">{children}</p>
     },
     a: ({ href, children }) => {
-      const ytId = href ? extractYouTubeId(href) : null
       // SPA navigation for internal links
       if (href && (href.startsWith('/language/') || href.startsWith('/role/'))) {
         return (
@@ -120,7 +119,7 @@ export default function MarkdownRenderer({ content, className = '' }) {
         </a>
       )
     },
-    code: ({ className, children, ...props }) => {
+    code: ({ className, children }) => {
       const isInline = !className
       if (isInline) {
         return (

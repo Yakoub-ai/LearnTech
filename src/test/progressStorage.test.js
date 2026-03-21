@@ -1,6 +1,5 @@
 import {
   getProgress,
-  saveProgress,
   getRoleProgress,
   setObjectiveComplete,
   setResourceComplete,

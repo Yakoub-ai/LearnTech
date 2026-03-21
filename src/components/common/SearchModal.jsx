@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, X, ArrowRight } from 'lucide-react'
 import { roles, getRoleIcon } from '../../data/roles'
@@ -6,7 +6,6 @@ import { languages, getLanguageIcon } from '../../data/languages'
 
 export default function SearchModal({ open, onClose }) {
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
   const inputRef = useRef(null)
   const navigate = useNavigate()
 
@@ -24,11 +23,8 @@ export default function SearchModal({ open, onClose }) {
     }
   }, [open])
 
-  useEffect(() => {
-    if (!query.trim()) {
-      setResults([])
-      return
-    }
+  const results = useMemo(() => {
+    if (!query.trim()) return []
     const q = query.toLowerCase()
     const matched = []
 
@@ -113,7 +109,7 @@ export default function SearchModal({ open, onClose }) {
       }
     })
 
-    setResults(matched.slice(0, 10))
+    return matched.slice(0, 10)
   }, [query])
 
   if (!open) return null

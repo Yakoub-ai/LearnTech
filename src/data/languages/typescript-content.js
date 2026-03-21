@@ -1587,7 +1587,7 @@ declare module "react" {
 
 declare module "@prisma/client" {
     interface PrismaClient {
-        \$softDelete<T>(model: string, id: number): Promise<T>;
+        $softDelete<T>(model: string, id: number): Promise<T>;
     }
 }
 \`\`\`

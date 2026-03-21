@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, Clock } from 'lucide-react'
@@ -20,7 +21,7 @@ const colorMap = {
 }
 
 export default function RoleCard({ role, index }) {
-  const Icon = getRoleIcon(role.icon)
+  const Icon = useMemo(() => getRoleIcon(role.icon), [role.icon])
   const gradient = colorMap[role.color] || colorMap.indigo
   const rp = getRoleProgress(role.id)
   const progress = rp ? { overall: rp.overall || 0 } : { overall: 0 }

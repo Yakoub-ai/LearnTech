@@ -81,7 +81,7 @@ function StepItem({ step, index, isComplete, onToggle }) {
   )
 }
 
-export default function SetupGuide({ guide, roleId }) {
+export default function SetupGuide({ guide, _roleId }) {
   const [completedSteps, setCompletedSteps] = useState({})
   const [showTroubleshooting, setShowTroubleshooting] = useState(false)
 

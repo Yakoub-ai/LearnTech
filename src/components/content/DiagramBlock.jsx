@@ -17,7 +17,7 @@ export default function DiagramBlock({ diagram }) {
           ref.current.innerHTML = svg
         }
         setError(null)
-      } catch (err) {
+      } catch {
         setError('Failed to render diagram')
       }
     }

@@ -2557,7 +2557,7 @@ SECRET_PATTERNS = {
         "severity": "critical"
     },
     "AWS Secret Key": {
-        "regex": r"(?i)aws_secret_access_key\\s*=\\s*['\"][A-Za-z0-9/+=]{40}['\"]",
+        "regex": r"(?i)aws_secret_access_key\\s*=\\s*['"][A-Za-z0-9/+=]{40}['"]",
         "severity": "critical"
     },
     "GitHub Token": {
@@ -2565,7 +2565,7 @@ SECRET_PATTERNS = {
         "severity": "critical"
     },
     "Generic API Key": {
-        "regex": r"(?i)(api[_-]?key|apikey)\\s*[=:]\\s*['\"][A-Za-z0-9]{20,}['\"]",
+        "regex": r"(?i)(api[_-]?key|apikey)\\s*[=:]\\s*['"][A-Za-z0-9]{20,}['"]",
         "severity": "high"
     },
     "Private Key Header": {
@@ -2573,11 +2573,11 @@ SECRET_PATTERNS = {
         "severity": "critical"
     },
     "Password in Config": {
-        "regex": r"(?i)(password|passwd|pwd)\\s*[=:]\\s*['\"][^'\"]{8,}['\"]",
+        "regex": r"(?i)(password|passwd|pwd)\\s*[=:]\\s*['"][^'"]{8,}['"]",
         "severity": "high"
     },
     "Database Connection String": {
-        "regex": r"(?i)(mysql|postgres|mongodb)://[^\\s'\"]+:[^\\s'\"]+@",
+        "regex": r"(?i)(mysql|postgres|mongodb)://[^\\s'"]+:[^\\s'"]+@",
         "severity": "high"
     },
     "Slack Webhook": {
