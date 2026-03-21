@@ -14,7 +14,6 @@ DevOps and Platform Engineers build and maintain the infrastructure, pipelines, 
 | DevOps Overview | [Every DevOps Tool Explained in 8 min](https://www.youtube.com/watch?v=EY1hsh-HCjo) | Video |
 | Docker | [Learn Docker in 7 Easy Steps](https://www.youtube.com/watch?v=gAkwW2tuIqE) | Video |
 | DevOps Roadmap | [roadmap.sh – DevOps](https://roadmap.sh/devops) | Interactive |
-| DevOps Literacy | [DevOps Literacy – Pluralsight](https://app.pluralsight.com/paths/skills/devops-literacy) | Course |
 | Linux Fundamentals | [roadmap.sh – Linux](https://roadmap.sh/linux) | Interactive |
 | Bash Scripting | [Bash Scripting Tutorial – Ryan's Tutorials](https://ryanstutorials.net/bash-scripting-tutorial/) | Interactive |
 | Git | [Git Fundamentals](Prerequisites/git.md) and [Branching Strategy](Prerequisites/Branching-Strategy.md) | Guide |
@@ -36,6 +35,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](DevO
 | Topic | Resource | Type |
 |---|---|---|
 | System Design | [System Design Concepts in 10 min](https://www.youtube.com/watch?v=i53Gi_K3o7I) | Video |
+| System Design Beginner | [System Design for Beginners](https://www.youtube.com/watch?v=m8Icp_Cid5o) | Video |
 | CI/CD and Pipelines | [GitHub Actions – Understanding workflows](https://docs.github.com/en/actions/using-workflows) | Docs |
 | Azure Fundamentals | [Microsoft Learn – Azure Fundamentals](https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/) | Interactive |
 | Infrastructure as Code | [Microsoft Learn – Bicep Fundamentals](https://learn.microsoft.com/en-us/training/paths/fundamentals-bicep/) | Interactive |
@@ -44,7 +44,6 @@ For deep explanations of each concept, see the [Beginner Concept Reference](DevO
 | Kubernetes Basics | [roadmap.sh – Kubernetes](https://roadmap.sh/kubernetes) | Interactive |
 | Observability | [Monitor Resources with Azure Monitor – Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/az-104-monitor-backup-resources/) | Interactive |
 | OpenTelemetry | [OpenTelemetry – Getting Started](https://opentelemetry.io/docs/getting-started/) | Docs |
-| Generative AI for IT | [Generative AI for IT Pros – Pluralsight](https://app.pluralsight.com/paths/skill/generative-ai-for-it-pros) | Course |
 | Azure Policy | [Microsoft Learn – Intro to Azure Policy](https://learn.microsoft.com/en-us/training/modules/intro-to-azure-policy/) | Interactive |
 | Cost Management | [Microsoft Learn – Control Azure Spending](https://learn.microsoft.com/en-us/training/paths/control-spending-manage-bills/) | Interactive |
 
@@ -58,6 +57,8 @@ For deep explanations of each concept, see the [Beginner Concept Reference](DevO
 - Set up Azure Monitor diagnostic settings, KQL alert rules, and dashboards
 - Instrument an application with OpenTelemetry and explain the three pillars of observability
 - Define and assign Azure Policy rules to enforce organisational standards across subscriptions
+- Apply horizontal and vertical scaling strategies and explain the trade-offs between them
+- Describe the CAP theorem and how it influences database selection and replication design
 
 For deep explanations of each concept, see the [Mid Concept Reference](DevOps-Platform-Engineer/Mid.md).
 
@@ -68,13 +69,9 @@ For deep explanations of each concept, see the [Mid Concept Reference](DevOps-Pl
 | Topic | Resource | Type |
 |---|---|---|
 | System Design – 30 Concepts | [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
-| Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
-| Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
-| Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
+| AI/ML for Platform Engineers | [AI, ML, Deep Learning and GenAI Explained](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
+| AI-Assisted Development | [GitHub Copilot – Getting Started](https://docs.github.com/en/copilot/getting-started-with-github-copilot) | Docs |
 | Platform Engineering / Cloud Architecture | [Microsoft Cloud Adoption Framework](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/) — Landing zones, governance, and cloud strategy | Docs |
 | Architecture | [Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/well-architected/) — Operational excellence, security, reliability, performance, cost | Docs |
 | Pipeline Security | [Microsoft Learn – Secure DevOps (AZ-400)](https://learn.microsoft.com/en-us/training/paths/az-400-develop-security-compliance-plan/) — Security in pipelines, SAST, DAST, compliance | Course |
@@ -90,6 +87,7 @@ For deep explanations of each concept, see the [Mid Concept Reference](DevOps-Pl
 - Evaluate and harden the security posture of a pipeline: secrets management, SAST/DAST gates, supply chain integrity, and least-privilege service principal scoping
 - Apply Domain-Driven Design to draw team and platform boundaries that reduce coupling
 - Design and operate enterprise GenAI infrastructure on Azure, including private networking, quota management, and cost observability
+- Explain the distinction between AI, machine learning, deep learning, and generative AI, and articulate the infrastructure implications of each
 
 For deep explanations of each concept, see the [Senior Concept Reference](DevOps-Platform-Engineer/Senior.md).
 
@@ -110,9 +108,9 @@ DevOps is a set of cultural and technical practices that brings development and 
 
 A useful framework for understanding DevOps in practice is CALMS: Culture (shared ownership and blameless learning), Automation (eliminating manual steps), Lean (small batch sizes and fast flow), Measurement (using data to understand system behaviour), and Sharing (transparency of knowledge and tooling across teams).
 
-**Why it matters:**
+The "Every DevOps Tool Explained" video captures this landscape concisely: it demonstrates that tools like Git, GitHub, Docker, Kubernetes, Terraform, Ansible, Jenkins, Prometheus, and Grafana each solve a specific problem in the lifecycle — from source control and collaboration, through packaging and orchestration, to infrastructure provisioning and observability. Understanding which tool solves which problem is the first step to reasoning about a DevOps toolchain.
 
-A DevOps engineer exists to remove the friction between writing code and running code in production. Without a clear understanding of the underlying philosophy, it is easy to implement tools without achieving the actual goal. Knowing that DevOps is about shortening feedback loops helps you design pipelines, infrastructure, and processes that serve that purpose rather than adding ceremony.
+**Why it matters:** A DevOps engineer exists to remove the friction between writing code and running code in production. Without a clear understanding of the underlying philosophy, it is easy to implement tools without achieving the actual goal. Knowing that DevOps is about shortening feedback loops helps you design pipelines, infrastructure, and processes that serve that purpose rather than adding ceremony.
 
 **Key things to understand:**
 
@@ -121,6 +119,7 @@ A DevOps engineer exists to remove the friction between writing code and running
 - Shared ownership means both developers and operations engineers are accountable for reliability.
 - A blameless culture encourages reporting and learning from incidents rather than hiding them.
 - CALMS: Culture, Automation, Lean, Measurement, Sharing – a concrete framework for assessing DevOps maturity.
+- The DevOps toolchain spans source control (Git/GitHub/GitLab), CI/CD (GitHub Actions, Jenkins, CircleCI), containerisation (Docker, Kubernetes), IaC (Terraform, Ansible), and observability (Prometheus, Grafana, ELK stack).
 
 **Common pitfalls:**
 
@@ -137,9 +136,7 @@ Continuous Integration (CI) is the practice of merging code changes into a share
 
 Continuous Delivery (CD) extends CI by ensuring that the validated code is always in a deployable state, ready to be released to production at any time. A human still decides when to trigger the release. Continuous Deployment goes one step further: every validated change is released to production automatically, without manual approval. The distinction matters because Continuous Deployment requires a much higher level of automated test coverage and organisational confidence.
 
-**Why it matters:**
-
-CI/CD is the backbone of modern software delivery. As a DevOps engineer you will design, build, and maintain the pipelines that implement these practices. Understanding the distinction between CI, Continuous Delivery, and Continuous Deployment helps you design pipelines that match the organisation's risk appetite and release cadence.
+**Why it matters:** CI/CD is the backbone of modern software delivery. As a DevOps engineer you will design, build, and maintain the pipelines that implement these practices. Understanding the distinction between CI, Continuous Delivery, and Continuous Deployment helps you design pipelines that match the organisation's risk appetite and release cadence.
 
 **Key things to understand:**
 
@@ -162,6 +159,8 @@ CI/CD is the backbone of modern software delivery. As a DevOps engineer you will
 
 Docker is a platform for packaging, distributing, and running applications inside containers. A container is an isolated process running on the host operating system: it shares the host kernel but has its own isolated file system, network stack, and process namespace. Containers are not virtual machines – there is no hypervisor and no guest OS; they are lightweight and start in milliseconds. An image is the read-only blueprint from which containers are created. A Dockerfile is a text file containing the instructions to build an image layer by layer. Docker Compose is a tool for defining and running multi-container applications using a single YAML file.
 
+The "Learn Docker in 7 Easy Steps" video makes this concrete: a Dockerfile is a blueprint for building an image; an image is a template for running containers; a container is a running process of that image. One image can be used to spawn the same process multiple times in multiple places — which is exactly what orchestration tools like Kubernetes leverage. A key insight from the video is layer caching: because Docker caches each instruction as a layer, you should install dependencies (e.g., \`npm install\`) before copying application source code, so that dependency layers are reused on every build where only application code changed.
+
 A minimal Dockerfile looks like this:
 
 \`\`\`dockerfile
@@ -175,9 +174,7 @@ CMD ["python", "app.py"]
 
 Each instruction (\`FROM\`, \`RUN\`, \`COPY\`) adds a cached layer. If only \`app.py\` changes, Docker reuses all previous layers and only rebuilds from the \`COPY . .\` instruction onwards, keeping builds fast.
 
-**Why it matters:**
-
-Containers solve the classic "it works on my machine" problem. By packaging the application and its environment together, you guarantee that what runs locally is identical to what runs in staging and production. DevOps engineers use Docker to build images in CI pipelines, push them to container registries, and deploy them to orchestration platforms such as Kubernetes.
+**Why it matters:** Containers solve the classic "it works on my machine" problem. By packaging the application and its environment together, you guarantee that what runs locally is identical to what runs in staging and production. DevOps engineers use Docker to build images in CI pipelines, push them to container registries, and deploy them to orchestration platforms such as Kubernetes.
 
 **Key things to understand:**
 
@@ -187,6 +184,8 @@ Containers solve the classic "it works on my machine" problem. By packaging the 
 - The base image matters: using a minimal base image (such as a slim or distroless variant) reduces attack surface and image size.
 - Multi-stage builds allow you to compile code in one stage and copy only the final artifact into a smaller production image.
 - Docker Compose is suited for local development environments; it is not a production orchestration tool.
+- Port forwarding (\`-p host:container\`) maps a container port to a host port; containers do not expose ports to the outside world by default.
+- A \`.dockerignore\` file prevents unnecessary files (like \`node_modules\` or \`.git\`) from being copied into the build context, keeping builds fast and images lean.
 
 **Common pitfalls:**
 
@@ -201,9 +200,7 @@ Containers solve the classic "it works on my machine" problem. By packaging the 
 
 Linux is the operating system that underlies the vast majority of cloud infrastructure, containers, and CI/CD agents. Understanding Linux means knowing how the file system is organised, how file permissions work, and how to inspect and control running processes. These are not advanced skills; they are the baseline required to work confidently on any server or inside any container.
 
-**Why it matters:**
-
-Almost every pipeline, container, and cloud virtual machine runs on Linux. When something breaks in production, you need to be able to SSH into a host, inspect logs, check running processes, and understand file ownership issues without relying on a graphical interface. These skills are the foundation of every other operational task.
+**Why it matters:** Almost every pipeline, container, and cloud virtual machine runs on Linux. When something breaks in production, you need to be able to SSH into a host, inspect logs, check running processes, and understand file ownership issues without relying on a graphical interface. These skills are the foundation of every other operational task.
 
 **Key things to understand:**
 
@@ -251,9 +248,7 @@ done
 
 Note: variables are assigned without spaces around \`=\` (\`ENVIRONMENT="staging"\`), and always referenced with double quotes (\`"$ENVIRONMENT"\`) to prevent word splitting when values contain spaces.
 
-**Why it matters:**
-
-Bash scripts are the glue of automation. Pipeline steps, infrastructure setup scripts, and deployment helpers are routinely written in Bash because it is available on virtually every Linux system without installation. Understanding Bash lets you read, debug, and write the scripts that CI/CD systems execute.
+**Why it matters:** Bash scripts are the glue of automation. Pipeline steps, infrastructure setup scripts, and deployment helpers are routinely written in Bash because it is available on virtually every Linux system without installation. Understanding Bash lets you read, debug, and write the scripts that CI/CD systems execute.
 
 **Key things to understand:**
 
@@ -277,9 +272,9 @@ Bash scripts are the glue of automation. Pipeline steps, infrastructure setup sc
 
 Version control – almost universally Git in modern environments – is the system that tracks changes to code over time, enables collaboration, and provides the audit trail required for controlled releases. In a DevOps context, version control is not just a storage mechanism; it is the trigger for automated pipelines and the source of truth for both application code and infrastructure definitions.
 
-**Why it matters:**
+The "Every DevOps Tool Explained" video highlights the ecosystem built on top of Git: GitHub adds social collaboration features (pull requests, issues, forks, marketplace integrations), GitLab provides a complete DevOps platform with built-in CI/CD out of the box, and GitHub Actions transforms GitHub repositories into CI/CD engines by triggering workflows on pushes or pull requests. Understanding these layers — Git as the foundation, platforms as the collaboration layer, and pipeline tools as the automation layer — helps you choose and configure the right tools for a team.
 
-Every CI/CD pipeline is driven by events in version control: a push, a pull request, or a tag. DevOps engineers need to understand branching strategies because they directly affect pipeline design. They also manage infrastructure-as-code and pipeline definitions in the same repository, so Git skills are inseparable from day-to-day work.
+**Why it matters:** Every CI/CD pipeline is driven by events in version control: a push, a pull request, or a tag. DevOps engineers need to understand branching strategies because they directly affect pipeline design. They also manage infrastructure-as-code and pipeline definitions in the same repository, so Git skills are inseparable from day-to-day work.
 
 **Key things to understand:**
 
@@ -335,9 +330,7 @@ jobs:
 
 The exact keywords vary by platform, but the same ideas appear everywhere: one block defines what events start the pipeline, one defines where jobs run, and dependency keys control sequencing.
 
-**Why it matters:**
-
-YAML pipelines are the primary mechanism for automating builds, tests, and deployments in modern delivery platforms. Being able to read, write, debug, and refactor pipeline definitions is a core daily skill. Understanding the structural hierarchy prevents common mistakes around variable scoping, parallelism, and environment targeting.
+**Why it matters:** YAML pipelines are the primary mechanism for automating builds, tests, and deployments in modern delivery platforms. Being able to read, write, debug, and refactor pipeline definitions is a core daily skill. Understanding the structural hierarchy prevents common mistakes around variable scoping, parallelism, and environment targeting.
 
 **Key things to understand:**
 
@@ -357,15 +350,48 @@ YAML pipelines are the primary mechanism for automating builds, tests, and deplo
 
 ---
 
-## 2. Azure Cloud Fundamentals – Compute, Storage, Networking and IAM
+## 2. System Design Fundamentals – Scaling, Networking and Databases
+
+System design is the discipline of making deliberate architectural choices about how components fit together, communicate, scale, and handle failures. For a DevOps or platform engineer, system design knowledge is not optional — it determines whether the infrastructure you build can actually support the workloads it is supposed to serve.
+
+The "System Design Concepts in 10 min" video provides a tightly structured overview of the core vocabulary. Starting from a single server, it traces the path to scalable distributed systems through vertical scaling (adding resources to one machine), horizontal scaling (adding more machines), load balancers, CDNs, caching hierarchies, DNS, HTTP and API patterns, SQL and NoSQL databases, sharding, replication, the CAP theorem, and message queues. Each concept builds on the previous one.
+
+Key mental models to internalise:
+
+- **Vertical vs horizontal scaling**: Vertical scaling (bigger machine) is simple but has a hard ceiling. Horizontal scaling (more machines) is more complex — it requires a load balancer, stateless application design, and consistency decisions — but scales nearly infinitely and eliminates single points of failure.
+- **Load balancers**: A load balancer is a reverse proxy that distributes incoming requests across a pool of servers. Algorithms like round-robin or consistent hashing ensure no single server becomes a bottleneck.
+- **Caching**: Data is expensive to fetch repeatedly. Browsers cache to disk; applications cache in memory; CDNs cache static assets globally close to users. Each level trades freshness for speed.
+- **DNS**: The Domain Name System translates human-readable domain names to IP addresses. DNS A records map a domain to a server IP. Your OS caches DNS results so it does not make a query on every request.
+- **API patterns**: REST is stateless and uses standard HTTP methods and status codes. GraphQL (developed by Facebook) lets clients specify exactly the data they need, eliminating over-fetching. gRPC uses Protocol Buffers (binary, more efficient than JSON) and is primarily used for server-to-server communication. WebSockets enable bi-directional, real-time communication — appropriate for chat applications and live dashboards.
+- **SQL vs NoSQL**: Relational databases are ACID-compliant (Atomic, Consistent, Isolated, Durable) and enforce data relationships. NoSQL databases drop the consistency constraint to enable horizontal scaling through sharding.
+- **CAP theorem**: In a distributed database, you can only guarantee two of: Consistency (every read returns the latest write), Availability (every request gets a response), and Partition tolerance (the system continues operating despite network partitions). This forces trade-offs in database selection.
+- **Message queues**: Decouple producers from consumers, absorb traffic spikes, and enable reliable asynchronous processing. Azure Service Bus, RabbitMQ, and Kafka are common choices.
+
+**Why it matters:** DevOps engineers provision and scale the infrastructure that systems run on. If you do not understand the difference between vertical and horizontal scaling, you cannot make informed decisions about when to resize a VM versus add replicas. If you do not understand the CAP theorem, you cannot advise on database selection for a high-availability workload.
+
+**Key things to understand:**
+
+- Stateless application design is a prerequisite for horizontal scaling; session state must live in a shared store (Redis, database), not in process memory.
+- A single point of failure in any layer — server, database, load balancer — can cause complete system unavailability; design for redundancy at each layer.
+- Caching is most effective for read-heavy, slowly-changing data; it introduces staleness risk and cache invalidation complexity.
+- Sharding and replication solve different problems: sharding distributes write load across partitions; replication scales reads and provides redundancy.
+
+**Common pitfalls:**
+
+- Scaling vertically until the ceiling is hit, then having to redesign the application for horizontal scaling under pressure.
+- Introducing caching without a cache invalidation strategy, leading to stale data bugs.
+- Choosing a NoSQL database for a use case that genuinely requires relational integrity, then rebuilding the constraints in application code.
+- Neglecting network partitions in distributed system design; they are not hypothetical — they happen in cloud environments.
+
+---
+
+## 3. Azure Cloud Fundamentals – Compute, Storage, Networking and IAM
 
 Azure is Microsoft's public cloud platform. Its core building blocks are compute (virtual machines, App Service, Azure Kubernetes Service, Azure Functions), storage (Blob Storage, Azure Files, managed disks), networking (Virtual Networks, subnets, Network Security Groups, Azure Load Balancer, DNS), and identity and access management (Microsoft Entra ID (formerly Azure Active Directory), role-based access control). Understanding these primitives is prerequisite knowledge for designing and deploying any workload on Azure.
 
 Resources are always contained within a resource group, which in turn belongs to a subscription. Subscriptions sit within a management group hierarchy. This three-level nesting (management group > subscription > resource group) is where policies, budgets, and RBAC assignments are applied.
 
-**Why it matters:**
-
-As a DevOps or platform engineer on Azure, you provision and configure these resources using infrastructure-as-code tools. You need to understand what each resource type does, how resources communicate with each other, and how access is controlled before you can write correct Bicep or Terraform definitions.
+**Why it matters:** As a DevOps or platform engineer on Azure, you provision and configure these resources using infrastructure-as-code tools. You need to understand what each resource type does, how resources communicate with each other, and how access is controlled before you can write correct Bicep or Terraform definitions.
 
 **Key things to understand:**
 
@@ -388,15 +414,13 @@ Azure Key Vault is the managed service for storing and accessing secrets, certif
 
 ---
 
-## 3. Infrastructure as Code – Principles and Why It Matters
+## 4. Infrastructure as Code – Principles and Why It Matters
 
 Infrastructure as Code (IaC) is the practice of defining and managing infrastructure resources – servers, networks, databases, and more – using machine-readable definition files rather than manual configuration or interactive tools. The definition files are stored in version control, reviewed like application code, and applied by automated tools that reconcile the desired state with the actual state of the infrastructure.
 
 The key property that distinguishes good IaC from a bag of scripts is idempotency: applying the same definition multiple times must produce the same result. This is what makes IaC safe to run in automated pipelines without human supervision.
 
-**Why it matters:**
-
-IaC is the foundation of repeatable, auditable, and scalable infrastructure management. Without it, environments drift apart over time, incidents are hard to reproduce, and changes have no audit trail. With IaC, every change to infrastructure goes through a pull request, is reviewed, and is applied consistently across environments.
+**Why it matters:** IaC is the foundation of repeatable, auditable, and scalable infrastructure management. Without it, environments drift apart over time, incidents are hard to reproduce, and changes have no audit trail. With IaC, every change to infrastructure goes through a pull request, is reviewed, and is applied consistently across environments.
 
 **Key things to understand:**
 
@@ -415,7 +439,7 @@ IaC is the foundation of repeatable, auditable, and scalable infrastructure mana
 
 ---
 
-## 4. Bicep – Templates, Modules and Deployment
+## 5. Bicep – Templates, Modules and Deployment
 
 Bicep is a domain-specific language (DSL) developed by Microsoft for deploying Azure resources declaratively. It compiles to Azure Resource Manager (ARM) JSON templates, giving access to the full ARM API surface while providing a cleaner, more readable syntax. Bicep supports modules (reusable template fragments), parameters, variables, outputs, and conditions.
 
@@ -442,9 +466,7 @@ output storageAccountId string = storageAccount.id
 
 Every resource block specifies a \`type\` (the ARM resource type and API version), a \`name\`, a \`location\`, and the resource-specific \`properties\`. Parameters supply environment-specific values; outputs expose values for use in other templates or pipelines.
 
-**Why it matters:**
-
-Bicep is the first-class IaC language for Azure. It is tightly integrated with Azure CLI and modern CI/CD platforms, making it the natural choice for Azure-native teams. Understanding Bicep lets you define, review, and deploy Azure resources reproducibly.
+**Why it matters:** Bicep is the first-class IaC language for Azure. It is tightly integrated with Azure CLI and modern CI/CD platforms, making it the natural choice for Azure-native teams. Understanding Bicep lets you define, review, and deploy Azure resources reproducibly.
 
 **Key things to understand:**
 
@@ -464,7 +486,7 @@ Bicep is the first-class IaC language for Azure. It is tightly integrated with A
 
 ---
 
-## 5. Terraform – Providers, State, Plan and Apply
+## 6. Terraform – Providers, State, Plan and Apply
 
 Terraform is an open-source IaC tool by HashiCorp that uses a declarative configuration language (HCL – HashiCorp Configuration Language) to define infrastructure across multiple cloud providers and services. Terraform tracks the current state of managed infrastructure in a state file (\`terraform.tfstate\`) and calculates the difference between the current state and the desired configuration to produce a plan of changes before applying them.
 
@@ -506,9 +528,7 @@ resource "azurerm_storage_account" "main" {
 
 The workflow is always: \`terraform init\` (download providers) → \`terraform plan\` (preview changes) → \`terraform apply\` (execute changes). Never skip \`plan\` in production.
 
-**Why it matters:**
-
-Terraform is the dominant multi-cloud IaC tool and is widely used even in Azure-primary environments, particularly when infrastructure spans multiple providers. Understanding Terraform's state model, provider ecosystem, and plan/apply workflow is essential for operating it safely at scale.
+**Why it matters:** Terraform is the dominant multi-cloud IaC tool and is widely used even in Azure-primary environments, particularly when infrastructure spans multiple providers. Understanding Terraform's state model, provider ecosystem, and plan/apply workflow is essential for operating it safely at scale.
 
 **Key things to understand:**
 
@@ -528,13 +548,11 @@ Terraform is the dominant multi-cloud IaC tool and is widely used even in Azure-
 
 ---
 
-## 6. PowerShell – Automation and Azure Management
+## 7. PowerShell – Automation and Azure Management
 
 PowerShell is a cross-platform scripting language and shell built on .NET. It is object-oriented: commands (called cmdlets) output structured objects rather than text, making it easier to filter, sort, and transform data without fragile string parsing. The \`Az\` PowerShell module provides cmdlets for managing every Azure resource type. PowerShell is the dominant scripting language in Windows-centric and Azure-heavy environments.
 
-**Why it matters:**
-
-Many organisations use PowerShell for Azure management tasks, release automation, and operational scripts. Most CI/CD platforms support PowerShell steps natively. Being able to write, read, and debug PowerShell scripts is necessary for working in these environments and for understanding existing automation.
+**Why it matters:** Many organisations use PowerShell for Azure management tasks, release automation, and operational scripts. Most CI/CD platforms support PowerShell steps natively. Being able to write, read, and debug PowerShell scripts is necessary for working in these environments and for understanding existing automation.
 
 **Key things to understand:**
 
@@ -554,7 +572,7 @@ Many organisations use PowerShell for Azure management tasks, release automation
 
 ---
 
-## 7. Kubernetes – Pods, Deployments, Services and Ingress
+## 8. Kubernetes – Pods, Deployments, Services and Ingress
 
 Kubernetes is an open-source container orchestration platform that automates the deployment, scaling, and management of containerised applications. It introduces a set of resource types with distinct roles: the Pod is the smallest deployable unit; a Deployment manages a fleet of identical Pods; a Service provides a stable network address for reaching those Pods; an Ingress exposes HTTP/HTTPS routes from outside the cluster to Services.
 
@@ -569,9 +587,7 @@ Understanding the difference between these four resource types is the foundation
 
 The \`kubectl\` command-line tool is used to interact with a cluster: \`kubectl apply -f manifest.yaml\`, \`kubectl get pods\`, \`kubectl describe deployment\`, \`kubectl logs\`.
 
-**Why it matters:**
-
-Kubernetes is the standard platform for running containerised workloads in production. DevOps engineers provision clusters, write manifest files, configure deployments, manage secrets, and troubleshoot running workloads. Azure Kubernetes Service (AKS) is the managed offering on Azure, but understanding the underlying Kubernetes concepts is necessary to use it effectively.
+**Why it matters:** Kubernetes is the standard platform for running containerised workloads in production. DevOps engineers provision clusters, write manifest files, configure deployments, manage secrets, and troubleshoot running workloads. Azure Kubernetes Service (AKS) is the managed offering on Azure, but understanding the underlying Kubernetes concepts is necessary to use it effectively.
 
 **Key things to understand:**
 
@@ -597,7 +613,7 @@ Azure Container Registry is a managed Docker registry for storing and distributi
 
 ---
 
-## 8. Observability – Metrics, Logs, Traces and the Three Pillars
+## 9. Observability – Metrics, Logs, Traces and the Three Pillars
 
 Observability is the ability to understand the internal state of a system from its external outputs. The three pillars are metrics, logs, and traces. Each pillar answers a different kind of question: metrics tell you something is wrong, logs tell you what happened, and traces tell you where it happened across service boundaries.
 
@@ -607,9 +623,7 @@ Observability is the ability to understand the internal state of a system from i
 
 Together these three signals allow engineers to detect problems (metrics), understand their context (logs), and identify where in the call graph they originated (traces).
 
-**Why it matters:**
-
-You cannot operate a system you cannot observe. A DevOps engineer is responsible for ensuring that production systems emit sufficient telemetry and that the tooling to collect, store, and query that telemetry is in place. Without observability, incidents take longer to detect and resolve.
+**Why it matters:** You cannot operate a system you cannot observe. A DevOps engineer is responsible for ensuring that production systems emit sufficient telemetry and that the tooling to collect, store, and query that telemetry is in place. Without observability, incidents take longer to detect and resolve.
 
 **Key things to understand:**
 
@@ -629,13 +643,11 @@ You cannot operate a system you cannot observe. A DevOps engineer is responsible
 
 ---
 
-## 9. Azure Monitor and Application Insights
+## 10. Azure Monitor and Application Insights
 
 Azure Monitor is the unified observability platform for Azure. It collects metrics and logs from Azure resources, virtual machines, containers, and custom applications. Log Analytics workspaces store log data and expose it via the Kusto Query Language (KQL) for ad hoc analysis and alerting. Application Insights is a feature of Azure Monitor focused on application performance monitoring: it collects request rates, dependency calls, exceptions, and custom events from instrumented applications.
 
-**Why it matters:**
-
-Azure Monitor is the first place to look when something is wrong with a workload running on Azure. DevOps engineers configure diagnostic settings to route resource logs to Log Analytics, write KQL queries to investigate incidents, create alert rules to notify on-call engineers, and build dashboards to communicate system health to stakeholders.
+**Why it matters:** Azure Monitor is the first place to look when something is wrong with a workload running on Azure. DevOps engineers configure diagnostic settings to route resource logs to Log Analytics, write KQL queries to investigate incidents, create alert rules to notify on-call engineers, and build dashboards to communicate system health to stakeholders.
 
 **Key things to understand:**
 
@@ -655,15 +667,13 @@ Azure Monitor is the first place to look when something is wrong with a workload
 
 ---
 
-## 10. OpenTelemetry – Instrumentation and Vendor-Neutral Telemetry
+## 11. OpenTelemetry – Instrumentation and Vendor-Neutral Telemetry
 
 OpenTelemetry is a CNCF (Cloud Native Computing Foundation) project that provides a vendor-neutral set of APIs, SDKs, and tooling for generating, collecting, and exporting telemetry data – traces, metrics, and logs – from applications and infrastructure. It emerged from the merger of OpenTracing and OpenCensus and is now the standard approach to instrumentation. Applications are instrumented with the OpenTelemetry SDK; telemetry is collected by the OpenTelemetry Collector and exported to any compatible backend.
 
 The separation between instrumentation (SDK in the application) and export (Collector to backend) is the key design decision. You instrument code once and then route the telemetry to any backend – Azure Monitor, Jaeger, Prometheus, Grafana – by reconfiguring the Collector, with no code changes needed.
 
-**Why it matters:**
-
-OpenTelemetry decouples instrumentation from the observability backend. For a DevOps engineer, this means less vendor lock-in and the ability to change observability tooling independently of application releases.
+**Why it matters:** OpenTelemetry decouples instrumentation from the observability backend. For a DevOps engineer, this means less vendor lock-in and the ability to change observability tooling independently of application releases.
 
 **Key things to understand:**
 
@@ -696,9 +706,7 @@ Platform engineering is the discipline of building and operating internal develo
 
 The key mental shift is treating the platform as a product. This means understanding who uses it (developers), what problems they face (slow provisioning, inconsistent environments, security toil), and continuously improving based on their feedback – exactly as a product team would.
 
-**Why it matters:**
-
-At the senior level, the goal shifts from doing DevOps work yourself to enabling other engineers to do it correctly and efficiently. Platform engineering operationalises this shift. Instead of being a bottleneck – approving every pipeline change or infrastructure request – you build the guardrails, templates, and automation that let teams move independently while still meeting compliance, security, and reliability standards.
+**Why it matters:** At the senior level, the goal shifts from doing DevOps work yourself to enabling other engineers to do it correctly and efficiently. Platform engineering operationalises this shift. Instead of being a bottleneck – approving every pipeline change or infrastructure request – you build the guardrails, templates, and automation that let teams move independently while still meeting compliance, security, and reliability standards.
 
 **Key things to understand:**
 
@@ -722,9 +730,7 @@ At the senior level, the goal shifts from doing DevOps work yourself to enabling
 
 System design for infrastructure means making deliberate architectural decisions about how cloud resources are structured, how they communicate, how they scale, and how they recover from failures. At the senior level, this goes beyond deploying individual resources and encompasses multi-region topologies, network segmentation, landing zone design, capacity planning, and the trade-offs between availability, cost, and operational complexity.
 
-**Why it matters:**
-
-Senior engineers are expected to own architectural decisions that affect the entire organisation. Poor infrastructure design leads to outages, security breaches, runaway costs, and teams blocked on shared bottlenecks. Good design creates a foundation that is safe to change, easy to operate, and capable of absorbing growth.
+**Why it matters:** Senior engineers are expected to own architectural decisions that affect the entire organisation. Poor infrastructure design leads to outages, security breaches, runaway costs, and teams blocked on shared bottlenecks. Good design creates a foundation that is safe to change, easy to operate, and capable of absorbing growth.
 
 **Key things to understand:**
 
@@ -759,9 +765,7 @@ Pipeline security encompasses the practices and controls that prevent pipelines 
 
 A compromised pipeline is a high-value attack target because it runs with elevated permissions, has access to production secrets, and can push code to production without a human reviewing the change. Pipeline security is therefore not optional hygiene – it is a core engineering responsibility.
 
-**Why it matters:**
-
-As the person who builds and owns pipelines, a senior DevOps engineer is directly responsible for preventing pipeline compromise. Regulators and security teams increasingly audit pipeline configurations, and a weak pipeline can block certification or cause compliance failures.
+**Why it matters:** As the person who builds and owns pipelines, a senior DevOps engineer is directly responsible for preventing pipeline compromise. Regulators and security teams increasingly audit pipeline configurations, and a weak pipeline can block certification or cause compliance failures.
 
 **Key things to understand:**
 
@@ -785,9 +789,7 @@ As the person who builds and owns pipelines, a senior DevOps engineer is directl
 
 Domain-Driven Design (DDD) is a software design approach that aligns the structure of a system with the business domains it serves. Key concepts include bounded contexts (explicit boundaries within which a specific model is valid), ubiquitous language (shared vocabulary used consistently by both technical and business stakeholders), aggregates (clusters of objects treated as a unit), and context maps (diagrams that show how bounded contexts relate to one another). Applied to infrastructure and platform design, DDD helps define where platform boundaries should be drawn and how teams should own and interface with services.
 
-**Why it matters:**
-
-At scale, the hardest problems in platform engineering are not technical – they are organisational. Where does one team's responsibility end and another's begin? Which services should be shared and which should be owned per team? DDD provides a disciplined vocabulary and set of patterns for answering these questions in a way that reduces coupling and enables autonomous team operation.
+**Why it matters:** At scale, the hardest problems in platform engineering are not technical – they are organisational. Where does one team's responsibility end and another's begin? Which services should be shared and which should be owned per team? DDD provides a disciplined vocabulary and set of patterns for answering these questions in a way that reduces coupling and enables autonomous team operation.
 
 **Key things to understand:**
 
@@ -810,9 +812,7 @@ At scale, the hardest problems in platform engineering are not technical – the
 
 Cloud-native architecture patterns are design approaches that exploit the characteristics of cloud infrastructure – elasticity, managed services, distributed execution, and pay-per-use pricing – rather than treating the cloud as a virtualised data centre. Key patterns include microservices, event-driven architecture, the strangler fig (migrating from monolith to services), CQRS (Command Query Responsibility Segregation), the sidecar pattern, and the circuit breaker pattern.
 
-**Why it matters:**
-
-Senior DevOps engineers participate in architecture reviews and are expected to evaluate whether proposed designs are operationally sound. A pattern that looks elegant on a whiteboard can be operationally nightmarish if it produces excessive inter-service latency, complicates deployment ordering, or makes tracing difficult. Understanding these patterns lets you contribute meaningfully to design decisions and anticipate operational challenges before they reach production.
+**Why it matters:** Senior DevOps engineers participate in architecture reviews and are expected to evaluate whether proposed designs are operationally sound. A pattern that looks elegant on a whiteboard can be operationally nightmarish if it produces excessive inter-service latency, complicates deployment ordering, or makes tracing difficult. Understanding these patterns lets you contribute meaningfully to design decisions and anticipate operational challenges before they reach production.
 
 **Key things to understand:**
 
@@ -836,9 +836,9 @@ Senior DevOps engineers participate in architecture reviews and are expected to 
 
 Generative AI (GenAI) workloads – large language models, embedding models, image generation systems – have unique infrastructure characteristics. They require access to GPU-enabled compute (or dedicated AI accelerator instances), high-bandwidth storage for model weights, low-latency access to embedding stores (vector databases), and robust content safety and access control layers. On Azure, the primary managed service for deploying LLMs is Azure OpenAI Service; Azure AI Foundry provides a broader platform for building and deploying AI applications.
 
-**Why it matters:**
+The "AI, ML, Deep Learning and GenAI Explained" video provides the conceptual grounding needed to understand what you are building infrastructure for. The key distinction is the hierarchy: AI is the broadest field; machine learning is a subset using data-driven pattern recognition; deep learning is a subset of ML using layered neural networks; and generative AI — built on foundation models and large language models — is the most recent and commercially impactful layer. Understanding this hierarchy matters because each layer has different infrastructure requirements: traditional ML workloads are CPU-bound batch jobs; deep learning training requires GPU clusters; LLM inference requires optimised GPU instances with high memory bandwidth; and generative AI applications require vector databases, content filtering layers, and token-based cost management.
 
-As organisations adopt GenAI, DevOps and platform engineers are responsible for the infrastructure that hosts, scales, and secures these workloads. GenAI systems have distinct operational characteristics: they are stateless at inference time but require careful model version management, they produce probabilistic outputs that require human-in-the-loop review or content filtering, and they have different cost profiles (per-token billing) compared to traditional workloads.
+**Why it matters:** As organisations adopt GenAI, DevOps and platform engineers are responsible for the infrastructure that hosts, scales, and secures these workloads. GenAI systems have distinct operational characteristics: they are stateless at inference time but require careful model version management, they produce probabilistic outputs that require human-in-the-loop review or content filtering, and they have different cost profiles (per-token billing) compared to traditional workloads.
 
 **Key things to understand:**
 
@@ -848,6 +848,7 @@ As organisations adopt GenAI, DevOps and platform engineers are responsible for 
 - Rate limiting and quota management: Azure OpenAI has per-deployment token-per-minute (TPM) quotas; platform engineers must model usage and request quota increases proactively.
 - Vector databases (Azure AI Search with vector indexes, or dedicated services) require their own availability, backup, and access control considerations.
 - Cost observability: per-token costs accumulate quickly; tag deployments by team and application, set budget alerts, and instrument token usage in application telemetry.
+- The distinction between AI, ML, deep learning, and generative AI is not academic — it determines which Azure services, compute SKUs, and operational patterns apply to a given workload.
 
 **Common pitfalls:**
 
@@ -864,9 +865,7 @@ GitOps is an operational model where the desired state of infrastructure and app
 
 Flux is the CNCF-graduated GitOps toolkit for Kubernetes, and the most common choice in Azure environments. Flux runs inside the cluster, watches one or more Git repositories, and automatically applies changes when it detects drift between the declared state in Git and the actual state in the cluster. ArgoCD is the other major GitOps tool, offering a web UI and more opinionated workflow.
 
-**Why it matters:**
-
-GitOps solves a fundamental operational problem: configuration drift. When changes are made imperatively (someone runs kubectl commands directly), the actual state of the cluster diverges from what is documented. GitOps eliminates drift by making Git the single source of truth — every change is version-controlled, auditable, and reversible. For a regulated environment like insurance, the audit trail that GitOps provides is particularly valuable.
+**Why it matters:** GitOps solves a fundamental operational problem: configuration drift. When changes are made imperatively (someone runs kubectl commands directly), the actual state of the cluster diverges from what is documented. GitOps eliminates drift by making Git the single source of truth — every change is version-controlled, auditable, and reversible. For a regulated environment like insurance, the audit trail that GitOps provides is particularly valuable.
 
 **Key things to understand:**
 
@@ -886,48 +885,26 @@ GitOps solves a fundamental operational problem: configuration drift. When chang
 
 ---
 
-## 8. AI Policy — Organisational Principles
-
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
-
-The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
-
-Responsible AI principles are embedded throughout the policy. These include diversity and non-discrimination (AI systems must not produce biased or discriminatory outcomes), transparency (users and affected parties must understand when and how AI is used), robustness (AI systems must perform reliably and handle errors gracefully), security (AI systems must be protected against adversarial manipulation and data breaches), and privacy (personal data must be handled in accordance with GDPR and internal data classification policies).
-
-The AI Register requires that all AI use cases within the organisation are registered and classified by risk level. This classification determines the governance requirements — from lightweight documentation for low-risk use cases to full conformity assessments for high-risk systems. High-risk AI systems require conformity assessments demonstrating compliance with transparency, human oversight, data quality, and technical robustness requirements.
-
-Staff using AI tools and systems must understand the limitations of AI technology and the requirements of the policy. This applies to all roles — from platform engineers building infrastructure for AI workloads to engineers using AI-assisted development tools.
-
-**Why it matters:** The AI Policy directly affects platform engineering decisions. When provisioning infrastructure for AI workloads, configuring model endpoints, or building deployment pipelines for AI applications, the policy's requirements around data classification, network isolation, logging, and access control translate into concrete infrastructure design decisions.
-
-**Key things to understand:**
-- Every AI use case must be registered in the AI Register with a risk classification before development begins.
-- The risk classification determines governance requirements: low-risk use cases need basic documentation; high-risk use cases need conformity assessments.
-- Platform engineers must ensure that AI infrastructure enforces the policy's data classification requirements — for example, ensuring that AI endpoints processing sensitive data are deployed with private networking.
-- Logging and audit trail requirements from the policy must be implemented at the infrastructure level.
-
-**Common pitfalls:**
-- Provisioning AI infrastructure without verifying that the use case has been registered and classified in the AI Register.
-- Treating AI Policy compliance as an application-level concern only; infrastructure configuration (networking, access control, logging) is equally governed.
-- Not applying the same security standards to AI endpoints as to other production APIs.
-
----
-
-## 9. AI-Powered Development for DevOps and Platform Engineers
+## 8. AI-Powered Development for DevOps and Platform Engineers
 
 AI-assisted development tools are changing how infrastructure code, pipeline definitions, and automation scripts are written and maintained. For DevOps and platform engineers, these tools can accelerate the creation of Bicep/Terraform modules, Kubernetes manifests, pipeline YAML, PowerShell scripts, and documentation — tasks that often involve repetitive patterns and well-documented syntax.
 
 AI assistants are most effective for infrastructure work when given precise context: the target cloud provider, the existing naming conventions, the required compliance constraints, and the specific resource types involved. They can generate first drafts of infrastructure-as-code templates, suggest pipeline stages, explain unfamiliar Kubernetes error messages, and help translate between IaC languages.
 
+Understanding the foundation of these tools — from the "AI, ML, Deep Learning and GenAI Explained" video — helps calibrate expectations. AI coding assistants are built on large language models: they predict statistically plausible code completions based on patterns in their training data. They are not reasoning engines. They excel at syntactically correct boilerplate and well-documented patterns; they struggle with novel constraints, organisation-specific naming rules, and security requirements they have never seen. Knowing this, the right approach is to use AI tools to generate a first draft quickly, then review the output against security policies, compliance requirements, and organisational standards before accepting it.
+
 **Why it matters:** Senior DevOps engineers who understand how to use AI tools effectively can significantly accelerate platform development — particularly for boilerplate-heavy tasks like writing Bicep modules, Helm charts, or pipeline definitions. Equally important is understanding the limitations: AI-generated infrastructure code can contain subtle misconfigurations that create security vulnerabilities or cost overruns.
 
 **Key things to understand:**
+
 - AI tools are effective for generating infrastructure boilerplate, but every generated template must be reviewed for security misconfigurations, overly permissive access controls, and compliance with organisational standards.
 - Infrastructure-as-code generated by AI must be validated through the same pipeline gates (linting, policy checks, plan/what-if review) as human-written code.
 - AI assistants can help explain and debug complex Kubernetes, Terraform, or pipeline configurations, reducing the time to diagnose issues.
 - Data privacy applies to AI tool use: do not paste production secrets, connection strings, or customer data into AI assistants. Follow the organisation's AI Policy for approved tools.
+- The hierarchy of AI → ML → deep learning → generative AI explains why different tools have different capabilities; LLM-based coding assistants are generative AI tools that predict plausible code, not tools that reason about correctness.
 
 **Common pitfalls:**
+
 - Accepting AI-generated infrastructure code without reviewing it against organisational security policies and naming conventions.
 - Using AI to generate Kubernetes manifests or Helm charts without verifying resource limits, security contexts, and network policies.
 - Over-relying on AI for troubleshooting without developing the underlying understanding of the systems being managed.
