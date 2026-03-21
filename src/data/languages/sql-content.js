@@ -2621,6 +2621,8 @@ CALL process_pending_orders();
 You have now mastered intermediate SQL concepts:
 - **Window functions** for row-by-row calculations without collapsing groups
 - **CTEs** for readable, composable multi-step queries
+- **LATERAL joins** for correlated set-returning subqueries in FROM
+- **MERGE** for atomic insert/update/delete synchronization
 - **Recursive queries** for hierarchical data traversal
 - **Transactions** for safe, atomic multi-operation changes
 - **Views** and **materialized views** for query encapsulation and caching
