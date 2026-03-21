@@ -11,7 +11,6 @@ Data Engineers design, build, and maintain the infrastructure and pipelines that
 
 | Topic | Resource | Type |
 |---|---|---|
-| Python Foundations | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python Foundations | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
 | SQL Fundamentals | [SQLBolt – Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
 | SQL Fundamentals | [Kaggle Learn – Intro to SQL](https://www.kaggle.com/learn/intro-to-sql) | Interactive |
@@ -73,10 +72,6 @@ For deep explanations of each concept, see the [Mid Concept Reference](Data-Engi
 | Delta Lake | [Delta Lake – Official Documentation](https://docs.delta.io/latest/index.html) | Docs |
 | Data Mesh | [Data Mesh Principles – Zhamak Dehghani](https://martinfowler.com/articles/data-mesh-principles.html) | Docs |
 | DataOps & CI/CD | [Microsoft Learn – DataOps for Azure](https://learn.microsoft.com/en-us/azure/architecture/databases/guide/dataops) | Docs |
-| GenAI for Data Engineering | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
-| AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Data Governance | [Microsoft Learn – Data Governance with Microsoft Purview](https://learn.microsoft.com/en-us/training/paths/governance-purview/) | Interactive |
 | GDPR for Data Engineers | [GDPR Overview – gdpr-info.eu](https://gdpr-info.eu/) | Reference |
@@ -102,8 +97,7 @@ Return to the [Role Roadmap index](README.md).
 `,
   beginner: `# Data Engineer – Beginner Concept Reference
 
-
-This document explains the foundational concepts covered in the Beginner level of the Data Engineer learning path.
+This document explains the foundational concepts covered in the Beginner level of the Data Engineer learning path. By the time you finish this level, you should have a working mental model of the data engineering discipline: what data engineers build, the tools they use daily, and the first-principles thinking that separates reliable pipelines from fragile scripts. Start here before touching any framework or cloud service — every advanced topic builds directly on these foundations.
 
 ---
 
@@ -112,8 +106,6 @@ This document explains the foundational concepts covered in the Beginner level o
 Python is the primary language for data engineering. Its readable syntax, rich standard library and mature ecosystem of data libraries make it the default choice for writing ETL scripts, pipeline logic, and data transformations. A Data Engineer uses Python daily — not to build web applications or train models, but to move, clean, reshape and validate data.
 
 The standard library covers file I/O, JSON parsing, CSV handling, date manipulation and HTTP requests. Beyond the standard library, the data engineering ecosystem relies heavily on libraries like Pandas for tabular data manipulation, requests for API integration, and SQLAlchemy for database connectivity. Understanding Python's core data structures — lists, dictionaries, sets and tuples — is essential because every transformation you write operates on these primitives.
-
-**Why it matters:** A Data Engineer who cannot write clean, efficient Python will struggle with every tool in the stack. Spark jobs are written in PySpark, Airflow DAGs are Python files, dbt uses Jinja-templated SQL orchestrated by Python, and most cloud SDK interactions happen through Python clients. Python fluency is the foundation everything else builds on.
 
 **Key things to understand:**
 
@@ -131,6 +123,8 @@ The standard library covers file I/O, JSON parsing, CSV handling, date manipulat
 - Using mutable default arguments (e.g., \`def process(items=[])\`) which share state across calls.
 - Ignoring encoding issues when reading text files; always specify encoding explicitly (e.g., \`encoding='utf-8'\`).
 
+**Why it matters:** A Data Engineer who cannot write clean, efficient Python will struggle with every tool in the stack. Spark jobs are written in PySpark, Airflow DAGs are Python files, dbt uses Jinja-templated SQL orchestrated by Python, and most cloud SDK interactions happen through Python clients. Python fluency is the foundation everything else builds on.
+
 ---
 
 ## SQL Fundamentals – Querying, Filtering and Aggregation
@@ -138,8 +132,6 @@ The standard library covers file I/O, JSON parsing, CSV handling, date manipulat
 SQL (Structured Query Language) is the universal language for working with relational data. For a Data Engineer, SQL is not just a query tool — it is the primary language for defining transformations, building data models, and validating data quality. Every data warehouse, every analytics engine, and most pipeline tools use SQL or a SQL-like dialect as the core interface.
 
 A solid understanding of SQL means being able to retrieve data from multiple tables, filter and aggregate it, and reshape it for downstream use. Beyond simple queries, Data Engineers use SQL to define views, create tables, manage schemas, and write the transformation logic that turns raw data into reliable analytical datasets.
-
-**Why it matters:** SQL is the language your entire data stack speaks. Spark SQL, dbt, BigQuery, Synapse, Snowflake, PostgreSQL — they all use SQL. An inability to write correct, efficient SQL is the single biggest bottleneck for a Data Engineer, because every pipeline, every model, and every dashboard depends on it.
 
 **Key things to understand:**
 
@@ -157,6 +149,8 @@ A solid understanding of SQL means being able to retrieve data from multiple tab
 - Using \`GROUP BY\` without understanding which columns must be grouped and which must be aggregated.
 - Not understanding the order of SQL clause execution (FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY).
 
+**Why it matters:** SQL is the language your entire data stack speaks. Spark SQL, dbt, BigQuery, Synapse, Snowflake, PostgreSQL — they all use SQL. An inability to write correct, efficient SQL is the single biggest bottleneck for a Data Engineer, because every pipeline, every model, and every dashboard depends on it.
+
 ---
 
 ## Relational Databases – Tables, Keys and Schema Design
@@ -164,8 +158,6 @@ A solid understanding of SQL means being able to retrieve data from multiple tab
 A relational database organises data into tables with defined columns and data types. Each table represents an entity — customers, transactions, products — and relationships between entities are expressed through keys. A primary key uniquely identifies each row; a foreign key in one table references the primary key of another, creating the relationships that give relational databases their name.
 
 Schema design is the process of deciding which tables to create, what columns each table has, and how tables relate to each other. Good schema design minimises redundancy (the same data stored in multiple places) and maximises integrity (constraints that prevent invalid data from being stored). For a Data Engineer, understanding relational schema design is the foundation for both operational databases and analytical data models.
-
-**Why it matters:** Data Engineers work with relational databases constantly — as sources to extract from, as targets to load into, and as the foundation for data warehouse schemas. A poor understanding of relational concepts leads to pipelines that produce duplicate data, violate constraints, or build analytical models on an unstable foundation.
 
 **Key things to understand:**
 
@@ -183,6 +175,8 @@ Schema design is the process of deciding which tables to create, what columns ea
 - Over-normalising to the point where every query requires five or more joins; pragmatic denormalisation is sometimes the right trade-off.
 - Using auto-incrementing integers as primary keys for tables that will be merged across systems; UUIDs are often more appropriate.
 
+**Why it matters:** Data Engineers work with relational databases constantly — as sources to extract from, as targets to load into, and as the foundation for data warehouse schemas. A poor understanding of relational concepts leads to pipelines that produce duplicate data, violate constraints, or build analytical models on an unstable foundation.
+
 ---
 
 ## Data Pipelines – Extract, Transform, Load
@@ -191,7 +185,11 @@ A data pipeline is a series of automated steps that move data from one or more s
 
 The alternative pattern is ELT: Extract and Load the raw data first into a powerful analytical system, then Transform it inside that system using SQL. ELT has become increasingly popular because modern cloud data warehouses (Snowflake, BigQuery, Synapse) have enough compute power to handle transformations at scale, and storing raw data first preserves the original source of truth.
 
-**Why it matters:** Data pipelines are the core deliverable of a Data Engineer. Every report, dashboard, machine learning model, and business decision depends on data that was moved and transformed by a pipeline. A broken or unreliable pipeline means downstream consumers — analysts, data scientists, business users — cannot trust the data, which undermines the entire data function.
+The video resource for this topic introduces data pipelines from first principles — covering what a pipeline is, why organisations need them, and how the ETL pattern maps to real-world data flows. Watch it before reading further documentation to build a concrete mental model.
+
+> ⚠️ No auto-transcript available for this video. Watch it for supplementary context.
+
+[What is a Data Pipeline?](https://www.youtube.com/watch?v=VtzvF17ysbc)
 
 **Key things to understand:**
 
@@ -209,6 +207,8 @@ The alternative pattern is ELT: Extract and Load the raw data first into a power
 - Ignoring error handling and monitoring; a pipeline that fails silently is worse than one that fails loudly.
 - Coupling pipeline logic tightly to a specific source schema without an abstraction layer, causing breakage when the source changes.
 
+**Why it matters:** Data pipelines are the core deliverable of a Data Engineer. Every report, dashboard, machine learning model, and business decision depends on data that was moved and transformed by a pipeline. A broken or unreliable pipeline means downstream consumers — analysts, data scientists, business users — cannot trust the data, which undermines the entire data function.
+
 ---
 
 ## Linux and Command Line – Navigating the Data Engineering Environment
@@ -216,8 +216,6 @@ The alternative pattern is ELT: Extract and Load the raw data first into a power
 Data engineering tools run on Linux. Spark clusters, Airflow schedulers, Docker containers, cloud VMs — the vast majority of the infrastructure a Data Engineer interacts with runs on a Linux operating system. The command line interface (CLI) is the primary way to interact with these systems: starting and stopping services, inspecting logs, transferring files, and debugging pipeline failures.
 
 Even when working on a Windows or macOS laptop, Data Engineers frequently SSH into remote Linux machines or interact with containers that run Linux. Understanding the file system structure, process management, and basic shell scripting is a prerequisite for working with any data infrastructure tool.
-
-**Why it matters:** A Data Engineer who cannot navigate Linux is locked out of their own infrastructure. When a pipeline fails at 3 AM, the first step is usually to SSH into a server and inspect logs, check disk space, verify that a process is running, or examine a data file. These tasks require command line fluency.
 
 **Key things to understand:**
 
@@ -235,6 +233,8 @@ Even when working on a Windows or macOS laptop, Data Engineers frequently SSH in
 - Not understanding the difference between \`>\` (overwrite) and \`>>\` (append) when redirecting output.
 - Ignoring file encoding issues when transferring files between Windows and Linux (line endings, character encoding).
 
+**Why it matters:** A Data Engineer who cannot navigate Linux is locked out of their own infrastructure. When a pipeline fails at 3 AM, the first step is usually to SSH into a server and inspect logs, check disk space, verify that a process is running, or examine a data file. These tasks require command line fluency.
+
 ---
 
 ## Data Modelling Basics – Structuring Data for Purpose
@@ -242,8 +242,6 @@ Even when working on a Windows or macOS laptop, Data Engineers frequently SSH in
 Data modelling is the process of defining how data is organised, stored, and related. A data model is an abstraction that describes the entities in a domain, their attributes, and the relationships between them. There are different types of data models for different purposes: conceptual models describe what entities exist, logical models describe how entities relate, and physical models describe how data is actually stored in a database.
 
 For a Data Engineer at the beginner level, the most important distinction is between operational (OLTP) and analytical (OLAP) data models. Operational models are optimised for fast individual transactions — inserting an order, updating a customer record. Analytical models are optimised for fast aggregation across large datasets — total sales by region, average response time by month.
-
-**Why it matters:** Data modelling is the blueprint for everything a Data Engineer builds. A well-designed data model makes pipelines simpler, queries faster, and data consumers more productive. A poorly designed model forces complex, brittle transformations and produces confusing, unreliable outputs.
 
 **Key things to understand:**
 
@@ -260,11 +258,16 @@ For a Data Engineer at the beginner level, the most important distinction is bet
 - Using the same model for both operational and analytical workloads, resulting in a design that is suboptimal for both.
 - Neglecting to document the data model; a model that exists only in someone's head is a single point of failure.
 - Assuming data modelling is a one-time activity; models evolve as business requirements change.
+
+**Why it matters:** Data modelling is the blueprint for everything a Data Engineer builds. A well-designed data model makes pipelines simpler, queries faster, and data consumers more productive. A poorly designed model forces complex, brittle transformations and produces confusing, unreliable outputs.
+
+---
+
+With the foundations covered, you are ready to move on to the Mid level where these concepts are applied at scale using professional tools: dimensional modelling, dbt, Spark, Airflow, and cloud data services.
 `,
   mid: `# Data Engineer – Mid Concept Reference
 
-
-This document explains the intermediate-level concepts covered in the Mid level of the Data Engineer learning path.
+This document explains the intermediate-level concepts covered in the Mid level of the Data Engineer learning path. At this stage you move from writing scripts on your laptop to building production-grade pipelines that run reliably at scale. The concepts here introduce the professional tooling that defines modern data engineering: dimensional modelling in the warehouse, transformations as code with dbt, distributed processing with Spark, workflow orchestration with Airflow, and containerisation with Docker. Each section builds on the foundations from the Beginner level, so revisit those if anything here feels unclear.
 
 ---
 
@@ -274,7 +277,9 @@ A data warehouse is a central repository of structured data optimised for analyt
 
 Dimensional modelling, pioneered by Ralph Kimball, is the dominant technique for designing data warehouse schemas. The core building blocks are fact tables and dimension tables. A fact table stores the measurements of a business process (sales amount, number of claims, page views) along with foreign keys to dimension tables. Dimension tables store the descriptive context (who, what, where, when) that gives meaning to the facts. The star schema — a fact table surrounded by dimension tables — is called "star" because of its visual shape in an entity-relationship diagram.
 
-**Why it matters:** Dimensional modelling is the foundation of every analytical data warehouse. Whether you use Snowflake, BigQuery, Synapse, or Redshift, the underlying design principles are the same. A well-designed dimensional model makes queries simple and fast; a poorly designed one forces complex joins, produces incorrect aggregations, and confuses every downstream consumer.
+The video below walks through the Data Warehouse Toolkit concepts, covering fact and dimension table design, star vs snowflake schemas, and Slowly Changing Dimensions with worked examples. Watch it to build a concrete picture of how these design decisions play out in practice before applying them in your own models.
+
+[Data Warehouse Toolkit Concepts (30 min)](https://www.youtube.com/watch?v=lWPiSZf7-uQ)
 
 **Key things to understand:**
 
@@ -292,6 +297,8 @@ Dimensional modelling, pioneered by Ralph Kimball, is the dominant technique for
 - Storing calculated metrics in the fact table instead of computing them at query time; this creates maintenance burden and risks inconsistency.
 - Ignoring Slowly Changing Dimensions, causing historical data to silently update when dimension attributes change.
 
+**Why it matters:** Dimensional modelling is the foundation of every analytical data warehouse. Whether you use Snowflake, BigQuery, Synapse, or Redshift, the underlying design principles are the same. A well-designed dimensional model makes queries simple and fast; a poorly designed one forces complex joins, produces incorrect aggregations, and confuses every downstream consumer.
+
 ---
 
 ## dbt (data build tool) – Transformations as Code
@@ -299,8 +306,6 @@ Dimensional modelling, pioneered by Ralph Kimball, is the dominant technique for
 dbt is an open-source tool that enables Data Engineers to write data transformations as SQL SELECT statements and manage them with software engineering best practices: version control, testing, documentation, and modular design. dbt runs inside the data warehouse — it does not extract or load data; it transforms data that is already there (the T in ELT).
 
 Each dbt model is a SQL file that defines a transformation. dbt handles the materialisation strategy (whether the result is a table, a view, an incremental table, or an ephemeral CTE), the dependency graph between models (which models depend on which), and the execution order. dbt also provides built-in testing (not null, unique, referential integrity, accepted values) and auto-generates documentation from the models and their descriptions.
-
-**Why it matters:** dbt has become the industry standard for analytical transformations. It brings software engineering discipline — version control, code review, testing, CI/CD — to SQL transformations that were historically managed as ad hoc scripts or GUI-based ETL workflows. Understanding dbt is a core competency for any modern Data Engineer.
 
 **Key things to understand:**
 
@@ -318,6 +323,8 @@ Each dbt model is a SQL file that defines a transformation. dbt handles the mate
 - Creating deeply nested model dependencies without clear staging/intermediate/mart layers, making the DAG hard to understand.
 - Not using \`ref()\` consistently, which breaks the dependency graph and causes models to run in the wrong order.
 
+**Why it matters:** dbt has become the industry standard for analytical transformations. It brings software engineering discipline — version control, code review, testing, CI/CD — to SQL transformations that were historically managed as ad hoc scripts or GUI-based ETL workflows. Understanding dbt is a core competency for any modern Data Engineer.
+
 ---
 
 ## Apache Spark – Distributed Data Processing
@@ -325,8 +332,6 @@ Each dbt model is a SQL file that defines a transformation. dbt handles the mate
 Apache Spark is an open-source distributed computing engine designed for processing large datasets across a cluster of machines. Spark can handle batch processing, streaming, machine learning, and graph computation, but its primary use in data engineering is large-scale data transformation — processing datasets that are too large for a single machine.
 
 Spark distributes data across the cluster as partitions and executes transformations in parallel across those partitions. The core abstraction is the DataFrame (and its predecessor, the RDD): a distributed collection of data organised into named columns, similar to a table in a relational database. Transformations (filter, join, aggregate) are lazy — they build up a plan of what to do. Actions (count, write, collect) trigger the actual execution of that plan.
-
-**Why it matters:** Spark is the de facto standard for large-scale data processing. Whether you are running it on Databricks, Amazon EMR, Azure HDInsight, or a self-managed cluster, Spark is the engine behind most big data pipelines. Understanding how Spark distributes and processes data is essential for writing jobs that are correct and performant.
 
 **Key things to understand:**
 
@@ -344,6 +349,8 @@ Spark distributes data across the cluster as partitions and executes transformat
 - Writing jobs that create many small files ("small file problem"), degrading downstream read performance; use \`coalesce()\` or \`repartition()\` to control output file count.
 - Ignoring the Spark UI when diagnosing performance issues; the UI shows stage execution, shuffle sizes, and skewed partitions.
 
+**Why it matters:** Spark is the de facto standard for large-scale data processing. Whether you are running it on Databricks, Amazon EMR, Azure HDInsight, or a self-managed cluster, Spark is the engine behind most big data pipelines. Understanding how Spark distributes and processes data is essential for writing jobs that are correct and performant.
+
 ---
 
 ## Apache Airflow – Workflow Orchestration
@@ -351,8 +358,6 @@ Spark distributes data across the cluster as partitions and executes transformat
 Apache Airflow is an open-source platform for authoring, scheduling, and monitoring workflows. In data engineering, Airflow is the most widely used tool for orchestrating data pipelines — defining the order in which tasks run, handling dependencies between tasks, retrying failed tasks, and providing visibility into pipeline execution.
 
 An Airflow workflow is defined as a DAG (Directed Acyclic Graph): a collection of tasks with defined dependencies that determines execution order. Each task is an instance of an operator — a predefined template for a specific type of work (run a Python function, execute a SQL query, trigger a Spark job, call an API). DAGs are written in Python, which gives full flexibility to dynamically generate tasks, parameterise workflows, and integrate with any system that has a Python client.
-
-**Why it matters:** Data pipelines are not single scripts — they are sequences of dependent steps that must run in the right order, on the right schedule, with proper error handling and monitoring. Airflow provides the orchestration layer that turns a collection of scripts into a reliable, observable production system.
 
 **Key things to understand:**
 
@@ -370,6 +375,8 @@ An Airflow workflow is defined as a DAG (Directed Acyclic Graph): a collection o
 - Not setting \`retries\` and \`retry_delay\` on tasks, causing the entire pipeline to fail permanently on transient errors.
 - Writing DAGs that are not idempotent; re-running a DAG for the same date should produce the same result, enabling safe backfills and retries.
 
+**Why it matters:** Data pipelines are not single scripts — they are sequences of dependent steps that must run in the right order, on the right schedule, with proper error handling and monitoring. Airflow provides the orchestration layer that turns a collection of scripts into a reliable, observable production system.
+
 ---
 
 ## Azure Data Services – Data Factory and Synapse
@@ -377,8 +384,6 @@ An Airflow workflow is defined as a DAG (Directed Acyclic Graph): a collection o
 Microsoft Azure provides a suite of managed data services for building data pipelines and analytical platforms. Azure Data Factory (ADF) is a cloud-based data integration service that orchestrates and automates the movement and transformation of data. Azure Synapse Analytics combines enterprise data warehousing with big data analytics in a single service, providing both dedicated SQL pools (for traditional warehousing) and Spark pools (for big data processing).
 
 For a Data Engineer working in the Azure ecosystem, ADF is typically the orchestration layer (similar to Airflow but GUI-driven) and Synapse is the compute and storage layer for analytical workloads. Together, they form the backbone of a modern Azure data platform.
-
-**Why it matters:** Cloud data services are where most new data platforms are built. Understanding how to provision, configure, and use Azure Data Factory and Synapse Analytics is a practical skill that directly translates to building production data pipelines. These services handle scaling, availability, and infrastructure management so the Data Engineer can focus on the data itself.
 
 **Key things to understand:**
 
@@ -397,6 +402,8 @@ For a Data Engineer working in the Azure ecosystem, ADF is typically the orchest
 - Storing sensitive connection details (passwords, keys) directly in linked services instead of using Azure Key Vault.
 - Not implementing incremental loading patterns in Copy Activities, causing full table copies on every pipeline run.
 
+**Why it matters:** Cloud data services are where most new data platforms are built. Understanding how to provision, configure, and use Azure Data Factory and Synapse Analytics is a practical skill that directly translates to building production data pipelines. These services handle scaling, availability, and infrastructure management so the Data Engineer can focus on the data itself.
+
 ---
 
 ## Data Quality – Validation, Testing and Trust
@@ -404,8 +411,6 @@ For a Data Engineer working in the Azure ecosystem, ADF is typically the orchest
 Data quality is the degree to which data is accurate, complete, consistent, timely, and fit for its intended purpose. For a Data Engineer, data quality is not a nice-to-have — it is a core responsibility. If the data in the warehouse is wrong, every report, dashboard, and model built on it is wrong, and the entire data function loses the trust of its consumers.
 
 Data quality must be built into pipelines, not checked after the fact. This means defining expectations for each dataset (expected row counts, not-null constraints, value ranges, referential integrity), implementing automated checks at each stage of the pipeline, and alerting when expectations are violated. Tools like Great Expectations, dbt tests, and custom validation scripts make this practical.
-
-**Why it matters:** Data that cannot be trusted is worse than no data, because it leads to confident wrong decisions. Data quality issues are insidious — they often go unnoticed until someone makes a decision based on bad data and the consequences surface weeks or months later. Building data quality checks into pipelines is the Data Engineer's primary defence.
 
 **Key things to understand:**
 
@@ -423,6 +428,8 @@ Data quality must be built into pipelines, not checked after the fact. This mean
 - Setting expectations too loosely (accepting any data) or too tightly (alerting on normal variation); calibrate expectations based on actual data behaviour.
 - Assuming that if the pipeline ran without errors, the data is correct; a pipeline can succeed while producing incorrect or incomplete results.
 
+**Why it matters:** Data that cannot be trusted is worse than no data, because it leads to confident wrong decisions. Data quality issues are insidious — they often go unnoticed until someone makes a decision based on bad data and the consequences surface weeks or months later. Building data quality checks into pipelines is the Data Engineer's primary defence.
+
 ---
 
 ## Docker – Containerising Data Pipelines
@@ -431,7 +438,9 @@ Docker packages an application and all its dependencies into a container — a l
 
 A Dockerfile defines the blueprint for a container image: the base operating system, the dependencies to install, the code to include, and the command to run. Docker Compose extends this to multi-container setups, allowing a Data Engineer to run a local development environment that includes a database, an Airflow instance, and a custom pipeline service — all with a single command.
 
-**Why it matters:** Modern data platforms run on containers. Airflow runs in Docker, Spark can run in Docker, dbt projects are packaged as Docker images for CI/CD, and cloud services like Azure Container Instances and Kubernetes all run containers. Understanding Docker is a prerequisite for deploying and operating data pipelines in any modern environment.
+The video below is a practical seven-step introduction to Docker. It covers writing a Dockerfile, building and tagging images, port forwarding, volumes for persistent data, and multi-container orchestration with Docker Compose — all the mechanics you need to containerise a data pipeline application.
+
+[Learn Docker in 7 Easy Steps](https://www.youtube.com/watch?v=gAkwW2tuIqE)
 
 **Key things to understand:**
 
@@ -449,6 +458,8 @@ A Dockerfile defines the blueprint for a container image: the base operating sys
 - Not using \`.dockerignore\`, causing large directories (\`.git\`, \`node_modules\`, test data) to be included in the build context.
 - Building monolithic images with everything installed rather than creating focused, minimal images.
 
+**Why it matters:** Modern data platforms run on containers. Airflow runs in Docker, Spark can run in Docker, dbt projects are packaged as Docker images for CI/CD, and cloud services like Azure Container Instances and Kubernetes all run containers. Understanding Docker is a prerequisite for deploying and operating data pipelines in any modern environment.
+
 ---
 
 ## Advanced SQL – Window Functions, CTEs and Performance
@@ -456,8 +467,6 @@ A Dockerfile defines the blueprint for a container image: the base operating sys
 Beyond basic SELECT queries, a Data Engineer needs advanced SQL skills for building complex transformations, writing efficient analytical queries, and understanding query performance. Window functions, CTEs, and performance tuning are the tools that separate a basic SQL user from a data engineering professional.
 
 Window functions perform calculations across a set of rows that are related to the current row, without collapsing the result into a single row (as GROUP BY does). Common Table Expressions (CTEs) allow you to write modular, readable SQL by breaking complex queries into named steps. Query performance tuning involves understanding how the database engine executes your query and optimising it through better query structure, appropriate indexes, and statistics maintenance.
-
-**Why it matters:** Data engineering SQL is not simple SELECT/WHERE queries — it involves complex multi-step transformations, deduplication, gap-filling, running totals, and ranking operations. Window functions and CTEs are the tools that make these transformations possible and readable. Performance tuning ensures they run in minutes, not hours.
 
 **Key things to understand:**
 
@@ -474,11 +483,16 @@ Window functions perform calculations across a set of rows that are related to t
 - Writing CTEs that materialise unnecessarily large intermediate results; some databases materialise CTEs as temporary tables.
 - Not checking execution plans for production queries; a query that works on small data may become unacceptably slow at scale.
 - Using correlated subqueries when a JOIN or window function would be more efficient.
+
+**Why it matters:** Data engineering SQL is not simple SELECT/WHERE queries — it involves complex multi-step transformations, deduplication, gap-filling, running totals, and ranking operations. Window functions and CTEs are the tools that make these transformations possible and readable. Performance tuning ensures they run in minutes, not hours.
+
+---
+
+With the Mid level complete, you have the professional tooling to build production data pipelines. The Senior level covers the architectural decisions — streaming, lakehouses, Data Mesh, DataOps — that distinguish engineers who can operate at scale from those who can only build at scale.
 `,
   senior: `# Data Engineer – Senior Concept Reference
 
-
-This document explains the advanced concepts covered in the Senior level of the Data Engineer learning path.
+This document explains the advanced concepts covered in the Senior level of the Data Engineer learning path. Senior Data Engineers are expected to make architectural decisions, not just implement solutions. The topics here — streaming, lakehouse architecture, Data Mesh, DataOps, governance, and GDPR — are the domains where those decisions live. Each section is written to give you not just the "what" but the "why" and the "when": when is a streaming pipeline the right answer, when does a lakehouse beat a traditional warehouse, when does an organisation genuinely need Data Mesh. Bring these frameworks to the design table.
 
 ---
 
@@ -490,7 +504,9 @@ Kafka's architecture consists of brokers (servers that store and serve data), to
 
 For a Data Engineer, Kafka enables architectures where data is processed as soon as it is produced — enabling real-time dashboards, fraud detection, live recommendations, and event-driven microservices. Azure Event Hubs provides a Kafka-compatible managed alternative in the Azure ecosystem.
 
-**Why it matters:** Batch processing introduces latency — hours or even days between when data is generated and when it is available for analysis. Streaming eliminates this latency for use cases where timeliness is critical. Understanding Kafka and stream processing is essential for building modern data platforms that serve both batch and real-time consumers.
+The video below is a concise 100-second overview of Kafka's architecture: producers, topics, partitions, consumer groups, and the Streams API. It is a fast way to build a mental model of the system before diving into the Confluent course for depth.
+
+[Kafka in 100 Seconds](https://www.youtube.com/watch?v=uvb00oaa3k8)
 
 **Key things to understand:**
 
@@ -508,6 +524,8 @@ For a Data Engineer, Kafka enables architectures where data is processed as soon
 - Using Kafka as a database; Kafka is a log, not a query engine. Store data in a purpose-built system for random access queries.
 - Ignoring schema evolution; changing event schemas without a compatibility strategy breaks consumers.
 
+**Why it matters:** Batch processing introduces latency — hours or even days between when data is generated and when it is available for analysis. Streaming eliminates this latency for use cases where timeliness is critical. Understanding Kafka and stream processing is essential for building modern data platforms that serve both batch and real-time consumers.
+
 ---
 
 ## Lakehouse Architecture – Unifying the Data Warehouse and Data Lake
@@ -515,8 +533,6 @@ For a Data Engineer, Kafka enables architectures where data is processed as soon
 The lakehouse architecture combines the best features of data warehouses (structured data, ACID transactions, SQL analytics) with data lakes (scalable storage, support for unstructured data, open formats). The core idea is to store all data in open file formats (Parquet, ORC) on cheap cloud object storage (Azure Data Lake Storage, S3) while adding a metadata and transaction layer (Delta Lake, Apache Iceberg, Apache Hudi) that provides the reliability and query performance traditionally associated with data warehouses.
 
 Before the lakehouse, organisations maintained two separate systems: a data lake for raw, unstructured data and a data warehouse for curated, structured data. This led to data duplication, complex ETL between the two systems, and inconsistency when the same data existed in different forms in different places. The lakehouse eliminates this dual architecture by making the lake reliable enough to serve as the warehouse.
-
-**Why it matters:** The lakehouse is the dominant architectural pattern for modern data platforms. Databricks, Microsoft Fabric, and most cloud data strategies are converging on this model. Understanding the lakehouse — and the tradeoffs it makes compared to traditional warehouses and lakes — is essential for making sound architectural decisions.
 
 **Key things to understand:**
 
@@ -534,6 +550,8 @@ Before the lakehouse, organisations maintained two separate systems: a data lake
 - Ignoring file compaction; Delta Lake and Iceberg accumulate small files over time that degrade query performance. Schedule regular \`OPTIMIZE\` / compaction operations.
 - Assuming that lakehouse performance matches a dedicated data warehouse for all query patterns; complex interactive queries may still benefit from a dedicated SQL engine.
 
+**Why it matters:** The lakehouse is the dominant architectural pattern for modern data platforms. Databricks, Microsoft Fabric, and most cloud data strategies are converging on this model. Understanding the lakehouse — and the tradeoffs it makes compared to traditional warehouses and lakes — is essential for making sound architectural decisions.
+
 ---
 
 ## Delta Lake – Reliable Data Storage at Scale
@@ -541,8 +559,6 @@ Before the lakehouse, organisations maintained two separate systems: a data lake
 Delta Lake is an open-source storage layer that brings ACID transactions, scalable metadata handling, and time travel to cloud data lakes. Built on top of Parquet files, Delta Lake uses a transaction log (\`_delta_log/\`) to track every change to a table, enabling features that plain Parquet files cannot provide: atomic writes, consistent reads, schema enforcement, and the ability to roll back to previous versions.
 
 For a Data Engineer, Delta Lake solves the fundamental reliability problem of data lakes. Without a transaction layer, concurrent writes can corrupt data, failed jobs can leave partial results, and there is no way to roll back a bad load. Delta Lake makes the data lake transactionally reliable, bringing it closer to the guarantees that traditional data warehouses provide.
-
-**Why it matters:** Delta Lake is the default table format for Databricks and is widely supported across the Spark ecosystem. Understanding how Delta Lake works — transactions, versioning, merge operations — is essential for building reliable data pipelines on any lakehouse platform.
 
 **Key things to understand:**
 
@@ -560,6 +576,8 @@ For a Data Engineer, Delta Lake solves the fundamental reliability problem of da
 - Not setting a retention period for time travel; keeping all history indefinitely consumes storage. Use \`VACUUM\` to clean up old files.
 - Ignoring partition strategy; over-partitioning creates many small files, while under-partitioning creates few large files — both degrade performance.
 
+**Why it matters:** Delta Lake is the default table format for Databricks and is widely supported across the Spark ecosystem. Understanding how Delta Lake works — transactions, versioning, merge operations — is essential for building reliable data pipelines on any lakehouse platform.
+
 ---
 
 ## Data Mesh – Decentralised Data Architecture
@@ -567,8 +585,6 @@ For a Data Engineer, Delta Lake solves the fundamental reliability problem of da
 Data Mesh is an architectural and organisational paradigm proposed by Zhamak Dehghani that decentralises data ownership from a central data team to the domain teams that produce the data. It is built on four principles: domain ownership (each domain owns and serves its data as a product), data as a product (data is treated with the same rigour as a customer-facing product — discoverable, documented, reliable), self-serve data platform (a central platform team provides the infrastructure and tooling that domain teams use), and federated computational governance (policies are defined centrally but enforced computationally through the platform).
 
 Data Mesh is a response to the scaling limitations of centralised data architectures. In traditional architectures, a central data team is responsible for ingesting, transforming, and serving data from all domains. This creates a bottleneck: the central team cannot keep up with the demands of all consumers, domain knowledge is lost in translation, and data quality suffers because the team that knows the data best is not responsible for it.
-
-**Why it matters:** Data Mesh is increasingly adopted by large organisations as a strategy for scaling their data platforms. Whether you adopt Data Mesh fully or selectively apply its principles, understanding the model helps you reason about the organisational and architectural challenges of data at scale.
 
 **Key things to understand:**
 
@@ -586,6 +602,8 @@ Data Mesh is a response to the scaling limitations of centralised data architect
 - Neglecting the self-serve platform; without robust tooling, domain teams cannot realistically own their data products.
 - Treating Data Mesh as a justification for removing all central oversight; federated governance is still governance.
 
+**Why it matters:** Data Mesh is increasingly adopted by large organisations as a strategy for scaling their data platforms. Whether you adopt Data Mesh fully or selectively apply its principles, understanding the model helps you reason about the organisational and architectural challenges of data at scale.
+
 ---
 
 ## DataOps – CI/CD and Engineering Practices for Data
@@ -593,8 +611,6 @@ Data Mesh is a response to the scaling limitations of centralised data architect
 DataOps applies the principles of DevOps — version control, CI/CD, automated testing, monitoring, and collaboration — to data engineering. The goal is to make data pipelines as reliable, reproducible, and rapidly deployable as application code. DataOps treats data pipelines as software: they are version-controlled, tested, reviewed, and deployed through automated pipelines.
 
 In practice, DataOps means: pipeline code (dbt models, Spark jobs, Airflow DAGs) is stored in Git and reviewed through pull requests. Automated tests (unit tests for transformation logic, data quality tests for output datasets) run in CI on every change. Deployments to staging and production are automated through CD pipelines. Monitoring and alerting detect data quality issues, pipeline failures, and SLA breaches in real time.
-
-**Why it matters:** Without DataOps, data pipelines are deployed manually, tested ad hoc, and monitored by checking dashboards occasionally. This leads to frequent breakages, slow recovery, and a data platform that cannot keep pace with business demands. DataOps brings the engineering discipline that turns a fragile data platform into a reliable one.
 
 **Key things to understand:**
 
@@ -612,6 +628,8 @@ In practice, DataOps means: pipeline code (dbt models, Spark jobs, Airflow DAGs)
 - Monitoring only pipeline execution status (success/failure) without monitoring data quality; a pipeline can succeed while producing incorrect data.
 - Over-engineering the DataOps platform before the team has the basics (version control, code review, basic testing) in place.
 
+**Why it matters:** Without DataOps, data pipelines are deployed manually, tested ad hoc, and monitored by checking dashboards occasionally. This leads to frequent breakages, slow recovery, and a data platform that cannot keep pace with business demands. DataOps brings the engineering discipline that turns a fragile data platform into a reliable one.
+
 ---
 
 ## GenAI for Data Engineering – AI-Assisted Development and Architecture
@@ -620,8 +638,6 @@ Generative AI is transforming data engineering in two ways: as a tool that assis
 
 As an assistive tool, GenAI accelerates routine tasks: writing dbt models from specifications, generating Spark transformations, explaining complex SQL queries, and creating documentation. As a workload, GenAI introduces new data engineering challenges: managing unstructured data at scale, building embedding and indexing pipelines, implementing retrieval-augmented generation (RAG) architectures, and ensuring data governance over AI training data.
 
-**Why it matters:** Senior Data Engineers must understand both sides: how to use GenAI tools to be more productive, and how to build the data infrastructure that GenAI applications require. The organisations that can build reliable data foundations for GenAI will have a significant competitive advantage.
-
 **Key things to understand:**
 
 - AI-assisted SQL and pipeline development: use LLM tools to generate first drafts of dbt models, Spark jobs, and SQL queries from natural language specifications; always review and test the output
@@ -629,7 +645,7 @@ As an assistive tool, GenAI accelerates routine tasks: writing dbt models from s
 - Vector databases and embeddings: embeddings are dense numerical representations of text; vector databases (Pinecone, Weaviate, Azure AI Search) enable similarity search over embeddings
 - Data governance for AI: tracking data lineage through AI pipelines, ensuring training data complies with privacy regulations, and documenting what data was used to build AI features
 - Cost management: GenAI workloads (embedding generation, LLM inference) can be expensive at scale; understanding token costs, batching strategies, and caching is important
-- The organisation's AI Policy, AI Checklist, and Secure AI Framework define the governance requirements for any project involving GenAI
+- The organisation's Secure AI Framework defines the governance requirements for any project involving GenAI
 
 **Common pitfalls:**
 
@@ -637,6 +653,8 @@ As an assistive tool, GenAI accelerates routine tasks: writing dbt models from s
 - Building GenAI infrastructure without a clear use case and business justification; the infrastructure is expensive and complex.
 - Ignoring data governance when building AI pipelines; training data provenance, PII handling, and model transparency are regulatory requirements, not optional extras.
 - Not involving the security team when building RAG systems; prompt injection and data leakage are real risks that require security review.
+
+**Why it matters:** Senior Data Engineers must understand both sides: how to use GenAI tools to be more productive, and how to build the data infrastructure that GenAI applications require. The organisations that can build reliable data foundations for GenAI will have a significant competitive advantage.
 
 ---
 
@@ -647,8 +665,6 @@ Data governance is the set of policies, processes, and standards that ensure dat
 Microsoft Purview provides the governance tooling in Azure: a unified data catalog for discovering and classifying data across the estate, automated sensitive data scanning, data lineage tracking, and policy management. For LF, Purview is the central tool for understanding what data exists, where it lives, who owns it, and how it flows through the organisation.
 
 GDPR (General Data Protection Regulation) is the EU regulation that governs how personal data is collected, processed, stored, and deleted. For a Swedish insurance company handling sensitive personal data — health information, financial records, claims history — GDPR compliance is not optional and carries penalties of up to 4% of global turnover or 20 million EUR.
-
-**Why it matters:** Data engineers build the pipelines that move and transform personal data. If those pipelines do not implement GDPR requirements — data minimisation, purpose limitation, storage limitation, and the right to erasure — the organisation is exposed to regulatory risk. Governance and compliance must be built into pipeline design from the start, not bolted on afterwards.
 
 **Key things to understand:**
 
@@ -666,6 +682,8 @@ GDPR (General Data Protection Regulation) is the EU regulation that governs how 
 - Implementing retention policies in documentation but not in code — retention must be automated, not dependent on manual cleanup
 - Ignoring pseudonymisation and anonymisation as engineering techniques. Pseudonymised data (where the identifier can be re-linked) is still personal data under GDPR; anonymised data (where re-identification is practically impossible) is not
 
+**Why it matters:** Data engineers build the pipelines that move and transform personal data. If those pipelines do not implement GDPR requirements — data minimisation, purpose limitation, storage limitation, and the right to erasure — the organisation is exposed to regulatory risk. Governance and compliance must be built into pipeline design from the start, not bolted on afterwards.
+
 ---
 
 ## Change Data Capture (CDC) – Real-Time Data Synchronisation
@@ -673,8 +691,6 @@ GDPR (General Data Protection Regulation) is the EU regulation that governs how 
 Change Data Capture (CDC) is a pattern for identifying and capturing changes made to data in a source system and delivering those changes to downstream systems in near real-time. Instead of periodically extracting a full snapshot of a table (batch ETL), CDC captures only the inserts, updates, and deletes as they happen, dramatically reducing data latency and processing overhead.
 
 Debezium is the leading open-source CDC platform. It works by reading the database's transaction log (Write-Ahead Log in PostgreSQL, binlog in MySQL, change feed in CosmosDB) and streaming change events to Apache Kafka or other message systems. This approach is non-invasive — it does not require changes to the source application or queries against the source database.
-
-**Why it matters:** Many data engineering use cases require fresher data than daily batch ETL can provide. Real-time dashboards, fraud detection, event-driven microservices, and operational analytics all benefit from CDC. For an insurance company, CDC enables near-real-time claims tracking, instant policy change propagation, and timely fraud detection — moving from "we see yesterday's data" to "we see what just happened."
 
 **Key things to understand:**
 
@@ -692,32 +708,7 @@ Debezium is the leading open-source CDC platform. It works by reading the databa
 - Underestimating the operational complexity of running Debezium and Kafka in production — these are distributed systems that require monitoring, capacity planning, and incident response
 - Treating CDC as a replacement for all batch ETL. Some workloads (large historical backfills, complex aggregations) are still better served by batch processing. CDC and batch are complementary patterns
 
----
-
-## AI Policy — Organisational Principles
-
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
-
-The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
-
-Responsible AI principles are embedded throughout the policy. These include diversity and non-discrimination (AI systems must not produce biased or discriminatory outcomes), transparency (users and affected parties must understand when and how AI is used), robustness (AI systems must perform reliably and handle errors gracefully), security (AI systems must be protected against adversarial manipulation and data breaches), and privacy (personal data must be handled in accordance with GDPR and internal data classification policies).
-
-The AI Register requires that all AI use cases within the organisation are registered and classified by risk level. This classification determines the governance requirements — from lightweight documentation for low-risk use cases to full conformity assessments for high-risk systems. High-risk AI systems require conformity assessments demonstrating compliance with transparency, human oversight, data quality, and technical robustness requirements.
-
-Staff using AI tools and systems must understand the limitations of AI technology and the requirements of the policy. This applies to all roles — from data engineers building pipelines that feed AI systems to engineers using AI-assisted development tools.
-
-**Why it matters:** The AI Policy directly affects data engineering work. Data engineers build the pipelines that prepare training data, serve features to models, and store AI-generated outputs. The policy's requirements around data classification, lineage tracking, and purpose limitation translate directly into pipeline design decisions.
-
-**Key things to understand:**
-- Every AI use case must be registered in the AI Register with a risk classification before development begins.
-- The risk classification determines governance requirements: low-risk use cases need basic documentation; high-risk use cases need conformity assessments.
-- GDPR obligations apply to data pipelines that process personal data for AI purposes — training data, feature stores, and model outputs all fall under scope.
-- Data lineage through AI pipelines must be traceable, ensuring that the organisation can answer the question "what data was used to produce this AI output?"
-
-**Common pitfalls:**
-- Building data pipelines for AI workloads without verifying that the use case has been registered and classified in the AI Register.
-- Not applying GDPR data minimisation to AI training datasets — collecting and retaining more personal data than necessary for the stated purpose.
-- Treating the AI Policy as an application-level concern only; data pipeline design decisions around retention, access control, and lineage are directly governed.
+**Why it matters:** Many data engineering use cases require fresher data than daily batch ETL can provide. Real-time dashboards, fraud detection, event-driven microservices, and operational analytics all benefit from CDC. For an insurance company, CDC enables near-real-time claims tracking, instant policy change propagation, and timely fraud detection — moving from "we see yesterday's data" to "we see what just happened."
 
 ---
 
@@ -727,9 +718,8 @@ AI-assisted development tools are changing how data engineers write and maintain
 
 AI assistants are most effective for data engineering tasks when given precise context: the schema of the source and target tables, the transformation requirements, the existing naming conventions, and any data quality constraints. They can also help explain complex SQL queries, debug pipeline errors, and generate documentation for existing transformations.
 
-**Why it matters:** Senior data engineers who use AI tools effectively can accelerate the development of routine pipeline components — particularly for boilerplate-heavy tasks like writing dbt staging models, creating Spark DataFrame transformations, or generating Airflow DAG definitions. Understanding the limitations is equally important: AI-generated SQL or pipeline code can contain subtle errors that produce incorrect data without raising runtime errors.
-
 **Key things to understand:**
+
 - AI-generated SQL and pipeline code must always be reviewed and tested before deployment. Plausible-looking queries can produce incorrect results due to subtle join, aggregation, or filter errors.
 - Providing rich context (table schemas, sample data, transformation rules) dramatically improves the quality of AI-generated pipeline code.
 - AI tools are well-suited for: generating dbt model boilerplate, writing data quality tests, translating between SQL dialects, explaining complex queries, and drafting documentation.
@@ -737,9 +727,12 @@ AI assistants are most effective for data engineering tasks when given precise c
 - Data privacy applies to AI tool use: do not paste production data, customer records, or sensitive business data into AI assistants. Follow the organisation's AI Policy for approved tools.
 
 **Common pitfalls:**
+
 - Accepting AI-generated SQL without running it against test data and verifying the results match expectations.
 - Using AI to generate complex transformations without understanding the underlying logic — this creates a maintenance burden when the generated code needs to be modified.
 - Not establishing team conventions around AI tool use, leading to inconsistent pipeline patterns and code quality.
+
+**Why it matters:** Senior data engineers who use AI tools effectively can accelerate the development of routine pipeline components — particularly for boilerplate-heavy tasks like writing dbt staging models, creating Spark DataFrame transformations, or generating Airflow DAG definitions. Understanding the limitations is equally important: AI-generated SQL or pipeline code can contain subtle errors that produce incorrect data without raising runtime errors.
 
 ---
 
