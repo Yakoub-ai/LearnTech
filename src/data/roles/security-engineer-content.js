@@ -79,14 +79,11 @@ For deep explanations of each concept, see the [Mid Concept Reference](Security-
 | LLM Security | [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/) | Docs |
 | LLM Security | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
 | Security Architecture | [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework) | Docs |
-| Enterprise GenAI Security | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
+| AI Security Framework | [Google Secure AI Framework (SAIF)](https://safety.google/cybersecurity-advancements/saif/) | Docs |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | DORA | [EUR-Lex – Digital Operational Resilience Act](https://eur-lex.europa.eu/eli/reg/2022/2554/oj) | Reference |
 | NIS2 Directive | [EUR-Lex – NIS 2 Directive](https://eur-lex.europa.eu/eli/dir/2022/2555/oj) | Reference |
 | Kubernetes Security | [OWASP Kubernetes Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Kubernetes_Security_Cheat_Sheet.html) | Docs |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 
 ### After completing Senior you should be able to:
 
@@ -198,22 +195,27 @@ Networking is the physical and logical infrastructure that connects systems. Eve
 
 The TCP/IP model is the foundation: the Network Interface layer handles physical connections, the Internet layer (IP) handles addressing and routing, the Transport layer (TCP/UDP) handles reliable delivery and port-based multiplexing, and the Application layer (HTTP, DNS, SSH) handles the protocols that applications use. DNS translates human-readable domain names into IP addresses. Firewalls filter traffic based on source, destination, port, and protocol.
 
-**Why it matters:** A Security Engineer who does not understand networking cannot analyse traffic, configure firewalls, understand VPN topologies, investigate network-based attacks, or explain how a man-in-the-middle attack works. Networking is the infrastructure layer upon which all application security sits.
+The full 9-hour "Computer Networking Full Course" (available via YouTube) covers every concept that underpins modern network security. The depth of coverage — from physical layer signalling, through ARP and routing protocols, to TLS and application-layer protocols — builds the mental model you need for offensive and defensive security work. Even if you already understand the basics, the course is valuable for filling in gaps in your mental model of how packets traverse the internet.
+
+**Why it matters:** A Security Engineer who does not understand networking cannot analyse traffic, configure firewalls, understand VPN topologies, investigate network-based attacks, or explain how a man-in-the-middle attack works. Networking is the infrastructure layer upon which all application security sits. When an attacker exploits a vulnerability, the attack almost always arrives over the network — and the first indicator of compromise is frequently an anomalous network pattern.
 
 **Key things to understand:**
 
-- The TCP/IP four-layer model and how data encapsulation works (application data → TCP segment → IP packet → frame)
-- TCP three-way handshake (SYN → SYN-ACK → ACK) and why it matters for understanding connection-based attacks
-- IP addressing: IPv4 addresses, subnets, CIDR notation, private vs public address ranges
-- DNS resolution: recursive and iterative queries, A records, CNAME records, and why DNS is a common attack vector (DNS spoofing, DNS exfiltration)
-- Common ports: 80 (HTTP), 443 (HTTPS), 22 (SSH), 53 (DNS), 3389 (RDP)
-- Firewalls: packet filtering, stateful inspection, and the concept of allow/deny rules based on source, destination, and port
+- The TCP/IP four-layer model and how data encapsulation works (application data → TCP segment → IP packet → Ethernet frame); understanding encapsulation is essential for reading packet captures
+- TCP three-way handshake (SYN → SYN-ACK → ACK) and why it matters for understanding connection-based attacks such as SYN flooding and TCP session hijacking
+- IP addressing: IPv4 addresses, subnets, CIDR notation (\`/24\`, \`/16\`), private vs public address ranges (RFC 1918: 10.x.x.x, 172.16-31.x.x, 192.168.x.x)
+- DNS resolution: recursive and iterative queries, A records, CNAME records, MX records, and why DNS is a common attack vector (DNS spoofing/cache poisoning, DNS tunnelling for data exfiltration, DNS-based C2)
+- Common ports and protocols: 80/443 (HTTP/HTTPS), 22 (SSH), 53 (DNS), 25/587 (SMTP), 3389 (RDP), 445 (SMB — a frequent attack target); knowing which ports should be open on a given server is prerequisite for firewall configuration
+- Firewalls: packet filtering (stateless, based on headers only), stateful inspection (tracks connection state), and application-layer firewalls (inspect payload); the concept of explicit allow/deny rules with default-deny as the baseline
+- TLS and how it secures application-layer protocols: TLS encrypts the TCP payload, protecting HTTP (making it HTTPS), SMTP (STARTTLS), and other protocols from eavesdropping and tampering
+- Wireshark and tcpdump: essential tools for capturing and analysing network traffic; understanding what a normal packet capture looks like is prerequisite for identifying anomalous traffic
 
 **Common pitfalls:**
 
 - Assuming that being on a "private" network means traffic is secure; internal networks are frequently compromised and lateral movement is a standard attack technique.
 - Confusing encryption in transit (TLS) with network segmentation; they solve different problems and both are needed.
-- Not understanding NAT (Network Address Translation) and how it affects the ability to identify the true source of traffic.
+- Not understanding NAT (Network Address Translation) and how it affects the ability to identify the true source of traffic in logs.
+- Ignoring UDP: many attacks and C2 channels use UDP (DNS tunnelling, ICMP tunnelling) precisely because organisations focus their monitoring on TCP.
 
 ---
 
@@ -251,13 +253,22 @@ There are two families of encryption: symmetric (the same key encrypts and decry
 
 **Why it matters:** Cryptography underpins TLS/HTTPS, password storage, API authentication, code signing, and data protection at rest. A Security Engineer who does not understand cryptography cannot evaluate whether a system's protections are adequate, cannot identify cryptographic weaknesses, and cannot make informed recommendations.
 
+### Diffie-Hellman Key Exchange – How Two Parties Create a Shared Secret
+
+One of the most important cryptographic primitives you will encounter is the Diffie-Hellman key exchange, first published in 1976. As explained in the Computerphile "Secret Key Exchange" video by Dr Mike Pound, it solves a fundamental problem: how can two parties who have never met agree on a shared secret key over a public channel, without an eavesdropper being able to determine that secret?
+
+The insight is that Diffie-Hellman does not exchange a key — it creates one. Both parties agree on two public values: a generator \`g\` (typically a small prime number) and a large prime \`n\`. Each party then independently generates a private value (Alice's \`a\`, Bob's \`b\`) that they never share with anyone. Alice computes \`g^a mod n\` and sends it to Bob; Bob computes \`g^b mod n\` and sends it to Alice. Both can then combine the received value with their own private value to arrive at the same shared secret \`g^(ab) mod n\`. An attacker watching the public channel sees \`g\`, \`n\`, \`g^a mod n\`, and \`g^b mod n\` — but extracting \`a\` or \`b\` from these values requires solving the discrete logarithm problem, which is computationally infeasible for large enough values of \`n\` (2048 bits or 4096 bits in practice).
+
+The colour-mixing analogy used in teaching Diffie-Hellman captures this well: combining two colours is easy, but separating a mixture back into its original components is extremely difficult. The mathematics provides the same one-way property. The phone you use right now almost certainly performs a Diffie-Hellman (or its elliptic curve variant, ECDH) key exchange every time it connects to a server — it is the mechanism that establishes the symmetric session key used by TLS for your HTTPS connections.
+
 **Key things to understand:**
 
-- Symmetric encryption (AES): fast, used for encrypting large amounts of data; the challenge is securely sharing the key
+- Symmetric encryption (AES): fast, used for encrypting large amounts of data; the challenge is securely sharing the key — solved by Diffie-Hellman
 - Asymmetric encryption (RSA, ECDSA): slower, used for key exchange and digital signatures; the public key is shared, the private key is secret
+- Diffie-Hellman / ECDH: the key exchange algorithm that allows two parties to establish a shared symmetric key over a public channel; the foundation of the TLS handshake
 - Hashing (SHA-256, bcrypt, Argon2): one-way, deterministic, fixed-size output; used for password storage and integrity verification
 - The difference between encryption (reversible with the key) and hashing (one-way, not reversible)
-- TLS handshake: how asymmetric encryption is used to exchange a symmetric session key, which is then used for the actual communication
+- TLS handshake: asymmetric cryptography (or Diffie-Hellman) negotiates a symmetric session key, which is then used for the actual communication
 - Certificate authorities and how HTTPS trust works: the browser trusts a CA, the CA signs the server's certificate, the browser verifies the signature
 
 **Common pitfalls:**
@@ -266,6 +277,7 @@ There are two families of encryption: symmetric (the same key encrypts and decry
 - Storing passwords with a fast hash (SHA-256) instead of a slow, salted password hash (bcrypt, Argon2); fast hashes can be brute-forced.
 - Confusing encoding (Base64) with encryption; encoding is trivially reversible and provides zero security.
 - Implementing custom cryptography instead of using well-tested libraries; cryptography is extraordinarily easy to get wrong and the consequences of getting it wrong are catastrophic.
+- Using Diffie-Hellman with parameters that are too small; DH with \`n\` shorter than 2048 bits is vulnerable to the Logjam attack and should not be used.
 `,
   mid: `# Security Engineer – Mid Concept Reference
 
@@ -634,7 +646,7 @@ A security programme typically includes: a security policy (the top-level docume
 - Compliance vs security: compliance (meeting regulatory requirements) is a subset of security (protecting the organisation); being compliant does not guarantee being secure
 - Security awareness training: the most technically secure system is still vulnerable to social engineering; training must be ongoing, relevant, and measured
 - Third-party risk management: assessing and monitoring the security posture of vendors, partners, and SaaS providers that have access to your data or systems
-- The organisation's AI Policy, AI Checklist, and Secure AI Framework define governance requirements for GenAI projects specifically
+- AI governance requirements for GenAI projects: the organisation's Secure AI Framework (see the Prerequisites guide) defines technical security controls, while the AI Policy provides the governance layer including risk classification, the AI Register, and compliance requirements under the EU AI Act
 
 **Common pitfalls:**
 
@@ -679,7 +691,7 @@ Finansinspektionen (FI) is Sweden's financial supervisory authority. FI's regula
 
 ## AI Policy — Organisational Principles
 
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
+The organisation's AI Policy establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
 
 The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
 
