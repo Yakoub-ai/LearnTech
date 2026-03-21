@@ -4,7 +4,9 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { loadLanguageMarkdownContent, loadLanguageQuizzes } from '../data/loaders/languageDataLoader'
-import { setLanguageQuizScore } from '../utils/progressStorage'
+import { setLanguageQuizScore, syncProgressItemToSupabase } from '../utils/progressStorage'
+import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import QuizBlock from '../components/interactive/QuizBlock'
 import Badge from '../components/common/Badge'
@@ -21,6 +23,7 @@ const colorMap = {
 export default function LanguageLevelPage() {
   const { languageId, level } = useParams()
   const language = getLanguageById(languageId)
+  const { user } = useAuth()
 
   const [content, setContent] = useState(null)
   const [levelQuizzes, setLevelQuizzes] = useState([])
@@ -47,7 +50,7 @@ export default function LanguageLevelPage() {
     return (
       <div className="p-8 text-center">
         <h1 className="text-2xl font-bold text-[var(--color-text)] mb-4">Language Not Found</h1>
-        <Link to="/languages" className="text-[var(--color-primary)]">Back to Languages</Link>
+        <Link to="/dashboard/languages" className="text-[var(--color-primary)]">Back to Languages</Link>
       </div>
     )
   }
@@ -66,15 +69,15 @@ export default function LanguageLevelPage() {
       <PageHelmet
         title={`${language.name} - ${levelCapitalized} Level`}
         description={`${levelCapitalized} level ${language.name} learning guide with structured content, quizzes, and exercises.`}
-        path={`/language/${languageId}/${level}`}
+        path={`/dashboard/language/${languageId}/${level}`}
         ogType="article"
       />
       <div className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)] mb-6">
-        <Link to="/languages" className="hover:text-[var(--color-primary)] no-underline transition-colors">
+        <Link to="/dashboard/languages" className="hover:text-[var(--color-primary)] no-underline transition-colors">
           Languages
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <Link to={`/language/${languageId}`} className="hover:text-[var(--color-primary)] no-underline transition-colors">
+        <Link to={`/dashboard/language/${languageId}`} className="hover:text-[var(--color-primary)] no-underline transition-colors">
           {language.name}
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
@@ -129,7 +132,10 @@ export default function LanguageLevelPage() {
             questions={levelQuizzes}
             roleId={languageId}
             level={level}
-            onComplete={(score) => setLanguageQuizScore(languageId, level, score)}
+            onComplete={(score) => {
+              setLanguageQuizScore(languageId, level, score)
+              syncProgressItemToSupabase(supabase, user?.id, languageId, level, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
+            }}
           />
         </div>
       )}
@@ -137,7 +143,7 @@ export default function LanguageLevelPage() {
       <div className="flex justify-between mt-12 pt-6 border-t border-[var(--color-border)]">
         {prevLevel ? (
           <Link
-            to={`/language/${languageId}/${prevLevel}`}
+            to={`/dashboard/language/${languageId}/${prevLevel}`}
             className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -146,7 +152,7 @@ export default function LanguageLevelPage() {
         ) : <div />}
         {nextLevel ? (
           <Link
-            to={`/language/${languageId}/${nextLevel}`}
+            to={`/dashboard/language/${languageId}/${nextLevel}`}
             className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors"
           >
             {nextLevel.charAt(0).toUpperCase() + nextLevel.slice(1)}

@@ -1,21 +1,20 @@
+import { useOutletContext } from 'react-router-dom'
 import HeroSection from '../components/home/HeroSection'
-import RoleGrid from '../components/home/RoleGrid'
-import LanguageGrid from '../components/home/LanguageGrid'
 import StatsBar from '../components/home/StatsBar'
 import PageHelmet from '../components/seo/PageHelmet'
 
 export default function HomePage() {
+  const { onSignIn } = useOutletContext()
+
   return (
     <div>
       <PageHelmet
-        title="Tech Learning Roadmaps"
-        description="Master tech roles with structured roadmaps. 11 career paths including AI Engineer, Backend Developer, DevOps, and more."
+        title="Tech Learning Platform"
+        description="Private learning platform with structured roadmaps, interactive labs, and curated resources for every tech role."
         path="/"
       />
-      <HeroSection />
+      <HeroSection onSignIn={onSignIn} />
       <StatsBar />
-      <RoleGrid />
-      <LanguageGrid />
     </div>
   )
 }

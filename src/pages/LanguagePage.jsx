@@ -4,7 +4,9 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { getRoleById } from '../data/roles'
-import { setLanguageQuizScore } from '../utils/progressStorage'
+import { setLanguageQuizScore, syncProgressItemToSupabase } from '../utils/progressStorage'
+import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
 import PageHelmet from '../components/seo/PageHelmet'
 import {
   loadLanguageMarkdownContent,
@@ -41,6 +43,7 @@ const colorMap = {
 export default function LanguagePage() {
   const { languageId } = useParams()
   const language = getLanguageById(languageId)
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('roadmap')
 
   const [content, setContent] = useState(null)
@@ -98,7 +101,7 @@ export default function LanguagePage() {
     return (
       <div className="p-8 text-center">
         <h1 className="text-2xl font-bold text-[var(--color-text)] mb-4">Language Not Found</h1>
-        <Link to="/languages" className="text-[var(--color-primary)]">Back to Languages</Link>
+        <Link to="/dashboard/languages" className="text-[var(--color-primary)]">Back to Languages</Link>
       </div>
     )
   }
@@ -114,7 +117,7 @@ export default function LanguagePage() {
         path={`/language/${languageId}`}
         ogType="article"
       />
-      <Link to="/languages" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors">
+      <Link to="/dashboard/languages" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" />
         All Languages
       </Link>
@@ -141,7 +144,7 @@ export default function LanguagePage() {
                 return role ? (
                   <Link
                     key={roleId}
-                    to={`/role/${roleId}`}
+                    to={`/dashboard/role/${roleId}`}
                     className="text-xs px-2.5 py-1 rounded-full bg-[var(--color-surface-3)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 transition-colors no-underline"
                   >
                     {role.name}
@@ -191,14 +194,14 @@ export default function LanguagePage() {
                     <div className="flex items-center gap-3 mb-4">
                       <Badge variant={levelKey}>{level}</Badge>
                       <Link
-                        to={`/language/${languageId}/${levelKey}`}
+                        to={`/dashboard/language/${languageId}/${levelKey}`}
                         className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline"
                       >
                         View full guide →
                       </Link>
                     </div>
                     {levelContent ? (
-                      <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](/language/' + languageId + '/' + levelKey + ')*'} />
+                      <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](/dashboard/language/' + languageId + '/' + levelKey + ')*'} />
                     ) : (
                       <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
                         <p className="text-[var(--color-text-secondary)]">Content coming soon for {language.name} {level}</p>
@@ -210,7 +213,10 @@ export default function LanguagePage() {
                           questions={levelQuizzes}
                           roleId={languageId}
                           level={levelKey}
-                          onComplete={(score) => setLanguageQuizScore(languageId, levelKey, score)}
+                          onComplete={(score) => {
+                            setLanguageQuizScore(languageId, levelKey, score)
+                            syncProgressItemToSupabase(supabase, user?.id, languageId, levelKey, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
+                          }}
                         />
                       </div>
                     )}

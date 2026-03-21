@@ -53,7 +53,7 @@ export default function RoadmapTimeline({ roleId, levels = ['Beginner', 'Mid', '
               transition={{ duration: 0.4, delay: index * 0.15 }}
             >
               <Link
-                to={`/role/${roleId}/${level.toLowerCase()}`}
+                to={`/dashboard/role/${roleId}/${level.toLowerCase()}`}
                 className={`group relative flex items-start gap-4 p-4 rounded-xl border transition-all no-underline ${
                   isActive
                     ? `${config.bgClass} ${config.borderClass}`

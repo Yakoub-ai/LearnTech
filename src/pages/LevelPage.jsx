@@ -97,11 +97,11 @@ export default function LevelPage() {
       <PageHelmet
         title={`${role.name} - ${levelCapitalized} Level`}
         description={`${levelCapitalized} level resources and objectives for ${role.name}. Structured learning path with hands-on exercises.`}
-        path={`/role/${roleId}/${level}`}
+        path={`/dashboard/role/${roleId}/${level}`}
         ogType="article"
       />
       <Link
-        to={`/role/${roleId}`}
+        to={`/dashboard/role/${roleId}`}
         className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
@@ -159,7 +159,7 @@ export default function LevelPage() {
           <p className="text-[var(--color-text-secondary)]">
             The {levelCapitalized} concept reference for {role.name} is available in the roadmap overview.
           </p>
-          <Link to={`/role/${roleId}`} className="inline-flex items-center gap-1.5 mt-4 text-[var(--color-primary)] font-medium no-underline">
+          <Link to={`/dashboard/role/${roleId}`} className="inline-flex items-center gap-1.5 mt-4 text-[var(--color-primary)] font-medium no-underline">
             View Roadmap
             <ArrowRight className="w-4 h-4" />
           </Link>
@@ -169,7 +169,7 @@ export default function LevelPage() {
       <div className="flex items-center justify-between mt-12 pt-8 border-t border-[var(--color-border)]">
         {prevLevel ? (
           <Link
-            to={`/role/${roleId}/${prevLevel.toLowerCase()}`}
+            to={`/dashboard/role/${roleId}/${prevLevel.toLowerCase()}`}
             className="inline-flex items-center gap-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -178,7 +178,7 @@ export default function LevelPage() {
         ) : <div />}
         {nextLevel ? (
           <Link
-            to={`/role/${roleId}/${nextLevel.toLowerCase()}`}
+            to={`/dashboard/role/${roleId}/${nextLevel.toLowerCase()}`}
             className="inline-flex items-center gap-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors"
           >
             {nextLevel} Level

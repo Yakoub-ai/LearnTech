@@ -5,9 +5,11 @@ import {
   setResourceComplete,
   setQuizScore,
   getRoleProgress as getStoredRoleProgress,
+  syncProgressItemToSupabase,
 } from '../../utils/progressStorage'
 import { useAuth } from '../../contexts/AuthContext'
 import { useSupabaseProgress } from '../../hooks/useSupabaseProgress'
+import { supabase } from '../../lib/supabase'
 
 const emptyProgress = { beginner: 0, mid: 0, senior: 0, overall: 0 }
 
@@ -31,8 +33,9 @@ export default function useProgress(roleId) {
       itemIndex: index,
       completed: newCompleted,
     })
+    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'objective', String(index), { completed: newCompleted, completedAt: newCompleted ? new Date().toISOString() : null })
     refresh()
-  }, [roleId, refresh, debouncedUpsert])
+  }, [roleId, refresh, debouncedUpsert, user])
 
   const toggleResource = useCallback((level, index) => {
     const progress = getProgress()
@@ -47,8 +50,9 @@ export default function useProgress(roleId) {
       itemIndex: index,
       completed: newCompleted,
     })
+    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'resource', String(index), { completed: newCompleted, completedAt: newCompleted ? new Date().toISOString() : null })
     refresh()
-  }, [roleId, refresh, debouncedUpsert])
+  }, [roleId, refresh, debouncedUpsert, user])
 
   const saveQuizScore = useCallback((level, score) => {
     setQuizScore(roleId, level, score)
@@ -58,8 +62,9 @@ export default function useProgress(roleId) {
       level: level,
       score: score,
     })
+    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
     refresh()
-  }, [roleId, refresh, saveQuizScoreToCloud])
+  }, [roleId, refresh, saveQuizScoreToCloud, user])
 
   const isObjectiveComplete = useCallback((level, index) => {
     const progress = getProgress()

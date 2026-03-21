@@ -1,26 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import mermaid from 'mermaid'
+import mermaid from '../../utils/mermaidConfig'
 import { Maximize2, Minimize2 } from 'lucide-react'
-
-mermaid.initialize({
-  startOnLoad: false,
-  theme: 'default',
-  securityLevel: 'strict',
-  fontFamily: 'Inter, system-ui, sans-serif',
-  flowchart: {
-    useMaxWidth: true,
-    htmlLabels: false,
-    curve: 'basis',
-  },
-  themeVariables: {
-    primaryColor: '#6366f1',
-    primaryTextColor: '#fff',
-    primaryBorderColor: '#4f46e5',
-    lineColor: '#94a3b8',
-    secondaryColor: '#f1f5f9',
-    tertiaryColor: '#f8fafc',
-  },
-})
 
 export default function SkillDiagram({ diagram, title = 'Skill Roadmap' }) {
   const containerRef = useRef(null)

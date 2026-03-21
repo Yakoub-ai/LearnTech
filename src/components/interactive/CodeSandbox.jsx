@@ -32,7 +32,21 @@ export default function CodeSandbox({ examples = [], roleId }) {
         setOutput(`Error: ${err.message}`)
       }
     } else {
-      setOutput(`// ${currentExample.language} execution is not available in the browser.\n// Copy this code and run it locally in your development environment.\n// See the Setup Guide tab for installation instructions.`)
+      const setupHints = {
+        python: 'Install Python:  https://python.org/downloads\nRun with:        python3 script.py',
+        py: 'Install Python:  https://python.org/downloads\nRun with:        python3 script.py',
+        go: 'Install Go:      https://go.dev/dl\nRun with:        go run main.go',
+        rust: 'Install Rust:    https://rustup.rs\nRun with:        cargo run',
+        java: 'Install JDK:     https://adoptium.net\nRun with:        javac Main.java && java Main',
+        bash: 'Run with:        bash script.sh',
+        sh: 'Run with:        sh script.sh',
+        sql: 'Connect to your database and run this query in a SQL client.',
+        typescript: 'Install Node.js:  https://nodejs.org\nInstall ts-node:  npm install -g ts-node\nRun with:         ts-node script.ts',
+        ts: 'Install Node.js:  https://nodejs.org\nInstall ts-node:  npm install -g ts-node\nRun with:         ts-node script.ts',
+      }
+      const langKey = (currentExample.language || '').toLowerCase()
+      const hint = setupHints[langKey] || 'Copy this code and run it in your local development environment.'
+      setOutput(`// ${currentExample.language} cannot run directly in the browser.\n// \n// To run this code locally:\n// ${hint.replace(/\n/g, '\n// ')}`)
     }
   }
 

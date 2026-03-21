@@ -19,10 +19,10 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-sm text-[var(--color-text)] mb-3">Quick Links</h4>
             <ul className="space-y-2 list-none p-0">
-              <li><Link to="/" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors">All Roles</Link></li>
-              <li><Link to="/languages" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors">Languages</Link></li>
-              <li><Link to="/prerequisites" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors">Prerequisites</Link></li>
-              <li><Link to="/progress" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors">My Progress</Link></li>
+              <li><Link to="/dashboard" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors">All Roles</Link></li>
+              <li><Link to="/dashboard/languages" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors">Languages</Link></li>
+              <li><Link to="/dashboard/prerequisites" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors">Prerequisites</Link></li>
+              <li><Link to="/dashboard/progress" className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline transition-colors">My Progress</Link></li>
             </ul>
           </div>
 

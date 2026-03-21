@@ -12,7 +12,7 @@ export default function NotFoundPage() {
         <Link to="/" className="px-5 py-2.5 rounded-lg bg-[var(--color-primary)] text-white text-sm font-medium no-underline">
           Go Home
         </Link>
-        <Link to="/languages" className="px-5 py-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text)] text-sm font-medium no-underline">
+        <Link to="/dashboard/languages" className="px-5 py-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text)] text-sm font-medium no-underline">
           Browse Languages
         </Link>
       </div>

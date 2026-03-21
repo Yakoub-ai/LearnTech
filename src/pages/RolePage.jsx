@@ -134,7 +134,7 @@ export default function RolePage() {
           "url": `${SITE_URL}/role/${roleId}`
         })}
       </script>
-      <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors">
+      <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" />
         All Roles
       </Link>

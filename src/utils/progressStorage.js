@@ -405,6 +405,17 @@ export function bulkUpdateProgress(roleId, level, updates) {
     progress.roles[roleId] = getInitialRoleProgress();
   }
 
+  if (!progress.roles[roleId][level]) {
+    progress.roles[roleId][level] = {
+      objectives: [],
+      resources: [],
+      quizScore: null,
+      completed: false,
+      startedAt: null,
+      completedAt: null
+    };
+  }
+
   const levelProgress = progress.roles[roleId][level];
 
   updates.forEach(update => {
@@ -570,4 +581,89 @@ export function setLabStepComplete(labId, stepIndex, complete = true) {
 export function getAllLabProgress() {
   const allProgress = getProgress();
   return allProgress.labs || {};
+}
+
+// ──────────────────────────────────────────────────
+// Supabase Sync (dual-write — fire and forget)
+// ──────────────────────────────────────────────────
+
+/**
+ * Sync a single progress item to Supabase.
+ * Called after localStorage writes when the user is authenticated.
+ * Never throws, never blocks UI.
+ *
+ * @param {object} supabase - Supabase client
+ * @param {string} userId - Auth user UUID
+ * @param {string} roleId - Role or language ID
+ * @param {string} level - 'beginner' | 'mid' | 'senior'
+ * @param {string} type - 'objective' | 'resource' | 'quiz'
+ * @param {string} itemKey - Item index as string ('0', '1') or 'score' for quiz
+ * @param {object} value - { completed: bool } or { score: number, date: string }
+ */
+export async function syncProgressItemToSupabase(supabase, userId, roleId, level, type, itemKey, value) {
+  if (!supabase || !userId) return
+  try {
+    await supabase.from('user_progress').upsert(
+      { user_id: userId, role_id: roleId, level, type, item_key: itemKey, value, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id,role_id,level,type,item_key' }
+    )
+  } catch {
+    // fire and forget — analytics must never break the app
+  }
+}
+
+/**
+ * Bulk-sync all localStorage progress to Supabase.
+ * Called once on login to backfill any progress accumulated before login.
+ * Runs in the background, never blocks.
+ *
+ * @param {object} supabase - Supabase client
+ * @param {string} userId - Auth user UUID
+ */
+export async function syncAllProgressToSupabase(supabase, userId) {
+  if (!supabase || !userId) return
+  try {
+    const allProgress = getProgress()
+    const rows = []
+    const now = new Date().toISOString()
+
+    const processSection = (sectionKey, sectionData) => {
+      for (const [roleId, roleData] of Object.entries(sectionData || {})) {
+        for (const level of ['beginner', 'mid', 'senior']) {
+          const levelData = roleData[level]
+          if (!levelData) continue
+
+          // objectives
+          ;(levelData.objectives || []).forEach((obj, i) => {
+            rows.push({ user_id: userId, role_id: roleId, level, type: 'objective', item_key: String(i), value: obj, updated_at: now })
+          })
+
+          // resources
+          ;(levelData.resources || []).forEach((res, i) => {
+            rows.push({ user_id: userId, role_id: roleId, level, type: 'resource', item_key: String(i), value: res, updated_at: now })
+          })
+
+          // quiz
+          if (levelData.quizScore) {
+            rows.push({ user_id: userId, role_id: roleId, level, type: 'quiz', item_key: 'score', value: levelData.quizScore, updated_at: now })
+          }
+        }
+      }
+    }
+
+    processSection('roles', allProgress.roles)
+    processSection('languages', allProgress.languages)
+
+    if (rows.length === 0) return
+
+    // Batch in chunks of 100 to stay within Supabase limits
+    for (let i = 0; i < rows.length; i += 100) {
+      await supabase.from('user_progress').upsert(
+        rows.slice(i, i + 100),
+        { onConflict: 'user_id,role_id,level,type,item_key' }
+      )
+    }
+  } catch {
+    // fire and forget
+  }
 }

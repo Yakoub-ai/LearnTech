@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import mermaid from 'mermaid'
+import mermaid from '../../utils/mermaidConfig'
 
 export default function DiagramBlock({ diagram }) {
   const ref = useRef(null)

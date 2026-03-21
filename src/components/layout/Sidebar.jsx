@@ -2,11 +2,13 @@ import { Link, useLocation } from 'react-router-dom'
 import { roles } from '../../data/roles'
 import { getRoleIcon } from '../../data/roles'
 import { languages, getLanguageIcon } from '../../data/languages'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { ChevronDown, ChevronRight, ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
+import { useAuth } from '../../contexts/AuthContext'
 
 export default function Sidebar() {
   const location = useLocation()
+  const { isAdmin, pendingCount } = useAuth()
   const [expandedRole, setExpandedRole] = useState(null)
   const [expandedLanguage, setExpandedLanguage] = useState(null)
 
@@ -14,9 +16,9 @@ export default function Sidebar() {
     <aside className="hidden lg:block w-64 shrink-0 border-r border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-y-auto h-[calc(100vh-4rem)] sticky top-16">
       <nav className="p-4 space-y-1">
         <Link
-          to="/"
+          to="/dashboard"
           className={`block px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors ${
-            location.pathname === '/'
+            location.pathname === '/dashboard'
               ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
               : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] hover:text-[var(--color-text)]'
           }`}
@@ -24,9 +26,9 @@ export default function Sidebar() {
           All Roles
         </Link>
         <Link
-          to="/prerequisites"
+          to="/dashboard/prerequisites"
           className={`block px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors ${
-            location.pathname === '/prerequisites'
+            location.pathname === '/dashboard/prerequisites'
               ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
               : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] hover:text-[var(--color-text)]'
           }`}
@@ -42,7 +44,7 @@ export default function Sidebar() {
 
         {roles.map((role) => {
           const Icon = getRoleIcon(role.icon)
-          const isActive = location.pathname.startsWith(`/role/${role.id}`)
+          const isActive = location.pathname.startsWith(`/dashboard/role/${role.id}`)
           const isExpanded = expandedRole === role.id || isActive
 
           return (
@@ -67,9 +69,9 @@ export default function Sidebar() {
               {isExpanded && (
                 <div className="ml-6 mt-1 space-y-0.5">
                   <Link
-                    to={`/role/${role.id}`}
+                    to={`/dashboard/role/${role.id}`}
                     className={`block px-3 py-1.5 rounded text-xs no-underline transition-colors ${
-                      location.pathname === `/role/${role.id}`
+                      location.pathname === `/dashboard/role/${role.id}`
                         ? 'text-[var(--color-primary)] font-medium'
                         : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
                     }`}
@@ -79,9 +81,9 @@ export default function Sidebar() {
                   {role.levels.map((level) => (
                     <Link
                       key={level}
-                      to={`/role/${role.id}/${level.toLowerCase()}`}
+                      to={`/dashboard/role/${role.id}/${level.toLowerCase()}`}
                       className={`block px-3 py-1.5 rounded text-xs no-underline transition-colors ${
-                        location.pathname === `/role/${role.id}/${level.toLowerCase()}`
+                        location.pathname === `/dashboard/role/${role.id}/${level.toLowerCase()}`
                           ? 'text-[var(--color-primary)] font-medium'
                           : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
                       }`}
@@ -103,7 +105,7 @@ export default function Sidebar() {
 
         {languages.map((lang) => {
           const Icon = getLanguageIcon(lang.icon)
-          const isActive = location.pathname.startsWith(`/language/${lang.id}`)
+          const isActive = location.pathname.startsWith(`/dashboard/language/${lang.id}`)
           const isExpanded = expandedLanguage === lang.id || isActive
 
           return (
@@ -128,9 +130,9 @@ export default function Sidebar() {
               {isExpanded && (
                 <div className="ml-6 mt-1 space-y-0.5">
                   <Link
-                    to={`/language/${lang.id}`}
+                    to={`/dashboard/language/${lang.id}`}
                     className={`block px-3 py-1.5 rounded text-xs no-underline transition-colors ${
-                      location.pathname === `/language/${lang.id}`
+                      location.pathname === `/dashboard/language/${lang.id}`
                         ? 'text-[var(--color-primary)] font-medium'
                         : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
                     }`}
@@ -140,9 +142,9 @@ export default function Sidebar() {
                   {lang.levels.map((level) => (
                     <Link
                       key={level}
-                      to={`/language/${lang.id}/${level.toLowerCase()}`}
+                      to={`/dashboard/language/${lang.id}/${level.toLowerCase()}`}
                       className={`block px-3 py-1.5 rounded text-xs no-underline transition-colors ${
-                        location.pathname === `/language/${lang.id}/${level.toLowerCase()}`
+                        location.pathname === `/dashboard/language/${lang.id}/${level.toLowerCase()}`
                           ? 'text-[var(--color-primary)] font-medium'
                           : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
                       }`}
@@ -158,9 +160,9 @@ export default function Sidebar() {
 
         <div className="pt-4">
           <Link
-            to="/progress"
+            to="/dashboard/progress"
             className={`block px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors ${
-              location.pathname === '/progress'
+              location.pathname === '/dashboard/progress'
                 ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
                 : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] hover:text-[var(--color-text)]'
             }`}
@@ -168,6 +170,27 @@ export default function Sidebar() {
             My Progress
           </Link>
         </div>
+
+        {isAdmin && (
+          <div className="pt-2">
+            <Link
+              to="/dashboard/admin"
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors ${
+                location.pathname === '/dashboard/admin'
+                  ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
+                  : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] hover:text-[var(--color-text)]'
+              }`}
+            >
+              <ShieldCheck className="w-4 h-4 shrink-0" />
+              <span className="flex-1">Admin</span>
+              {pendingCount > 0 && (
+                <span className="text-xs px-1.5 py-0.5 rounded-full bg-[var(--color-accent)] text-white font-medium">
+                  {pendingCount}
+                </span>
+              )}
+            </Link>
+          </div>
+        )}
       </nav>
     </aside>
   )

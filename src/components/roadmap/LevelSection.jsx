@@ -13,7 +13,7 @@ export default function LevelSection({ roleId, level, resources, objectives, isR
           <h3 className="text-xl font-bold text-[var(--color-text)]">{level} Level</h3>
         </div>
         <Link
-          to={`/role/${roleId}/${level.toLowerCase()}`}
+          to={`/dashboard/role/${roleId}/${level.toLowerCase()}`}
           className="inline-flex items-center gap-1.5 text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] font-medium no-underline transition-colors"
         >
           <BookOpen className="w-4 h-4" />

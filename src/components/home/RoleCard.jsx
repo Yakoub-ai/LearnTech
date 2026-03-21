@@ -33,7 +33,7 @@ export default function RoleCard({ role, index }) {
       transition={{ duration: 0.4, delay: index * 0.05 }}
     >
       <Link
-        to={`/role/${role.id}`}
+        to={`/dashboard/role/${role.id}`}
         className="group block p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-primary)]/50 hover:shadow-lg hover:shadow-[var(--color-primary)]/5 transition-all duration-300 no-underline h-full"
       >
         <div className="flex items-start justify-between mb-4">

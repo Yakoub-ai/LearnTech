@@ -68,7 +68,7 @@ export default function ProgressTracker() {
           return (
             <Link
               key={role.id}
-              to={`/role/${role.id}`}
+              to={`/dashboard/role/${role.id}`}
               className="block p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-primary)]/30 transition-colors no-underline"
             >
               <div className="flex items-center gap-4 mb-3">
@@ -108,7 +108,7 @@ export default function ProgressTracker() {
           return (
             <Link
               key={lang.id}
-              to={`/language/${lang.id}`}
+              to={`/dashboard/language/${lang.id}`}
               className="block p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-primary)]/30 transition-colors no-underline"
             >
               <div className="flex items-center gap-4 mb-3">
