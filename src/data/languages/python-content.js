@@ -4298,7 +4298,7 @@ Senior engineers should be familiar with recent additions to the language and st
 
 Exception groups let you raise and handle multiple exceptions simultaneously, which is essential for concurrent code where multiple tasks can fail at once.
 
-\\\`\\\`\\\`python
+\`\`\`python
 # Raising multiple exceptions
 def process_batch(items):
     errors = []
@@ -4319,13 +4319,13 @@ except* ValueError as eg:
     print(f"Caught {len(eg.exceptions)} ValueErrors")
     for e in eg.exceptions:
         print(f"  - {e}")
-\\\`\\\`\\\`
+\`\`\`
 
 ### tomllib (Python 3.11+)
 
-TOML parsing is now in the standard library. No need for third-party packages to read \\`pyproject.toml\\` or config files.
+TOML parsing is now in the standard library. No need for third-party packages to read \`pyproject.toml\` or config files.
 
-\\\`\\\`\\\`python
+\`\`\`python
 import tomllib
 from pathlib import Path
 
@@ -4334,19 +4334,19 @@ with Path("pyproject.toml").open("rb") as f:
     config = tomllib.load(f)
 
 # Or parse a TOML string
-data = tomllib.loads('''
+data = tomllib.loads("""
 [database]
 host = "localhost"
 port = 5432
-''')
+""")
 print(data["database"]["host"])  # localhost
-\\\`\\\`\\\`
+\`\`\`
 
 ### StrEnum (Python 3.11+)
 
-\\`StrEnum\\` members are strings, making them ideal for API status codes, config values, etc.
+\`StrEnum\` members are strings, making them ideal for API status codes, config values, etc.
 
-\\\`\\\`\\\`python
+\`\`\`python
 from enum import StrEnum
 
 class Color(StrEnum):
@@ -4357,7 +4357,7 @@ class Color(StrEnum):
 # StrEnum values work as plain strings
 print(f"Favorite color: {Color.RED}")  # "Favorite color: red"
 assert Color.RED == "red"  # True — unlike regular Enum
-\\\`\\\`\\\`
+\`\`\`
 
 ---
 
