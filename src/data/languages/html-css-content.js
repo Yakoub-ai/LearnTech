@@ -3160,6 +3160,19 @@ CSS is evolving rapidly. These cutting-edge features are shipping in browsers no
   background: color-mix(in oklch, var(--color-brand-500) 15%, white);
   color: var(--color-brand-700);
 }
+
+/* Relative color syntax — derive new colors from existing ones */
+.button--primary {
+  --base: var(--color-brand-500);
+  background: var(--base);
+}
+.button--primary:hover {
+  /* Take the base color, keep hue/chroma, reduce lightness by 10% */
+  background: oklch(from var(--base) calc(l - 0.1) c h);
+}
+.button--primary:active {
+  background: oklch(from var(--base) calc(l - 0.2) c h);
+}
 \\\`\\\`\\\`
 
 ### View Transitions
