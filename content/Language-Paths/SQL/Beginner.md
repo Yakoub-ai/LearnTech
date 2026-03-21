@@ -6,10 +6,14 @@
 
 - SELECT Statements and Filtering
 - WHERE Clauses and Operators
-- JOINs (INNER, LEFT, RIGHT, FULL)
-- Aggregate Functions (COUNT, SUM, AVG, MIN, MAX)
-- Subqueries
-- Indexes (basic concepts)
+- INSERT, UPDATE, DELETE (DML operations)
+- SQL Injection Prevention (parameterized queries)
+- JOINs (INNER, LEFT, RIGHT, FULL — explicit JOIN ... ON syntax)
+- Aggregate Functions (COUNT, SUM, AVG, MIN, MAX) and GROUP BY/HAVING
+- NULL Handling (three-valued logic, IS NULL, COALESCE)
+- Subqueries (scalar, column, correlated, EXISTS)
+- Indexes (basic concepts, B-tree, composite indexes, EXPLAIN)
+- Data Types and Constraints
 
 ## Prerequisites
 

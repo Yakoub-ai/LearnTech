@@ -11,6 +11,7 @@ Marketing Technology Developers apply software engineering and data science to m
 
 | Topic | Resource | Type |
 |---|---|---|
+| Python | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
 | ML Overview | [Machine Learning Explained Simply (12 min)](https://www.youtube.com/watch?v=Au1OxVSyGas) | Video |
 | SQL | [SQLBolt – Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
@@ -18,6 +19,7 @@ Marketing Technology Developers apply software engineering and data science to m
 | HTTP Fundamentals | [HTTP Crash Course](https://www.youtube.com/watch?v=iYM2zFP3Zn0) | Video |
 | Networking Basics | [Networking for Developers](https://www.youtube.com/watch?v=qiQR5rTSshw) | Video |
 | Generative AI Overview | [Google – Introduction to Generative AI](https://www.cloudskillsboost.google/course_templates/536) | Course |
+| Generative AI for Data | [Generative AI for Data Science – Pluralsight](https://app.pluralsight.com/paths/skills/generative-ai-for-data-science) | Course |
 | APIs in Practice | [APIs for Beginners – freeCodeCamp](https://www.youtube.com/watch?v=GZvSYJDk-us) | Video |
 
 > **What you'll learn watching this:** What APIs are, why they exist, and how to call real-world APIs including the Spotify and Twilio APIs — covering authentication, request structure, and response handling in a hands-on full-course format.
@@ -52,6 +54,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Mark
 | ML Algorithms | [All ML Algorithms Explained in 17 min](https://www.youtube.com/watch?v=E0Hmnixke2g) | Video |
 | Prompt Engineering | [Learn Prompting – Open Source Guide](https://learnprompting.org/docs/introduction) | Docs |
 | Context Engineering | [Anthropic – Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview) | Docs |
+| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 | Customer Data Platforms | [Segment CDP Introduction](https://segment.com/docs/getting-started/) | Docs |
 | Analytics | [Google Analytics 4 – Developer Documentation](https://developers.google.com/analytics/devguides/collection/ga4) | Docs |
 | A/B Testing (Supplement) | [Evan Miller – How Not To Run an A/B Test](https://www.evanmiller.org/how-not-to-run-an-ab-test.html) | Article |
@@ -89,7 +92,9 @@ For deep explanations of each concept, see the [Mid Concept Reference](Marketing
 | Architecture Patterns | [Martin Fowler – Patterns of Enterprise Application Architecture](https://martinfowler.com/eaaCatalog/) | Docs |
 | System Design | [System Design – 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
 | LLM Security Patterns | [Design Patterns for Securing LLM Agents](https://arxiv.org/abs/2506.08837) | Paper |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 | MLOps for Marketing | [Microsoft Learn – MLOps with Azure ML](https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow/) | Interactive |
 | EU AI Act Overview | [EU AI Act – Official Text Summary](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai) | Docs |
 
@@ -733,6 +738,20 @@ Staff using AI tools and systems must understand the limitations of AI technolog
 - Building AI-powered marketing tools without registering the use case, particularly when customer data is involved.
 - Using customer data to train or prompt AI models without verifying that a lawful basis under GDPR exists for that specific purpose.
 - Treating the AI Policy as separate from the AI Governance for Marketing practices already covered above — they are complementary, and compliance requires both.
+
+---
+
+## EU Compliance for Marketing Technology Developers
+
+Senior Marketing Technology Developers operate at the intersection of multiple EU regulations that directly constrain how marketing data is collected, processed, and used for targeting and personalisation. The Transparency and Consent Framework (TCF) 2.2, the ePrivacy Directive, GDPR, and the EU AI Act all impose specific obligations on marketing technology systems — and the penalties for non-compliance are significant. National data protection authorities across the EU have made advertising technology and cookie consent a priority enforcement area, with major fines issued to organisations that deployed tracking technologies without valid consent, used dark patterns in consent interfaces, or processed personal data for advertising purposes without a lawful basis.
+
+TCF 2.2 (Transparency and Consent Framework version 2.2) is the IAB Europe standard for collecting and propagating user consent signals across the advertising ecosystem. Marketing technology developers must implement TCF 2.2 correctly in consent management platforms (CMPs) and ensure that consent strings are generated, stored, and transmitted according to the specification. Every advertising tag, analytics pixel, and third-party script must check the TCF consent signal before firing, and must respect the user's choices for each specific purpose and vendor. TCF 2.2 introduces stricter requirements than its predecessors, including the prohibition of "legitimate interest" as a legal basis for certain purposes (such as creating profiles for personalised advertising), making explicit consent the only valid basis for most advertising data processing in the EU.
+
+The ePrivacy Directive (Directive 2002/58/EC, as amended) — often called the "cookie law" — requires informed consent before storing or accessing information on a user's device. This applies not only to cookies but to all tracking technologies: local storage, fingerprinting, tracking pixels, and mobile advertising identifiers. For marketing technology developers, this means that no tracking technology may be activated until the user has given specific, informed, and freely-given consent. The consent mechanism must be accessible, must not use pre-ticked boxes or implied consent, and must make rejecting tracking as easy as accepting it. The upcoming ePrivacy Regulation (intended to replace the Directive) is expected to maintain or strengthen these requirements.
+
+The EU AI Act introduces specific obligations for AI-powered marketing tools. Customer-facing chatbots must disclose that the user is interacting with an AI system (Article 50). Recommendation engines and personalisation systems that influence purchasing decisions may be classified as limited-risk (requiring transparency) or, if they affect access to financial services, as high-risk (requiring conformity assessments, human oversight, and comprehensive documentation). For an insurance company's marketing technology, AI systems used for automated pricing, risk-based targeting, or personalised product recommendations that influence insurance decisions will likely fall under the high-risk category, triggering the full set of Article 9-15 requirements. Marketing technology developers must classify each AI-powered marketing feature against the EU AI Act risk tiers and implement the corresponding obligations.
+
+> **Why it matters:** EU data protection authorities have levied hundreds of millions of euros in fines against organisations for advertising technology consent violations — including major fines for insufficient consent mechanisms, tracking without consent, and improper use of personal data for advertising. The EU AI Act adds further obligations for AI-powered marketing tools, with penalties of up to 35 million EUR or 7% of global turnover. Marketing technology developers who implement correct TCF 2.2 consent enforcement, ePrivacy-compliant tracking controls, and EU AI Act transparency for recommendation engines protect the organisation from regulatory exposure that has proven to be a top enforcement priority across EU member states.
 
 ---
 

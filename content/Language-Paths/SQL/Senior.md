@@ -4,11 +4,13 @@
 
 ## Topics Covered
 
-- Execution Plans and Query Analysis
-- Index Internals (B-trees, hash indexes, covering indexes)
-- Partitioning Strategies (range, list, hash)
-- Locking and Concurrency Control
-- Performance Tuning and Diagnostics
+- Execution Plans Deep Dive (scan types, join algorithms, cost model)
+- Index Internals (B-tree, hash, GIN, GiST, partial, expression, covering indexes)
+- Partitioning Strategies (range, list, hash, pruning, maintenance)
+- Locking and Concurrency (row locks, table locks, advisory locks, MVCC, optimistic vs pessimistic)
+- Performance Tuning (connection pooling, COPY, VACUUM, pg_stat_statements, pg_stat_io)
+- Zero-Downtime Migration Strategies (expand/contract, batched backfills, safe DDL)
+- Advanced Patterns (temporal tables, soft deletes, audit logging, JSONB, full-text search)
 
 ## Prerequisites
 

@@ -54,7 +54,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Fron
 | MDN Reference | [MDN Web Docs](https://developer.mozilla.org) | Docs |
 | Web Security | [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Scripting_Prevention_Cheat_Sheet.html) | Docs |
 | CSS Tooling | [Tailwind CSS Documentation](https://tailwindcss.com/docs) | Docs |
-| Routing | [React Router – Tutorial](https://reactrouter.com/en/main/start/tutorial) | Docs |
+| Routing | [React Router – Tutorial](https://reactrouter.com/start/framework/routing) | Docs |
 | Forms and Validation | [React Hook Form](https://react-hook-form.com/get-started) + [Zod](https://zod.dev/) | Docs |
 
 ### After completing Mid you should be able to:
@@ -65,7 +65,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Fron
 - Write custom React hooks to encapsulate and reuse stateful logic across components
 - Apply TypeScript types and interfaces to React props, function signatures, and API response shapes
 - Use TypeScript generics to write reusable, type-safe utility functions and components
-- Write unit tests for JavaScript functions using Jest and assert expected outcomes
+- Write unit tests for JavaScript functions using a test runner such as Jest or Vitest and assert expected outcomes
 - Write component tests using React Testing Library that interact with the UI the way a user would
 - Write end-to-end tests with Playwright that cover critical user journeys in a running application
 - Consume a REST API from a React application, handle loading and error states, and display the retrieved data
@@ -84,9 +84,15 @@ For deep explanations of each concept, see the [Mid Concept Reference](Frontend-
 |---|---|---|
 | Web Performance | [web.dev – Learn Performance](https://web.dev/learn/performance) | Interactive |
 | Accessibility | [web.dev – Learn Accessibility](https://web.dev/learn/accessibility) | Interactive |
+| Advanced AI Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
+| Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
 | API Design | [Design APIs Like a Senior Engineer](https://www.youtube.com/watch?v=7iHl71nt49o) | Video |
-| Next.js / SSR | [Next.js – Getting Started](https://nextjs.org/docs/getting-started) | Docs |
+| Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
+| Algorithms and Data Structures | [Algorithms and Data Structures Pt.1 – Pluralsight](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) | Course |
+| Next.js / SSR | [Next.js – Getting Started](https://nextjs.org/docs) | Docs |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 
 ### After completing Senior you should be able to:
 
@@ -101,6 +107,7 @@ For deep explanations of each concept, see the [Mid Concept Reference](Frontend-
 - Apply domain-driven design concepts to organise a frontend codebase around business domains rather than technical layers
 - Compare architecture patterns such as micro-frontends, monorepo organisation, and feature-based folder structures, and justify a choice for a given project context
 - Identify practical ways to integrate AI-assisted development tools into a daily frontend engineering workflow to improve productivity and code quality
+- Apply AI governance requirements (Secure AI Framework, AI Policy, AI Checklist) when building frontend applications that integrate AI features
 
 For deep explanations of each concept, see the [Senior Concept Reference](Frontend-Developer/Senior.md).
 
@@ -832,6 +839,45 @@ AI-assisted development tools — code completion assistants, conversational cod
 - Accepting generated code without reading and understanding it, which transfers knowledge debt to future maintainers.
 - Using AI-generated test cases as a substitute for thinking about what needs to be tested — the AI may generate tests that pass trivially without covering meaningful behaviour.
 - Not updating AI tool guidelines as the tools evolve rapidly, leaving the team with outdated practices.
+
+---
+
+## AI Policy — Organisational Principles
+
+The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
+
+The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
+
+Responsible AI principles are embedded throughout the policy. These include diversity and non-discrimination (AI systems must not produce biased or discriminatory outcomes), transparency (users and affected parties must understand when and how AI is used), robustness (AI systems must perform reliably and handle errors gracefully), security (AI systems must be protected against adversarial manipulation and data breaches), and privacy (personal data must be handled in accordance with GDPR and internal data classification policies).
+
+The AI Register requires that all AI use cases within the organisation are registered and classified by risk level. This classification determines the governance requirements — from lightweight documentation for low-risk use cases to full conformity assessments for high-risk systems. High-risk AI systems require conformity assessments demonstrating compliance with transparency, human oversight, data quality, and technical robustness requirements.
+
+Staff using AI tools and systems must understand the limitations of AI technology and the requirements of the policy. This applies to all roles — from developers building AI-powered frontend features to engineers using AI-assisted development tools.
+
+**Why it matters:** The AI Policy is the organisation's binding commitment to responsible AI use. For frontend engineers, this matters when building interfaces that display AI-generated content, collecting user data that feeds into AI systems, or integrating AI-powered features such as chatbots, recommendations, or content generation. The policy's transparency requirements — informing users when they interact with AI — are directly implemented in the frontend.
+
+**Key things to understand:**
+- Every AI use case must be registered in the AI Register with a risk classification before development begins.
+- The risk classification determines governance requirements: low-risk use cases need basic documentation; high-risk use cases need conformity assessments.
+- Transparency obligations require the frontend to clearly communicate when users are interacting with AI-generated content or AI-powered features.
+- GDPR obligations apply to data collected through AI-powered interfaces — consent management and data minimisation are frontend concerns.
+
+**Common pitfalls:**
+- Building a frontend AI feature (chatbot, AI-generated content) without ensuring the use case is registered in the AI Register.
+- Not implementing the transparency requirements — users must be clearly informed when content is AI-generated or when they are interacting with an AI system.
+- Treating the AI Policy as a backend-only concern; frontend design decisions around data collection, user consent, and AI feature presentation are directly governed by the policy.
+
+---
+
+## EU Compliance for Frontend Developers
+
+Senior Frontend Developers in the EU carry direct responsibility for implementing GDPR and ePrivacy compliance at the user interface level. The frontend is where personal data is collected, where consent is obtained, and where transparency obligations are fulfilled — making it the primary enforcement point for many EU regulations. The ePrivacy Directive (and its national implementations) requires that cookies and similar tracking technologies are only set after the user has given informed, specific, and freely-given consent. The GDPR reinforces this with strict requirements for valid consent: it must be an unambiguous affirmative action (no pre-ticked checkboxes), it must be as easy to withdraw as to give, and consent for different purposes must be presented separately.
+
+Cookie consent implementation is one of the most visible compliance obligations for frontend developers. The Transparency and Consent Framework (TCF) 2.2, managed by IAB Europe, provides the industry-standard mechanism for collecting and propagating consent signals across the advertising ecosystem. A senior frontend developer should understand how TCF consent strings are generated, stored, and transmitted to downstream systems.
+
+The EU AI Act adds transparency obligations that are primarily implemented in the frontend. When users interact with an AI system (such as a chatbot or AI-generated content), they must be clearly informed that they are interacting with AI — not a human. The European Accessibility Act, applicable from June 2025, further requires that all digital interfaces — including consent mechanisms and AI disclosures — are accessible to people with disabilities, conforming to WCAG 2.2 Level AA.
+
+> **Why it matters:** GDPR consent violations carry penalties of up to 20 million EUR or 4% of global turnover. Frontend developers who implement compliant consent mechanisms, data-minimal forms, and AI transparency disclosures are the first line of defence against regulatory exposure.
 
 ---
 

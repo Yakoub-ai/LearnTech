@@ -359,9 +359,8 @@ class Settings(BaseSettings):
     debug: bool = False
     allowed_origins: list[str] = ["http://localhost:3000"]
 
-    class Config:
-        # Why: .env files keep secrets out of source code
-        env_file = ".env"
+    # Pydantic v2 uses model_config instead of the inner class Config
+    model_config = {"env_file": ".env"}  # Why: .env files keep secrets out of source code
 
 settings = Settings()
 

@@ -44,8 +44,11 @@ For deep explanations of each concept, see the [Beginner Concept Reference](ML-E
 | Feature Engineering | [Kaggle Learn – Feature Engineering](https://www.kaggle.com/learn/feature-engineering) | Interactive |
 | Intermediate ML Practice | [Kaggle Learn – Intermediate ML](https://www.kaggle.com/learn/intermediate-machine-learning) | Interactive |
 | Neural Networks / Deep Learning | [PyTorch – Official Tutorials](https://pytorch.org/tutorials/) | Docs |
+| PyTorch 2.x Performance | [torch.compile – Getting Started](https://pytorch.org/tutorials/intermediate/torch_compile_tutorial.html) | Docs |
 | Experiment Tracking | [MLflow – Getting Started](https://mlflow.org/docs/latest/getting-started/index.html) | Docs |
 | MLOps | [End-to-end MLOps with Azure ML – Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow/) | Interactive |
+| Algorithms and Data Structures | [Algorithms and Data Structures Pt.1 – Pluralsight](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) | Course |
+| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 
 ### After completing Mid you should be able to:
 
@@ -68,8 +71,15 @@ For deep explanations of each concept, see the [Mid Concept Reference](ML-Engine
 | Advanced MLOps | [Microsoft Learn – MLOps maturity model](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/mlops-maturity-model) | Docs |
 | Model Monitoring | [Microsoft Learn – Monitor models with Azure ML](https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-monitoring) | Docs |
 | Responsible AI | [Fairlearn – Fairness in ML](https://fairlearn.org/) | Docs |
+| Model Explainability | [SHAP – SHapley Additive exPlanations](https://shap.readthedocs.io/en/latest/) | Docs |
+| Model Interoperability | [ONNX – Open Neural Network Exchange](https://onnx.ai/) | Docs |
 | Dynamic Programming | [Dynamic Programming – Full Course](https://www.youtube.com/watch?v=66hDgWottdA) | Video |
+| Algorithms and Data Structures | [Part 1](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) / [Part 2](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-two/course-overview) | Course |
+| AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
+| Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | ⚠️ Internal SharePoint |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | ⚠️ Internal SharePoint |
 
 ### After completing Senior you should be able to:
 
@@ -612,6 +622,90 @@ Responsible AI and fairness are increasingly integral to governance. AI systems 
 - Treating AI governance as a one-time approval process rather than an ongoing operational practice.
 - Building governance frameworks so restrictive they drive teams to use AI tools outside sanctioned channels.
 - Ignoring data classification when selecting which content is allowed to be sent to external AI APIs.
+
+---
+
+## MLOps – Model Serving and Deployment Patterns
+
+Getting a model to production is not the finish line — it is the starting line. MLOps (Machine Learning Operations) is the practice of reliably deploying, monitoring, and iterating on ML models in production. A model that is accurate in a notebook but unavailable, slow, or untested in production creates zero business value.
+
+**Serving patterns** vary by latency requirements and data volume. Online serving (synchronous REST or gRPC endpoints) handles real-time requests in milliseconds — used for fraud detection, recommendation scoring, and search ranking. Batch serving processes large datasets on a schedule — used for daily churn predictions, overnight report generation. Streaming serving (Kafka + Flink/Spark Structured Streaming) processes events as they arrive — used for real-time bidding and IoT anomaly detection. Choosing the wrong pattern is a common and expensive mistake.
+
+**Deployment strategies** control risk when releasing new model versions. A canary deployment routes a small fraction of traffic (e.g., 10 %) to the new version and compares metrics against the baseline before promoting. A/B testing routes different user segments to different model versions and uses statistical testing to determine the winner. Shadow mode runs the new model in parallel without serving its predictions to users — the cheapest way to validate a new model against live production traffic before going live.
+
+**Why it matters:** Production ML failures are rarely due to model accuracy — they are due to poor deployment practices. Models degrade as data distributions drift. Serving infrastructure becomes a bottleneck under load. Without canary deployments, a bad model release can cause an outage affecting all users simultaneously.
+
+**Key things to understand:**
+- The difference between online, batch, and streaming serving — and how to choose between them based on latency SLAs and data volume.
+- How canary deployments and shadow mode reduce the blast radius of a bad model release.
+- Why model serving code (input validation, feature engineering at inference time) needs the same engineering rigour as application code.
+- The role of a feature store in ensuring training/serving consistency — the most common source of silent model failures.
+- How to instrument a serving endpoint with structured logging so that predictions can be audited and model performance can be monitored offline.
+
+**Common pitfalls:**
+- **Training/serving skew**: The feature engineering applied at training time is not replicated exactly at inference time. A feature store (Feast, Tecton) solves this.
+- **No input validation**: Models receive malformed or out-of-distribution inputs and produce silently wrong predictions.
+- **Big-bang deployments**: Releasing a new model to 100 % of traffic simultaneously. Always use canary or blue-green deployments.
+- **Not logging predictions**: Without prediction logs, you cannot compute offline model performance metrics once ground truth arrives.
+- **Ignoring latency under load**: A model that scores in 20 ms in isolation may time out at p99 under production traffic. Load test serving endpoints before releasing.
+
+---
+
+## Experiment Tracking – MLflow and Reproducible ML
+
+An experiment is only as valuable as your ability to reproduce it. In early ML work it is tempting to iterate quickly in notebooks — changing hyperparameters, re-running cells, and noting results in a spreadsheet. This breaks down fast: you cannot reproduce the run that produced your best model, you cannot compare runs systematically, and you cannot hand off work to a colleague or a CI/CD pipeline.
+
+**Experiment tracking** solves this by systematically recording every training run: the hyperparameters used, the metrics achieved, the dataset version, the code commit, and the resulting model artefact. MLflow is the most widely adopted open-source tracking tool; it provides a tracking API, a model registry, a UI for comparing runs, and integrations with major ML frameworks.
+
+The **MLflow model registry** provides a staging workflow: a trained model moves from \`None\` (registered but unreviewed) → \`Staging\` (undergoing evaluation) → \`Production\` (serving live traffic) → \`Archived\` (superseded). Serving infrastructure loads models by stage name (\`models:/fraud_detector/Production\`) rather than by a specific version number, so promoting a new version in the registry is sufficient to update what the serving tier uses — no deployment pipeline change required.
+
+**Why it matters:** Reproducibility is a professional standard in ML engineering. Regulators increasingly require that decisions made by ML models can be explained and audited — which requires knowing exactly which model version made a decision and what data it was trained on. Experiment tracking is the foundation of that audit trail.
+
+**Key things to understand:**
+- How to use \`mlflow.start_run()\` as a context manager to ensure runs are always closed, even if training raises an exception.
+- The difference between \`log_param\` (hyperparameter — set before training) and \`log_metric\` (evaluation result — computed after training). Metrics can be logged at multiple steps to produce a training curve.
+- How \`mlflow.models.infer_signature\` captures the input/output schema of a model — this schema is validated at serving time, preventing type mismatches.
+- The model registry promotion workflow and why serving infrastructure should reference stage names rather than version numbers.
+- How to tag runs with the git commit hash so you can always trace a run back to the exact code that produced it.
+
+**Common pitfalls:**
+- **Logging metrics outside a run**: Calls to \`mlflow.log_metric\` outside \`mlflow.start_run()\` silently do nothing or attach to a stale run. Always use the context manager.
+- **Forgetting to log the dataset version**: Metrics are meaningless without knowing which data they were computed on. Log a dataset hash or version tag on every run.
+- **Promoting to Production manually without evaluation gates**: The registry workflow should require a human or automated approval step before transitioning from Staging to Production.
+- **Not using \`infer_signature\`**: Without a model signature, the serving tier cannot validate that inputs match what the model expects, leading to silent type-coercion bugs.
+
+---
+
+## AI Policy — Organisational Principles
+
+The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (⚠️ Internal SharePoint) establishes the governance framework for all AI use within the organisation. The policy is built on several pillars: legal compliance (EU AI Act, GDPR), responsible AI principles (diversity, non-discrimination, transparency, robustness, security, privacy), an AI Register for classifying use cases by risk level, and staff obligations for understanding AI limitations.
+
+**Why it matters:** The AI Policy translates regulatory requirements into concrete obligations that apply to every ML project. Senior ML engineers must understand these obligations because they directly affect model development — from training data governance and fairness evaluation to deployment documentation and monitoring.
+
+**Key things to understand:**
+- Every AI use case must be registered in the AI Register with a risk classification before development begins.
+- The risk classification determines governance requirements: low-risk use cases need basic documentation; high-risk use cases need conformity assessments.
+- GDPR obligations apply to all ML systems that process personal data — training data, feature stores, model inputs, and logged predictions.
+- The policy requires transparency: affected parties must be informed when AI has influenced a decision affecting them.
+
+**Common pitfalls:**
+- Starting model development without registering the use case in the AI Register.
+- Treating the AI Policy as a legal concern rather than a design constraint.
+- Assuming that internal-only ML models are exempt from the policy.
+
+---
+
+## EU Compliance for ML Engineers
+
+The EU AI Act (Regulation 2024/1689) classifies AI systems used in credit scoring, insurance pricing, claims assessment, and underwriting as high-risk under Annex III. High-risk systems must comply with Articles 9-15 before deployment, covering risk management, data governance, technical documentation, record-keeping, transparency, human oversight, and accuracy/robustness. The August 2026 deadline for high-risk AI system compliance means ML Engineers must build these requirements into their MLOps pipelines now.
+
+A model registry that satisfies EU AI Act requirements goes beyond simple version tracking. Article 11 and Annex IV require detailed technical documentation including the general description and intended purpose, design specifications, training data governance, evaluation metrics, human oversight measures, and expected accuracy and robustness.
+
+Conformity assessment is the regulatory gate that high-risk AI systems must pass before deployment. ML Engineers contribute by providing: evidence that training data meets Article 10 quality requirements, evaluation results demonstrating accuracy and robustness (Article 15), fairness assessments, monitoring system documentation, and evidence of human oversight mechanisms.
+
+GDPR obligations apply to every stage of the ML pipeline: training data with personal data must have a lawful basis, feature stores must support right to erasure, and model predictions affecting individuals must be logged for transparency.
+
+> **Why it matters:** The EU AI Act imposes penalties of up to 35 million EUR or 7% of global annual turnover for non-compliance with high-risk AI system requirements. ML Engineers who integrate conformity tracking, fairness evaluation, and documentation into their standard MLOps pipelines make compliance a routine part of development rather than a last-minute scramble before audit.
 
 ---
 

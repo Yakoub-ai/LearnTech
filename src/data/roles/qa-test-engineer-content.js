@@ -12,7 +12,7 @@ QA and Test Engineers ensure software quality through systematic testing strateg
 | Topic | Resource | Type |
 |---|---|---|
 | QA Roadmap | [roadmap.sh – QA](https://roadmap.sh/qa) | Interactive |
-| Testing Fundamentals | [ISTQB Foundation Level Syllabus](https://www.istqb.org/certifications/certified-tester-foundation-level) | Syllabus |
+| Testing Fundamentals | [ISTQB Foundation Level Syllabus v4.0](https://www.istqb.org/certifications/certified-tester-foundation-level) | Syllabus |
 | QA Certification | [freeCodeCamp – Quality Assurance](https://www.freecodecamp.org/learn/quality-assurance/) | Interactive |
 | Manual Testing | [Software Testing Tutorial – Guru99](https://www.guru99.com/software-testing.html) | Article |
 | Bug Reporting | [How to Write a Good Bug Report – Ministry of Testing](https://www.ministryoftesting.com/articles/the-art-of-the-bug-report) | Article |
@@ -83,6 +83,8 @@ For deep explanations of each concept, see the [Mid Concept Reference](QA-Test-E
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Regulatory Testing | [ISTQB – Testing in Regulated Industries](https://www.istqb.org/certifications/automotive-tester) | Reference |
 | AI-Assisted Testing | [GitHub Copilot for Testing – GitHub Docs](https://docs.github.com/en/copilot) | Docs |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | ⚠️ Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | ⚠️ Internal |
 
 ### After completing Senior you should be able to:
 
@@ -135,7 +137,7 @@ Understanding the full landscape also helps you communicate effectively with dev
 
 ## Testing Fundamentals – The Test Pyramid, Test Types, and ISTQB Foundations
 
-The ISTQB (International Software Testing Qualifications Board) Foundation Level syllabus is the industry standard body of knowledge for software testing. It defines the vocabulary, principles, and techniques that form the common language of the profession. Even if you never take the certification exam, the syllabus provides a structured foundation that most testing literature and job descriptions assume you know.
+The ISTQB (International Software Testing Qualifications Board) Foundation Level syllabus (v4.0, released 2023) is the industry standard body of knowledge for software testing. It defines the vocabulary, principles, and techniques that form the common language of the profession. Even if you never take the certification exam, the syllabus provides a structured foundation that most testing literature and job descriptions assume you know.
 
 The test pyramid is a model that describes the ideal distribution of test types in a software project. At the base are unit tests -- fast, isolated, and numerous. In the middle are integration tests (sometimes called service tests) that verify the interaction between components. At the top are end-to-end (E2E) tests that exercise the full system through its user interface. The pyramid shape reflects the principle that you should have many fast, cheap tests at the bottom and fewer slow, expensive tests at the top.
 

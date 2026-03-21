@@ -358,46 +358,54 @@ For a Data Engineer working in the Azure ecosystem, ADF is typically the orchest
 **Code walkthrough:**
 
 ```python
-# Step 1: Streaming basics — consume messages from Kafka
-# Why: streaming enables real-time data processing, not just daily batches
-from confluent_kafka import Consumer, KafkaError
-import json
+# Step 1: Azure Data Factory pipeline interaction via Python SDK
+# Why: Data Engineers automate ADF pipeline triggers and monitoring programmatically
+from azure.identity import DefaultAzureCredential
+from azure.mgmt.datafactory import DataFactoryManagementClient
+from datetime import datetime, timezone
 
-consumer = Consumer({
-    "bootstrap.servers": "kafka:9092",
-    "group.id": "claims-processor",
-    "auto.offset.reset": "earliest",  # start from the beginning if no offset
-    "enable.auto.commit": False,       # manual commit for at-least-once delivery
-})
+# Step 2: Authenticate using managed identity or Azure CLI credentials
+# Why: DefaultAzureCredential works in local dev (CLI) and production (managed identity)
+credential = DefaultAzureCredential()
+adf_client = DataFactoryManagementClient(credential, subscription_id="your-sub-id")
 
-# Step 2: Subscribe to the topic
-# Why: each topic holds events of a specific type (e.g., new claims)
-consumer.subscribe(["raw.claims"])
+# Step 3: Trigger an ADF pipeline run
+# Why: programmatic triggers enable integration with external orchestrators
+def trigger_pipeline(
+    resource_group: str,
+    factory_name: str,
+    pipeline_name: str,
+    parameters: dict = None,
+) -> str:
+    """Trigger an Azure Data Factory pipeline and return the run ID."""
+    run_response = adf_client.pipelines.create_run(
+        resource_group_name=resource_group,
+        factory_name=factory_name,
+        pipeline_name=pipeline_name,
+        parameters=parameters or {},
+    )
+    print(f"Pipeline run started: {run_response.run_id}")
+    return run_response.run_id
 
-def process_messages(max_messages: int = 100):
-    """Consume and process messages from the claims topic."""
-    processed = 0
-    while processed < max_messages:
-        msg = consumer.poll(timeout=1.0)
-        if msg is None:
-            continue
-        if msg.error():
-            if msg.error().code() == KafkaError._PARTITION_EOF:
-                continue  # end of partition, not an error
-            raise Exception(f"Kafka error: {msg.error()}")
+# Step 4: Monitor pipeline run status
+# Why: automated monitoring enables alerting on failures and SLA tracking
+def check_pipeline_status(resource_group: str, factory_name: str, run_id: str) -> str:
+    """Check the status of a pipeline run."""
+    run = adf_client.pipeline_runs.get(
+        resource_group_name=resource_group,
+        factory_name=factory_name,
+        run_id=run_id,
+    )
+    print(f"Pipeline status: {run.status} (started: {run.run_start})")
+    return run.status
 
-        # Step 3: Parse and process the event
-        claim = json.loads(msg.value().decode("utf-8"))
-        print(f"Processing claim {claim['claim_id']} — amount: {claim['amount']}")
-
-        # Step 4: Commit the offset AFTER successful processing
-        # Why: if processing fails, the message will be redelivered (at-least-once)
-        consumer.commit(msg)
-        processed += 1
-
-    consumer.close()
-
-process_messages()
+# Step 5: Example — trigger daily ingestion pipeline
+run_id = trigger_pipeline(
+    resource_group="rg-data-platform",
+    factory_name="adf-prod",
+    pipeline_name="daily_claims_ingestion",
+    parameters={"load_date": datetime.now(timezone.utc).strftime("%Y-%m-%d")},
+)
 ```
 
 **Common pitfalls:**
@@ -429,48 +437,61 @@ Data quality must be built into pipelines, not checked after the fact. This mean
 **Code walkthrough:**
 
 ```python
-# Step 1: Data quality checks with Great Expectations
+# Step 1: Data quality checks with Great Expectations (GX 1.x API)
 # Why: automated expectations catch data issues before they reach dashboards
 import great_expectations as gx
+import great_expectations.expectations as gxe
+import pandas as pd
 
 context = gx.get_context()
 
-# Step 2: Define expectations for the orders dataset
+# Step 2: Create a data source and add a CSV asset
+# Why: GX 1.x uses a fluent API for data source configuration
+data_source = context.data_sources.add_pandas("orders_source")
+data_asset = data_source.add_csv_asset("orders", filepath_or_buffer="data/processed/orders.csv")
+batch_definition = data_asset.add_batch_definition_whole_dataframe("full_orders")
+
+# Step 3: Define an Expectation Suite with quality rules
 # Why: each expectation is a specific, testable quality rule
-validator = context.sources.pandas_default.read_csv(
-    "data/processed/orders.csv"
-)
+suite = context.suites.add(gx.ExpectationSuite(name="orders_quality"))
 
 # Completeness — are required fields present?
-validator.expect_column_values_to_not_be_null("order_id")
-validator.expect_column_values_to_not_be_null("customer_id")
+suite.add_expectation(gxe.ExpectColumnValuesToNotBeNull(column="order_id"))
+suite.add_expectation(gxe.ExpectColumnValuesToNotBeNull(column="customer_id"))
 
 # Uniqueness — no duplicate primary keys
-validator.expect_column_values_to_be_unique("order_id")
+suite.add_expectation(gxe.ExpectColumnValuesToBeUnique(column="order_id"))
 
 # Range — amounts must be positive and reasonable
-validator.expect_column_values_to_be_between(
-    "total_amount", min_value=0, max_value=1_000_000
-)
+suite.add_expectation(gxe.ExpectColumnValuesToBeBetween(
+    column="total_amount", min_value=0, max_value=1_000_000
+))
 
 # Consistency — only known statuses allowed
-validator.expect_column_values_to_be_in_set(
-    "status", ["pending", "completed", "cancelled", "refunded"]
-)
+suite.add_expectation(gxe.ExpectColumnValuesToBeInSet(
+    column="status", value_set=["pending", "completed", "cancelled", "refunded"]
+))
 
-# Step 3: Volume — row count should be within expected range
+# Volume — row count should be within expected range
 # Why: a sudden drop in rows suggests a source outage or extraction failure
-validator.expect_table_row_count_to_be_between(
+suite.add_expectation(gxe.ExpectTableRowCountToBeBetween(
     min_value=1000, max_value=500_000
-)
+))
 
-# Step 4: Run all expectations and inspect results
-results = validator.validate()
+# Step 4: Create a validation definition and run it
+# Why: validation definitions connect a batch of data to a suite of expectations
+validation_definition = context.validation_definitions.add(
+    gx.ValidationDefinition(
+        name="orders_validation",
+        data=batch_definition,
+        suite=suite,
+    )
+)
+results = validation_definition.run()
+
 if not results.success:
-    failed = [r for r in results.results if not r.success]
-    for f in failed:
-        print(f"FAILED: {f.expectation_config.expectation_type}")
-    raise ValueError(f"{len(failed)} data quality checks failed")
+    print("Data quality checks FAILED")
+    raise ValueError("Data quality checks failed — see results for details")
 
 print("All data quality checks passed")
 ```
@@ -503,49 +524,56 @@ A Dockerfile defines the blueprint for a container image: the base operating sys
 
 **Code walkthrough:**
 
-```sql
--- Step 1: Partitioning strategies — organise data for query performance
--- Why: partitioning lets the query engine skip irrelevant data (partition pruning)
+```dockerfile
+# Step 1: Dockerfile for a Python data pipeline application
+# Why: containerising pipelines ensures consistent execution across environments
+FROM python:3.12-slim AS base
 
--- Partition by date — the most common strategy for time-series data
-CREATE TABLE fact_claims (
-    claim_id     BIGINT,
-    customer_id  INT,
-    amount       DECIMAL(12,2),
-    claim_date   DATE,
-    status       VARCHAR(20)
-)
-PARTITION BY RANGE (claim_date);
+# Step 2: Create a non-root user for security
+# Why: running as root inside containers is a security risk
+RUN groupadd -r pipeline && useradd -r -g pipeline pipeline
 
--- Create partitions for each month
-CREATE TABLE fact_claims_2025_01 PARTITION OF fact_claims
-    FOR VALUES FROM ('2025-01-01') TO ('2025-02-01');
-CREATE TABLE fact_claims_2025_02 PARTITION OF fact_claims
-    FOR VALUES FROM ('2025-02-01') TO ('2025-03-01');
+# Step 3: Install dependencies in a separate layer for caching
+# Why: dependencies change less often than code; separate layers speed up builds
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
--- Step 2: Query benefits from partitioning — only reads relevant partitions
--- Why: a query for January data only scans the January partition, not all data
-SELECT status, COUNT(*), SUM(amount)
-FROM fact_claims
-WHERE claim_date BETWEEN '2025-01-01' AND '2025-01-31'
-GROUP BY status;
+# Step 4: Copy application code
+COPY src/ ./src/
 
--- Step 3: Window functions for analytical transformations
--- Why: window functions compute across rows without collapsing them
-SELECT
-    claim_id,
-    customer_id,
-    amount,
-    claim_date,
-    -- Running total per customer
-    SUM(amount) OVER (
-        PARTITION BY customer_id ORDER BY claim_date
-    ) AS cumulative_amount,
-    -- Rank claims by size within each customer
-    ROW_NUMBER() OVER (
-        PARTITION BY customer_id ORDER BY amount DESC
-    ) AS size_rank
-FROM fact_claims;
+# Step 5: Switch to non-root user
+USER pipeline
+
+# Step 6: Define the entry point
+CMD ["python", "src/pipeline.py"]
+```
+
+```yaml
+# Step 7: Docker Compose for a local data engineering environment
+# Why: a single command brings up the entire local development stack
+# File: compose.yaml
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: analytics
+      POSTGRES_USER: data_engineer
+      POSTGRES_PASSWORD: local-dev-only
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pipeline:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://data_engineer:local-dev-only@postgres:5432/analytics
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
 ```
 
 **Common pitfalls:**

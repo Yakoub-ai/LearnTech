@@ -4,13 +4,14 @@
 
 ## Topics Covered
 
-- Variables (let, const, var)
-- Functions and Arrow Functions
-- Arrays and Objects
-- DOM Manipulation
-- Events and Event Listeners
-- Async Basics (callbacks, promises)
-- ES6+ Features (template literals, destructuring, spread)
+- Variables (let, const, var) and why `const` is the default choice
+- Primitive types, `typeof null === "object"` bug, and `NaN !== NaN`
+- Functions (declaration, expression, arrow) and intro to closures
+- Arrays (`map`, `filter`, `reduce`) and Objects (destructuring, spread, `structuredClone`)
+- DOM Manipulation (safe patterns with `textContent`, not `innerHTML`)
+- Events, Event Listeners, and Event Delegation
+- Async Basics (Promises, `async`/`await` with `try`/`catch`)
+- ES6+ Features (template literals, optional chaining, nullish coalescing, Map, Set)
 
 ## Prerequisites
 

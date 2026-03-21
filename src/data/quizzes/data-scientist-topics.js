@@ -240,7 +240,7 @@ export const topicQuizzes = {
             'A view by default, but NumPy automatically switches to copies for arrays larger than 1 MB',
           ],
           correctIndex: 0,
-          explanation: 'NumPy slices return views, not copies. Changes to the slice affect the original array. This is different from pandas 3.0+, which uses Copy-on-Write by default. Understanding this prevents silent data corruption bugs.',
+          explanation: 'NumPy slices return views, not copies. Changes to the slice affect the original array. This is different from pandas 2.1+, which uses Copy-on-Write by default. Understanding this prevents silent data corruption bugs.',
         },
         {
           question: 'What does NumPy broadcasting allow you to do?',
@@ -280,7 +280,7 @@ export const topicQuizzes = {
             '`df.assign(y=df["y"].where(df["x"] <= 0, 1))` — always use `.assign` for conditional updates',
           ],
           correctIndex: 0,
-          explanation: 'In pandas 3.0+, Copy-on-Write is the default, so chained assignment (df[...][...] = value) no longer works. The correct pattern is a single-step `.loc` assignment directly on the original DataFrame.',
+          explanation: 'In pandas 2.1+, Copy-on-Write is the default, so chained assignment (df[...][...] = value) no longer works. The correct pattern is a single-step `.loc` assignment directly on the original DataFrame.',
         },
         {
           question: 'What does `df.groupby("category").agg({"value": "sum"})` do?',

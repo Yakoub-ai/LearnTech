@@ -100,20 +100,20 @@ Functions are first-class objects in JavaScript — they can be stored in variab
 \`\`\`javascript
 // 1. Function declaration — hoisted, callable before definition in the source file
 function greet(name) {
-  return "Hello, " + name + "!";
+  return \`Hello, \${name}!\`;
 }
 
 // 2. Function expression — NOT hoisted, assigned to a variable
 const greetExpr = function(name) {
-  return "Hello, " + name + "!";
+  return \`Hello, \${name}!\`;
 };
 
 // 3. Arrow function — concise, no own 'this' binding, not usable as constructor
-const greetArrow = (name) => "Hello, " + name + "!";
+const greetArrow = (name) => \`Hello, \${name}!\`;
 // Single expression: implicit return, no braces needed
 // Multiple statements require braces + explicit return
 const greetVerbose = (name) => {
-  const msg = "Hello, " + name + "!";
+  const msg = \`Hello, \${name}!\`;
   return msg;
 };
 
@@ -214,6 +214,14 @@ const entries = Object.entries(user);// [["name","Alice"],["age",30],...]
 // Check if property exists
 console.log("name" in user);              // true — checks own AND prototype
 console.log(Object.hasOwn(user, "name")); // true — own properties only (modern)
+
+// Deep cloning — structuredClone (built-in, no library needed)
+const original = { name: "Alice", address: { city: "Stockholm" } };
+const deepCopy = structuredClone(original);
+deepCopy.address.city = "Oslo";
+console.log(original.address.city); // "Stockholm" — original is untouched
+// structuredClone handles nested objects, arrays, Maps, Sets, Dates, RegExps
+// It does NOT clone functions, DOM nodes, or symbols
 \`\`\`
 
 **Why it matters:** \`map\`, \`filter\`, and \`reduce\` replace imperative loops with declarable transformations that are readable and composable. Optional chaining (\`?.\`) eliminates the endless \`if (x && x.y && x.y.z)\` guards that made older JavaScript hard to read.
@@ -542,7 +550,7 @@ const user2 = {
 | Variables | \`const\` by default, \`let\` when reassigning, never \`var\` |
 | Types | 7 primitives; \`typeof null === "object"\` is a known bug |
 | Functions | Arrow functions for callbacks; closures for private state |
-| Arrays | Master \`map\`, \`filter\`, \`reduce\` over raw \`for\` loops; watch out for mutation |
+| Arrays | Master \`map\`, \`filter\`, \`reduce\` over raw \`for\` loops; \`structuredClone\` for deep copies |
 | DOM | \`querySelector\` + \`addEventListener\`; \`textContent\` not \`innerHTML\` |
 | Events | Use event delegation for dynamic content |
 | Async | \`async/await\` with \`try/catch\`; \`Promise.all\` for parallel work |
@@ -581,7 +589,7 @@ A closure is a function that remembers the variables from the scope it was defin
 // Classic closure — createGreeter closes over "greeting"
 function createGreeter(greeting) {
   return function(name) {
-    return greeting + ", " + name + "!";
+    return \`\${greeting}, \${name}!\`;
   };
 }
 const sayHello = createGreeter("Hello");
@@ -1001,6 +1009,44 @@ const processOrders = (orders) =>
 
 ---
 
+## 8. ES2024 Features You Should Know
+
+ES2024 introduced several features that are now available in all major browsers and Node.js 22+.
+
+\`\`\`javascript
+// Object.groupBy — group array items by a key (ES2024)
+// NOTE: This is Object.groupBy, NOT Array.prototype.groupBy (the proposal changed)
+const people = [
+  { name: "Alice", dept: "eng" },
+  { name: "Bob", dept: "sales" },
+  { name: "Charlie", dept: "eng" },
+];
+const byDept = Object.groupBy(people, (person) => person.dept);
+// { eng: [{ name: "Alice", ... }, { name: "Charlie", ... }], sales: [{ name: "Bob", ... }] }
+
+// Map.groupBy — same but returns a Map (useful when keys aren't strings)
+const byLength = Map.groupBy(["hi", "hey", "hello"], (word) => word.length);
+// Map { 2 => ["hi"], 3 => ["hey"], 5 => ["hello"] }
+
+// Promise.withResolvers — extract resolve/reject without the executor callback
+const { promise, resolve, reject } = Promise.withResolvers();
+// Equivalent to: let resolve, reject; const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
+// Useful when resolve/reject need to be called from a different scope
+setTimeout(() => resolve("done"), 1000);
+const result = await promise; // "done"
+
+// structuredClone — deep copy built into the language
+const original = { nested: { value: 42 }, date: new Date(), set: new Set([1, 2]) };
+const clone = structuredClone(original);
+clone.nested.value = 99;
+console.log(original.nested.value); // 42 — untouched
+// Handles Date, Map, Set, ArrayBuffer, RegExp — NOT functions or DOM nodes
+\`\`\`
+
+**Why it matters:** \`Object.groupBy\` eliminates one of the most common \`reduce\` patterns. \`Promise.withResolvers\` cleans up the awkward pattern of extracting \`resolve\`/\`reject\` via closure. \`structuredClone\` replaces the \`JSON.parse(JSON.stringify(x))\` hack for deep copying.
+
+---
+
 ## Summary
 
 | Topic | Key Takeaway |
@@ -1012,6 +1058,7 @@ const processOrders = (orders) =>
 | Async | \`Promise.all\` for parallel; \`AbortController\` for cancellation; \`allSettled\` for partial data |
 | Testing | Mock dependencies; \`beforeEach\`/\`afterEach\` for isolation; test behavior not implementation |
 | FP | Pure functions + immutability = predictable, composable, testable code |
+| ES2024 | \`Object.groupBy\`, \`Promise.withResolvers\`, \`structuredClone\` — modern built-ins |
 
 ---
 
@@ -1491,6 +1538,122 @@ class WorkerPool {
 
 ---
 
+## 7. ES2024/ES2025 Advanced Features
+
+Senior engineers must stay current with the evolving language. These features are shipping in engines now (2024-2025).
+
+### Set Methods (ES2025)
+
+\`\`\`javascript
+// Set finally gets first-class set operations — no more manual loops
+const frontend = new Set(["Alice", "Bob", "Charlie"]);
+const backend  = new Set(["Bob", "Diana", "Charlie"]);
+
+frontend.intersection(backend);      // Set {"Bob", "Charlie"}
+frontend.union(backend);             // Set {"Alice", "Bob", "Charlie", "Diana"}
+frontend.difference(backend);        // Set {"Alice"}
+frontend.symmetricDifference(backend); // Set {"Alice", "Diana"}
+frontend.isSubsetOf(backend);        // false
+frontend.isSupersetOf(backend);      // false
+frontend.isDisjointFrom(new Set(["Eve"])); // true
+\`\`\`
+
+### Iterator Helpers (ES2025)
+
+\`\`\`javascript
+// Lazy iterator methods — no intermediate arrays, process on demand
+function* fibonacci() {
+  let a = 0, b = 1;
+  while (true) { yield a; [a, b] = [b, a + b]; }
+}
+
+// .take(), .filter(), .map(), .drop(), .forEach(), .reduce(), .toArray()
+const result = fibonacci()
+  .filter(n => n % 2 === 0)
+  .map(n => n * 10)
+  .take(5)
+  .toArray();
+// [0, 20, 80, 340, 1440] — first 5 even Fibonacci numbers × 10
+// No infinite array was ever created — lazy evaluation
+\`\`\`
+
+### Explicit Resource Management — \`using\` Declarations (ES2025)
+
+\`\`\`javascript
+// 'using' ensures cleanup runs when the scope exits (like RAII in C++ or 'with' in Python)
+// Requires Symbol.dispose (sync) or Symbol.asyncDispose (async)
+
+class DatabaseConnection {
+  constructor(url) { this.url = url; console.log(\`Connected to \${url}\`); }
+  query(sql) { /* ... */ }
+  [Symbol.dispose]() { console.log(\`Disconnected from \${this.url}\`); }
+}
+
+function runQuery() {
+  using conn = new DatabaseConnection("postgres://localhost/mydb");
+  conn.query("SELECT * FROM users");
+  // conn[Symbol.dispose]() is called automatically when scope exits
+  // Even if an exception is thrown — like try/finally but built into the language
+}
+
+// Async version with 'await using'
+class FileHandle {
+  [Symbol.asyncDispose]() { return this.close(); }
+  async close() { /* flush and close */ }
+}
+
+async function processFile() {
+  await using file = await openFile("data.csv");
+  // file is automatically closed when scope exits
+}
+\`\`\`
+
+### Decorators (Stage 3 / ES2025)
+
+\`\`\`javascript
+// Decorators modify class elements declaratively
+function logged(originalMethod, context) {
+  return function(...args) {
+    console.log(\`Calling \${context.name} with\`, args);
+    const result = originalMethod.call(this, ...args);
+    console.log(\`\${context.name} returned\`, result);
+    return result;
+  };
+}
+
+class Calculator {
+  @logged
+  add(a, b) { return a + b; }
+}
+
+const calc = new Calculator();
+calc.add(2, 3);
+// Logs: "Calling add with [2, 3]"
+// Logs: "add returned 5"
+\`\`\`
+
+### Temporal API (Stage 3, progressing toward inclusion)
+
+\`\`\`javascript
+// Temporal replaces the broken Date object with an immutable, timezone-aware API
+// Available behind flags or via polyfill — track progress at tc39.es/proposal-temporal
+// Temporal.PlainDate — no time, no timezone
+const date = Temporal.PlainDate.from("2026-03-21");
+const nextWeek = date.add({ days: 7 }); // 2026-03-28 — immutable, returns new object
+
+// Temporal.ZonedDateTime — full timezone support
+const meeting = Temporal.ZonedDateTime.from({
+  timeZone: "America/New_York",
+  year: 2026, month: 3, day: 21, hour: 14,
+});
+const inTokyo = meeting.withTimeZone("Asia/Tokyo");
+// Correctly handles DST, leap seconds, and calendar differences
+\`\`\`
+
+**Why it matters:** These features represent the maturation of JavaScript as a systems-capable language. \`using\` declarations eliminate an entire class of resource leak bugs. Set methods and Iterator helpers bring JavaScript closer to parity with Python and Rust for data manipulation. Temporal finally fixes the 25-year-old Date mess.
+
+---
+
 ## Summary
 
 | Topic | Key Takeaway |
@@ -1501,6 +1664,7 @@ class WorkerPool {
 | Design Patterns | Observer for decoupled events; Strategy to replace if/else chains; Proxy for validation |
 | Security | \`textContent\` for user text; DOMPurify for HTML; guard prototype pollution; CSRF tokens |
 | Web Workers | Offload CPU work to background threads; use transferables for large binary data |
+| ES2024/2025 | Set methods, Iterator helpers, \`using\` for resource management, decorators, Temporal API |
 
 ---
 

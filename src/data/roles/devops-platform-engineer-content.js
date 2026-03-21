@@ -14,6 +14,7 @@ DevOps and Platform Engineers build and maintain the infrastructure, pipelines, 
 | DevOps Overview | [Every DevOps Tool Explained in 8 min](https://www.youtube.com/watch?v=EY1hsh-HCjo) | Video |
 | Docker | [Learn Docker in 7 Easy Steps](https://www.youtube.com/watch?v=gAkwW2tuIqE) | Video |
 | DevOps Roadmap | [roadmap.sh – DevOps](https://roadmap.sh/devops) | Interactive |
+| DevOps Literacy | [DevOps Literacy – Pluralsight](https://app.pluralsight.com/paths/skills/devops-literacy) | Course |
 | Linux Fundamentals | [roadmap.sh – Linux](https://roadmap.sh/linux) | Interactive |
 | Bash Scripting | [Bash Scripting Tutorial – Ryan's Tutorials](https://ryanstutorials.net/bash-scripting-tutorial/) | Interactive |
 | Git | [Git Fundamentals](Prerequisites/git.md) and [Branching Strategy](Prerequisites/Branching-Strategy.md) | Guide |
@@ -44,6 +45,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](DevO
 | Kubernetes Basics | [roadmap.sh – Kubernetes](https://roadmap.sh/kubernetes) | Interactive |
 | Observability | [Monitor Resources with Azure Monitor – Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/az-104-monitor-backup-resources/) | Interactive |
 | OpenTelemetry | [OpenTelemetry – Getting Started](https://opentelemetry.io/docs/getting-started/) | Docs |
+| Generative AI for IT | [Generative AI for IT Pros – Pluralsight](https://app.pluralsight.com/paths/skill/generative-ai-for-it-pros) | Course |
 | Azure Policy | [Microsoft Learn – Intro to Azure Policy](https://learn.microsoft.com/en-us/training/modules/intro-to-azure-policy/) | Interactive |
 | Cost Management | [Microsoft Learn – Control Azure Spending](https://learn.microsoft.com/en-us/training/paths/control-spending-manage-bills/) | Interactive |
 
@@ -70,7 +72,12 @@ For deep explanations of each concept, see the [Mid Concept Reference](DevOps-Pl
 |---|---|---|
 | System Design – 30 Concepts | [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
 | AI/ML for Platform Engineers | [AI, ML, Deep Learning and GenAI Explained](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
+| Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
+| Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
+| Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | 🔒 Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | 🔒 Internal |
 | AI-Assisted Development | [GitHub Copilot – Getting Started](https://docs.github.com/en/copilot/getting-started-with-github-copilot) | Docs |
 | Platform Engineering / Cloud Architecture | [Microsoft Cloud Adoption Framework](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/) — Landing zones, governance, and cloud strategy | Docs |
 | Architecture | [Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/well-architected/) — Operational excellence, security, reliability, performance, cost | Docs |
@@ -449,7 +456,7 @@ A minimal Bicep resource definition looks like this:
 param location string = resourceGroup().location
 param storageAccountName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -909,6 +916,38 @@ Understanding the foundation of these tools — from the "AI, ML, Deep Learning 
 - Using AI to generate Kubernetes manifests or Helm charts without verifying resource limits, security contexts, and network policies.
 - Over-relying on AI for troubleshooting without developing the underlying understanding of the systems being managed.
 - Not establishing team conventions around AI tool use in infrastructure work, leading to inconsistent patterns across the platform.
+
+---
+
+## 9. AI Policy — Organisational Principles
+
+> **Note:** The link below points to an internal SharePoint site and is only accessible to employees on the corporate network.
+
+The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy is built on several pillars: legal compliance (EU AI Act, GDPR), responsible AI principles (diversity, transparency, robustness, security, privacy), and an AI Register requiring all AI use cases to be registered and classified by risk level.
+
+**Key things to understand:**
+- Every AI use case must be registered in the AI Register with a risk classification before development begins.
+- The risk classification determines governance requirements: low-risk use cases need basic documentation; high-risk use cases need conformity assessments.
+- Platform engineers must ensure that AI infrastructure enforces the policy's data classification requirements — for example, ensuring that AI endpoints processing sensitive data are deployed with private networking.
+- Logging and audit trail requirements from the policy must be implemented at the infrastructure level.
+
+**Common pitfalls:**
+- Provisioning AI infrastructure without verifying that the use case has been registered and classified in the AI Register.
+- Treating AI Policy compliance as an application-level concern only; infrastructure configuration (networking, access control, logging) is equally governed.
+- Not applying the same security standards to AI endpoints as to other production APIs.
+
+---
+
+## EU Compliance for DevOps / Platform Engineers
+
+Senior DevOps and Platform Engineers operating infrastructure for EU financial services must understand and implement the requirements of NIS2 (Network and Information Security Directive 2) and DORA (Digital Operational Resilience Act). These regulations establish legally binding obligations for the security, resilience, and incident reporting capabilities of ICT systems. NIS2 classifies financial services as "essential entities" subject to the highest tier of obligations, while DORA specifically targets digital operational resilience in the financial sector with detailed technical requirements that became applicable in January 2025.
+
+**Key things to understand:**
+- NIS2 requires early warning to competent authorities within 24 hours and full notification within 72 hours of a significant incident.
+- DORA Article 25 requires regular resilience testing including vulnerability assessments, open-source analysis, and compliance scanning.
+- DORA Article 26 requires threat-led penetration testing (TLPT) at least every three years for significant financial entities.
+- DORA Articles 28-30 require a complete register of ICT service providers with criticality classifications and contractual exit strategies.
+- DORA penalties can reach 1% of average daily worldwide turnover applied daily. NIS2 penalties for essential entities can reach 10 million EUR or 2% of global turnover.
 
 ---
 

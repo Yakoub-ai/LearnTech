@@ -4,11 +4,13 @@
 
 ## Topics Covered
 
-- CSS Architecture (ITCSS, CUBE CSS)
+- CSS Architecture (ITCSS, CUBE CSS, Utility-First)
 - Container Queries
 - Cascade Layers (@layer)
-- Performance Optimization (critical CSS, reducing reflows)
+- Performance Optimization (Core Web Vitals, content-visibility, containment)
 - Design Systems and Token-Based Theming
+- Advanced Selectors (:is(), :where(), :has())
+- Modern CSS Features (nesting, color-mix(), view transitions, scroll-driven animations, popover styling, anchor positioning)
 
 ## Prerequisites
 

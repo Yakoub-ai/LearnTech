@@ -124,6 +124,39 @@ These elements provide native, interactive disclosure widgets without JavaScript
 <!-- at least one code example. -->
 \\\`\\\`\\\`
 
+### The \\\`<dialog>\\\` Element
+
+The \\\`<dialog>\\\` element provides a native modal or non-modal dialog box. It handles focus trapping, backdrop styling, and the Escape key automatically — no JavaScript library needed.
+
+\\\`\\\`\\\`html
+<!-- A native modal dialog -->
+<dialog id="myDialog">
+  <h2>Welcome!</h2>
+  <p>This is a native HTML dialog element.</p>
+  <form method="dialog">
+    <!-- method="dialog" closes the dialog on submit -->
+    <button>Close</button>
+  </form>
+</dialog>
+
+<button onclick="document.getElementById('myDialog').showModal()">
+  Open Dialog
+</button>
+\\\`\\\`\\\`
+
+### The Popover API
+
+The Popover API provides a declarative way to create tooltips, menus, and toggletips without JavaScript. Elements with the \\\`popover\\\` attribute are hidden by default and dismiss when clicking outside.
+
+\\\`\\\`\\\`html
+<!-- Declarative popover — no JavaScript required -->
+<button popovertarget="my-popover">Help</button>
+
+<div id="my-popover" popover>
+  <p>This is a popover with built-in light dismiss behavior.</p>
+</div>
+\\\`\\\`\\\`
+
 > **Role connection:** Front-end developers structure every page with these elements. Accessibility specialists audit sites for proper semantic usage. Even back-end developers writing server-rendered templates need to produce semantically correct HTML.
 
 ---
@@ -355,7 +388,7 @@ h1 {
 input[type="email"] {
   background-image: url('/icons/email.svg');
   background-repeat: no-repeat;
-  padding-left: 2rem;
+  padding-inline-start: 2rem;
 }
 
 a[href^="https://"] {
@@ -700,7 +733,7 @@ Flexbox is a one-dimensional layout model designed for distributing space among 
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 100dvh; /* dvh accounts for mobile browser chrome */
 }
 
 /* Card row that wraps */
@@ -945,6 +978,9 @@ Responsive design ensures your website works well on all screen sizes — from p
   %    — relative to parent's dimension
   vw   — 1% of viewport width
   vh   — 1% of viewport height
+  dvh  — 1% of dynamic viewport height (accounts for mobile browser chrome)
+  svh  — 1% of small viewport height (smallest possible viewport)
+  lvh  — 1% of large viewport height (largest possible viewport)
   vmin — 1% of the smaller viewport dimension
   vmax — 1% of the larger viewport dimension
   ch   — width of the "0" character in the current font
@@ -1897,7 +1933,7 @@ dialog::backdrop {
 /* 5. Uses role="menu" and role="menuitem" */
 \\\`\\\`\\\`
 
-**Why it matters:** Approximately 15% of the world's population has some form of disability. Accessible websites are not just a moral imperative — they are often a legal requirement (ADA, WCAG 2.1 AA, EAA in Europe).
+**Why it matters:** Approximately 15% of the world's population has some form of disability. Accessible websites are not just a moral imperative — they are often a legal requirement (ADA, WCAG 2.2 AA, EAA in Europe).
 
 ---
 
@@ -2163,7 +2199,7 @@ Pseudo-elements create virtual elements you can style without adding HTML. Pseud
 /* Quotation marks on blockquotes */
 .fancy-quote {
   position: relative;
-  padding-left: var(--space-8);
+  padding-inline-start: var(--space-8);
   font-style: italic;
   color: var(--text-secondary);
 }
@@ -2171,7 +2207,7 @@ Pseudo-elements create virtual elements you can style without adding HTML. Pseud
 .fancy-quote::before {
   content: '\\201C';
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: -0.25rem;
   font-size: 4rem;
   color: var(--color-primary);
@@ -2189,19 +2225,19 @@ Pseudo-elements create virtual elements you can style without adding HTML. Pseud
 /* Custom bullet list */
 .custom-list {
   list-style: none;
-  padding-left: 0;
+  padding-inline-start: 0;
 }
 
 .custom-list li {
   position: relative;
-  padding-left: 1.75rem;
+  padding-inline-start: 1.75rem;
   margin-bottom: var(--space-2);
 }
 
 .custom-list li::before {
   content: '\\2713';
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   color: var(--color-success);
   font-weight: bold;
 }
@@ -3027,7 +3063,7 @@ h2 { font-size: var(--global-font-size-2xl); }
 
 /* :where() for reset styles */
 :where(ul, ol) { list-style: none; padding: 0; }
-.article-content ul { list-style: disc; padding-left: 1.5rem; }
+.article-content ul { list-style: disc; padding-inline-start: 1.5rem; }
 \\\`\\\`\\\`
 
 ### Complex :not() and :has()
@@ -3123,6 +3159,19 @@ CSS is evolving rapidly. These cutting-edge features are shipping in browsers no
 .badge--light {
   background: color-mix(in oklch, var(--color-brand-500) 15%, white);
   color: var(--color-brand-700);
+}
+
+/* Relative color syntax — derive new colors from existing ones */
+.button--primary {
+  --base: var(--color-brand-500);
+  background: var(--base);
+}
+.button--primary:hover {
+  /* Take the base color, keep hue/chroma, reduce lightness by 10% */
+  background: oklch(from var(--base) calc(l - 0.1) c h);
+}
+.button--primary:active {
+  background: oklch(from var(--base) calc(l - 0.2) c h);
 }
 \\\`\\\`\\\`
 
@@ -3256,7 +3305,7 @@ CSS is evolving rapidly. These cutting-edge features are shipping in browsers no
 
 /* EXERCISE: Create a page showcasing 5 modern CSS features: */
 /* nesting, color-mix(), container queries, scroll-driven */
-/* animations, and view transitions. -->
+/* animations, and view transitions. */
 \\\`\\\`\\\`
 
 **Why it matters:** Modern CSS features eliminate the need for JavaScript in many UI patterns — scroll effects, color manipulation, component responsiveness, page transitions. Staying current means shipping faster, lighter code.
@@ -3304,8 +3353,8 @@ At the senior level, your CSS decisions have organizational impact. You architec
 
 ## Recommended Videos — Senior Level
 
-- **Kevin Powell** — "Learn CSS Grid the easy way" — https://www.youtube.com/watch?v=rg7Fvvl3taU
-- **Fireship** — "HTML in 100 Seconds" — https://www.youtube.com/watch?v=ok-plXXHlWw
-- **freeCodeCamp** — "CSS Tutorial – Full Course for Beginners" — https://www.youtube.com/watch?v=OXGznpKZ_sA
+- **Kevin Powell** — "CSS :has() is more than a parent selector" — https://www.youtube.com/watch?v=Gu3E-IF9GkA
+- **Google Chrome Developers** — "View Transitions API" — https://www.youtube.com/watch?v=JCJUPJ_zDQ4
+- **Una Kravets** — "What's new in CSS" — https://www.youtube.com/watch?v=rEFgAQBmBSA
 `,
 }

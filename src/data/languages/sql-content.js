@@ -287,7 +287,7 @@ SELECT * FROM products WHERE sku LIKE 'A_B__';
 SELECT * FROM employees WHERE first_name ILIKE 'john%';
 
 -- Escape special characters
-SELECT * FROM products WHERE description LIKE '%50\\%%' ESCAPE '\\\\';
+SELECT * FROM products WHERE description LIKE '%50\\%%' ESCAPE '\\';
 -- Matches descriptions containing "50%"
 \`\`\`
 
@@ -442,7 +442,8 @@ WHERE product_id IN (
 );
 
 -- TRUNCATE: faster than DELETE for removing all rows
--- Resets auto-increment, cannot be rolled back in some databases
+-- Resets sequences (with RESTART IDENTITY), cannot be rolled back in MySQL
+-- but IS transactional in PostgreSQL (can be rolled back)
 TRUNCATE TABLE temp_import_data;
 
 -- Safe deletion pattern: SELECT first, then DELETE
@@ -469,9 +470,70 @@ WHERE status = 'cancelled' AND order_date < '2024-01-01';
 
 ---
 
-## 4. JOINs
+## 4. SQL Injection Prevention
 
-JOINs combine rows from two or more tables based on a related column. They are the fundamental mechanism for working with relational data.
+SQL injection is one of the most dangerous and common security vulnerabilities. It occurs when user input is concatenated directly into SQL strings, allowing an attacker to execute arbitrary SQL.
+
+### The Danger of String Concatenation
+
+\`\`\`sql
+-- NEVER do this in application code (pseudocode):
+-- query = "SELECT * FROM users WHERE username = '" + userInput + "'"
+-- If userInput is: ' OR '1'='1
+-- The query becomes:
+-- SELECT * FROM users WHERE username = '' OR '1'='1'
+-- This returns ALL users!
+
+-- Even worse, an attacker could input: '; DROP TABLE users; --
+-- SELECT * FROM users WHERE username = ''; DROP TABLE users; --'
+-- This deletes your entire users table!
+\`\`\`
+
+### Parameterized Queries (Prepared Statements)
+
+Always use parameterized queries. The database treats parameters as data, never as executable SQL.
+
+\`\`\`sql
+-- PostgreSQL prepared statement
+PREPARE get_user(TEXT) AS
+SELECT user_id, username, email
+FROM users
+WHERE username = $1;
+
+EXECUTE get_user('alice');
+\`\`\`
+
+In application code, always use your language's parameterized query support:
+
+\`\`\`sql
+-- Python (psycopg2/psycopg3):
+-- cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+
+-- Node.js (pg):
+-- client.query('SELECT * FROM users WHERE username = $1', [username])
+
+-- Java (JDBC):
+-- PreparedStatement ps = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
+-- ps.setString(1, username);
+
+-- Go (database/sql):
+-- db.Query("SELECT * FROM users WHERE username = $1", username)
+
+-- NEVER use string concatenation or template literals for SQL values:
+-- BAD:  f"SELECT * FROM users WHERE username = '{username}'"
+-- BAD:  \\\`SELECT * FROM users WHERE username = '\${username}'\\\`
+-- GOOD: cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+\`\`\`
+
+**Why it matters:** SQL injection has been the #1 web application vulnerability for decades (OWASP Top 10). A single unparameterized query can expose your entire database. Parameterized queries are simple, have no performance penalty (in fact they are often faster due to plan caching), and completely eliminate SQL injection.
+
+> **Role connection:** Every developer who writes code that talks to a database must use parameterized queries. This is non-negotiable for backend developers, and code reviewers should reject any string-concatenated SQL on sight.
+
+---
+
+## 5. JOINs
+
+JOINs combine rows from two or more tables based on a related column. They are the fundamental mechanism for working with relational data. Always use explicit \`JOIN ... ON\` syntax rather than implicit comma joins with WHERE conditions — it is clearer and less error-prone.
 
 ### INNER JOIN
 
@@ -642,9 +704,9 @@ flowchart TD
 
 ---
 
-## 5. Aggregate Functions
+## 6. Aggregate Functions
 
-Aggregate functions compute a single result from a set of input rows. They are essential for reporting and analytics.
+Aggregate functions compute a single result from a set of input rows. They are essential for reporting and analytics. Note that most aggregate functions ignore NULL values — \`COUNT(*)\` counts all rows, but \`COUNT(column)\` only counts non-NULL values in that column.
 
 ### COUNT, SUM, AVG, MIN, MAX
 
@@ -771,7 +833,7 @@ ORDER BY avg_salary DESC;
 
 ---
 
-## 6. Subqueries
+## 7. Subqueries
 
 A subquery is a query nested inside another query. They enable powerful multi-step logic within a single SQL statement.
 
@@ -892,7 +954,7 @@ WHERE NOT EXISTS (
 
 ---
 
-## 7. Basic Indexing
+## 8. Basic Indexing
 
 Indexes are data structures that speed up data retrieval. Without indexes, the database must scan every row in a table to find matches — a "sequential scan" or "full table scan."
 
@@ -963,7 +1025,7 @@ One of the most common indexing mistakes is wrapping an indexed column inside a 
 
 \`\`\`sql
 -- BAD: function on indexed column prevents index use
-SELECT SUM(total) FROM orders WHERE YEAR(order_date) = 2025;
+SELECT SUM(total) FROM orders WHERE EXTRACT(YEAR FROM order_date) = 2025;
 -- Performs a full table scan even when order_date is indexed!
 
 -- GOOD: rewrite as an explicit range so the B-tree is usable
@@ -1038,7 +1100,7 @@ Key things to look for in EXPLAIN output:
 
 ---
 
-## 8. Data Types & Constraints
+## 9. Data Types & Constraints
 
 ### Common Data Types
 
@@ -1200,7 +1262,8 @@ You now have a solid foundation in SQL:
 - **SELECT** to retrieve data with filtering, sorting, and pagination
 - **Filtering** with comparison operators, logical operators, and pattern matching
 - **DML** operations to insert, update, and delete data safely
-- **JOINs** to combine data across related tables
+- **SQL injection prevention** using parameterized queries
+- **JOINs** to combine data across related tables (using explicit JOIN ... ON syntax)
 - **Aggregations** for summarizing data into reports
 - **Subqueries** for multi-step logic within a single query
 - **Indexes** to speed up queries on large tables
@@ -1506,6 +1569,69 @@ tier_summary AS (
 SELECT * FROM tier_summary ORDER BY avg_spending DESC;
 \`\`\`
 
+### LATERAL Joins
+
+A \`LATERAL\` join allows a subquery in the FROM clause to reference columns from preceding tables — like a correlated subquery, but returning multiple rows and columns. This is a powerful modern SQL feature (SQL:2003 standard, PostgreSQL 9.3+).
+
+\`\`\`sql
+-- Get the 3 most recent orders for each customer
+-- Without LATERAL, this requires window functions or correlated subqueries
+SELECT
+    c.customer_name,
+    recent.order_id,
+    recent.order_date,
+    recent.total
+FROM customers c
+CROSS JOIN LATERAL (
+    SELECT o.order_id, o.order_date, o.total
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+    ORDER BY o.order_date DESC
+    LIMIT 3
+) AS recent;
+
+-- LATERAL with aggregation: get stats per customer inline
+SELECT
+    c.customer_name,
+    stats.order_count,
+    stats.total_spent,
+    stats.last_order
+FROM customers c
+LEFT JOIN LATERAL (
+    SELECT
+        COUNT(*) AS order_count,
+        SUM(total) AS total_spent,
+        MAX(order_date) AS last_order
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+) AS stats ON true;
+\`\`\`
+
+**Why it matters:** LATERAL joins solve "top-N per group" problems more efficiently than window functions in many cases. They are also the cleanest way to call set-returning functions for each row of another table.
+
+### MERGE Statement (PostgreSQL 15+)
+
+\`MERGE\` (also known as "upsert on steroids") combines INSERT, UPDATE, and DELETE in a single atomic statement based on a match condition. It is part of the SQL:2003 standard.
+
+\`\`\`sql
+-- Synchronize a staging table into the main products table
+MERGE INTO products AS target
+USING staging_products AS source
+ON target.sku = source.sku
+WHEN MATCHED AND source.is_deleted = true THEN
+    DELETE
+WHEN MATCHED THEN
+    UPDATE SET
+        product_name = source.product_name,
+        price = source.price,
+        updated_at = NOW()
+WHEN NOT MATCHED THEN
+    INSERT (sku, product_name, price, created_at)
+    VALUES (source.sku, source.product_name, source.price, NOW());
+\`\`\`
+
+**Why it matters:** MERGE replaces complex INSERT ... ON CONFLICT or multi-step upsert patterns. It is especially useful for ETL pipelines and data synchronization tasks where you need to handle inserts, updates, and deletes in one pass.
+
 ### EXERCISE: CTEs
 
 \`\`\`sql
@@ -1516,6 +1642,8 @@ SELECT * FROM tier_summary ORDER BY avg_spending DESC;
 --    a. Calculates daily revenue
 --    b. Adds 7-day and 30-day moving averages
 --    c. Flags days where revenue dropped more than 20% from the 7-day average
+-- 3. Use a LATERAL join to get the 5 best-selling products per category
+-- 4. Write a MERGE statement to synchronize a staging table into a main table
 \`\`\`
 
 ---
@@ -2047,7 +2175,7 @@ UNION
 SELECT * FROM orders WHERE order_date = '2025-06-01';
 
 -- Anti-pattern: function on indexed column prevents index use
-SELECT * FROM orders WHERE YEAR(order_date) = 2025;
+SELECT * FROM orders WHERE EXTRACT(YEAR FROM order_date) = 2025;
 
 -- Rewrite to use range instead
 SELECT * FROM orders
@@ -2494,6 +2622,8 @@ CALL process_pending_orders();
 You have now mastered intermediate SQL concepts:
 - **Window functions** for row-by-row calculations without collapsing groups
 - **CTEs** for readable, composable multi-step queries
+- **LATERAL joins** for correlated set-returning subqueries in FROM
+- **MERGE** for atomic insert/update/delete synchronization
 - **Recursive queries** for hierarchical data traversal
 - **Transactions** for safe, atomic multi-operation changes
 - **Views** and **materialized views** for query encapsulation and caching
@@ -3395,6 +3525,21 @@ LIMIT 20;
 
 -- Reset statistics
 SELECT pg_stat_statements_reset();
+
+-- pg_stat_io (PostgreSQL 16+): I/O statistics by backend type and context
+-- Helps identify whether I/O bottlenecks are from clients, autovacuum, checkpointer, etc.
+SELECT
+    backend_type,
+    object,
+    context,
+    reads,
+    writes,
+    extends,
+    hits,
+    ROUND(hits::numeric / NULLIF(hits + reads, 0) * 100, 2) AS hit_ratio_pct
+FROM pg_stat_io
+WHERE reads > 0 OR writes > 0
+ORDER BY reads + writes DESC;
 \`\`\`
 
 **Why it matters:** Performance tuning is the difference between a database that costs $100/month and one that costs $10,000/month. Connection pooling, COPY for bulk operations, proper VACUUM, and pg_stat_statements are the tools that keep production databases healthy.
@@ -3843,8 +3988,8 @@ SELECT
     ts_headline('english', body, query,
         'StartSel=<mark>, StopSel=</mark>, MaxFragments=3'
     ) AS snippet
-FROM articles,
-     to_tsquery('english', 'postgresql & performance & tuning') AS query
+FROM articles
+CROSS JOIN to_tsquery('english', 'postgresql & performance & tuning') AS query
 WHERE search_vector @@ query
 ORDER BY rank DESC
 LIMIT 20;

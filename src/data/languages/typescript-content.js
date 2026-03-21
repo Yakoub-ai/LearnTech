@@ -193,7 +193,7 @@ graph TD
 **Key things to understand:**
 - **Interfaces** support declaration merging — two interfaces with the same name combine. Type aliases cannot merge.
 - **Type aliases** can represent unions, tuples, primitives, and computed types. Interfaces cannot.
-- For object shapes, both work. Pick one convention and stick with it across your project.
+- For object shapes, **prefer \`interface\`** — \`extends\` is faster for the compiler than type intersection (\`&\`). The TypeScript compiler caches interface relationships but must recompute intersections each time.
 - The TypeScript team generally recommends \`interface\` for public API shapes and \`type\` for everything else.
 - Avoid the pattern of creating a separate \`types.ts\` file for every feature folder — co-locate types with the code that uses them and let inference carry them further.
 
@@ -707,6 +707,8 @@ The \`tsconfig.json\` file configures the TypeScript compiler. Understanding its
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
 
+        "verbatimModuleSyntax": true,
+
         "sourceMap": true,
         "declaration": true,
 
@@ -720,6 +722,10 @@ The \`tsconfig.json\` file configures the TypeScript compiler. Understanding its
 \`\`\`
 
 **Why it matters:** A misconfigured \`tsconfig.json\` can silently disable important type checks or cause hard-to-debug module resolution issues. The \`strict\` flag alone enables seven sub-flags that catch common bugs.
+
+**Key tsconfig options explained:**
+- \`moduleResolution: "bundler"\` (TS 5.0+) — matches how modern bundlers (Vite, esbuild, webpack) resolve imports. Use this instead of \`"node"\` or \`"node16"\` for bundled applications.
+- \`verbatimModuleSyntax\` (TS 5.0+) — enforces \`import type\` for type-only imports. Replaces the older \`isolatedModules\` flag. Required for correct behavior with esbuild, Vite, and SWC.
 
 ### What "strict" Enables
 
@@ -1199,6 +1205,19 @@ type ResolvedUser = Awaited<UserPromise>;
 
 type DeepPromise = Promise<Promise<Promise<string>>>;
 type DeepResolved = Awaited<DeepPromise>;
+
+// NoInfer (TS 5.4) — prevents a type parameter from being inferred from a specific argument
+function createFSM<S extends string>(config: {
+    initial: NoInfer<S>;
+    states: S[];
+}) {
+    return config;
+}
+
+// Without NoInfer, TypeScript would infer S from "idle" AND from the states array
+// With NoInfer on initial, S is inferred only from states, and "idle" is checked against it
+createFSM({ initial: "idle", states: ["idle", "loading", "done"] }); // OK
+// createFSM({ initial: "invalid", states: ["idle", "loading", "done"] }); // Error
 \`\`\`
 
 \`\`\`mermaid
@@ -1225,7 +1244,76 @@ graph TD
 
 ---
 
-## 3. Mapped Types and Conditional Types
+## 3. The \\\`satisfies\\\` Operator (TypeScript 5.0+)
+
+The \\\`satisfies\\\` operator validates that a value matches a type without widening it. This gives you the best of both worlds: type checking AND precise inference.
+
+### The Problem \\\`satisfies\\\` Solves
+
+\\\`\\\`\\\`typescript
+interface ColorConfig {
+    primary: string;
+    secondary: string;
+    accent: string;
+}
+
+// With type annotation: value is widened to ColorConfig
+const colors1: ColorConfig = {
+    primary: "#ff0000",
+    secondary: "#00ff00",
+    accent: "#0000ff"
+};
+// colors1.primary is string — no literal type info
+
+// With satisfies: value is validated BUT retains literal types
+const colors2 = {
+    primary: "#ff0000",
+    secondary: "#00ff00",
+    accent: "#0000ff"
+} satisfies ColorConfig;
+// colors2.primary is "#ff0000" — literal type preserved!
+
+// With as const + satisfies: readonly AND validated
+const colors3 = {
+    primary: "#ff0000",
+    secondary: "#00ff00",
+    accent: "#0000ff"
+} as const satisfies ColorConfig;
+\\\`\\\`\\\`
+
+### Practical Uses
+
+\\\`\\\`\\\`typescript
+// Type-safe configuration with precise inference
+type Route = {
+    path: string;
+    method: "GET" | "POST" | "PUT" | "DELETE";
+};
+
+const routes = {
+    getUser: { path: "/users/:id", method: "GET" },
+    createUser: { path: "/users", method: "POST" },
+    deleteUser: { path: "/users/:id", method: "DELETE" },
+} satisfies Record<string, Route>;
+
+// routes.getUser.method is "GET" (not just string)
+
+// Ensuring exhaustive record keys
+type Theme = "light" | "dark" | "system";
+
+const themeLabels = {
+    light: "Light Mode",
+    dark: "Dark Mode",
+    system: "System Default",
+} satisfies Record<Theme, string>;
+// If you forget a key, TypeScript errors at compile time
+\\\`\\\`\\\`
+
+**Why it matters:** Before \\\`satisfies\\\`, you had to choose between type validation (annotation) and precise inference (\\\`as const\\\`). The \\\`satisfies\\\` operator removes this trade-off. Use it for configuration objects, route definitions, theme values, and any constant data that should be validated against a type while retaining its literal types.
+
+---
+
+## 4. Mapped Types and Conditional Types
 
 Mapped types and conditional types are the programmable layer of TypeScript's type system. They let you transform types algorithmically.
 
@@ -1333,7 +1421,7 @@ graph TD
 
 ---
 
-## 4. Strict Mode and Compiler Flags
+## 5. Strict Mode and Compiler Flags
 
 Understanding compiler flags beyond \`strict: true\` gives you fine-grained control over type safety.
 
@@ -1389,7 +1477,7 @@ import { type User, createUser } from "./module";
 
 ---
 
-## 5. Discriminated Unions and Exhaustive Checking
+## 6. Discriminated Unions and Exhaustive Checking
 
 Discriminated unions are arguably TypeScript's most important pattern for modeling real-world domain logic.
 
@@ -1486,7 +1574,7 @@ function getArea(shape: Shape): number {
 
 ---
 
-## 6. Declaration Files (.d.ts)
+## 7. Declaration Files (.d.ts)
 
 Declaration files describe the shape of JavaScript code to TypeScript without providing implementations.
 
@@ -1550,7 +1638,7 @@ declare module "*.svg" {
 
 ---
 
-## 7. Module Augmentation and Ambient Modules
+## 8. Module Augmentation and Ambient Modules
 
 Module augmentation lets you extend existing types from libraries without modifying their source code.
 
@@ -1622,7 +1710,7 @@ declare module "totally-untyped-lib";
 
 ---
 
-## 8. Testing Typed Code
+## 9. Testing Typed Code
 
 TypeScript introduces unique testing considerations: type-level tests, generics mocking, and test utilities.
 
@@ -1718,7 +1806,7 @@ function createTestData<T>(defaults: T, overrides: Partial<T> = {}): T {
 
 ---
 
-## 9. Recommended Resources — Mid Level
+## 10. Recommended Resources — Mid Level
 
 - **Matt Pocock** — "Advanced TypeScript" series — https://www.youtube.com/watch?v=dLPgQRbVquo
 - **Jack Herrington** — "TypeScript Generics" — https://www.youtube.com/watch?v=nViEqpgwxHE
@@ -1732,10 +1820,11 @@ function createTestData<T>(defaults: T, overrides: Partial<T> = {}): T {
 You now have intermediate mastery of TypeScript's type system:
 - **Advanced generics** — constraints, defaults, and inference patterns for building flexible APIs
 - **Zod integration** — single source of truth for runtime validation and compile-time types
-- **Utility types** — Partial, Required, Pick, Omit, Record, Exclude, Extract, ReturnType and when to use each
+- **Utility types** — Partial, Required, Pick, Omit, Record, Exclude, Extract, ReturnType, NoInfer and when to use each
+- **The \`satisfies\` operator** — type validation without widening, the best of both worlds
 - **Mapped types** — transforming object types programmatically with key remapping and modifier changes
 - **Conditional types** — type-level branching with infer, distribution, and recursive patterns
-- **Compiler flags** — noUncheckedIndexedAccess, isolatedModules, verbatimModuleSyntax
+- **Compiler flags** — noUncheckedIndexedAccess, verbatimModuleSyntax, isolatedModules
 - **Discriminated unions** — modeling domain logic with exhaustive checking
 - **Declaration files** — typing untyped JavaScript and module augmentation
 - **Testing typed code** — type-level tests, typed mocks, and assertion functions
@@ -2625,7 +2714,7 @@ const submitted = order.transition("submitted");   // OK
 const approved = submitted.transition("approved");  // OK
 const shipped = approved.transition("shipped");     // OK
 const delivered = shipped.transition("delivered");  // OK
-// shipped.transition("cancelled"); // OK — cancelled is valid from shipped
+// shipped.transition("cancelled"); // Error — shipped can only transition to "delivered"
 // delivered.transition("anything"); // Error — delivered has no valid transitions
 \`\`\`
 
@@ -2700,7 +2789,136 @@ const total = add(usd, money(50, "USD")); // OK — same currency
 
 ---
 
-## 9. Recommended Resources — Senior Level
+## 9. TypeScript 5.x Features for Seniors
+
+### \\\`const\\\` Type Parameters (TS 5.0)
+
+The \\\`const\\\` modifier on a type parameter infers literal types by default — no \\\`as const\\\` needed at the call site.
+
+\\\`\\\`\\\`typescript
+// Without const: T is inferred as string[]
+function routes<T extends readonly string[]>(paths: T): T {
+    return paths;
+}
+const r1 = routes(["home", "about"]); // string[]
+
+// With const: T is inferred as readonly ["home", "about"]
+function routesConst<const T extends readonly string[]>(paths: T): T {
+    return paths;
+}
+const r2 = routesConst(["home", "about"]); // readonly ["home", "about"]
+
+// Practical example: type-safe event emitter
+function defineEvents<const T extends Record<string, unknown[]>>(events: T) {
+    return events;
+}
+
+const events = defineEvents({
+    click: [{ x: 0, y: 0 }],
+    keydown: [{ key: "" }],
+});
+// events.click is [{ x: number; y: number }] — literal structure preserved
+\\\`\\\`\\\`
+
+### \\\`using\\\` Declarations — Explicit Resource Management (TS 5.2)
+
+The \\\`using\\\` keyword implements the TC39 Explicit Resource Management proposal. It ensures cleanup via the \\\`Symbol.dispose\\\` and \\\`Symbol.asyncDispose\\\` protocols.
+
+\\\`\\\`\\\`typescript
+class DatabaseConnection implements Disposable {
+    constructor(private url: string) {
+        console.log("Connected to " + url);
+    }
+
+    query(sql: string): unknown[] {
+        return []; // simplified
+    }
+
+    [Symbol.dispose](): void {
+        console.log("Connection closed");
+    }
+}
+
+function runQuery() {
+    using conn = new DatabaseConnection("postgres://localhost/mydb");
+    // conn is automatically disposed when the scope exits
+    return conn.query("SELECT * FROM users");
+    // "Connection closed" is logged here — even if query() throws
+}
+
+// Async version
+class FileHandle implements AsyncDisposable {
+    async [Symbol.asyncDispose](): Promise<void> {
+        // await this.close();
+        console.log("File closed");
+    }
+}
+
+async function processFile() {
+    await using handle = new FileHandle();
+    // handle is disposed when scope exits
+}
+\\\`\\\`\\\`
+
+**Why it matters:** \\\`using\\\` replaces try/finally for resource cleanup (database connections, file handles, locks). It is the TypeScript equivalent of Python's \\\`with\\\` statement or C#'s \\\`using\\\` block.
+
+### TC39 Decorators (TS 5.0+ — Stage 3 Standard)
+
+TypeScript 5.0 ships TC39 standard decorators. These are **different from legacy experimental decorators** (\\\`experimentalDecorators: true\\\`). The new decorators follow the Stage 3 TC39 proposal and will work in plain JavaScript too.
+
+\\\`\\\`\\\`typescript
+// TC39 decorator — a plain function that receives the target and context
+function log<This, Args extends unknown[], Return>(
+    target: (this: This, ...args: Args) => Return,
+    context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>
+) {
+    return function (this: This, ...args: Args): Return {
+        console.log("Calling " + String(context.name) + " with", args);
+        const result = target.call(this, ...args);
+        console.log("Result:", result);
+        return result;
+    };
+}
+
+class Calculator {
+    @log
+    add(a: number, b: number): number {
+        return a + b;
+    }
+}
+
+// Decorator metadata (TS 5.2+)
+const VALIDATORS = Symbol("validators");
+
+function validate(regex: RegExp) {
+    return function <This, Value extends string>(
+        _target: ClassAccessorDecoratorTarget<This, Value>,
+        context: ClassAccessorDecoratorContext<This, Value>
+    ) {
+        context.metadata[VALIDATORS] ??= {};
+        (context.metadata[VALIDATORS] as Record<string | symbol, RegExp>)[context.name] = regex;
+    };
+}
+
+class UserForm {
+    @validate(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/)
+    accessor email = "" as string;
+
+    @validate(/^\\+?[\\d\\s-]{7,15}$/)
+    accessor phone = "" as string;
+}
+\\\`\\\`\\\`
+
+**Key things to understand:**
+- TC39 decorators are **not compatible** with legacy \\\`experimentalDecorators\\\` — do not mix them
+- Legacy decorators are still supported but should be considered deprecated for new projects
+- TC39 decorators work on classes, methods, accessors, and fields
+- Decorator metadata (\\\`context.metadata\\\`) replaces \\\`reflect-metadata\\\` for new code
+- Frameworks like Angular and NestJS are migrating to TC39 decorators — check your framework's documentation
+
+---
+
+## 10. Recommended Resources — Senior Level
 
 - **Matt Pocock** — Total TypeScript workshop — https://www.totaltypescript.com/
 - **Matt Pocock** — "Advanced TypeScript" series — https://www.youtube.com/watch?v=dLPgQRbVquo
@@ -2721,6 +2939,7 @@ You now have expert-level TypeScript knowledge spanning:
 - **Migration strategies** — incremental adoption, progressive strict mode, and automation
 - **Performance** — measuring type-check speed, avoiding expensive patterns, isolatedDeclarations
 - **Advanced patterns** — type-safe builders, state machines, dependency injection, and opaque types
+- **TypeScript 5.x features** — \`const\` type parameters, \`using\` declarations, TC39 decorators, and decorator metadata
 
 These are the skills that enable you to design type systems for large-scale applications, guide migration efforts, and build libraries that provide exceptional developer experience through TypeScript's type system.
 `,

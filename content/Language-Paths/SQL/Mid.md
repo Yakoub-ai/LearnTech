@@ -4,12 +4,15 @@
 
 ## Topics Covered
 
-- Window Functions (ROW_NUMBER, RANK, LAG, LEAD)
-- Common Table Expressions (CTEs)
-- Transactions and Isolation Levels
-- Views and Materialized Views
-- Query Optimization Techniques
-- Normalization (1NF through 3NF, BCNF)
+- Window Functions (ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, NTILE, SUM OVER)
+- Common Table Expressions (CTEs) — basic, chained, and recursive
+- LATERAL Joins (correlated subqueries in FROM)
+- MERGE Statement (PostgreSQL 15+ upsert/sync)
+- Transactions, ACID, Isolation Levels, and Deadlocks
+- Views and Materialized Views (with refresh strategies)
+- Query Optimization (EXPLAIN ANALYZE, index strategies, query rewriting)
+- Normalization (1NF through BCNF, 4NF, 5NF, denormalization trade-offs)
+- Stored Procedures and Functions (PL/pgSQL)
 
 ## Prerequisites
 

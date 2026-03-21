@@ -35,6 +35,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](DevO
 | Topic | Resource | Type |
 |---|---|---|
 | System Design | [System Design Concepts in 10 min](https://www.youtube.com/watch?v=i53Gi_K3o7I) | Video |
+| System Design Beginner | [System Design for Beginners](https://www.youtube.com/watch?v=m8Icp_Cid5o) | Video |
 | CI/CD and Pipelines | [GitHub Actions – Understanding workflows](https://docs.github.com/en/actions/using-workflows) | Docs |
 | Azure Fundamentals | [Microsoft Learn – Azure Fundamentals](https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/) | Interactive |
 | Infrastructure as Code | [Microsoft Learn – Bicep Fundamentals](https://learn.microsoft.com/en-us/training/paths/fundamentals-bicep/) | Interactive |
@@ -57,6 +58,8 @@ For deep explanations of each concept, see the [Beginner Concept Reference](DevO
 - Set up Azure Monitor diagnostic settings, KQL alert rules, and dashboards
 - Instrument an application with OpenTelemetry and explain the three pillars of observability
 - Define and assign Azure Policy rules to enforce organisational standards across subscriptions
+- Apply horizontal and vertical scaling strategies and explain the trade-offs between them
+- Describe the CAP theorem and how it influences database selection and replication design
 
 For deep explanations of each concept, see the [Mid Concept Reference](DevOps-Platform-Engineer/Mid.md).
 
@@ -67,13 +70,14 @@ For deep explanations of each concept, see the [Mid Concept Reference](DevOps-Pl
 | Topic | Resource | Type |
 |---|---|---|
 | System Design – 30 Concepts | [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
+| AI/ML for Platform Engineers | [AI, ML, Deep Learning and GenAI Explained](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
 | Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
 | Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
 | Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | 🔒 Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | 🔒 Internal |
+| AI-Assisted Development | [GitHub Copilot – Getting Started](https://docs.github.com/en/copilot/getting-started-with-github-copilot) | Docs |
 | Platform Engineering / Cloud Architecture | [Microsoft Cloud Adoption Framework](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/) — Landing zones, governance, and cloud strategy | Docs |
 | Architecture | [Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/well-architected/) — Operational excellence, security, reliability, performance, cost | Docs |
 | Pipeline Security | [Microsoft Learn – Secure DevOps (AZ-400)](https://learn.microsoft.com/en-us/training/paths/az-400-develop-security-compliance-plan/) — Security in pipelines, SAST, DAST, compliance | Course |
@@ -89,6 +93,7 @@ For deep explanations of each concept, see the [Mid Concept Reference](DevOps-Pl
 - Evaluate and harden the security posture of a pipeline: secrets management, SAST/DAST gates, supply chain integrity, and least-privilege service principal scoping
 - Apply Domain-Driven Design to draw team and platform boundaries that reduce coupling
 - Design and operate enterprise GenAI infrastructure on Azure, including private networking, quota management, and cost observability
+- Explain the distinction between AI, machine learning, deep learning, and generative AI, and articulate the infrastructure implications of each
 
 For deep explanations of each concept, see the [Senior Concept Reference](DevOps-Platform-Engineer/Senior.md).
 

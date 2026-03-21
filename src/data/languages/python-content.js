@@ -358,6 +358,25 @@ def calculate_bmi(weight_kg, height_m):
 # Access docstring programmatically
 print(calculate_bmi.__doc__)
 
+# --- PITFALL: Mutable default arguments ---
+# WRONG: the list is shared across ALL calls
+def add_item_bad(item, items=[]):
+    items.append(item)
+    return items
+
+print(add_item_bad("a"))  # ['a']
+print(add_item_bad("b"))  # ['a', 'b'] — BUG! Expected ['b']
+
+# CORRECT: use None and create a new list each call
+def add_item_good(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+print(add_item_good("a"))  # ['a']
+print(add_item_good("b"))  # ['b'] — Correct!
+
 # EXERCISE:
 # 1. Write a function that accepts a list of numbers and returns
 #    a tuple of (minimum, maximum, average).
@@ -470,8 +489,8 @@ overrides = {"host": "localhost", "debug": True}
 merged = {**defaults, **overrides}        # Spread operator
 print(f"Merged: {merged}")
 
-# Python 3.9+ merge operator
-# merged = defaults | overrides
+# Python 3.9+ merge operator (preferred in modern code)
+merged = defaults | overrides
 
 # Dict comprehension
 word = "mississippi"
@@ -744,13 +763,11 @@ for path in Path(".").glob("*.txt"):
 print(f"  example.txt exists: {Path('example.txt').exists()}")
 print(f"  data dir is dir: {data_dir.is_dir()}")
 
-# --- Cleanup ---
-import os
-for f in ["example.txt", "data.json", "people.csv"]:
-    if os.path.exists(f):
-        os.remove(f)
+# --- Cleanup (using pathlib instead of os.path) ---
+for fname in ["example.txt", "data.json", "people.csv"]:
+    Path(fname).unlink(missing_ok=True)
 if data_dir.exists():
-    output_file.unlink()
+    output_file.unlink(missing_ok=True)
     data_dir.rmdir()
 
 # EXERCISE:
@@ -878,6 +895,8 @@ print(f"Host: {url.hostname}, Path: {url.path}, Query: {url.query}")
 # 3. Use itertools.groupby to group a sorted list of dicts by a key.
 # 4. Set up a virtual environment and install the 'requests' package.
 #    (In terminal: python -m venv .venv && source .venv/bin/activate && pip install requests)
+#    Or use uv (modern, faster alternative to pip):
+#    (uv venv .venv && source .venv/bin/activate && uv pip install requests)
 \`\`\`
 
 **Why it matters:** Modules keep code organized and reusable. Virtual environments prevent dependency conflicts. The standard library provides battle-tested tools that save you from reinventing the wheel.
@@ -1309,6 +1328,8 @@ print(f"Sorted circles: {[c.radius for c in sorted(circles)]}")
 # 3. Implement a Triangle shape class with validation (sum of any two sides > third).
 # 4. Add a @classmethod to BankAccount that creates an account from a dict.
 \`\`\`
+
+**Best practice:** For data-holding classes, prefer \`@dataclass\` (shown in the Type Hints section) over manually writing \`__init__\`, \`__repr__\`, and \`__eq__\`. Dataclasses generate these methods automatically and integrate well with type hints.
 
 **Why it matters:** OOP is the dominant paradigm for structuring large applications. Understanding classes, inheritance, and dunder methods lets you write Pythonic code that integrates naturally with the language.
 
@@ -1775,10 +1796,9 @@ def temporary_directory():
 
 with temporary_directory() as tmp:
     # Use the temporary directory
-    file_path = os.path.join(tmp, "test.txt")
-    with open(file_path, "w") as f:
-        f.write("temporary data")
-    print(f"  File exists: {os.path.exists(file_path)}")
+    file_path = Path(tmp) / "test.txt"
+    file_path.write_text("temporary data")
+    print(f"  File exists: {file_path.exists()}")
 # Directory is cleaned up here
 
 
@@ -2006,11 +2026,13 @@ The \`typing\` module provides generics, unions, optionals, and other advanced t
 # =============================================================
 
 from typing import (
-    Optional, Union, List, Dict, Tuple, Set,
+    Optional,       # Use X | None in 3.10+ instead
     Callable, Iterator, Generator, Any,
     TypeVar, Generic, Protocol, Literal,
-    TypeAlias, overload
+    TypeAlias, overload,
 )
+# Note: List, Dict, Tuple, Set from typing are DEPRECATED since Python 3.9.
+# Use the built-in lowercase versions: list, dict, tuple, set instead.
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -2028,7 +2050,7 @@ pi: float = 3.14159
 names: list[str] = ["Alice", "Bob"]  # Python 3.9+ lowercase generics
 
 # --- Optional and Union ---
-def find_user(user_id: int) -> Optional[dict]:
+def find_user(user_id: int) -> dict | None:
     """Find a user by ID. Returns None if not found."""
     users = {1: {"name": "Alice"}, 2: {"name": "Bob"}}
     return users.get(user_id)
@@ -2069,13 +2091,26 @@ print(f"Doubled: {doubled}")
 # --- TypeVar: generic functions ---
 T = TypeVar("T")
 
-def first(items: list[T]) -> Optional[T]:
+def first(items: list[T]) -> T | None:
     """Return the first element or None."""
     return items[0] if items else None
 
 # The return type matches the input type
-name: Optional[str] = first(["Alice", "Bob"])    # str
-number: Optional[int] = first([1, 2, 3])         # int
+name: str | None = first(["Alice", "Bob"])    # str
+number: int | None = first([1, 2, 3])         # int
+
+# --- PEP 695 (Python 3.12+): new type parameter syntax ---
+# The modern way to write the same generic function:
+#
+#   def first[T](items: list[T]) -> T | None:
+#       return items[0] if items else None
+#
+#   class Stack[T]:
+#       def push(self, item: T) -> None: ...
+#
+#   type Vector = list[float]  # type alias (PEP 695)
+#
+# PEP 695 is cleaner and avoids the need for explicit TypeVar declarations.
 
 # --- Dataclasses with type hints ---
 @dataclass
@@ -2109,7 +2144,7 @@ class Stack(Generic[T]):
             raise IndexError("Stack is empty")
         return self._items.pop()
 
-    def peek(self) -> Optional[T]:
+    def peek(self) -> T | None:
         return self._items[-1] if self._items else None
 
     def __len__(self) -> int:
@@ -3442,7 +3477,7 @@ The Python packaging ecosystem has converged on \`pyproject.toml\` as the standa
 PYPROJECT_TOML = """
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "my-awesome-library"
@@ -3450,7 +3485,7 @@ version = "1.0.0"
 description = "A comprehensive example library"
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 authors = [
     {name = "Alice Developer", email = "alice@example.com"}
 ]
@@ -3459,9 +3494,8 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 dependencies = [
@@ -3498,11 +3532,11 @@ testpaths = ["tests"]
 addopts = "-v --cov=my_library --cov-report=term-missing"
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 strict = true
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py312"
 line-length = 88
 """
 
@@ -3595,6 +3629,13 @@ pip install --index-url https://test.pypi.org/simple/ my-awesome-library
 
 # Install locally in development mode
 pip install -e ".[dev]"
+
+# --- Modern alternative: uv (much faster than pip) ---
+# uv is a Rust-based Python package manager that is significantly faster.
+# Install: curl -LsSf https://astral.sh/uv/install.sh | sh
+# uv pip install -e ".[dev]"
+# uv venv .venv              # Create virtual environment
+# uv pip compile pyproject.toml -o requirements.txt  # Lock deps
 """
 print("Build commands:")
 print(BUILD_COMMANDS)
@@ -3960,6 +4001,8 @@ Python offers multiple concurrency models: threading (for I/O-bound tasks), mult
 
 The GIL ensures only one thread executes Python bytecode at a time. This means threads do NOT provide true parallelism for CPU-bound work. However, threads DO release the GIL during I/O operations, making them useful for I/O-bound tasks.
 
+**Emerging: PEP 703 (Free-threaded Python).** Python 3.13+ includes an experimental build with the GIL disabled (\`--disable-gil\` / \`-X gil=0\`). This "free-threaded" mode allows true multi-threaded parallelism for CPU-bound work. As of 2026, it is experimental and opt-in, but it signals the long-term direction for Python concurrency. Keep an eye on adoption by key libraries (NumPy, etc.) before using it in production.
+
 \`\`\`mermaid
 graph TD
     A[Concurrency Need] --> B{CPU-bound or I/O-bound?}
@@ -4247,9 +4290,80 @@ gil_demo()
 
 ---
 
+## 8. Modern Python 3.12+ Features
+
+Senior engineers should be familiar with recent additions to the language and standard library:
+
+### Exception Groups (PEP 654, Python 3.11+)
+
+Exception groups let you raise and handle multiple exceptions simultaneously, which is essential for concurrent code where multiple tasks can fail at once.
+
+\`\`\`python
+# Raising multiple exceptions
+def process_batch(items):
+    errors = []
+    results = []
+    for item in items:
+        try:
+            results.append(int(item))
+        except ValueError as e:
+            errors.append(e)
+    if errors:
+        raise ExceptionGroup("batch processing failed", errors)
+    return results
+
+# Handling exception groups with except*
+try:
+    process_batch(["1", "abc", "3", "def"])
+except* ValueError as eg:
+    print(f"Caught {len(eg.exceptions)} ValueErrors")
+    for e in eg.exceptions:
+        print(f"  - {e}")
+\`\`\`
+
+### tomllib (Python 3.11+)
+
+TOML parsing is now in the standard library. No need for third-party packages to read \`pyproject.toml\` or config files.
+
+\`\`\`python
+import tomllib
+from pathlib import Path
+
+# Read a TOML config file
+with Path("pyproject.toml").open("rb") as f:
+    config = tomllib.load(f)
+
+# Or parse a TOML string
+data = tomllib.loads("""
+[database]
+host = "localhost"
+port = 5432
+""")
+print(data["database"]["host"])  # localhost
+\`\`\`
+
+### StrEnum (Python 3.11+)
+
+\`StrEnum\` members are strings, making them ideal for API status codes, config values, etc.
+
+\`\`\`python
+from enum import StrEnum
+
+class Color(StrEnum):
+    RED = "red"
+    GREEN = "green"
+    BLUE = "blue"
+
+# StrEnum values work as plain strings
+print(f"Favorite color: {Color.RED}")  # "Favorite color: red"
+assert Color.RED == "red"  # True — unlike regular Enum
+\`\`\`
+
+---
+
 ## Summary
 
-You have covered seven advanced Python topics:
+You have covered eight advanced Python topics:
 
 | Topic | Key Takeaway |
 |-------|-------------|
@@ -4257,9 +4371,10 @@ You have covered seven advanced Python topics:
 | Metaclasses | Classes of classes; prefer \`__init_subclass__\` for simpler cases |
 | Memory Management | Reference counting + GC; use \`__slots__\` and weak references to optimize |
 | Profiling | Measure first, optimize second; cProfile for functions, line_profiler for lines |
-| Packaging | \`pyproject.toml\` is the standard; use \`build\` and \`twine\` for distribution |
+| Packaging | \`pyproject.toml\` is the standard; use \`build\`, \`twine\`, or \`uv\` for distribution |
 | Design Patterns | Singleton, Factory, Observer, Strategy, Decorator -- simpler in Python |
-| Concurrency | Threading for I/O, multiprocessing for CPU, asyncio for async I/O; mind the GIL |
+| Concurrency | Threading for I/O, multiprocessing for CPU, asyncio for async I/O; PEP 703 free-threaded mode is emerging |
+| Modern Features | Exception groups, \`tomllib\`, \`StrEnum\`, PEP 695 type syntax |
 
 These topics represent the knowledge expected of a senior Python developer. Mastery comes from applying them in real projects and understanding the trade-offs of each approach.
 

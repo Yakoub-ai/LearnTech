@@ -6,7 +6,7 @@
 
 - Variables and Data Types
 - Control Flow (if/elif/else, loops)
-- Functions and Parameters
+- Functions and Parameters (including the mutable default arguments pitfall)
 - Data Structures (lists, dicts, sets, tuples)
 - File I/O
 - Modules and Imports
@@ -15,8 +15,9 @@
 ## Prerequisites
 
 - No prior programming experience required
-- A working Python 3.x installation
+- A working Python 3.12+ installation
 - Familiarity with using a text editor or IDE
+- A virtual environment tool (`python -m venv` or [uv](https://docs.astral.sh/uv/) as a modern, faster alternative)
 
 ## Estimated Time
 

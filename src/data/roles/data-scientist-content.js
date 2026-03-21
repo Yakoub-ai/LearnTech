@@ -11,10 +11,11 @@ Data Scientists analyse data to generate insights and build predictive models. T
 
 | Topic | Resource | Type |
 |---|---|---|
+| Python Foundations | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python Foundations | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
-| ML Overview | [All ML Concepts Explained in 22 min](https://www.youtube.com/watch?v=Fa_V9fP2tpU) | Video |
 | Python for Data Science | [Python Full Course for Beginners – Programming with Mosh](https://www.youtube.com/watch?v=_uQrJ0TkZlc) | Video |
 | AI vs ML vs Deep Learning | [AI, ML, Deep Learning and GenAI Explained – IBM Technology](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
+| ML Overview | [All ML Concepts Explained in 22 min](https://www.youtube.com/watch?v=Fa_V9fP2tpU) | Video |
 | NumPy | [NumPy – Official Tutorials](https://numpy.org/learn/) | Interactive |
 | Data Manipulation | [Kaggle Learn – Pandas](https://www.kaggle.com/learn/pandas) | Interactive |
 | Data Visualization | [Kaggle Learn – Data Visualization](https://www.kaggle.com/learn/data-visualization) | Interactive |
@@ -41,6 +42,9 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Data
 | Intermediate ML | [Kaggle Learn – Intermediate ML](https://www.kaggle.com/learn/intermediate-machine-learning) | Interactive |
 | Relational Databases | [freeCodeCamp – Relational Databases](https://www.freecodecamp.org/learn/relational-databases-v9/) | Interactive |
 | SQL for Data Science | [SQLBolt – Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
+| Algorithms and Data Structures | [Algorithms and Data Structures Pt.1 – Pluralsight](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) | Course |
+| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
+| Generative AI for Data Science | [Generative AI for Data Science – Pluralsight](https://app.pluralsight.com/paths/skills/generative-ai-for-data-science) | Course |
 | Time-Series Analysis | [Kaggle Learn – Time Series](https://www.kaggle.com/learn/time-series) | Interactive |
 | Class Imbalance | [imbalanced-learn Documentation](https://imbalanced-learn.org/stable/) | Docs |
 
@@ -62,7 +66,13 @@ For deep explanations of each concept, see the [Mid Concept Reference](Data-Scie
 |---|---|---|
 | ML Foundations for AI Engineers | [ML Foundations for AI Engineers (34 min)](https://www.youtube.com/watch?v=BUTjcAjfMgY) | Video |
 | MLOps | [End-to-end MLOps with Azure ML – Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow/) | Interactive |
+| RAG Systems | [RAG for Developers – Pluralsight](https://app.pluralsight.com/paths/skills/retrieval-augmented-generation-rag-for-developers) | Course |
+| Context Engineering | [Context Engineering – Pluralsight](https://app.pluralsight.com/paths/skills/context-engineering) | Course |
+| LangGraph | [LangGraph – Pluralsight](https://app.pluralsight.com/paths/skills/langgraph) | Course |
+| AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
 | LLM Security | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Explainable AI (XAI) | [SHAP Documentation](https://shap.readthedocs.io/en/latest/) | Docs |
 | Survival Analysis | [lifelines Documentation](https://lifelines.readthedocs.io/en/latest/) | Docs |
@@ -178,7 +188,7 @@ NumPy is the numerical backbone of the entire Python data science ecosystem. You
 
 **Common pitfalls:**
 - Confusing a 1-D array of shape \`(n,)\` with a 2-D column vector of shape \`(n, 1)\`. Many Scikit-learn functions require one form and not the other.
-- Modifying a slice of an array and being surprised that the original array also changed, because NumPy slices return views, not copies. Note that this is different from pandas, which since version 3.0 uses Copy-on-Write by default — NumPy arrays still share memory on slicing, so changes to a slice always affect the original array.
+- Modifying a slice of an array and being surprised that the original array also changed, because NumPy slices return views, not copies. Note that this is different from pandas, which since version 2.1 uses Copy-on-Write by default — NumPy arrays still share memory on slicing, so changes to a slice always affect the original array.
 - Using loops when a vectorised operation exists, negating the performance benefit of NumPy entirely.
 
 ---
@@ -199,7 +209,7 @@ Raw data is almost never clean or analysis-ready. Pandas is the primary tool for
 - \`groupby()\` is one of the most powerful operations: it splits the data by a key, applies a function, and combines the results. \`merge()\` joins two DataFrames on a key column (like SQL JOIN); \`join()\` merges on the index.
 
 **Common pitfalls:**
-- Chained assignment (e.g., \`df[df['x'] > 0]['y'] = 1\`) no longer works in pandas 3.0+, which adopted Copy-on-Write as the default behaviour. The old \`SettingWithCopyWarning\` no longer exists. The correct pattern is to use \`.loc\` on the original DataFrame directly (e.g., \`df.loc[df['x'] > 0, 'y'] = 1\`) for single-step assignment.
+- Chained assignment (e.g., \`df[df['x'] > 0]['y'] = 1\`) no longer works in pandas 2.1+, which adopted Copy-on-Write as the default behaviour. The old \`SettingWithCopyWarning\` no longer exists. The correct pattern is to use \`.loc\` on the original DataFrame directly (e.g., \`df.loc[df['x'] > 0, 'y'] = 1\`) for single-step assignment.
 - Forgetting that \`merge()\` defaults to an inner join, silently dropping rows that do not match.
 - Treating object-dtype columns as strings without checking for mixed types or unexpected values first.
 - Performing expensive operations row-by-row using \`iterrows\` instead of using vectorised Pandas methods.

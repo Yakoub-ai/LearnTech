@@ -418,7 +418,7 @@ A security programme typically includes: a security policy (the top-level docume
 
 **Key things to understand:**
 
-- Risk management frameworks: NIST Cybersecurity Framework (Identify, Protect, Detect, Respond, Recover), ISO 27001 (information security management system), CIS Controls (prioritised set of security actions)
+- Risk management frameworks: NIST Cybersecurity Framework 2.0 (Govern, Identify, Protect, Detect, Respond, Recover), ISO 27001 (information security management system), CIS Controls (prioritised set of security actions)
 - Security metrics: vulnerability remediation time, mean time to detect (MTTD), mean time to respond (MTTR), patching compliance, security training completion, phishing simulation click rates
 - Compliance vs security: compliance (meeting regulatory requirements) is a subset of security (protecting the organisation); being compliant does not guarantee being secure
 - Security awareness training: the most technically secure system is still vulnerable to social engineering; training must be ongoing, relevant, and measured
@@ -583,7 +583,7 @@ def validate_third_party_register(providers: list[ICTThirdParty]) -> list[str]:
 
 ## AI Policy — Organisational Principles
 
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
+The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal -- requires company access) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
 
 The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
 

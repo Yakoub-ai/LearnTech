@@ -74,8 +74,8 @@ For deep explanations of each concept, see the [Mid Concept Reference](Data-Engi
 | DataOps & CI/CD | [Microsoft Learn – DataOps for Azure](https://learn.microsoft.com/en-us/azure/architecture/databases/guide/dataops) | Docs |
 | GenAI for Data Engineering | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal -- requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal -- requires company access) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Data Governance | [Microsoft Learn – Data Governance with Microsoft Purview](https://learn.microsoft.com/en-us/training/paths/governance-purview/) | Interactive |
 | GDPR for Data Engineers | [GDPR Overview – gdpr-info.eu](https://gdpr-info.eu/) | Reference |
