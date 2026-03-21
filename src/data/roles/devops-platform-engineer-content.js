@@ -14,6 +14,7 @@ DevOps and Platform Engineers build and maintain the infrastructure, pipelines, 
 | DevOps Overview | [Every DevOps Tool Explained in 8 min](https://www.youtube.com/watch?v=EY1hsh-HCjo) | Video |
 | Docker | [Learn Docker in 7 Easy Steps](https://www.youtube.com/watch?v=gAkwW2tuIqE) | Video |
 | DevOps Roadmap | [roadmap.sh – DevOps](https://roadmap.sh/devops) | Interactive |
+| DevOps Literacy | [DevOps Literacy – Pluralsight](https://app.pluralsight.com/paths/skills/devops-literacy) | Course |
 | Linux Fundamentals | [roadmap.sh – Linux](https://roadmap.sh/linux) | Interactive |
 | Bash Scripting | [Bash Scripting Tutorial – Ryan's Tutorials](https://ryanstutorials.net/bash-scripting-tutorial/) | Interactive |
 | Git | [Git Fundamentals](Prerequisites/git.md) and [Branching Strategy](Prerequisites/Branching-Strategy.md) | Guide |
@@ -44,6 +45,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](DevO
 | Kubernetes Basics | [roadmap.sh – Kubernetes](https://roadmap.sh/kubernetes) | Interactive |
 | Observability | [Monitor Resources with Azure Monitor – Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/az-104-monitor-backup-resources/) | Interactive |
 | OpenTelemetry | [OpenTelemetry – Getting Started](https://opentelemetry.io/docs/getting-started/) | Docs |
+| Generative AI for IT | [Generative AI for IT Pros – Pluralsight](https://app.pluralsight.com/paths/skill/generative-ai-for-it-pros) | Course |
 | Azure Policy | [Microsoft Learn – Intro to Azure Policy](https://learn.microsoft.com/en-us/training/modules/intro-to-azure-policy/) | Interactive |
 | Cost Management | [Microsoft Learn – Control Azure Spending](https://learn.microsoft.com/en-us/training/paths/control-spending-manage-bills/) | Interactive |
 
@@ -70,7 +72,12 @@ For deep explanations of each concept, see the [Mid Concept Reference](DevOps-Pl
 |---|---|---|
 | System Design – 30 Concepts | [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
 | AI/ML for Platform Engineers | [AI, ML, Deep Learning and GenAI Explained](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
+| Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
+| Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
+| Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | 🔒 Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | 🔒 Internal |
 | AI-Assisted Development | [GitHub Copilot – Getting Started](https://docs.github.com/en/copilot/getting-started-with-github-copilot) | Docs |
 | Platform Engineering / Cloud Architecture | [Microsoft Cloud Adoption Framework](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/) — Landing zones, governance, and cloud strategy | Docs |
 | Architecture | [Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/well-architected/) — Operational excellence, security, reliability, performance, cost | Docs |
@@ -449,7 +456,7 @@ A minimal Bicep resource definition looks like this:
 param location string = resourceGroup().location
 param storageAccountName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: storageAccountName
   location: location
   sku: {

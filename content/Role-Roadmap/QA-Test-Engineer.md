@@ -11,12 +11,15 @@ QA and Test Engineers ensure software quality through systematic testing strateg
 | Topic | Resource | Type |
 |---|---|---|
 | QA Roadmap | [roadmap.sh – QA](https://roadmap.sh/qa) | Interactive |
-| Testing Fundamentals | [ISTQB Foundation Level Syllabus](https://www.istqb.org/certifications/certified-tester-foundation-level) | Syllabus |
+| Testing Fundamentals | [ISTQB Foundation Level Syllabus v4.0](https://www.istqb.org/certifications/certified-tester-foundation-level) | Syllabus |
 | QA Certification | [freeCodeCamp – Quality Assurance](https://www.freecodecamp.org/learn/quality-assurance/) | Interactive |
 | Manual Testing | [Software Testing Tutorial – Guru99](https://www.guru99.com/software-testing.html) | Article |
+| Testing Fundamentals | [Software Testing Explained in 100 Seconds – Fireship](https://www.youtube.com/watch?v=u6QfIXgjwGQ) | Video |
+| Testing Introduction | [JavaScript Testing Introduction Tutorial – Academind](https://www.youtube.com/watch?v=r9HdJ8P6GQI) | Video |
 | Bug Reporting | [How to Write a Good Bug Report – Ministry of Testing](https://www.ministryoftesting.com/articles/the-art-of-the-bug-report) | Article |
 | HTTP for Testers | [HTTP Crash Course – Traversy Media](https://www.youtube.com/watch?v=iYM2zFP3Zn0) | Video |
 | Browser Developer Tools | [Chrome DevTools Overview – Google](https://developer.chrome.com/docs/devtools/overview/) | Docs |
+| Testing Mindset | [Ministry of Testing – 30 Days of Testing](https://www.ministryoftesting.com/articles/30-days-of-testing) | Article |
 
 ### After completing Beginner you should be able to:
 
@@ -44,6 +47,8 @@ For deep explanations of each concept, see the [Beginner Concept Reference](QA-T
 | Performance Testing | [k6 Documentation – Getting Started](https://grafana.com/docs/k6/latest/) | Docs |
 | BDD and Gherkin | [Cucumber – BDD Overview](https://cucumber.io/docs/bdd/) | Docs |
 | CI/CD Test Integration | [Microsoft Learn – Getting Started with Continuous Testing](https://learn.microsoft.com/en-us/azure/devops/pipelines/test/getting-started-with-continuous-testing) | Docs |
+| Testing Strategies | [JavaScript Testing Introduction Tutorial – Academind](https://www.youtube.com/watch?v=r9HdJ8P6GQI) | Video |
+| Docker for Test Environments | [Docker in 100 Seconds – Fireship](https://www.youtube.com/watch?v=gAkwW2tuIqE) | Video |
 | Contract Testing | [Pact – Getting Started](https://docs.pact.io) | Docs |
 | Test Data Management | [Ministry of Testing – Test Data Management](https://www.ministryoftesting.com/articles/test-data-management) | Article |
 
@@ -56,6 +61,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](QA-T
 - Create and execute a basic performance test with k6 that measures response times and throughput under load
 - Write BDD scenarios in Gherkin syntax and explain how they bridge communication between technical and non-technical stakeholders
 - Explain consumer-driven contract testing and describe how Pact prevents integration failures between services
+- Explain what a Docker image and container are, write a basic Dockerfile for a test environment, and use Docker Compose to run a multi-container setup for isolated testing
 
 For deep explanations of each concept, see the [Mid Concept Reference](QA-Test-Engineer/Mid.md).
 
@@ -67,16 +73,17 @@ For deep explanations of each concept, see the [Mid Concept Reference](QA-Test-E
 |---|---|---|
 | Test Strategy and Architecture | [Martin Fowler – The Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html) | Article |
 | Google Testing Blog | [Google Testing Blog](https://testing.googleblog.com) | Blog |
-| Quality Engineering | [Quality Engineering – Pluralsight](https://www.pluralsight.com/courses/software-quality-assurance-testing-fundamentals) | Course |
+| Quality Engineering | [Ministry of Testing – Quality Engineering Podcast](https://www.ministryoftesting.com/podcasts) | Podcast |
 | Shift-Left Testing | [Microsoft Learn – Shift Left to Make Testing Fast and Reliable](https://learn.microsoft.com/en-us/devops/develop/shift-left-make-testing-fast-reliable) | Article |
 | Accessibility Testing | [WCAG 2.2 – W3C](https://www.w3.org/TR/WCAG22/) | Standard |
 | Security Testing | [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | Guide |
 | Visual Regression Testing | [Playwright Visual Comparisons](https://playwright.dev/docs/test-snapshots) | Docs |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
+| Networking for Testers | [Computer Networking Full Course](https://www.youtube.com/watch?v=qiQR5rTSshw) | Video |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Regulatory Testing | [ISTQB – Testing in Regulated Industries](https://www.istqb.org/certifications/automotive-tester) | Reference |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
+| AI-Assisted Testing | [GitHub Copilot for Testing – GitHub Docs](https://docs.github.com/en/copilot) | Docs |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | ⚠️ Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | ⚠️ Internal |
 
 ### After completing Senior you should be able to:
 

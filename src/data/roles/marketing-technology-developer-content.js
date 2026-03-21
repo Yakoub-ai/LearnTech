@@ -11,6 +11,7 @@ Marketing Technology Developers apply software engineering and data science to m
 
 | Topic | Resource | Type |
 |---|---|---|
+| Python | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
 | ML Overview | [Machine Learning Explained Simply (12 min)](https://www.youtube.com/watch?v=Au1OxVSyGas) | Video |
 | SQL | [SQLBolt – Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
@@ -18,6 +19,7 @@ Marketing Technology Developers apply software engineering and data science to m
 | HTTP Fundamentals | [HTTP Crash Course](https://www.youtube.com/watch?v=iYM2zFP3Zn0) | Video |
 | Networking Basics | [Networking for Developers](https://www.youtube.com/watch?v=qiQR5rTSshw) | Video |
 | Generative AI Overview | [Google – Introduction to Generative AI](https://www.cloudskillsboost.google/course_templates/536) | Course |
+| Generative AI for Data | [Generative AI for Data Science – Pluralsight](https://app.pluralsight.com/paths/skills/generative-ai-for-data-science) | Course |
 | APIs in Practice | [APIs for Beginners – freeCodeCamp](https://www.youtube.com/watch?v=GZvSYJDk-us) | Video |
 
 > **What you'll learn watching this:** What APIs are, why they exist, and how to call real-world APIs including the Spotify and Twilio APIs — covering authentication, request structure, and response handling in a hands-on full-course format.
@@ -52,6 +54,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Mark
 | ML Algorithms | [All ML Algorithms Explained in 17 min](https://www.youtube.com/watch?v=E0Hmnixke2g) | Video |
 | Prompt Engineering | [Learn Prompting – Open Source Guide](https://learnprompting.org/docs/introduction) | Docs |
 | Context Engineering | [Anthropic – Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview) | Docs |
+| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 | Customer Data Platforms | [Segment CDP Introduction](https://segment.com/docs/getting-started/) | Docs |
 | Analytics | [Google Analytics 4 – Developer Documentation](https://developers.google.com/analytics/devguides/collection/ga4) | Docs |
 | A/B Testing (Supplement) | [Evan Miller – How Not To Run an A/B Test](https://www.evanmiller.org/how-not-to-run-an-ab-test.html) | Article |

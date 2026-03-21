@@ -12,6 +12,8 @@ Data Scientists analyse data to generate insights and build predictive models. T
 |---|---|---|
 | Python Foundations | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python Foundations | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
+| Python for Data Science | [Python Full Course for Beginners – Programming with Mosh](https://www.youtube.com/watch?v=_uQrJ0TkZlc) | Video |
+| AI vs ML vs Deep Learning | [AI, ML, Deep Learning and GenAI Explained – IBM Technology](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
 | ML Overview | [All ML Concepts Explained in 22 min](https://www.youtube.com/watch?v=Fa_V9fP2tpU) | Video |
 | NumPy | [NumPy – Official Tutorials](https://numpy.org/learn/) | Interactive |
 | Data Manipulation | [Kaggle Learn – Pandas](https://www.kaggle.com/learn/pandas) | Interactive |
@@ -35,6 +37,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Data
 |---|---|---|
 | Feature Engineering | [Kaggle Learn – Feature Engineering](https://www.kaggle.com/learn/feature-engineering) | Interactive |
 | ML Algorithms | [All ML Algorithms Explained in 17 min](https://www.youtube.com/watch?v=E0Hmnixke2g) | Video |
+| ML Course | [Scikit-Learn Course – Machine Learning in Python – freeCodeCamp](https://www.youtube.com/watch?v=pqNCD_5r0IU) | Video |
 | Intermediate ML | [Kaggle Learn – Intermediate ML](https://www.kaggle.com/learn/intermediate-machine-learning) | Interactive |
 | Relational Databases | [freeCodeCamp – Relational Databases](https://www.freecodecamp.org/learn/relational-databases-v9/) | Interactive |
 | SQL for Data Science | [SQLBolt – Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
@@ -67,8 +70,8 @@ For deep explanations of each concept, see the [Mid Concept Reference](Data-Scie
 | LangGraph | [LangGraph – Pluralsight](https://app.pluralsight.com/paths/skills/langgraph) | Course |
 | AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
 | LLM Security | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Explainable AI (XAI) | [SHAP Documentation](https://shap.readthedocs.io/en/latest/) | Docs |
 | Survival Analysis | [lifelines Documentation](https://lifelines.readthedocs.io/en/latest/) | Docs |

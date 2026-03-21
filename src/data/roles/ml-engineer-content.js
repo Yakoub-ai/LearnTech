@@ -44,8 +44,11 @@ For deep explanations of each concept, see the [Beginner Concept Reference](ML-E
 | Feature Engineering | [Kaggle Learn – Feature Engineering](https://www.kaggle.com/learn/feature-engineering) | Interactive |
 | Intermediate ML Practice | [Kaggle Learn – Intermediate ML](https://www.kaggle.com/learn/intermediate-machine-learning) | Interactive |
 | Neural Networks / Deep Learning | [PyTorch – Official Tutorials](https://pytorch.org/tutorials/) | Docs |
+| PyTorch 2.x Performance | [torch.compile – Getting Started](https://pytorch.org/tutorials/intermediate/torch_compile_tutorial.html) | Docs |
 | Experiment Tracking | [MLflow – Getting Started](https://mlflow.org/docs/latest/getting-started/index.html) | Docs |
 | MLOps | [End-to-end MLOps with Azure ML – Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow/) | Interactive |
+| Algorithms and Data Structures | [Algorithms and Data Structures Pt.1 – Pluralsight](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) | Course |
+| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 
 ### After completing Mid you should be able to:
 
@@ -68,8 +71,15 @@ For deep explanations of each concept, see the [Mid Concept Reference](ML-Engine
 | Advanced MLOps | [Microsoft Learn – MLOps maturity model](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/mlops-maturity-model) | Docs |
 | Model Monitoring | [Microsoft Learn – Monitor models with Azure ML](https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-monitoring) | Docs |
 | Responsible AI | [Fairlearn – Fairness in ML](https://fairlearn.org/) | Docs |
+| Model Explainability | [SHAP – SHapley Additive exPlanations](https://shap.readthedocs.io/en/latest/) | Docs |
+| Model Interoperability | [ONNX – Open Neural Network Exchange](https://onnx.ai/) | Docs |
 | Dynamic Programming | [Dynamic Programming – Full Course](https://www.youtube.com/watch?v=66hDgWottdA) | Video |
+| Algorithms and Data Structures | [Part 1](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) / [Part 2](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-two/course-overview) | Course |
+| AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
+| Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | ⚠️ Internal SharePoint |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | ⚠️ Internal SharePoint |
 
 ### After completing Senior you should be able to:
 

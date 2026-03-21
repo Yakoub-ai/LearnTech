@@ -12,7 +12,7 @@ QA and Test Engineers ensure software quality through systematic testing strateg
 | Topic | Resource | Type |
 |---|---|---|
 | QA Roadmap | [roadmap.sh – QA](https://roadmap.sh/qa) | Interactive |
-| Testing Fundamentals | [ISTQB Foundation Level Syllabus](https://www.istqb.org/certifications/certified-tester-foundation-level) | Syllabus |
+| Testing Fundamentals | [ISTQB Foundation Level Syllabus v4.0](https://www.istqb.org/certifications/certified-tester-foundation-level) | Syllabus |
 | QA Certification | [freeCodeCamp – Quality Assurance](https://www.freecodecamp.org/learn/quality-assurance/) | Interactive |
 | Manual Testing | [Software Testing Tutorial – Guru99](https://www.guru99.com/software-testing.html) | Article |
 | Bug Reporting | [How to Write a Good Bug Report – Ministry of Testing](https://www.ministryoftesting.com/articles/the-art-of-the-bug-report) | Article |
@@ -83,6 +83,8 @@ For deep explanations of each concept, see the [Mid Concept Reference](QA-Test-E
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Regulatory Testing | [ISTQB – Testing in Regulated Industries](https://www.istqb.org/certifications/automotive-tester) | Reference |
 | AI-Assisted Testing | [GitHub Copilot for Testing – GitHub Docs](https://docs.github.com/en/copilot) | Docs |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | ⚠️ Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | ⚠️ Internal |
 
 ### After completing Senior you should be able to:
 

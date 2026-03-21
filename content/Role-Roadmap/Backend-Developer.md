@@ -39,7 +39,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Back
 | Topic | Resource | Type |
 |---|---|---|
 | API Design | [Design APIs Like a Senior Engineer](https://www.youtube.com/watch?v=7iHl71nt49o) | Video |
-| GraphQL | [GraphQL Foundations – Pluralsight](https://www.pluralsight.com/courses/graphql-foundations) | Course |
+| GraphQL | [GraphQL Foundations – Apollo Docs](https://www.apollographql.com/docs/apollo-server/) | Docs |
 | Relational Databases | [freeCodeCamp – Relational Databases](https://www.freecodecamp.org/learn/relational-databases-v9/) | Interactive |
 | Web Security Basics | [OWASP Top Ten](https://owasp.org/www-project-top-ten/) | Docs |
 | API Security | [Web Security Academy – PortSwigger](https://portswigger.net/web-security) | Interactive |
@@ -74,12 +74,14 @@ For deep explanations of each concept, see the [Mid Concept Reference](Backend-D
 | System Design – 30 Concepts | [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
 | Real-world System Design | [Uber – System Design Interview](https://www.youtube.com/watch?v=DGtalg5efCw) | Video |
 | Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
+| Domain-Driven Design | [DDD – Martin Fowler's Bliki](https://martinfowler.com/tags/domain%20driven%20design.html) | Docs |
 | Algorithms and Data Structures | [Part 1](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) / [Part 2](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-two/course-overview) | Course |
+| Algorithms and Data Structures | [Algorithms – Khan Academy](https://www.khanacademy.org/computing/computer-science/algorithms) | Interactive |
 | Dynamic Programming | [Dynamic Programming – Full Course](https://www.youtube.com/watch?v=66hDgWottdA) | Video |
 | AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 
 ### After completing Senior you should be able to:
 

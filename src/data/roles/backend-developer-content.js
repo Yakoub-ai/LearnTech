@@ -16,6 +16,7 @@ At this level you are building the mental model that underpins every backend rol
 | Topic | Resource | Type |
 |---|---|---|
 | Programming Fundamentals | [CS50x – Harvard (Free)](https://cs50.harvard.edu/x/) | Interactive |
+| Python | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
 | APIs Overview | [Every Popular API Style Explained](https://www.youtube.com/watch?v=xJFzPSAw4Fo) | Video |
 | Backend + APIs | [freeCodeCamp – Back End Development and APIs](https://www.freecodecamp.org/learn/back-end-development-and-apis-v9/) (Note: this course uses JavaScript/Node.js — valuable for understanding backend concepts in another ecosystem) | Interactive |
@@ -50,6 +51,7 @@ You can write code that works. Now the question becomes: does it work correctly,
 | Web Security Basics | [OWASP Top Ten](https://owasp.org/www-project-top-ten/) | Docs |
 | API Security | [Web Security Academy – PortSwigger](https://portswigger.net/web-security) | Interactive |
 | Auth Patterns | [OAuth 2.0 and OpenID Connect in Plain English](https://www.youtube.com/watch?v=996OiexHze0) | Video |
+| Algorithms and Data Structures | [Algorithms and Data Structures Pt.1 – Pluralsight](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) | Course |
 | System Design Basics | [System Design Concepts in 10 min](https://www.youtube.com/watch?v=i53Gi_K3o7I) | Video |
 | Docker | [Learn Docker in 7 Easy Steps](https://www.youtube.com/watch?v=gAkwW2tuIqE) | Video |
 | Testing | [Python Testing with pytest](https://docs.pytest.org/) — The standard testing framework for Python | Docs |
@@ -80,10 +82,15 @@ Senior backend work is about systems, not just services. You are no longer writi
 |---|---|---|
 | System Design – 30 Concepts | [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
 | Real-world System Design | [Uber – System Design Interview](https://www.youtube.com/watch?v=DGtalg5efCw) | Video |
+| Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
 | Domain-Driven Design | [DDD – Martin Fowler's Bliki](https://martinfowler.com/tags/domain%20driven%20design.html) | Docs |
+| Algorithms and Data Structures | [Part 1](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) / [Part 2](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-two/course-overview) | Course |
 | Algorithms and Data Structures | [Algorithms – Khan Academy](https://www.khanacademy.org/computing/computer-science/algorithms) | Interactive |
 | Dynamic Programming | [Dynamic Programming – Full Course](https://www.youtube.com/watch?v=66hDgWottdA) | Video |
+| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 
 ### After completing Senior you should be able to:
 
@@ -95,6 +102,7 @@ Senior backend work is about systems, not just services. You are no longer writi
 - Design observability into a system using structured logging, metrics and distributed tracing
 - Lead a security review of an API, identify risks and present remediation recommendations
 - Describe how AI-assisted development tools change backend workflows and apply them appropriately
+- Apply AI governance requirements (Secure AI Framework, AI Policy, AI Checklist) when building backend systems that integrate AI components
 
 For deep explanations of each concept, see the [Senior Concept Reference](Backend-Developer/Senior.md).
 

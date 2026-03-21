@@ -54,7 +54,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Fron
 | MDN Reference | [MDN Web Docs](https://developer.mozilla.org) | Docs |
 | Web Security | [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Scripting_Prevention_Cheat_Sheet.html) | Docs |
 | CSS Tooling | [Tailwind CSS Documentation](https://tailwindcss.com/docs) | Docs |
-| Routing | [React Router – Tutorial](https://reactrouter.com/en/main/start/tutorial) | Docs |
+| Routing | [React Router – Tutorial](https://reactrouter.com/start/framework/routing) | Docs |
 | Forms and Validation | [React Hook Form](https://react-hook-form.com/get-started) + [Zod](https://zod.dev/) | Docs |
 
 ### After completing Mid you should be able to:
@@ -65,7 +65,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Fron
 - Write custom React hooks to encapsulate and reuse stateful logic across components
 - Apply TypeScript types and interfaces to React props, function signatures, and API response shapes
 - Use TypeScript generics to write reusable, type-safe utility functions and components
-- Write unit tests for JavaScript functions using Jest and assert expected outcomes
+- Write unit tests for JavaScript functions using a test runner such as Jest or Vitest and assert expected outcomes
 - Write component tests using React Testing Library that interact with the UI the way a user would
 - Write end-to-end tests with Playwright that cover critical user journeys in a running application
 - Consume a REST API from a React application, handle loading and error states, and display the retrieved data
@@ -84,9 +84,15 @@ For deep explanations of each concept, see the [Mid Concept Reference](Frontend-
 |---|---|---|
 | Web Performance | [web.dev – Learn Performance](https://web.dev/learn/performance) | Interactive |
 | Accessibility | [web.dev – Learn Accessibility](https://web.dev/learn/accessibility) | Interactive |
+| Advanced AI Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
+| Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
 | API Design | [Design APIs Like a Senior Engineer](https://www.youtube.com/watch?v=7iHl71nt49o) | Video |
-| Next.js / SSR | [Next.js – Getting Started](https://nextjs.org/docs/getting-started) | Docs |
+| Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
+| Algorithms and Data Structures | [Algorithms and Data Structures Pt.1 – Pluralsight](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) | Course |
+| Next.js / SSR | [Next.js – Getting Started](https://nextjs.org/docs) | Docs |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 
 ### After completing Senior you should be able to:
 
@@ -101,6 +107,7 @@ For deep explanations of each concept, see the [Mid Concept Reference](Frontend-
 - Apply domain-driven design concepts to organise a frontend codebase around business domains rather than technical layers
 - Compare architecture patterns such as micro-frontends, monorepo organisation, and feature-based folder structures, and justify a choice for a given project context
 - Identify practical ways to integrate AI-assisted development tools into a daily frontend engineering workflow to improve productivity and code quality
+- Apply AI governance requirements (Secure AI Framework, AI Policy, AI Checklist) when building frontend applications that integrate AI features
 
 For deep explanations of each concept, see the [Senior Concept Reference](Frontend-Developer/Senior.md).
 

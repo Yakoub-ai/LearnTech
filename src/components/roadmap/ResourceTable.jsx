@@ -2,7 +2,6 @@ import { ExternalLink, Video, BookOpen, Code2, FileText, GraduationCap, Newspape
 import Badge from '../common/Badge'
 import YouTubeEmbed from './YouTubeEmbed'
 import { extractYouTubeId } from '../../utils/youtubeUtils'
-import { useState } from 'react'
 
 const typeIcons = {
   Video: Video,
@@ -17,8 +16,6 @@ const typeIcons = {
 }
 
 export default function ResourceTable({ resources, _roleId, level, isResourceComplete, toggleResource }) {
-  const [expandedVideo, setExpandedVideo] = useState(null)
-
   if (!resources || resources.length === 0) return null
 
   return (
@@ -27,7 +24,6 @@ export default function ResourceTable({ resources, _roleId, level, isResourceCom
         const Icon = typeIcons[resource.type] || BookOpen
         const youtubeId = extractYouTubeId(resource.url)
         const isComplete = isResourceComplete?.(level, index)
-        const isVideoExpanded = expandedVideo === index
 
         return (
           <div key={index} className="group">
@@ -78,18 +74,10 @@ export default function ResourceTable({ resources, _roleId, level, isResourceCom
                   <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-50" />
                 </a>
 
-                {youtubeId && (
-                  <button
-                    onClick={() => setExpandedVideo(isVideoExpanded ? null : index)}
-                    className="mt-2 text-xs text-[var(--color-primary)] hover:text-[var(--color-primary-light)] cursor-pointer border-none bg-transparent font-medium"
-                  >
-                    {isVideoExpanded ? 'Hide video' : 'Watch embedded'}
-                  </button>
-                )}
               </div>
             </div>
 
-            {youtubeId && isVideoExpanded && (
+            {youtubeId && (
               <div className="mt-2 ml-7">
                 <YouTubeEmbed videoId={youtubeId} title={resource.title} />
               </div>

@@ -15,9 +15,11 @@ Security Engineers protect systems, applications, and data by identifying vulner
 | Web Security Basics | [Web Security Academy – PortSwigger](https://portswigger.net/web-security) | Interactive |
 | Networking Fundamentals | [Computer Networking Full Course (9h)](https://www.youtube.com/watch?v=qiQR5rTSshw) | Video |
 | Linux Security Basics | [roadmap.sh – Linux](https://roadmap.sh/linux) | Interactive |
+| Cryptography Explained | [Secret Key Exchange (Diffie-Hellman) – Computerphile](https://www.youtube.com/watch?v=NmM9HA2MQGI) | Video |
 | Security+ Foundations | [Professor Messer – CompTIA Security+ Course](https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/sy0-701-comptia-security-plus-course/) | Video |
 | Hands-on Security Labs | [TryHackMe – Introduction to Cyber Security](https://tryhackme.com/path/outline/introtocyber) | Interactive |
 | Cryptography Basics | [Khan Academy – Cryptography](https://www.khanacademy.org/computing/computer-science/cryptography) | Interactive |
+| Public Key Cryptography | [Public Key Cryptography – Art of the Problem](https://www.youtube.com/watch?v=YEBfamv-_do) | Video |
 
 ### After completing Beginner you should be able to:
 
@@ -43,6 +45,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Secu
 | Secure SDLC | [OWASP SAMM – Software Assurance Maturity Model](https://owaspsamm.org/) | Docs |
 | Azure Security | [Microsoft Learn – Azure Security](https://learn.microsoft.com/en-us/credentials/certifications/azure-security-engineer/) | Interactive |
 | Identity & Access Management | [OAuth 2.0 and OpenID Connect in Plain English](https://www.youtube.com/watch?v=996OiexHze0) | Video |
+| Docker Security | [Learn Docker in 7 Easy Steps – Fireship](https://www.youtube.com/watch?v=gAkwW2tuIqE) | Video |
 | Container Security | [OWASP Docker Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html) | Docs |
 | API Security | [OWASP API Security Top 10](https://owasp.org/API-Security/) | Docs |
 | SAST/DAST | [OWASP Source Code Analysis Tools](https://owasp.org/www-community/Source_Code_Analysis_Tools) | Docs |
@@ -50,6 +53,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Secu
 | SIEM / Sentinel | [Microsoft Learn – Microsoft Sentinel Fundamentals](https://learn.microsoft.com/en-us/training/paths/security-ops-sentinel/) | Interactive |
 | Secrets Management | [Microsoft Learn – Azure Key Vault](https://learn.microsoft.com/en-us/training/modules/configure-and-manage-azure-key-vault/) | Interactive |
 | GDPR | [GDPR Overview – gdpr-info.eu](https://gdpr-info.eu/) | Reference |
+| TLS / HTTPS Deep Dive | [SSL, TLS, HTTPS Explained – ByteByteGo](https://www.youtube.com/watch?v=j9QmMEWmcfo) | Video |
 
 ### After completing Mid you should be able to:
 
@@ -73,12 +77,13 @@ For deep explanations of each concept, see the [Mid Concept Reference](Security-
 | MITRE ATT&CK | [MITRE ATT&CK Framework](https://attack.mitre.org/) | Docs |
 | Incident Response | [NIST Incident Response Recommendations (SP 800-61 Rev 3)](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | Docs |
 | Supply Chain Security | [SLSA Framework – Supply-chain Levels for Software Artifacts](https://slsa.dev/) | Docs |
-| LLM Security | [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/) | Docs |
+| LLM Security | [OWASP Top 10 for LLM Applications (2025)](https://owasp.org/www-project-top-10-for-large-language-model-applications/) | Docs |
 | LLM Security | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
-| Security Architecture | [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework) | Docs |
+| Security Architecture | [NIST Cybersecurity Framework (CSF 2.0)](https://www.nist.gov/cyberframework) | Docs |
+| AI Security Framework | [Google Secure AI Framework (SAIF)](https://safety.google/cybersecurity-advancements/saif/) | Docs |
 | Enterprise GenAI Security | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal (Internal – requires company access) |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal (Internal – requires company access) |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | DORA | [EUR-Lex – Digital Operational Resilience Act](https://eur-lex.europa.eu/eli/reg/2022/2554/oj) | Reference |
 | NIS2 Directive | [EUR-Lex – NIS 2 Directive](https://eur-lex.europa.eu/eli/dir/2022/2555/oj) | Reference |

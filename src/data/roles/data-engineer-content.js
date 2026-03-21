@@ -11,6 +11,7 @@ Data Engineers design, build, and maintain the infrastructure and pipelines that
 
 | Topic | Resource | Type |
 |---|---|---|
+| Python Foundations | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python Foundations | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
 | SQL Fundamentals | [SQLBolt – Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
 | SQL Fundamentals | [Kaggle Learn – Intro to SQL](https://www.kaggle.com/learn/intro-to-sql) | Interactive |
@@ -72,11 +73,16 @@ For deep explanations of each concept, see the [Mid Concept Reference](Data-Engi
 | Delta Lake | [Delta Lake – Official Documentation](https://docs.delta.io/latest/index.html) | Docs |
 | Data Mesh | [Data Mesh Principles – Zhamak Dehghani](https://martinfowler.com/articles/data-mesh-principles.html) | Docs |
 | DataOps & CI/CD | [Microsoft Learn – DataOps for Azure](https://learn.microsoft.com/en-us/azure/architecture/databases/guide/dataops) | Docs |
+| GenAI for Data Engineering | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
+| AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal -- requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal -- requires company access) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Data Governance | [Microsoft Learn – Data Governance with Microsoft Purview](https://learn.microsoft.com/en-us/training/paths/governance-purview/) | Interactive |
 | GDPR for Data Engineers | [GDPR Overview – gdpr-info.eu](https://gdpr-info.eu/) | Reference |
 | Microsoft Fabric | [Microsoft Learn – Get Started with Microsoft Fabric](https://learn.microsoft.com/en-us/training/paths/get-started-fabric/) | Interactive |
 | Change Data Capture | [Debezium – Getting Started](https://debezium.io/documentation/reference/stable/tutorial.html) | Docs |
+| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 
 ### After completing Senior you should be able to:
 
@@ -644,7 +650,7 @@ As an assistive tool, GenAI accelerates routine tasks: writing dbt models from s
 - Vector databases and embeddings: embeddings are dense numerical representations of text; vector databases (Pinecone, Weaviate, Azure AI Search) enable similarity search over embeddings
 - Data governance for AI: tracking data lineage through AI pipelines, ensuring training data complies with privacy regulations, and documenting what data was used to build AI features
 - Cost management: GenAI workloads (embedding generation, LLM inference) can be expensive at scale; understanding token costs, batching strategies, and caching is important
-- The organisation's Secure AI Framework defines the governance requirements for any project involving GenAI
+- The organisation's AI Policy, AI Checklist, and Secure AI Framework define the governance requirements for any project involving GenAI
 
 **Common pitfalls:**
 

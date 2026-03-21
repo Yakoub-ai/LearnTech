@@ -358,46 +358,54 @@ For a Data Engineer working in the Azure ecosystem, ADF is typically the orchest
 **Code walkthrough:**
 
 ```python
-# Step 1: Streaming basics — consume messages from Kafka
-# Why: streaming enables real-time data processing, not just daily batches
-from confluent_kafka import Consumer, KafkaError
-import json
+# Step 1: Azure Data Factory pipeline interaction via Python SDK
+# Why: Data Engineers automate ADF pipeline triggers and monitoring programmatically
+from azure.identity import DefaultAzureCredential
+from azure.mgmt.datafactory import DataFactoryManagementClient
+from datetime import datetime, timezone
 
-consumer = Consumer({
-    "bootstrap.servers": "kafka:9092",
-    "group.id": "claims-processor",
-    "auto.offset.reset": "earliest",  # start from the beginning if no offset
-    "enable.auto.commit": False,       # manual commit for at-least-once delivery
-})
+# Step 2: Authenticate using managed identity or Azure CLI credentials
+# Why: DefaultAzureCredential works in local dev (CLI) and production (managed identity)
+credential = DefaultAzureCredential()
+adf_client = DataFactoryManagementClient(credential, subscription_id="your-sub-id")
 
-# Step 2: Subscribe to the topic
-# Why: each topic holds events of a specific type (e.g., new claims)
-consumer.subscribe(["raw.claims"])
+# Step 3: Trigger an ADF pipeline run
+# Why: programmatic triggers enable integration with external orchestrators
+def trigger_pipeline(
+    resource_group: str,
+    factory_name: str,
+    pipeline_name: str,
+    parameters: dict = None,
+) -> str:
+    """Trigger an Azure Data Factory pipeline and return the run ID."""
+    run_response = adf_client.pipelines.create_run(
+        resource_group_name=resource_group,
+        factory_name=factory_name,
+        pipeline_name=pipeline_name,
+        parameters=parameters or {},
+    )
+    print(f"Pipeline run started: {run_response.run_id}")
+    return run_response.run_id
 
-def process_messages(max_messages: int = 100):
-    """Consume and process messages from the claims topic."""
-    processed = 0
-    while processed < max_messages:
-        msg = consumer.poll(timeout=1.0)
-        if msg is None:
-            continue
-        if msg.error():
-            if msg.error().code() == KafkaError._PARTITION_EOF:
-                continue  # end of partition, not an error
-            raise Exception(f"Kafka error: {msg.error()}")
+# Step 4: Monitor pipeline run status
+# Why: automated monitoring enables alerting on failures and SLA tracking
+def check_pipeline_status(resource_group: str, factory_name: str, run_id: str) -> str:
+    """Check the status of a pipeline run."""
+    run = adf_client.pipeline_runs.get(
+        resource_group_name=resource_group,
+        factory_name=factory_name,
+        run_id=run_id,
+    )
+    print(f"Pipeline status: {run.status} (started: {run.run_start})")
+    return run.status
 
-        # Step 3: Parse and process the event
-        claim = json.loads(msg.value().decode("utf-8"))
-        print(f"Processing claim {claim['claim_id']} — amount: {claim['amount']}")
-
-        # Step 4: Commit the offset AFTER successful processing
-        # Why: if processing fails, the message will be redelivered (at-least-once)
-        consumer.commit(msg)
-        processed += 1
-
-    consumer.close()
-
-process_messages()
+# Step 5: Example — trigger daily ingestion pipeline
+run_id = trigger_pipeline(
+    resource_group="rg-data-platform",
+    factory_name="adf-prod",
+    pipeline_name="daily_claims_ingestion",
+    parameters={"load_date": datetime.now(timezone.utc).strftime("%Y-%m-%d")},
+)
 ```
 
 **Common pitfalls:**

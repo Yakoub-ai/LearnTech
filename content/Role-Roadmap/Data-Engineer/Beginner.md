@@ -233,7 +233,7 @@ The alternative pattern is ELT: Extract and Load the raw data first into a power
 # Step 1: A basic ETL script — Extract, Transform, Load
 # Why: this is the fundamental pattern every data pipeline follows
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 
 def extract(source_path: str) -> pd.DataFrame:
     """Extract: read raw data from the source system."""
@@ -252,7 +252,7 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
     print(f"[TRANSFORM] Removed {before - len(df)} duplicate rows")
     # Step 4: Add a processing timestamp for auditability
     # Why: downstream consumers need to know when the data was processed
-    df["loaded_at"] = datetime.utcnow().isoformat()
+    df["loaded_at"] = datetime.now(timezone.utc).isoformat()
     return df
 
 def load(df: pd.DataFrame, target_path: str):
@@ -358,51 +358,69 @@ For a Data Engineer at the beginner level, the most important distinction is bet
 **Code walkthrough:**
 
 ```python
-# Step 1: A simple Airflow DAG — orchestrate a daily ETL pipeline
-# Why: Airflow automates scheduling, retries, and dependency management
-from airflow import DAG
-from airflow.operators.python import PythonOperator
-from airflow.operators.bash import BashOperator
-from datetime import datetime, timedelta
+# Step 1: Define entities and relationships as Python dataclasses
+# Why: understanding entities and their relationships is the core of data modelling
+from dataclasses import dataclass
+from datetime import date
 
-default_args = {
-    "owner": "data-team",
-    "retries": 2,
-    "retry_delay": timedelta(minutes=5),
-    # Why: start_date + schedule tells Airflow which intervals to process
-}
+@dataclass
+class Customer:
+    """Entity: represents a customer in the operational system."""
+    customer_id: int        # primary key — uniquely identifies this customer
+    name: str
+    email: str
+    created_at: date
 
-# Step 2: Define the DAG — a directed acyclic graph of tasks
-with DAG(
-    dag_id="daily_sales_etl",
-    default_args=default_args,
-    start_date=datetime(2025, 1, 1),
-    schedule="@daily",
-    catchup=False,
-    tags=["sales", "etl"],
-) as dag:
+@dataclass
+class Product:
+    """Entity: represents a product that can be purchased."""
+    product_id: int         # primary key
+    product_name: str
+    category: str
+    price: float
 
-    # Step 3: Task 1 — extract data from the source system
-    extract = PythonOperator(
-        task_id="extract_sales",
-        python_callable=lambda: print("Extracting sales data..."),
-    )
+@dataclass
+class Order:
+    """Entity: represents a transaction linking a customer to a product."""
+    order_id: int           # primary key
+    customer_id: int        # foreign key → Customer
+    product_id: int         # foreign key → Product
+    quantity: int
+    order_date: date
 
-    # Step 4: Task 2 — transform the extracted data
-    transform = PythonOperator(
-        task_id="transform_sales",
-        python_callable=lambda: print("Cleaning and transforming..."),
-    )
+# Step 2: Demonstrate cardinality
+# Why: understanding one-to-many and many-to-many is essential for schema design
+# One customer can place many orders (one-to-many)
+# One order references one product (many-to-one)
+# Customers to Products is many-to-many (through the Order table)
 
-    # Step 5: Task 3 — load into the data warehouse
-    load = BashOperator(
-        task_id="load_to_warehouse",
-        bash_command="echo 'Loading data into warehouse...'",
-    )
+# Step 3: Simple validation — check referential integrity
+def validate_referential_integrity(
+    orders: list[Order],
+    customer_ids: set[int],
+    product_ids: set[int],
+) -> list[str]:
+    """Check that all foreign keys reference existing entities."""
+    errors = []
+    for order in orders:
+        if order.customer_id not in customer_ids:
+            errors.append(f"Order {order.order_id}: unknown customer {order.customer_id}")
+        if order.product_id not in product_ids:
+            errors.append(f"Order {order.order_id}: unknown product {order.product_id}")
+    return errors
 
-    # Step 6: Define the execution order
-    # Why: >> sets dependencies — transform only runs after extract succeeds
-    extract >> transform >> load
+# Step 4: Example usage
+customers = {1, 2, 3}
+products = {101, 102}
+orders = [
+    Order(1, 1, 101, 2, date(2025, 3, 1)),
+    Order(2, 2, 999, 1, date(2025, 3, 2)),  # bad product_id
+]
+
+issues = validate_referential_integrity(orders, customers, products)
+for issue in issues:
+    print(f"INTEGRITY ERROR: {issue}")
+# Output: INTEGRITY ERROR: Order 2: unknown product 999
 ```
 
 **Common pitfalls:**

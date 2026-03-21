@@ -11,9 +11,10 @@ Data Scientists analyse data to generate insights and build predictive models. T
 
 | Topic | Resource | Type |
 |---|---|---|
+| Python Foundations | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python Foundations | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
-| ML Overview | [All ML Concepts Explained in 22 min](https://www.youtube.com/watch?v=Fa_V9fP2tpU) | Video |
 | Python for Data Science | [Python Full Course for Beginners – Programming with Mosh](https://www.youtube.com/watch?v=_uQrJ0TkZlc) | Video |
+| ML Overview | [All ML Concepts Explained in 22 min](https://www.youtube.com/watch?v=Fa_V9fP2tpU) | Video |
 | AI vs ML vs Deep Learning | [AI, ML, Deep Learning and GenAI Explained – IBM Technology](https://www.youtube.com/watch?v=qYNweeDHiyU) | Video |
 | NumPy | [NumPy – Official Tutorials](https://numpy.org/learn/) | Interactive |
 | Data Manipulation | [Kaggle Learn – Pandas](https://www.kaggle.com/learn/pandas) | Interactive |
@@ -41,6 +42,9 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Data
 | Intermediate ML | [Kaggle Learn – Intermediate ML](https://www.kaggle.com/learn/intermediate-machine-learning) | Interactive |
 | Relational Databases | [freeCodeCamp – Relational Databases](https://www.freecodecamp.org/learn/relational-databases-v9/) | Interactive |
 | SQL for Data Science | [SQLBolt – Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
+| Algorithms and Data Structures | [Algorithms and Data Structures Pt.1 – Pluralsight](https://app.pluralsight.com/ilx/video-courses/algorithms-data-structures-part-one/course-overview) | Course |
+| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
+| Generative AI for Data Science | [Generative AI for Data Science – Pluralsight](https://app.pluralsight.com/paths/skills/generative-ai-for-data-science) | Course |
 | Time-Series Analysis | [Kaggle Learn – Time Series](https://www.kaggle.com/learn/time-series) | Interactive |
 | Class Imbalance | [imbalanced-learn Documentation](https://imbalanced-learn.org/stable/) | Docs |
 
@@ -62,7 +66,13 @@ For deep explanations of each concept, see the [Mid Concept Reference](Data-Scie
 |---|---|---|
 | ML Foundations for AI Engineers | [ML Foundations for AI Engineers (34 min)](https://www.youtube.com/watch?v=BUTjcAjfMgY) | Video |
 | MLOps | [End-to-end MLOps with Azure ML – Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow/) | Interactive |
+| RAG Systems | [RAG for Developers – Pluralsight](https://app.pluralsight.com/paths/skills/retrieval-augmented-generation-rag-for-developers) | Course |
+| Context Engineering | [Context Engineering – Pluralsight](https://app.pluralsight.com/paths/skills/context-engineering) | Course |
+| LangGraph | [LangGraph – Pluralsight](https://app.pluralsight.com/paths/skills/langgraph) | Course |
+| AI Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
 | LLM Security | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Explainable AI (XAI) | [SHAP Documentation](https://shap.readthedocs.io/en/latest/) | Docs |
 | Survival Analysis | [lifelines Documentation](https://lifelines.readthedocs.io/en/latest/) | Docs |
