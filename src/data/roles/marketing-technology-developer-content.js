@@ -11,18 +11,21 @@ Marketing Technology Developers apply software engineering and data science to m
 
 | Topic | Resource | Type |
 |---|---|---|
-| Python | [Python Essentials – Pluralsight](https://app.pluralsight.com/paths/skills/python-essentials) | Course |
 | Python | [freeCodeCamp – Python](https://www.freecodecamp.org/learn/python-v9/) | Interactive |
 | ML Overview | [Machine Learning Explained Simply (12 min)](https://www.youtube.com/watch?v=Au1OxVSyGas) | Video |
-| SQL | [SQLBolt -- Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
+| SQL | [SQLBolt – Interactive SQL Tutorial](https://sqlbolt.com/) | Interactive |
 | APIs Overview | [Every Popular API Style Explained](https://www.youtube.com/watch?v=xJFzPSAw4Fo) | Video |
-| Generative AI for Data | [Generative AI for Data Science – Pluralsight](https://app.pluralsight.com/paths/skills/generative-ai-for-data-science) | Course |
+| HTTP Fundamentals | [HTTP Crash Course](https://www.youtube.com/watch?v=iYM2zFP3Zn0) | Video |
+| Networking Basics | [Networking for Developers](https://www.youtube.com/watch?v=qiQR5rTSshw) | Video |
+| Generative AI Overview | [Google – Introduction to Generative AI](https://www.cloudskillsboost.google/course_templates/536) | Course |
 
 ### After completing Beginner you should be able to:
 
 - Write Python scripts to query and transform data
 - Query a database using SQL with filters, joins and aggregations
-- Describe how APIs work and consume a REST API
+- Describe how REST, GraphQL, webhooks and websockets differ and when to use each
+- Explain the HTTP request–response cycle, key methods, and status codes
+- Describe the OSI model layers and identify the network devices that operate at each layer
 - Explain what machine learning is and give relevant marketing use cases
 
 For deep explanations of each concept, see the [Beginner Concept Reference](Marketing-Technology-Developer/Beginner.md).
@@ -37,9 +40,8 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Mark
 | A/B Testing | [A/B Testing – Udacity (Free)](https://www.udacity.com/course/ab-testing--ud257) | Course |
 | Feature Engineering | [Kaggle – Feature Engineering](https://www.kaggle.com/learn/feature-engineering) | Interactive |
 | ML Algorithms | [All ML Algorithms Explained in 17 min](https://www.youtube.com/watch?v=E0Hmnixke2g) | Video |
-| Prompt Engineering | [Prompt Engineering and GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/prompt-engineering-and-generative-ai) | Course |
-| Context Engineering | [Context Engineering – Pluralsight](https://app.pluralsight.com/paths/skills/context-engineering) | Course |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
+| Prompt Engineering | [Learn Prompting – Open Source Guide](https://learnprompting.org/docs/introduction) | Docs |
+| Context Engineering | [Anthropic – Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview) | Docs |
 | Customer Data Platforms | [Segment CDP Introduction](https://segment.com/docs/getting-started/) | Docs |
 | Analytics | [Google Analytics 4 – Developer Documentation](https://developers.google.com/analytics/devguides/collection/ga4) | Docs |
 | A/B Testing (Supplement) | [Evan Miller – How Not To Run an A/B Test](https://www.evanmiller.org/how-not-to-run-an-ab-test.html) | Article |
@@ -47,7 +49,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Mark
 ### After completing Mid you should be able to:
 
 - Create data visualisations to communicate campaign performance
-- Design and analyse an A/B test
+- Design and analyse an A/B test, including pre-test power analysis and common pitfalls
 - Engineer features from marketing data for ML models
 - Write effective prompts for marketing content and analysis tasks
 - Evaluate when to apply different ML algorithms
@@ -62,22 +64,22 @@ For deep explanations of each concept, see the [Mid Concept Reference](Marketing
 
 | Topic | Resource | Type |
 |---|---|---|
-| RAG Systems | [RAG for Developers – Pluralsight](https://app.pluralsight.com/paths/skills/retrieval-augmented-generation-rag-for-developers) | Course |
-| LangGraph | [LangGraph – Pluralsight](https://app.pluralsight.com/paths/skills/langgraph) | Course |
-| Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
+| RAG Systems | [LangChain – RAG Tutorial](https://python.langchain.com/docs/tutorials/rag/) | Docs |
+| LangGraph | [LangGraph – Official Docs](https://langchain-ai.github.io/langgraph/) | Docs |
+| Architecture Patterns | [Martin Fowler – Patterns of Enterprise Application Architecture](https://martinfowler.com/eaaCatalog/) | Docs |
 | System Design | [System Design – 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
 | LLM Security Patterns | [Design Patterns for Securing LLM Agents](https://arxiv.org/abs/2506.08837) | Paper |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
 | MLOps for Marketing | [Microsoft Learn – MLOps with Azure ML](https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow/) | Interactive |
+| EU AI Act Overview | [EU AI Act – Official Text Summary](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai) | Docs |
 
 ### After completing Senior you should be able to:
 
 - Design and implement a RAG-based marketing tool
-- Build and orchestrate an AI agent workflow
-- Apply AI architecture patterns to a marketing platform
-- Identify LLM security risks in a customer-facing AI product
+- Build and orchestrate an AI agent workflow using LangGraph
+- Apply architecture patterns (Lambda, Kappa, medallion, event-driven) to a marketing platform
+- Identify LLM security risks in a customer-facing AI product and apply defence-in-depth controls
+- Apply AI governance and EU AI Act requirements to marketing AI systems
 
 For deep explanations of each concept, see the [Senior Concept Reference](Marketing-Technology-Developer/Senior.md).
 
@@ -89,6 +91,58 @@ Return to the [Role Roadmap index](README.md).
 # Beginner Concept Reference – Marketing Technology Developer
 
 This document provides in-depth explanations of the core concepts covered at the Beginner level of the Marketing Technology Developer learning path. Use it alongside the resources listed in the main learning path to build a solid foundation before progressing to the Mid level.
+
+---
+
+## HTTP – The Protocol Powering Every Marketing API Call
+
+HTTP (Hypertext Transfer Protocol) is the foundational communication protocol of the web. Every time a marketing platform fetches campaign data, a tag fires on a page, or a webhook delivers a conversion event to your pipeline, it is using HTTP. Understanding how HTTP works is not just theoretical knowledge — it determines how you debug integrations, secure data in transit, and reason about what happens when things go wrong.
+
+HTTP is stateless: every request is a completely independent transaction. The server has no memory of previous requests, which means each call must carry everything the server needs to process it — credentials, parameters, and context alike.
+
+**Why it matters:** Marketing technology developers call APIs constantly — advertising platform APIs, CRM APIs, analytics collection endpoints, webhook receivers. When something breaks — a 401 comes back instead of a 200, a webhook silently stops delivering, a CORS error blocks an event — your ability to read and reason about HTTP request and response details is the difference between a five-minute fix and hours of guessing. Tools like the browser's Network tab and Postman expose the raw HTTP layer directly; fluency there is essential.
+
+**Key things to understand:**
+
+- **HTTP methods** define the intent of a request. \`GET\` retrieves data without side effects. \`POST\` creates a new resource or submits data — the typical method for form submissions and event ingestion. \`PUT\` replaces an existing resource entirely. \`PATCH\` partially updates it. \`DELETE\` removes it. Knowing the correct method matters because servers enforce them, and using the wrong one will return an error or produce unintended behaviour.
+- **Request and response anatomy**: every HTTP message has a request line or status line, headers, and optionally a body. Headers carry metadata — \`Content-Type\` tells the receiver how to parse the body, \`Authorization\` carries credentials, \`Accept\` tells the server what response formats the client can handle. The body carries the actual payload: form data, JSON, or a file.
+- **Status codes** are the first thing to check when an API call fails. The 200 range means success: \`200 OK\` is the standard success response, \`201 Created\` means a resource was created. The 300 range covers redirects. The 400 range means the client sent something wrong: \`400 Bad Request\` (malformed input), \`401 Unauthorized\` (missing or invalid credentials), \`403 Forbidden\` (authenticated but not permitted), \`404 Not Found\`. The 500 range means something failed on the server side and is not the caller's fault.
+- **HTTPS** is HTTP with TLS (Transport Layer Security) encryption. All data in transit is encrypted, preventing interception or tampering. Any system that transmits customer data — analytics hits, form submissions, API calls carrying personal data — must use HTTPS. This is a legal requirement under GDPR as well as a basic security expectation.
+- **HTTP/2** improves on HTTP/1.1 through multiplexing: multiple requests and responses can be in flight simultaneously over a single connection, reducing the latency of loading many resources (scripts, stylesheets, tracking pixels) at once.
+- **The Network tab** in browser developer tools exposes the raw HTTP layer for every request the page makes. You can inspect request and response headers, the body, timing, and status codes. This is the primary tool for debugging tracking implementations, verifying that analytics events are firing correctly, and checking that API calls from the browser are constructed as intended.
+
+**Common pitfalls:**
+
+- Confusing a \`401 Unauthorized\` (authentication failure — credentials are missing or invalid) with a \`403 Forbidden\` (authorisation failure — credentials are valid but the account does not have permission). The fix is different for each.
+- Not checking \`Content-Type\` headers when sending data to an API — sending JSON without setting \`Content-Type: application/json\` causes many APIs to reject the request with a 400 error.
+- Assuming HTTPS is optional for internal tools; any system processing personal data must use HTTPS regardless of whether it is public-facing.
+- Treating 500-range errors as problems with the request rather than with the server; retrying without delay can worsen an already overloaded service.
+
+---
+
+## Networking Basics – How Data Moves Between Systems
+
+Marketing technology systems are distributed by nature: data moves between browsers, CDNs, web servers, databases, marketing platforms, and cloud services. Understanding the network concepts that govern this movement helps you design more reliable integrations, troubleshoot connectivity problems, and have productive conversations with infrastructure teams.
+
+The OSI (Open Systems Interconnection) model provides a layered framework for understanding how network communication works. It has seven layers; the three most relevant for software developers are the bottom three.
+
+**Why it matters:** When a data pipeline fails to reach an API endpoint, when a webhook is not received, or when an analytics event never arrives at the collection server, the root cause is often a network-layer problem. Knowing the vocabulary — which device operates at which layer, what a router does versus a switch, what DNS is for — lets you isolate the problem faster and communicate clearly with the people who can fix it.
+
+**Key things to understand:**
+
+- **Layer 1 – Physical**: the transmission of raw bits over a physical medium (cable, fibre, radio). Devices at this layer include analog modems (which convert digital signals to analog for transmission over telephone lines) and hubs (which replicate an incoming electrical signal out all other ports without any awareness of addresses or destinations). Hubs are largely obsolete in modern networks.
+- **Layer 2 – Data Link**: responsible for transferring data between two directly connected nodes and detecting transmission errors. The key device at this layer is a **switch**, which learns the hardware (MAC) address of each device connected to its ports and forwards frames only to the correct port rather than broadcasting to all ports as a hub does. This makes switches far more efficient and forms the basis of local area network (LAN) design.
+- **Layer 3 – Network**: responsible for routing packets between different networks. The key device is a **router**, which reads IP addresses and determines the best path for a packet to reach its destination across interconnected networks. Every time data leaves one network and enters another — for example, from your browser to a cloud API — a router is making that decision.
+- **IP addresses** identify devices on a network. IPv4 addresses are 32-bit numbers written in dotted decimal notation (e.g., 192.168.1.1). IPv6 uses 128-bit addresses to accommodate the vastly larger number of internet-connected devices. Subnetting divides a network into smaller segments, improving security and performance by controlling which devices can reach each other directly.
+- **DNS (Domain Name System)** translates human-readable domain names (e.g., api.platform.com) into IP addresses. Every API call begins with a DNS lookup. Slow or failed DNS resolution is a common cause of integration failures that can look like network errors or timeouts.
+- **TCP vs UDP**: TCP (Transmission Control Protocol) establishes a reliable, ordered connection with error checking and acknowledgement — used by HTTP, HTTPS, and most API protocols where data integrity matters. UDP (User Datagram Protocol) sends packets without guaranteeing delivery or order — used for real-time video streaming, DNS queries, and contexts where speed matters more than reliability.
+- **Firewalls and security groups** control which traffic is permitted to reach a server based on rules about source IP, destination IP, port, and protocol. When an API call is rejected silently at the network level rather than returning an HTTP error, a firewall rule is a likely cause.
+
+**Common pitfalls:**
+
+- Treating network errors and HTTP errors as the same thing — a connection timeout means the packet never reached the server, while a 500 error means it did reach the server but something failed there. The diagnosis and fix are different.
+- Not accounting for DNS caching when switching API endpoints or changing IP addresses; stale DNS records can cause continued routing to old infrastructure for minutes or hours.
+- Confusing a switch (Layer 2, forwards by MAC address within a LAN) with a router (Layer 3, forwards by IP address between networks).
 
 ---
 
@@ -147,29 +201,33 @@ Marketing databases typically contain tables for customers, orders, campaign eve
 
 ---
 
-## APIs – How They Work and Why Marketing Platforms Use Them
+## APIs – Styles, HTTP, and How Marketing Platforms Communicate
 
 An API (Application Programming Interface) is a defined contract that lets one piece of software communicate with another. In the context of marketing technology, APIs are the primary mechanism by which data moves between platforms — for example, pulling impressions from an advertising platform, pushing audience segments to an email tool, or triggering a personalisation engine when a user visits a website.
 
-Understanding APIs means you can integrate marketing tools without relying on manual exports, and you can build automation that keeps systems in sync in near real time.
+Understanding APIs — not just REST but the full landscape of communication styles — means you can integrate marketing tools without relying on manual exports, build automation that keeps systems in sync, and diagnose problems when integrations fail.
 
-**Why it matters:** Modern marketing stacks are made up of many specialised tools — ad platforms, email systems, CRMs, analytics tools — none of which are built to talk to each other by default. APIs are the connective tissue. A marketing technology developer who understands APIs can automate data flows, build integrations, and reduce the manual work that would otherwise fall on analysts or campaign managers.
+**Why it matters:** Modern marketing stacks are made up of many specialised tools — ad platforms, email systems, CRMs, analytics tools — none of which are built to talk to each other by default. APIs are the connective tissue. A marketing technology developer who understands the different API styles can automate data flows, build integrations, and reduce the manual work that would otherwise fall on analysts or campaign managers.
 
 **Key things to understand:**
 
-- REST APIs are stateless — each request contains all the information needed to process it. Resources are identified by URLs, and the HTTP method determines the action: \`GET\` reads data, \`POST\` creates a new resource, \`PUT\` replaces an existing resource, \`PATCH\` partially updates a resource, and \`DELETE\` removes it. Data is most commonly exchanged in JSON format.
+- **REST** (Representational State Transfer) has been the dominant API style for over two decades. It organises data into resources, each identified by a URL. The HTTP method tells the server what to do: \`GET\` reads data, \`POST\` creates a resource, \`PATCH\` partially updates it, \`PUT\` replaces it entirely, and \`DELETE\` removes it. REST is stateless — every request must carry all the information needed to process it, including authentication. Responses are typically JSON. Most advertising platform APIs (Google Ads, Meta, LinkedIn), CRM APIs, and CDP APIs are REST.
+- **SOAP** (Simple Object Access Protocol) wraps every message in XML and enforces a strict contract defined by a WSDL (Web Services Description Language) document. It is verbose but highly standardised and provides built-in standards for security and transactions. Legacy enterprise systems — especially in finance and insurance — frequently use SOAP. You may encounter it when integrating with older CRM or ERP systems.
+- **GraphQL** was developed by Facebook to solve over-fetching and under-fetching: with REST you often get more data than you need (wasting bandwidth) or must make multiple calls to assemble a complete view. With GraphQL, the client specifies exactly what fields it wants in a single query and gets precisely that back. This is particularly valuable in mobile contexts where bandwidth efficiency matters. The trade-off is added server complexity.
+- **gRPC** uses Protocol Buffers (a compact binary format) instead of text-based JSON, making it significantly faster and more efficient than REST. Services and methods are defined in a \`.proto\` file, and client and server code is generated automatically, enabling strongly-typed communication across services written in different programming languages. gRPC is the choice for high-throughput internal microservice communication — not typically used for public-facing APIs.
+- **Webhooks** invert the traditional API model: instead of your system polling an API repeatedly asking "has anything changed?", the external platform calls your endpoint when an event occurs. When a payment is processed, a user signs up, or a form is submitted, the source system fires an HTTP POST to a URL you have registered. Webhooks are used extensively in marketing — Stripe payment webhooks, Segment event webhooks, email platform delivery notifications. Your endpoint must be publicly reachable, respond quickly, and handle duplicates gracefully.
+- **WebSockets** open a persistent two-way connection between client and server, enabling real-time bidirectional communication without repeated request–response cycles. They power live chat, real-time dashboards, and collaborative editing tools. Less common in batch marketing data work but relevant for real-time personalisation engines and live analytics dashboards.
 - Authentication is typically handled with API keys, OAuth tokens, or service accounts; credentials must never be stored in code repositories.
-- Rate limits control how many requests you can make in a given time window; exceeding them returns error codes such as 429 and requires retry logic with exponential back-off.
+- Rate limits control how many requests you can make in a given time window; exceeding them returns a 429 status code and requires retry logic with exponential back-off.
 - Pagination is used when an endpoint returns large datasets in chunks; you must iterate through pages to retrieve all records.
-- API documentation describes available endpoints, required parameters, expected responses, and error codes — reading it carefully before writing code saves significant debugging time.
-- Webhooks are the reverse of a standard API call: the external platform pushes data to your endpoint when an event occurs, rather than you polling for updates.
 
 **Common pitfalls:**
 
 - Not validating API responses before using the data, assuming the schema will always match documentation.
 - Storing API keys in plain text in scripts or notebooks that end up in source control.
 - Not implementing retry logic, so a single transient failure breaks an entire nightly pipeline.
-- Confusing REST with GraphQL or SOAP; different platforms use different styles, and the calling pattern differs.
+- Polling an API at high frequency when a webhook would deliver the same data more efficiently and with lower latency.
+- Assuming all APIs use REST; encountering SOAP or GraphQL without prior knowledge creates confusion about the calling pattern.
 
 ---
 
@@ -633,7 +691,7 @@ AI governance in marketing refers to the frameworks, policies, and processes tha
 
 ## AI Policy — Organisational Principles
 
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
+The organisation's AI Policy establishes the governance framework for all AI use within the organisation. The key principles are summarised here.
 
 The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
 

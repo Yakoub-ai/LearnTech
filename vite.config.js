@@ -11,6 +11,10 @@ export default defineConfig({
     },
   },
   assetsInclude: ['**/*.md'],
+  oxc: {
+    include: /\.(jsx|tsx|ts)$/,
+    exclude: /\.js$/,
+  },
   test: {
     globals: true,
     environment: 'jsdom',
