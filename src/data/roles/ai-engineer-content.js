@@ -355,7 +355,7 @@ At the Mid level, you extend Beginner-level prompt engineering with more powerfu
 
 **Chain-of-thought (CoT) prompting** instructs the model to reason step by step before producing the final answer. Instead of "What is the best coverage for a small business?", you write "Think through the relevant risk factors step by step, then recommend coverage." CoT reliably improves accuracy on multi-step reasoning tasks, at the cost of longer outputs and higher token costs.
 
-**Structural patterns.** Separate instructions from content using delimiters — XML tags (\`<document>...</document>\`), triple quotes, or markdown headers. This reduces ambiguity about what is instruction versus what is data. A system prompt that says \`Summarise the document below. <document>{{doc}}</document>\` is clearer than one that mixes instructions and content in flowing prose.
+**Structural patterns.** Separate instructions from content using delimiters — XML tags (\`<document>...</document>\`), triple quotes, or markdown headers. This reduces ambiguity about what is instruction versus what is data. A system prompt that says \`Summarise the document below. <document>{doc}</document>\` is clearer than one that mixes instructions and content in flowing prose.
 
 **Limitations are real.** Prompts shift probabilities — they do not deterministically control behaviour. The "lost in the middle" effect is well-documented: models attend less reliably to information placed in the middle of a long context than to information at the edges. Long prompts can cause earlier instructions to lose influence. No prompt can reliably override a model's safety training.
 

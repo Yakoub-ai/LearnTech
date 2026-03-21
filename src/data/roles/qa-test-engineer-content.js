@@ -20,6 +20,7 @@ QA and Test Engineers ensure software quality through systematic testing strateg
 | Testing Fundamentals | [Software Testing Explained in 100 Seconds – Fireship](https://www.youtube.com/watch?v=u6QfIXgjwGQ) | Video |
 | Testing Introduction | [JavaScript Testing Introduction Tutorial – Academind](https://www.youtube.com/watch?v=r9HdJ8P6GQI) | Video |
 | Browser Developer Tools | [Chrome DevTools Overview – Google](https://developer.chrome.com/docs/devtools/overview/) | Docs |
+| Testing Mindset | [Ministry of Testing – 30 Days of Testing](https://www.ministryoftesting.com/articles/30-days-of-testing) | Article |
 
 ### After completing Beginner you should be able to:
 
@@ -48,6 +49,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](QA-T
 | BDD and Gherkin | [Cucumber – BDD Overview](https://cucumber.io/docs/bdd/) | Docs |
 | CI/CD Test Integration | [Microsoft Learn – Getting Started with Continuous Testing](https://learn.microsoft.com/en-us/azure/devops/pipelines/test/getting-started-with-continuous-testing) | Docs |
 | Testing Strategies | [JavaScript Testing Introduction Tutorial – Academind](https://www.youtube.com/watch?v=r9HdJ8P6GQI) | Video |
+| Docker for Test Environments | [Docker in 100 Seconds – Fireship](https://www.youtube.com/watch?v=gAkwW2tuIqE) | Video |
 | Contract Testing | [Pact – Getting Started](https://docs.pact.io) | Docs |
 | Test Data Management | [Ministry of Testing – Test Data Management](https://www.ministryoftesting.com/articles/test-data-management) | Article |
 
@@ -60,6 +62,7 @@ For deep explanations of each concept, see the [Beginner Concept Reference](QA-T
 - Create and execute a basic performance test with k6 that measures response times and throughput under load
 - Write BDD scenarios in Gherkin syntax and explain how they bridge communication between technical and non-technical stakeholders
 - Explain consumer-driven contract testing and describe how Pact prevents integration failures between services
+- Explain what a Docker image and container are, write a basic Dockerfile for a test environment, and use Docker Compose to run a multi-container setup for isolated testing
 
 For deep explanations of each concept, see the [Mid Concept Reference](QA-Test-Engineer/Mid.md).
 
@@ -71,17 +74,15 @@ For deep explanations of each concept, see the [Mid Concept Reference](QA-Test-E
 |---|---|---|
 | Test Strategy and Architecture | [Martin Fowler – The Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html) | Article |
 | Google Testing Blog | [Google Testing Blog](https://testing.googleblog.com) | Blog |
-| Quality Engineering | [Quality Engineering – Pluralsight](https://www.pluralsight.com/courses/software-quality-assurance-testing-fundamentals) | Course |
+| Quality Engineering | [Ministry of Testing – Quality Engineering Podcast](https://www.ministryoftesting.com/podcasts) | Podcast |
 | Shift-Left Testing | [Microsoft Learn – Shift Left to Make Testing Fast and Reliable](https://learn.microsoft.com/en-us/devops/develop/shift-left-make-testing-fast-reliable) | Article |
 | Accessibility Testing | [WCAG 2.2 – W3C](https://www.w3.org/TR/WCAG22/) | Standard |
 | Security Testing | [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) | Guide |
 | Visual Regression Testing | [Playwright Visual Comparisons](https://playwright.dev/docs/test-snapshots) | Docs |
 | Networking for Testers | [Computer Networking Full Course](https://www.youtube.com/watch?v=qiQR5rTSshw) | Video |
-| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) | Internal |
-| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) | Internal |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
 | Regulatory Testing | [ISTQB – Testing in Regulated Industries](https://www.istqb.org/certifications/automotive-tester) | Reference |
-| AI-Assisted Development | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
+| AI-Assisted Testing | [GitHub Copilot for Testing – GitHub Docs](https://docs.github.com/en/copilot) | Docs |
 
 ### After completing Senior you should be able to:
 
@@ -138,6 +139,8 @@ The ISTQB (International Software Testing Qualifications Board) Foundation Level
 
 The test pyramid is a model that describes the ideal distribution of test types in a software project. At the base are unit tests -- fast, isolated, and numerous. In the middle are integration tests (sometimes called service tests) that verify the interaction between components. At the top are end-to-end (E2E) tests that exercise the full system through its user interface. The pyramid shape reflects the principle that you should have many fast, cheap tests at the bottom and fewer slow, expensive tests at the top.
 
+The Fireship "Software Testing Explained in 100 Seconds" video captures this clearly: software is dynamic with evolving requirements, and no one fully understands every layer of the stack. The goal is not perfect understanding -- it is to ensure the code matches the product requirements. At the most granular level, unit tests check individual functions ("does this function return the proper value when given arguments A and B?"). Integration tests check how components work together ("can this component use the database service to fetch data?"). End-to-end tests simulate actual user behaviour in a browser or device -- like having a robot perform all your manual testing. Test runners like Jest or Karma can execute all tests automatically in the background or on a CI server before deployment.
+
 Testing is broadly divided into functional testing (does the software do what it should?) and non-functional testing (how well does it do it?). Functional testing includes unit testing, integration testing, system testing, and acceptance testing. Non-functional testing includes performance testing, security testing, usability testing, and accessibility testing.
 
 **Why it matters:** These fundamentals are the vocabulary and mental models you will use every day. Understanding the test pyramid prevents you from building a test suite that is slow, brittle, and expensive to maintain. Understanding test types helps you choose the right approach for each situation.
@@ -148,6 +151,7 @@ Testing is broadly divided into functional testing (does the software do what it
 - Static testing (reviewing code, requirements, and designs without executing them) catches defects earlier and more cheaply than dynamic testing (executing the software).
 - Test levels (unit, integration, system, acceptance) correspond to different scopes and objectives. Each level answers a different question about the software.
 - Regression testing is the practice of re-running existing tests after changes to ensure that previously working functionality has not been broken.
+- In test files, you will typically find a test suite (a \`describe\` block grouping related tests) containing individual tests (each starting with \`it\` or \`test\`) that execute code and then check one or more expectations or assertions. If an expectation returns false, the test fails; if true, it passes.
 
 **Common pitfalls:**
 
@@ -163,6 +167,8 @@ The freeCodeCamp Quality Assurance certification provides hands-on experience wi
 
 The curriculum is structured around projects. You do not just read about testing -- you write tests for real applications and verify your own code. This project-based approach builds practical skills that reading documentation alone cannot provide. The certification covers both functional testing (testing routes and responses in a web application) and unit testing (testing individual functions and modules).
 
+The Academind JavaScript Testing tutorial reinforces why this hands-on practice matters: automated tests allow you to see breaking changes instantly whenever you change code, without manually re-testing everything. If you change code in one place and it breaks something in a completely different part of the application, well-written tests catch this immediately. The video also highlights a critical workflow benefit: you can integrate tests into your build pipeline so that a Git commit triggers automated testing in the cloud, and if tests pass, the code is deployed automatically. Tests become not just a quality gate but an integral part of the delivery chain.
+
 Working through the certification also introduces you to the rhythm of test-driven development: write a test, see it fail, write the code to make it pass, refactor. Even if you do not adopt strict TDD as your daily practice, experiencing this cycle builds intuition about how tests relate to the code they verify.
 
 **Why it matters:** Theoretical knowledge of testing is necessary but not sufficient. You need practice writing tests, interpreting failures, and debugging both the code under test and the tests themselves. The freeCodeCamp certification provides this practice in a structured, guided environment.
@@ -173,12 +179,14 @@ Working through the certification also introduces you to the rhythm of test-driv
 - Functional tests for web applications typically make HTTP requests to routes and assert on the response status, headers, and body content.
 - Test suites are organised into \`describe\` blocks (grouping related tests) and \`it\` blocks (individual test cases). This structure makes test output readable and helps locate failures.
 - The freeCodeCamp certification requires you to complete projects to earn the credential, reinforcing that QA is a practice-based skill.
+- Writing tests forces you to write modular code. Functions with no dependencies are the easiest to unit-test. When you find code that is hard to test, it is usually a signal that the code is too tightly coupled and should be refactored.
 
 **Common pitfalls:**
 
 - Writing assertions that are too vague (e.g., only checking that a response has status 200 without verifying the response body contains the expected data).
 - Copying test code without understanding what each assertion checks, which defeats the purpose of learning.
 - Skipping the projects and only reading the instructions, missing the hands-on practice that builds real competence.
+- Not adding a second test case that checks the opposite condition or uses different inputs. A test that only verifies the happy path can produce false positives if the code always returns the expected value regardless of input.
 
 ---
 
@@ -513,6 +521,36 @@ This approach is fundamentally different from traditional integration testing, w
 - Not running provider verification in the provider's CI pipeline, which defeats the purpose of catching breaking changes early.
 
 ---
+
+## Docker for Test Environments – Reproducible, Isolated Testing
+
+Docker is a tool for packaging software so it can run on any hardware by reproducing environments consistently. For QA engineers, Docker is primarily valuable as a way to create isolated, reproducible test environments -- environments where the application, its dependencies, and its configuration are identical regardless of which machine or CI agent runs the tests.
+
+The three core concepts are: a Dockerfile (a blueprint for building an image), a Docker image (a template for running containers), and a container (a running process spawned from an image). One image can be used to spawn the same process multiple times in multiple places. This solves the classic "it works on my machine" problem by ensuring that every environment -- developer laptop, CI server, staging -- runs exactly the same stack.
+
+A typical use case for QA is running a test database (MySQL, PostgreSQL, Redis) alongside the application under test in a Docker Compose setup. Docker Compose is a tool for running multiple containers together. You define each service (the application, the database, a mock API server) in a \`docker-compose.yaml\` file and start them all with a single command. When the tests finish, \`docker compose down\` tears everything down cleanly. No state persists between test runs, which is exactly what you want for reliable, repeatable tests.
+
+Port forwarding is how you access a containerised service from outside the container. The \`-p\` flag maps a port on the host machine to a port in the container. For example, \`-p 5000:8080\` maps host port 5000 to container port 8080, allowing your tests running on the host to send requests to the containerised application.
+
+Volumes allow containers to share data with the host or with each other. For QA, this is useful for mounting test fixtures into a container or persisting test results out of a container after it stops.
+
+**Why it matters:** Docker enables QA engineers to spin up complete, consistent test environments in seconds, run tests in isolation from the host machine, and tear down environments cleanly after each run. This is foundational for reliable CI/CD pipelines and eliminates a large class of "environment-related" false failures.
+
+**Key things to understand:**
+
+- A Docker image is immutable. Once built, it does not change. This immutability is what guarantees reproducibility: the same image always produces the same environment.
+- The \`.dockerignore\` file works like \`.gitignore\` and prevents large or sensitive files (like \`node_modules\`) from being copied into the image during the build.
+- Docker Desktop provides a GUI for inspecting running containers, viewing logs, and executing commands inside a container -- useful for debugging test environment issues.
+- The \`docker exec\` command lets you open a shell inside a running container, which is invaluable for diagnosing why a test is failing in a containerised environment.
+- Each container should run a single process. If your test environment needs multiple processes (application server, database, mock service), use Docker Compose with separate containers for each.
+
+**Common pitfalls:**
+
+- Copying the entire project directory (including \`node_modules\`) into the image instead of using a \`.dockerignore\` file, which massively increases image size and build time.
+- Installing dependencies after copying source code, which defeats Docker's layer caching. Always copy \`package.json\` and run \`npm install\` before copying the rest of the source, so dependency layers are cached when only source code changes.
+- Forgetting that containers do not persist state between runs. Any data written inside a container during a test is lost when the container stops, unless you use a volume. This is usually desirable for test isolation but can cause confusion when debugging.
+
+---
 `,
   senior: `# QA / Test Engineer – Senior Concept Reference
 
@@ -784,7 +822,7 @@ Unlike functional testing (does the feature work?) or performance testing (does 
 
 ## AI Policy — Organisational Principles
 
-The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
+The organisation's AI Policy establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
 
 The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
 
