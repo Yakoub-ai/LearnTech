@@ -1,7 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Helmet } from 'react-helmet-async'
 import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
 import PageHelmet, { SITE_URL } from '../components/seo/PageHelmet'
@@ -121,22 +120,20 @@ export default function RolePage() {
         path={`/role/${roleId}`}
         ogType="article"
       />
-      <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Course",
-            "name": role.name,
-            "description": role.description,
-            "provider": {
-              "@type": "Organization",
-              "name": "LearnTech"
-            },
-            "educationalLevel": "Beginner to Senior",
-            "url": `${SITE_URL}/role/${roleId}`
-          })}
-        </script>
-      </Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Course",
+          "name": role.name,
+          "description": role.description,
+          "provider": {
+            "@type": "Organization",
+            "name": "LearnTech"
+          },
+          "educationalLevel": "Beginner to Senior",
+          "url": `${SITE_URL}/role/${roleId}`
+        })}
+      </script>
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" />
         All Roles

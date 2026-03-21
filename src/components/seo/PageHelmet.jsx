@@ -1,5 +1,3 @@
-import { Helmet } from 'react-helmet-async'
-
 const SITE_NAME = 'LearnTech'
 export const SITE_URL = import.meta.env.VITE_APP_URL || 'https://learntech.vercel.app'
 const DEFAULT_DESCRIPTION = 'Interactive learning platform for tech roles and programming languages. Master AI engineering, backend development, DevOps, and more with structured roadmaps.'
@@ -10,7 +8,7 @@ export default function PageHelmet({ title, description, path = '', ogType = 'we
   const url = `${SITE_URL}${path}`
 
   return (
-    <Helmet>
+    <>
       <title>{fullTitle}</title>
       <meta name="description" content={desc} />
       <link rel="canonical" href={url} />
@@ -22,6 +20,6 @@ export default function PageHelmet({ title, description, path = '', ogType = 'we
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={desc} />
-    </Helmet>
+    </>
   )
 }
