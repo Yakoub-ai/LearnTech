@@ -4,8 +4,12 @@
  */
 
 export async function loadLanguageMarkdownContent(languageId) {
-  const { languageMarkdownContent } = await import('../languageMarkdownContent.js')
-  return languageMarkdownContent[languageId] || {}
+  try {
+    const mod = await import(`../languages/${languageId}-content.js`)
+    return mod.content || {}
+  } catch {
+    return {}
+  }
 }
 
 export async function loadLanguageQuizzes(languageId) {
