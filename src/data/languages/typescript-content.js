@@ -21,15 +21,15 @@ let uniqueKey: symbol = Symbol("id");
 
 let city = "Berlin"; // TypeScript infers: string
 let count = 42;      // TypeScript infers: number
-
 \`\`\`
 
 **Why it matters:** Type annotations catch bugs at compile time rather than at runtime. A misspelled property or a wrong argument type is caught instantly in your editor, saving hours of debugging.
 
 **Key things to understand:**
 - TypeScript **erases** all type annotations at compile time — they produce zero runtime overhead
-- Type inference means you do not need to annotate everything; TypeScript is smart enough to figure out most types
-- The \`any\` type opts out of type checking — avoid it whenever possible
+- Type inference means you do not need to annotate everything; TypeScript is smart enough to figure out most types from context
+- The \`any\` type opts out of type checking — avoid it whenever possible; use \`unknown\` when you genuinely don't know the type
+- In VS Code, hover over any variable (or press Cmd/Ctrl+K, Cmd/Ctrl+I) to see what TypeScript has inferred — this is one of the fastest ways to learn
 
 > **Role connection:** Frontend Developers use TypeScript in React, Angular, and Vue projects. Backend Developers use it with Node.js and frameworks like NestJS. Full-Stack Developers benefit from shared types between client and server.
 
@@ -67,7 +67,6 @@ let person: { name: string; age: number; email?: string } = {
     age: 30
 };
 
-
 let config: { readonly host: string; readonly port: number } = {
     host: "localhost",
     port: 3000
@@ -97,6 +96,8 @@ let company: {
 \`\`\`
 
 **Why it matters:** Object types model the shape of your data. In a real application, almost everything — API responses, database records, component props — is an object. Getting the types right means your editor auto-completes every property and catches every typo.
+
+When you define an object type inline, TypeScript will reject any property not included in that shape. This is called **excess property checking** and it prevents silent bugs from misspelled field names.
 
 ---
 
@@ -194,19 +195,15 @@ graph TD
 - **Type aliases** can represent unions, tuples, primitives, and computed types. Interfaces cannot.
 - For object shapes, both work. Pick one convention and stick with it across your project.
 - The TypeScript team generally recommends \`interface\` for public API shapes and \`type\` for everything else.
+- Avoid the pattern of creating a separate \`types.ts\` file for every feature folder — co-locate types with the code that uses them and let inference carry them further.
 
 > **Role connection:** Frontend Developers define component prop interfaces. Backend Developers define API request/response interfaces. Full-Stack Developers share interfaces between client and server code.
 
-### EXERCISE: Interfaces and Types
-
-\`\`\`typescript
-\`\`\`
-
 ---
 
-## 3. Enums
+## 3. Enums and Why \`as const\` Is Often Better
 
-Enums let you define a set of named constants. TypeScript supports both numeric and string enums.
+Enums let you define a set of named constants. TypeScript supports both numeric and string enums. But there is an important debate about whether to use the \`enum\` keyword at all.
 
 ### Numeric Enums
 
@@ -237,20 +234,31 @@ function handleResponse(status: HttpStatus): void {
 
 handleResponse(HttpStatus.OK);
 
-console.log(HttpStatus[200]); // "OK"
+console.log(HttpStatus[200]); // "OK"  — reverse mapping
 console.log(HttpStatus.OK);    // 200
 \`\`\`
+
+### The Problem with Numeric Enums
+
+Numeric enums compile to an object with **reverse mappings**. The compiled JavaScript for \`enum Direction { Up, Down, Left, Right }\` looks like this:
+
+\`\`\`javascript
+// Compiled output — not what you expect
+var Direction;
+(function (Direction) {
+    Direction[Direction["Up"] = 0] = "Up";
+    Direction[Direction["Down"] = 1] = "Down";
+    Direction[Direction["Left"] = 2] = "Left";
+    Direction[Direction["Right"] = 3] = "Right";
+})(Direction || (Direction = {}));
+// Results in: { Up: 0, Down: 1, Left: 2, Right: 3, 0: "Up", 1: "Down", 2: "Left", 3: "Right" }
+\`\`\`
+
+If you call \`Object.values(Direction)\`, you get \`[0, 1, 2, 3, "Up", "Down", "Left", "Right"]\` — probably not what you intended.
 
 ### String Enums
 
 \`\`\`typescript
-enum Color {
-    Red = "RED",
-    Green = "GREEN",
-    Blue = "BLUE",
-    Yellow = "YELLOW"
-}
-
 enum LogLevel {
     Debug = "DEBUG",
     Info = "INFO",
@@ -265,17 +273,35 @@ function log(message: string, level: LogLevel): void {
 log("Application started", LogLevel.Info);
 \`\`\`
 
-### const Enums and Alternatives
+String enums do NOT have reverse mappings, which makes them cleaner. But you still cannot pass the raw string \`"INFO"\` directly — you must use \`LogLevel.Info\`. This enforces nominal (name-based) typing in an otherwise structural type system.
+
+### The Modern Alternative: \`as const\`
+
+Many experienced TypeScript developers prefer a plain object with \`as const\` over the \`enum\` keyword:
 
 \`\`\`typescript
-const enum MathConstants {
-    Pi = 3.14159,
-    E = 2.71828,
-    Phi = 1.61803
+const LOG_LEVELS = {
+    Debug: "DEBUG",
+    Info: "INFO",
+    Warn: "WARN",
+    Error: "ERROR"
+} as const;
+
+// Extract the union type from the values
+type LogLevel = typeof LOG_LEVELS[keyof typeof LOG_LEVELS];
+// LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR"
+
+function log(message: string, level: LogLevel): void {
+    console.log("[" + level + "] " + message);
 }
 
-let circumference = 2 * MathConstants.Pi * 10;
+// You can use the object...
+log("Starting", LOG_LEVELS.Info);
 
+// ...or just pass the string literal directly
+log("Starting", "INFO");
+
+// Direction example
 const DIRECTIONS = {
     Up: "UP",
     Down: "DOWN",
@@ -286,13 +312,19 @@ const DIRECTIONS = {
 type Direction = typeof DIRECTIONS[keyof typeof DIRECTIONS];
 \`\`\`
 
-**Common pitfalls:**
-- Numeric enums have reverse mappings, which bloat the compiled JavaScript
-- \`const enum\` cannot be used with \`--isolatedModules\` (required by many bundlers)
-- Many teams prefer union types of string literals over enums for simplicity
-- String enums do NOT have reverse mappings
+**Why \`as const\` is often better:**
+- It is plain JavaScript — no special compilation step, no surprises at runtime
+- You can pass raw string literals directly without importing the object everywhere
+- The object values are what you expect — no reverse mapping bloat
+- Works correctly with \`--isolatedModules\` (required by Vite, esbuild, and most modern bundlers)
+- \`const enum\` inlines values and disappears at runtime, but is explicitly discouraged in library code and breaks with \`isolatedModules\`
 
-> **Role connection:** Backend Developers use enums for status codes, roles, and configuration options. Frontend Developers use them for component variants and theme values. DevOps Engineers encounter them in infrastructure-as-code tools like Pulumi.
+**When enums still make sense:**
+- Numeric enums where the integer values are meaningful (e.g., bitmasks)
+- Projects with heavy ORM or code-generation tooling that expect enum syntax
+- Teams migrating from C# or Java where the mental model maps well
+
+> **Role connection:** Backend Developers use enums or \`as const\` for status codes, roles, and config options. Frontend Developers use them for component variants and theme values. The \`as const\` pattern is increasingly the community standard.
 
 ---
 
@@ -321,7 +353,6 @@ type Status = "pending" | "active" | "inactive" | "deleted";
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 function setStatus(userId: number, status: Status): void {
-    // status can ONLY be one of the four literal values
     console.log("Setting user " + userId + " to " + status);
 }
 
@@ -390,26 +421,24 @@ graph LR
 - **Union** = "either this OR that" (widens the type)
 - **Intersection** = "this AND that" (narrows / combines the type)
 - Unions of object types with a shared discriminant field (like \`kind\`) enable **discriminated unions** — one of TypeScript's most powerful patterns
-
-### EXERCISE: Union and Intersection Types
-
-\`\`\`typescript
-\`\`\`
+- String literal unions like \`"pending" | "active" | "inactive"\` are often a better choice than \`enum\` for simple categorical values
 
 ---
 
 ## 5. Generics Basics
 
-Generics allow you to write reusable code that works with any type while preserving type safety. Think of them as "type parameters" — like function parameters, but for types.
+Generics allow you to write reusable code that works with any type while preserving type safety. Think of them as "type parameters" — like function parameters, but for types. This is how TypeScript enables flexibility without resorting to \`any\`.
 
-### Generic Functions
+### The Problem Generics Solve
 
 \`\`\`typescript
+// Without generics: lose type safety
 function firstElementAny(arr: any[]): any {
     return arr[0];
 }
-const val = firstElementAny([1, 2, 3]); // val is "any" — no type safety
+const val = firstElementAny([1, 2, 3]); // val is "any" — editor gives no help
 
+// With generics: full type safety
 function firstElement<T>(arr: T[]): T | undefined {
     return arr[0];
 }
@@ -417,19 +446,35 @@ function firstElement<T>(arr: T[]): T | undefined {
 const num = firstElement([1, 2, 3]);           // num is number
 const str = firstElement(["a", "b", "c"]);     // str is string
 const user = firstElement([{ name: "Alice" }]); // user is { name: string }
+\`\`\`
 
+TypeScript infers the type argument \`T\` from what you pass in — you rarely need to write it explicitly.
+
+### Generic Functions
+
+\`\`\`typescript
 function pair<A, B>(first: A, second: B): [A, B] {
     return [first, second];
 }
 
 const p = pair("hello", 42); // p is [string, number]
 
+// Constrained generic: T must have a .length property
 function longest<T extends { length: number }>(a: T, b: T): T {
     return a.length >= b.length ? a : b;
 }
 
 longest("hello", "hi");       // OK — strings have .length
 longest([1, 2, 3], [4, 5]);   // OK — arrays have .length
+
+// Generic with a key constraint
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+    return obj[key];
+}
+
+const user = { name: "Alice", age: 30 };
+const name = getProperty(user, "name");  // string — TypeScript knows the return type
+const age = getProperty(user, "age");    // number
 \`\`\`
 
 ### Generic Interfaces and Types
@@ -504,7 +549,7 @@ graph TD
     style G fill:#e3f2fd
 \`\`\`
 
-**Why it matters:** Without generics, you would either lose type safety (using \`any\`) or duplicate code for every type. Generics give you both flexibility and safety. Every major TypeScript library — React, Express, Prisma — uses generics extensively.
+**Why it matters:** Without generics, you would either lose type safety (using \`any\`) or duplicate code for every type. Generics give you both flexibility and safety. Every major TypeScript library — React, Express, Prisma — uses generics extensively. When you write \`useState<User | null>(null)\` in React, you are passing a type argument to a generic function.
 
 > **Role connection:** Frontend Developers use generics with React component props and hooks. Backend Developers use them with ORM models and API handlers. Library authors use generics to make their APIs flexible yet type-safe.
 
@@ -580,10 +625,6 @@ function addEventListener(event: string, handler: (e: Event) => void): void {
 addEventListener("click", (e) => {
     console.log(e.clientX, e.clientY); // e is MouseEvent
 });
-
-addEventListener("keydown", (e) => {
-    console.log(e.key); // e is KeyboardEvent
-});
 \`\`\`
 
 **Common pitfalls:**
@@ -626,6 +667,11 @@ let dangerous: any = "hello";
 dangerous.nonExistent.method(); // No error at compile time — crashes at runtime!
 
 let safe: unknown = "hello";
+// safe.toUpperCase(); // Error: Object is of type 'unknown'
+// Must narrow first:
+if (typeof safe === "string") {
+    safe.toUpperCase(); // OK
+}
 \`\`\`
 
 **Key things to understand:**
@@ -645,38 +691,27 @@ The \`tsconfig.json\` file configures the TypeScript compiler. Understanding its
 \`\`\`json
 {
     "compilerOptions": {
-        // Target JavaScript version
         "target": "ES2022",
-
-        // Module system
         "module": "ESNext",
         "moduleResolution": "bundler",
-
-        // Output directory
         "outDir": "./dist",
         "rootDir": "./src",
 
-        // Strict mode — ALWAYS enable this
         "strict": true,
 
-        // Additional strict checks
         "noUncheckedIndexedAccess": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
 
-        // Interop settings
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
 
-        // Source maps for debugging
         "sourceMap": true,
         "declaration": true,
 
-        // Skip type checking node_modules
         "skipLibCheck": true,
 
-        // Resolve JSON imports
         "resolveJsonModule": true
     },
     "include": ["src/**/*"],
@@ -688,20 +723,21 @@ The \`tsconfig.json\` file configures the TypeScript compiler. Understanding its
 
 ### What "strict" Enables
 
-\`\`\`typescript
-let name: string = "Alice";
+The \`strict: true\` flag is a shorthand for enabling all of these simultaneously:
 
-function greet(name: string) {} // OK
+| Flag | What it catches |
+|---|---|
+| \`strictNullChecks\` | Catches \`null\`/\`undefined\` being used where a value is expected |
+| \`noImplicitAny\` | Catches parameters without a type annotation |
+| \`strictFunctionTypes\` | Catches unsafe function parameter assignment |
+| \`strictPropertyInitialization\` | Catches class properties not set in the constructor |
+| \`strictBindCallApply\` | Catches incorrect arguments to \`.call\`, \`.bind\`, \`.apply\` |
+| \`useUnknownInCatchVariables\` | Makes caught errors \`unknown\` instead of \`any\` |
+| \`alwaysStrict\` | Emits "use strict" in output files |
 
+Always enable \`strict: true\`. There is almost no good reason to leave it off in a new project.
 
-\`\`\`
-
-> **Role connection:** DevOps Engineers configure TypeScript builds in CI/CD pipelines. Full-Stack Developers maintain shared tsconfig files in monorepos. Library authors use declaration: true to generate .d.ts files for consumers.
-
-### EXERCISE: tsconfig.json
-
-\`\`\`typescript
-\`\`\`
+> **Role connection:** DevOps Engineers configure TypeScript builds in CI/CD pipelines. Full-Stack Developers maintain shared tsconfig files in monorepos. Library authors use \`declaration: true\` to generate .d.ts files for consumers.
 
 ---
 
@@ -710,6 +746,8 @@ function greet(name: string) {} // OK
 TypeScript's type inference and narrowing system means you write fewer annotations while maintaining full type safety.
 
 ### Type Inference
+
+TypeScript infers types from the context of how values are used — you don't need to annotate everything.
 
 \`\`\`typescript
 let message = "hello";     // string
@@ -726,28 +764,30 @@ let user = {
     age: 30,
     isAdmin: false
 };
+// user is { name: string; age: number; isAdmin: boolean }
 
-const direction = "north"; // Type: "north" (not string)
-const count2 = 42;          // Type: 42 (not number)
-let mutable = "north";     // Type: string (can be reassigned)
+const direction = "north"; // Type: "north" (literal — not widened because it's const)
+let mutable = "north";     // Type: string (can be reassigned, so widened)
 
 const config = {
     api: "https://api.example.com",
     timeout: 5000,
     retries: 3
 } as const;
+// All properties are readonly literal types
 
-const names = ["Alice", "Bob", "Charlie"];
 names.forEach((name) => {
     // TypeScript knows name is string — no annotation needed
     console.log(name.toUpperCase());
 });
 
 document.addEventListener("click", (event) => {
-    // TypeScript knows event is MouseEvent
+    // TypeScript knows event is MouseEvent — inferred from the event name
     console.log(event.clientX, event.clientY);
 });
 \`\`\`
+
+**The key insight**: Inference means types defined in one place flow automatically to every place that value is consumed. Rather than re-annotating the same type at every layer, define it once and let TypeScript carry it through.
 
 ### Type Narrowing
 
@@ -830,6 +870,11 @@ function isString(value: unknown): value is string {
     return typeof value === "string";
 }
 
+interface User {
+    name: string;
+    email: string;
+}
+
 function isUser(value: unknown): value is User {
     return (
         typeof value === "object" &&
@@ -837,11 +882,6 @@ function isUser(value: unknown): value is User {
         "name" in value &&
         "email" in value
     );
-}
-
-interface User {
-    name: string;
-    email: string;
 }
 
 function processInput(input: unknown): void {
@@ -871,19 +911,14 @@ function double(input: unknown): number {
 - Narrowing only works in the same scope — assign to a variable if you need to narrow across function calls
 - Array.filter does not narrow types by default — use a type predicate: \`arr.filter((x): x is string => typeof x === "string")\`
 
-### EXERCISE: Type Narrowing
-
-\`\`\`typescript
-\`\`\`
-
 ---
 
 ## 9. Recommended Resources — Beginner
 
 - **freeCodeCamp** — "Learn TypeScript – Full Tutorial" — https://www.youtube.com/watch?v=30LWjhZzg50
-- **Fireship** — "TypeScript in 100 Seconds" — https://www.youtube.com/watch?v=zQnBQ4tB3ZA
 - **Jack Herrington** — "No BS TS" series — https://www.youtube.com/watch?v=LKVHFHJsiO0
 - **The TypeScript Handbook** — https://www.typescriptlang.org/docs/handbook/
+- **TypeScript Playground** — https://www.typescriptlang.org/play (experiment directly in your browser)
 
 ---
 
@@ -892,7 +927,7 @@ function double(input: unknown): number {
 You now understand the core building blocks of TypeScript:
 - **Type annotations** — primitives, arrays, tuples, and objects
 - **Interfaces vs type aliases** — when to use each and how they differ
-- **Enums** — numeric and string enums, plus modern alternatives
+- **Enums and \`as const\`** — the trade-offs of \`enum\` vs plain object patterns
 - **Union and intersection types** — composing types with | and &
 - **Generics basics** — writing reusable, type-safe functions and classes
 - **Function types** — parameters, return types, overloads, void, never, unknown
@@ -909,6 +944,8 @@ At the beginner level you learned to write generic functions and interfaces. Now
 
 ### Generic Constraints
 
+Constraints restrict what types can be passed as a type argument. Use \`extends\` to require the type argument to have certain properties.
+
 \`\`\`typescript
 function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
     return obj[key];
@@ -917,6 +954,7 @@ function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
 const user = { name: "Alice", age: 30, email: "alice@example.com" };
 const name = getProperty(user, "name");  // string
 const age = getProperty(user, "age");    // number
+// getProperty(user, "invalid");         // Error — "invalid" is not a key of user
 
 interface Printable {
     toString(): string;
@@ -931,9 +969,12 @@ function merge<T extends object, U extends object>(a: T, b: U): T & U {
 }
 
 const merged = merge({ name: "Alice" }, { age: 30 });
+// merged is { name: string } & { age: number }
 \`\`\`
 
 ### Generic Defaults
+
+Generic type parameters can have default values, just like function default parameters.
 
 \`\`\`typescript
 interface ApiResponse<T = unknown, E = Error> {
@@ -969,18 +1010,22 @@ type AppEventHandlers = EventMap<AppEvents>;
 
 ### Generic Inference Patterns
 
+TypeScript infers generic type arguments from the runtime arguments — you rarely need to write them explicitly.
+
 \`\`\`typescript
 function createPair<A, B>(a: A, b: B) {
     return { first: a, second: b };
 }
 
 const pair = createPair("hello", 42);
+// TypeScript infers: { first: string; second: number }
 
 function transform<T, R>(value: T, fn: (input: T) => R): R {
     return fn(value);
 }
 
 const length = transform("hello", (s) => s.length);
+// TypeScript infers: length is number
 
 class QueryBuilder<T extends object> {
     private conditions: string[] = [];
@@ -1019,14 +1064,48 @@ const query = new QueryBuilder<User>()
     .build();
 \`\`\`
 
-**Why it matters:** Advanced generics are the backbone of every major TypeScript library. React's component types, Prisma's query builder, tRPC's end-to-end type safety — all rely on sophisticated generic patterns. Mastering these lets you build APIs that are both flexible and fully type-safe.
+### Linking Generic Types to Runtime Values (Zod Pattern)
 
-> **Role connection:** Full-Stack Developers use generic inference in tRPC and Zod. Backend Developers use constrained generics in ORM type definitions. Library authors build entire APIs around generic inference chains.
-
-### EXERCISE: Advanced Generics
+A powerful real-world pattern: use a schema validation library so that the runtime validator and the TypeScript type are a single source of truth.
 
 \`\`\`typescript
+import { z } from "zod";
+
+const UserSchema = z.object({
+    id: z.string().uuid(),
+    name: z.string().min(1),
+    email: z.string().email(),
+    age: z.number().int().positive()
+});
+
+// Infer the TypeScript type directly from the schema — no separate type definition
+type User = z.infer<typeof UserSchema>;
+// { id: string; name: string; email: string; age: number }
+
+async function fetchUser(id: string): Promise<User> {
+    const res = await fetch("/api/users/" + id);
+    const json = await res.json();
+    // parse() validates at runtime AND returns a properly typed User
+    return UserSchema.parse(json);
+}
+
+// Generic fetch helper: pass any Zod schema, get back the inferred type
+async function fetchTyped<TSchema extends z.ZodTypeAny>(
+    url: string,
+    schema: TSchema
+): Promise<z.infer<TSchema>> {
+    const res = await fetch(url);
+    const json = await res.json();
+    return schema.parse(json);
+}
+
+const user = await fetchTyped("/api/users/1", UserSchema);
+// user is typed as User — no type argument needed, inferred from schema
 \`\`\`
+
+**Why it matters:** Advanced generics are the backbone of every major TypeScript library. React's component types, Prisma's query builder, tRPC's end-to-end type safety — all rely on sophisticated generic patterns. The Zod pattern eliminates the duplication of maintaining a type definition and a validator separately: one schema gives you both.
+
+> **Role connection:** Full-Stack Developers use generic inference in tRPC and Zod. Backend Developers use constrained generics in ORM type definitions. Library authors build entire APIs around generic inference chains.
 
 ---
 
@@ -1142,6 +1221,7 @@ graph TD
 - \`Omit\` does not verify the key exists — \`Omit<User, "nonexistent">\` compiles without error
 - \`Partial\` only affects top-level properties — use a custom \`DeepPartial\` for nested objects
 - \`ReturnType\` requires \`typeof\` when used with a value: \`ReturnType<typeof myFunction>\`
+- Prefer \`ReturnType\` and \`Parameters\` over manually duplicating type signatures from existing functions
 
 ---
 
@@ -1168,17 +1248,21 @@ interface User {
 
 type NullableUser = Nullable<User>;
 
+// Key remapping with template literal types
 type Getters<T> = {
     [K in keyof T as \`get\${Capitalize<string & K>}\`]: () => T[K];
 };
 
 type UserGetters = Getters<User>;
+// { getName: () => string; getAge: () => number; getEmail: () => string }
 
+// Filter keys by value type
 type OnlyStringProperties<T> = {
     [K in keyof T as T[K] extends string ? K : never]: T[K];
 };
 
 type StringUserProps = OnlyStringProperties<User>;
+// { name: string; email: string }
 
 type Mutable<T> = {
     -readonly [K in keyof T]: T[K]; // remove readonly
@@ -1208,33 +1292,20 @@ type MyReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
 
 type RT = MyReturnType<(x: number) => string>; // string
 
+// Distribution: conditional types distribute over unions
 type ToArray<T> = T extends unknown ? T[] : never;
 
 type Result = ToArray<string | number>;
+// string[] | number[]  (distributed — each member gets its own array)
 
 type ToArrayNonDist<T> = [T] extends [unknown] ? T[] : never;
 
 type Result2 = ToArrayNonDist<string | number>;
+// (string | number)[]  (non-distributed — the union stays together)
 
 type DeepReadonly<T> = T extends object
     ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
     : T;
-
-interface NestedConfig {
-    server: {
-        host: string;
-        port: number;
-        ssl: {
-            enabled: boolean;
-            cert: string;
-        };
-    };
-    database: {
-        url: string;
-    };
-}
-
-type FrozenConfig = DeepReadonly<NestedConfig>;
 \`\`\`
 
 \`\`\`mermaid
@@ -1260,11 +1331,6 @@ graph TD
 
 > **Role connection:** Library authors use mapped and conditional types to build type-safe APIs. Frontend Developers encounter them in React's component type utilities. Backend Developers use them in ORM type builders.
 
-### EXERCISE: Mapped and Conditional Types
-
-\`\`\`typescript
-\`\`\`
-
 ---
 
 ## 4. Strict Mode and Compiler Flags
@@ -1274,26 +1340,28 @@ Understanding compiler flags beyond \`strict: true\` gives you fine-grained cont
 ### Beyond strict: true
 
 \`\`\`typescript
+// noUncheckedIndexedAccess — enables safer array and object access
 const arr: string[] = ["a", "b", "c"];
-const item = arr[10]; // string (no error — but it's undefined at runtime!)
+// Without flag: string
+// With flag:    string | undefined
+const item = arr[10];
 
-const safeItem = arr[10]; // string | undefined (forces you to check)
-
+// Access a dictionary
 interface Dict {
     [key: string]: string;
     knownProp: string;
 }
 
 declare const dict: Dict;
-dict.knownProp;     // OK — known property
-dict["unknownProp"]; // OK — bracket notation acknowledges dynamic access
+dict.knownProp;     // string (known property — always safe)
+dict["dynamicKey"]; // string | undefined (with noUncheckedIndexedAccess)
 
+// exactOptionalPropertyTypes — distinguishes missing vs explicitly undefined
 interface Settings {
     theme?: "light" | "dark";
 }
 
-const s1: Settings = { theme: undefined }; // OK
-
+const s1: Settings = { theme: undefined }; // Error with exactOptionalPropertyTypes
 const s3: Settings = {};           // OK
 const s4: Settings = { theme: "dark" }; // OK
 \`\`\`
@@ -1301,11 +1369,19 @@ const s4: Settings = { theme: "dark" }; // OK
 ### isolatedModules and verbatimModuleSyntax
 
 \`\`\`typescript
+// isolatedModules: true — required by Vite, esbuild, SWC
+// These bundlers transpile each file independently, so they cannot
+// perform cross-file type analysis. This means:
 
+// Bad: regular import of a type — bundler may not know it's type-only
+import { User } from "./types";
 
-import type { User } from "./types";     // Erased at compile time
-import { createUser } from "./factory";  // Kept in output
+// Good: type-only import — bundler knows to erase it
+import type { User } from "./types";
+import { createUser } from "./factory";
 
+// verbatimModuleSyntax (TS 5.0+) — even stricter: enforces type-only imports
+// for anything that doesn't exist at runtime
 import { type User, createUser } from "./module";
 \`\`\`
 
@@ -1402,7 +1478,6 @@ function getArea(shape: Shape): number {
             return assertNever(shape);
     }
 }
-
 \`\`\`
 
 **Why it matters:** Exhaustive checking turns your switch statements into compile-time-verified state machines. When you add a new variant, the compiler tells you every place in the codebase that needs updating. This is a massive improvement over string comparisons in plain JavaScript.
@@ -1418,7 +1493,6 @@ Declaration files describe the shape of JavaScript code to TypeScript without pr
 ### Writing Declaration Files
 
 \`\`\`typescript
-
 declare module "analytics-lib" {
     interface AnalyticsConfig {
         apiKey: string;
@@ -1434,13 +1508,6 @@ declare module "analytics-lib" {
     export function track(event: string, properties?: EventProperties): void;
     export function identify(userId: string, traits?: Record<string, unknown>): void;
     export function page(name?: string): void;
-
-    export default {
-        init: typeof init;
-        track: typeof track;
-        identify: typeof identify;
-        page: typeof page;
-    };
 }
 
 declare global {
@@ -1451,7 +1518,6 @@ declare global {
         __APP_VERSION__: string;
     }
 
-    // Global variable without Window
     var API_BASE_URL: string;
 }
 
@@ -1465,11 +1531,6 @@ declare module "*.module.css" {
     export default classes;
 }
 
-declare module "*.module.scss" {
-    const classes: { readonly [key: string]: string };
-    export default classes;
-}
-
 declare module "*.png" {
     const src: string;
     export default src;
@@ -1479,12 +1540,6 @@ declare module "*.svg" {
     const content: string;
     export default content;
 }
-\`\`\`
-
-### Triple-Slash Directives and Type Roots
-
-\`\`\`typescript
-
 \`\`\`
 
 **Common pitfalls:**
@@ -1532,7 +1587,7 @@ declare module "react" {
 
 declare module "@prisma/client" {
     interface PrismaClient {
-        $softDelete<T>(model: string, id: number): Promise<T>;
+        \$softDelete<T>(model: string, id: number): Promise<T>;
     }
 }
 \`\`\`
@@ -1540,7 +1595,6 @@ declare module "@prisma/client" {
 ### Ambient Modules for Untyped Libraries
 
 \`\`\`typescript
-
 declare module "legacy-chart-lib" {
     interface ChartOptions {
         width: number;
@@ -1635,13 +1689,6 @@ function assertOk<T>(result: Result<T>): asserts result is { ok: true; value: T 
         throw new Error("Expected ok result, got error: " + result.error);
     }
 }
-
-async function testDivide(): Promise<void> {
-    const result = divide(10, 2);
-    assertOk(result);
-    // TypeScript now knows result.value exists
-    console.assert(result.value === 5);
-}
 \`\`\`
 
 ### Testing Patterns Summary
@@ -1675,7 +1722,7 @@ function createTestData<T>(defaults: T, overrides: Partial<T> = {}): T {
 
 - **Matt Pocock** — "Advanced TypeScript" series — https://www.youtube.com/watch?v=dLPgQRbVquo
 - **Jack Herrington** — "TypeScript Generics" — https://www.youtube.com/watch?v=nViEqpgwxHE
-- **Theo (t3dotgg)** — "Why I Don't Use Enums" — https://www.youtube.com/watch?v=jjMbPt_H3RQ
+- **Matt Pocock** — "Why I Don't Use Enums" — https://www.youtube.com/watch?v=jjMbPt_H3RQ
 - **TypeScript Deep Dive** by Basarat — https://basarat.gitbook.io/typescript/
 
 ---
@@ -1684,6 +1731,7 @@ function createTestData<T>(defaults: T, overrides: Partial<T> = {}): T {
 
 You now have intermediate mastery of TypeScript's type system:
 - **Advanced generics** — constraints, defaults, and inference patterns for building flexible APIs
+- **Zod integration** — single source of truth for runtime validation and compile-time types
 - **Utility types** — Partial, Required, Pick, Omit, Record, Exclude, Extract, ReturnType and when to use each
 - **Mapped types** — transforming object types programmatically with key remapping and modifier changes
 - **Conditional types** — type-level branching with infer, distribution, and recursive patterns
@@ -1712,6 +1760,7 @@ type Color = "red" | "green" | "blue";
 type Shade = "light" | "dark";
 
 type ColorVariant = \`\${Shade}-\${Color}\`;
+// "light-red" | "light-green" | "light-blue" | "dark-red" | "dark-green" | "dark-blue"
 
 type CSSUnit = "px" | "em" | "rem" | "vh" | "vw" | "%";
 type CSSLength = \`\${number}\${CSSUnit}\`;
@@ -1721,6 +1770,7 @@ const height: CSSLength = "50vh";   // OK
 
 type DOMEvent = "click" | "focus" | "blur" | "input" | "change";
 type EventHandler = \`on\${Capitalize<DOMEvent>}\`;
+// "onClick" | "onFocus" | "onBlur" | "onInput" | "onChange"
 \`\`\`
 
 ### String Manipulation Types
@@ -1738,6 +1788,7 @@ type EventMap<Events extends string> = {
 };
 
 type ButtonEvents = EventMap<"click" | "hover" | "focus">;
+// { onClick: (event: "click") => void; onHover: ...; onFocus: ... }
 
 type PathOf<T, Prefix extends string = ""> = T extends object
     ? {
@@ -1762,6 +1813,7 @@ interface Config {
 }
 
 type ConfigPath = PathOf<Config>;
+// "server" | "server.host" | "server.port" | "database" | "database.url" | ...
 
 function get<T, P extends PathOf<T>>(obj: T, path: P): unknown {
     return (path as string).split(".").reduce((o: any, k) => o?.[k], obj);
@@ -1779,6 +1831,7 @@ type ExtractParams<T extends string> =
             : never;
 
 type RouteParams = ExtractParams<"/users/:userId/posts/:postId">;
+// "userId" | "postId"
 
 type ParamRecord<T extends string> = Record<ExtractParams<T>, string>;
 
@@ -1794,15 +1847,6 @@ createRoute("/users/:userId/posts/:postId", (params) => {
     console.log(params.postId);  // OK
     // console.log(params.invalid); // Error
 });
-
-type ExtractSQLParams<T extends string> =
-    T extends \`\${string}@\${infer Param} \${infer Rest}\`
-        ? Param | ExtractSQLParams<Rest>
-        : T extends \`\${string}@\${infer Param}\`
-            ? Param
-            : never;
-
-type QueryParams = ExtractSQLParams<"SELECT * FROM users WHERE id = @id AND name = @name">;
 \`\`\`
 
 **Why it matters:** Template literal types enable type-safe string APIs — route parameters, CSS values, SQL queries, event names. Libraries like Hono, tRPC, and Prisma use these techniques to provide auto-complete for string-based APIs.
@@ -1902,6 +1946,7 @@ type Zip<A extends readonly unknown[], B extends readonly unknown[]> =
         : [];
 
 type Zipped = Zip<["a", "b", "c"], [1, 2, 3]>;
+// [["a", 1], ["b", 2], ["c", 3]]
 \`\`\`
 
 ### Type Arithmetic
@@ -1934,7 +1979,7 @@ type EQ = IsGreaterThan<3, 3>; // false
 
 **Key things to understand:**
 - TypeScript has a recursion depth limit (~1000 for most operations) — deep recursive types can hit it
-- Use \`tail-call style\` recursion with accumulators to go deeper
+- Use tail-call style recursion with accumulators to go deeper
 - Type-level arithmetic is fun but rarely needed in production — use it sparingly
 - The real value is in recursive utility types (DeepPartial, DeepReadonly, path types)
 
@@ -1956,7 +2001,7 @@ function getUser(id: UserId): void { /* ... */ }
 const userId: UserId = 42;
 const productId: ProductId = 42;
 
-getUser(productId); // No error! Both are just "number"
+getUser(productId); // No error! Both are just "number" — structural typing
 \`\`\`
 
 ### The Solution: Branded Types
@@ -1986,6 +2031,7 @@ const uid = userId(42);
 const pid = productId(42);
 
 getUser(uid);  // OK
+// getUser(pid);  // Error: ProductId is not assignable to UserId
 
 type Email = Brand<string, "Email">;
 type URL = Brand<string, "URL">;
@@ -2020,7 +2066,6 @@ type PositiveInt = z.infer<typeof PositiveIntSchema>;
 
 const email = EmailSchema.parse("alice@example.com"); // Email
 const count = PositiveIntSchema.parse(42);              // PositiveInt
-
 \`\`\`
 
 **Why it matters:** Branded types prevent an entire class of bugs — passing the wrong ID to a function, using unvalidated strings where validated ones are expected, confusing amounts in different currencies. They encode business rules in the type system.
@@ -2061,44 +2106,47 @@ class GoldenRetriever extends Dog {
     isGolden: true = true;
 }
 
+// Covariance: safe for read-only (output) positions
 type ReadonlyBox<T> = { readonly value: T };
 
 const dogBox: ReadonlyBox<Dog> = { value: new Dog() };
 const animalBox: ReadonlyBox<Animal> = dogBox; // OK — covariant
 
+// Contravariance: safe for write-only (input) positions
 type Handler<T> = (value: T) => void;
 
 const handleAnimal: Handler<Animal> = (a: Animal) => console.log(a.name);
 const handleDog: Handler<Dog> = handleAnimal; // OK — contravariant
 
+// Invariance: required for read-write positions
 type MutableBox<T> = { value: T };
 
 const mutableDogBox: MutableBox<Dog> = { value: new Dog() };
+// const mutableAnimalBox: MutableBox<Animal> = mutableDogBox; // Error — invariant
 \`\`\`
 
 ### Explicit Variance Annotations (TypeScript 4.7+)
 
 \`\`\`typescript
-
-interface Producer<out T> {
+interface Producer<out T> {  // covariant — T only appears in output
     get(): T;
 }
 
-interface Consumer<in T> {
+interface Consumer<in T> {  // contravariant — T only appears in input
     accept(value: T): void;
 }
 
-interface Processor<in out T> {
+interface Processor<in out T> {  // invariant — T appears in both
     process(value: T): T;
 }
 
 interface EventHandler {
-    // Method syntax — bivariant (less safe)
+    // Method syntax — bivariant (less safe — TypeScript allows both directions)
     handleEvent(event: Event): void;
 }
 
 interface StrictEventHandler {
-    // Property syntax — contravariant (safer)
+    // Property syntax — contravariant (safer — stricter checking)
     handleEvent: (event: Event) => void;
 }
 \`\`\`
@@ -2160,22 +2208,6 @@ Large TypeScript projects use project references and composite builds to manage 
     },
     "references": [
         { "path": "../shared" }
-    ],
-    "include": ["src/**/*"]
-}
-\`\`\`
-
-\`\`\`json
-{
-    "compilerOptions": {
-        "composite": true,
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "jsx": "react-jsx"
-    },
-    "references": [
-        { "path": "../shared" },
-        { "path": "../api" }
     ],
     "include": ["src/**/*"]
 }
@@ -2285,7 +2317,7 @@ Migrating a large JavaScript codebase to TypeScript is one of the most impactful
 \`\`\`
 
 \`\`\`typescript
-
+// Step 1: JSDoc in .js files — cheap, incremental type info
 /**
  * @param {string} name
  * @param {number} age
@@ -2295,6 +2327,7 @@ function createUser(name, age) {
     return { name, age, id: crypto.randomUUID() };
 }
 
+// Step 2: Rename to .ts, add proper annotations
 interface User {
     name: string;
     age: number;
@@ -2308,31 +2341,41 @@ function createUser(name: string, age: number): User {
 
 ### Progressive Strict Mode
 
+Enable strict flags one at a time, fixing errors at each step, rather than trying to fix everything at once:
+
 \`\`\`json
+// Phase 1: Allow JS, no checking
 {
     "compilerOptions": {
         "strict": false,
         "allowJs": true
     }
 }
+\`\`\`
 
+\`\`\`json
+// Phase 2: No implicit any — fixes the biggest productivity gain
 {
     "compilerOptions": {
         "strict": false,
         "noImplicitAny": true
-        // Fix all "implicitly has an 'any' type" errors, then move on
     }
 }
+\`\`\`
 
+\`\`\`json
+// Phase 3: Null checks — typically the hardest phase
 {
     "compilerOptions": {
         "strict": false,
         "noImplicitAny": true,
         "strictNullChecks": true
-        // This is the hardest step — fix all null/undefined errors
     }
 }
+\`\`\`
 
+\`\`\`json
+// Phase 4: Full strict mode
 {
     "compilerOptions": {
         "strict": true,
@@ -2344,13 +2387,15 @@ function createUser(name: string, age: number): User {
 ### Migration Automation
 
 \`\`\`typescript
-
+// Use @ts-expect-error (not @ts-ignore) to mark known issues
 function legacyCode(data: any): void {
     // @ts-expect-error — will fix in JIRA-1234
     const result = data.someUntypedMethod();
 }
+// @ts-expect-error errors if there is nothing to suppress (prevents stale suppressions)
+// @ts-ignore suppresses silently — never use it in migrated code
 
-
+// Track migration progress programmatically
 import * as fs from "fs";
 import * as path from "path";
 
@@ -2384,8 +2429,8 @@ console.log("JavaScript: " + result.js + "/" + total);
 **Common pitfalls:**
 - Do NOT try to enable \`strict: true\` on a large codebase all at once — you will get thousands of errors
 - \`strictNullChecks\` is the hardest flag to enable — it typically requires the most code changes
-- \`@ts-ignore\` suppresses the next line's errors silently — prefer \`@ts-expect-error\` which errors if there is nothing to suppress
-- Avoid the temptation to use \`any\` everywhere — it defeats the purpose of the migration
+- Prefer \`@ts-expect-error\` over \`@ts-ignore\` — it errors if the suppression is no longer needed
+- Avoid using \`any\` as a crutch — it defeats the purpose of the migration
 
 ---
 
@@ -2416,6 +2461,7 @@ tsc --noEmit --extendedDiagnostics
 ### Common Performance Issues
 
 \`\`\`typescript
+// Expensive: deep recursive conditional types
 type DeepCheck<T> =
     T extends string ? "string"
     : T extends number ? "number"
@@ -2426,45 +2472,48 @@ type DeepCheck<T> =
     : T extends object ? { [K in keyof T]: DeepCheck<T[K]> }
     : "unknown";
 
+// Slow: type intersection with many members
 type SlowConfig = BaseConfig & DatabaseConfig & CacheConfig & LogConfig & AuthConfig;
 
+// Fast: use interface extends instead of intersection
 interface FastConfig extends BaseConfig, DatabaseConfig, CacheConfig, LogConfig, AuthConfig {}
 
-type AllPermissions = "read" | "write" | "delete" | "admin" | /* 50 more */;
-type PermissionMap = Record<AllPermissions, boolean>; // Slow to check
+// Slow: large union in mapped position
+type AllPermissions = "read" | "write" | "delete" | "admin"; // grows to 50+ members
+type PermissionMap = Record<AllPermissions, boolean>; // triggers exponential instantiation
 
-type PermissionMap = Record<string, boolean>;
+// Fast: use string index signature for dynamic keys
+type PermissionMapFast = Record<string, boolean>;
 
-
+// Always annotate complex return types explicitly — helps the checker
 export function createUser(name: string): { id: string; name: string } {
     return { id: crypto.randomUUID(), name };
 }
-
 \`\`\`
 
 ### Performance Best Practices
 
 \`\`\`typescript
+// Prefer interface over type intersection for the compiler
 interface Good {
     a: string;
     b: number;
 }
 
+// Avoid large union types (30+ members) in mapped positions
 type Status = "active" | "inactive";
 
+// Bound recursive types with a depth counter to prevent runaway instantiation
 type DeepReadonly<T, Depth extends unknown[] = []> =
     Depth["length"] extends 10
         ? T // Stop recursion at depth 10
         : T extends object
             ? { readonly [K in keyof T]: DeepReadonly<T[K], [...Depth, unknown]> }
             : T;
-
-
-
 \`\`\`
 
 **Key things to understand:**
-- Interface extends is faster than type intersection (\`&\`) for the compiler
+- Interface \`extends\` is faster than type intersection (\`&\`) for the compiler
 - Large union types (30+ members) in mapped positions can cause exponential type instantiation
 - \`--generateTrace\` is your primary diagnostic tool — learn to read the trace output
 - \`isolatedDeclarations\` enables parallelized declaration generation, dramatically speeding up builds in large monorepos
@@ -2536,6 +2585,7 @@ const config = new ServerConfigBuilder()
     .ssl(true)
     .build(); // OK — all required fields are set
 
+// new ServerConfigBuilder().build(); // Error — missing host, port, database
 \`\`\`
 
 ### State Machines with Types
@@ -2574,32 +2624,9 @@ const order = createOrder("ORD-001", ["Widget"]);
 const submitted = order.transition("submitted");   // OK
 const approved = submitted.transition("approved");  // OK
 const shipped = approved.transition("shipped");     // OK
-const delivered = shipped.transition("delivered");   // OK
-
-
-type AuthState =
-    | { status: "unauthenticated" }
-    | { status: "authenticating"; provider: string }
-    | { status: "authenticated"; user: { id: string; name: string }; token: string }
-    | { status: "error"; message: string; retryable: boolean };
-
-type AuthTransitions = {
-    unauthenticated: "authenticating";
-    authenticating: "authenticated" | "error";
-    authenticated: "unauthenticated";
-    error: "authenticating" | "unauthenticated";
-};
-
-function transition<
-    Current extends AuthState,
-    NextStatus extends AuthTransitions[Current["status"]]
->(
-    current: Current,
-    nextStatus: NextStatus,
-    payload: Extract<AuthState, { status: NextStatus }>
-): Extract<AuthState, { status: NextStatus }> {
-    return payload;
-}
+const delivered = shipped.transition("delivered");  // OK
+// shipped.transition("cancelled"); // OK — cancelled is valid from shipped
+// delivered.transition("anything"); // Error — delivered has no valid transitions
 \`\`\`
 
 ### Type-Safe Dependency Injection
@@ -2641,13 +2668,11 @@ container.register("cache", {
 
 const logger = container.resolve("logger"); // Typed as { log(message: string): void }
 logger.log("Hello");
-
 \`\`\`
 
 ### Opaque Type Modules
 
 \`\`\`typescript
-
 declare const currencyBrand: unique symbol;
 
 export type Money<Currency extends string = string> = {
@@ -2668,6 +2693,7 @@ const usd = money(100, "USD");
 const eur = money(50, "EUR");
 
 const total = add(usd, money(50, "USD")); // OK — same currency
+// add(usd, eur); // Error — USD and EUR are different branded types
 \`\`\`
 
 **Why it matters:** These advanced patterns encode business rules directly into the type system. A state machine type prevents invalid state transitions. A builder type prevents incomplete construction. Branded money types prevent currency mixing. Bugs that would otherwise require careful runtime checks or code review are caught instantly by the compiler.
@@ -2676,10 +2702,10 @@ const total = add(usd, money(50, "USD")); // OK — same currency
 
 ## 9. Recommended Resources — Senior Level
 
-- **Matt Pocock** — "Type-Level TypeScript" — https://www.youtube.com/watch?v=vGVvJuazs84
 - **Matt Pocock** — Total TypeScript workshop — https://www.totaltypescript.com/
-- **Jack Herrington** — "Advanced TypeScript Patterns" — https://www.youtube.com/watch?v=dLPgQRbVquo
-- **Theo (t3dotgg)** — "TypeScript Performance" — https://www.youtube.com/watch?v=RmGHnYUqQ4k
+- **Matt Pocock** — "Advanced TypeScript" series — https://www.youtube.com/watch?v=dLPgQRbVquo
+- **Theo (t3dotgg)** — "TypeScript Performance and Inference" — https://www.youtube.com/watch?v=RmGHnYUqQ4k
+- **Matt Pocock** — "Why I Don't Use Enums" — https://www.youtube.com/watch?v=jjMbPt_H3RQ
 - **TypeScript Performance wiki** — https://github.com/microsoft/TypeScript/wiki/Performance
 
 ---
@@ -2698,4 +2724,4 @@ You now have expert-level TypeScript knowledge spanning:
 
 These are the skills that enable you to design type systems for large-scale applications, guide migration efforts, and build libraries that provide exceptional developer experience through TypeScript's type system.
 `,
-}
+};
