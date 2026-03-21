@@ -442,7 +442,8 @@ WHERE product_id IN (
 );
 
 -- TRUNCATE: faster than DELETE for removing all rows
--- Resets auto-increment, cannot be rolled back in some databases
+-- Resets sequences (with RESTART IDENTITY), cannot be rolled back in MySQL
+-- but IS transactional in PostgreSQL (can be rolled back)
 TRUNCATE TABLE temp_import_data;
 
 -- Safe deletion pattern: SELECT first, then DELETE
@@ -3972,8 +3973,8 @@ SELECT
     ts_headline('english', body, query,
         'StartSel=<mark>, StopSel=</mark>, MaxFragments=3'
     ) AS snippet
-FROM articles,
-     to_tsquery('english', 'postgresql & performance & tuning') AS query
+FROM articles
+CROSS JOIN to_tsquery('english', 'postgresql & performance & tuning') AS query
 WHERE search_vector @@ query
 ORDER BY rank DESC
 LIMIT 20;

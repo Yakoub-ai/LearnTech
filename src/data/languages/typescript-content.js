@@ -2789,7 +2789,136 @@ const total = add(usd, money(50, "USD")); // OK — same currency
 
 ---
 
-## 9. Recommended Resources — Senior Level
+## 9. TypeScript 5.x Features for Seniors
+
+### \\\`const\\\` Type Parameters (TS 5.0)
+
+The \\\`const\\\` modifier on a type parameter infers literal types by default — no \\\`as const\\\` needed at the call site.
+
+\\\`\\\`\\\`typescript
+// Without const: T is inferred as string[]
+function routes<T extends readonly string[]>(paths: T): T {
+    return paths;
+}
+const r1 = routes(["home", "about"]); // string[]
+
+// With const: T is inferred as readonly ["home", "about"]
+function routesConst<const T extends readonly string[]>(paths: T): T {
+    return paths;
+}
+const r2 = routesConst(["home", "about"]); // readonly ["home", "about"]
+
+// Practical example: type-safe event emitter
+function defineEvents<const T extends Record<string, unknown[]>>(events: T) {
+    return events;
+}
+
+const events = defineEvents({
+    click: [{ x: 0, y: 0 }],
+    keydown: [{ key: "" }],
+});
+// events.click is [{ x: number; y: number }] — literal structure preserved
+\\\`\\\`\\\`
+
+### \\\`using\\\` Declarations — Explicit Resource Management (TS 5.2)
+
+The \\\`using\\\` keyword implements the TC39 Explicit Resource Management proposal. It ensures cleanup via the \\\`Symbol.dispose\\\` and \\\`Symbol.asyncDispose\\\` protocols.
+
+\\\`\\\`\\\`typescript
+class DatabaseConnection implements Disposable {
+    constructor(private url: string) {
+        console.log("Connected to " + url);
+    }
+
+    query(sql: string): unknown[] {
+        return []; // simplified
+    }
+
+    [Symbol.dispose](): void {
+        console.log("Connection closed");
+    }
+}
+
+function runQuery() {
+    using conn = new DatabaseConnection("postgres://localhost/mydb");
+    // conn is automatically disposed when the scope exits
+    return conn.query("SELECT * FROM users");
+    // "Connection closed" is logged here — even if query() throws
+}
+
+// Async version
+class FileHandle implements AsyncDisposable {
+    async [Symbol.asyncDispose](): Promise<void> {
+        // await this.close();
+        console.log("File closed");
+    }
+}
+
+async function processFile() {
+    await using handle = new FileHandle();
+    // handle is disposed when scope exits
+}
+\\\`\\\`\\\`
+
+**Why it matters:** \\\`using\\\` replaces try/finally for resource cleanup (database connections, file handles, locks). It is the TypeScript equivalent of Python's \\\`with\\\` statement or C#'s \\\`using\\\` block.
+
+### TC39 Decorators (TS 5.0+ — Stage 3 Standard)
+
+TypeScript 5.0 ships TC39 standard decorators. These are **different from legacy experimental decorators** (\\\`experimentalDecorators: true\\\`). The new decorators follow the Stage 3 TC39 proposal and will work in plain JavaScript too.
+
+\\\`\\\`\\\`typescript
+// TC39 decorator — a plain function that receives the target and context
+function log<This, Args extends unknown[], Return>(
+    target: (this: This, ...args: Args) => Return,
+    context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>
+) {
+    return function (this: This, ...args: Args): Return {
+        console.log("Calling " + String(context.name) + " with", args);
+        const result = target.call(this, ...args);
+        console.log("Result:", result);
+        return result;
+    };
+}
+
+class Calculator {
+    @log
+    add(a: number, b: number): number {
+        return a + b;
+    }
+}
+
+// Decorator metadata (TS 5.2+)
+const VALIDATORS = Symbol("validators");
+
+function validate(regex: RegExp) {
+    return function <This, Value extends string>(
+        _target: ClassAccessorDecoratorTarget<This, Value>,
+        context: ClassAccessorDecoratorContext<This, Value>
+    ) {
+        context.metadata[VALIDATORS] ??= {};
+        (context.metadata[VALIDATORS] as Record<string | symbol, RegExp>)[context.name] = regex;
+    };
+}
+
+class UserForm {
+    @validate(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/)
+    accessor email = "" as string;
+
+    @validate(/^\\+?[\\d\\s-]{7,15}$/)
+    accessor phone = "" as string;
+}
+\\\`\\\`\\\`
+
+**Key things to understand:**
+- TC39 decorators are **not compatible** with legacy \\\`experimentalDecorators\\\` — do not mix them
+- Legacy decorators are still supported but should be considered deprecated for new projects
+- TC39 decorators work on classes, methods, accessors, and fields
+- Decorator metadata (\\\`context.metadata\\\`) replaces \\\`reflect-metadata\\\` for new code
+- Frameworks like Angular and NestJS are migrating to TC39 decorators — check your framework's documentation
+
+---
+
+## 10. Recommended Resources — Senior Level
 
 - **Matt Pocock** — Total TypeScript workshop — https://www.totaltypescript.com/
 - **Matt Pocock** — "Advanced TypeScript" series — https://www.youtube.com/watch?v=dLPgQRbVquo
