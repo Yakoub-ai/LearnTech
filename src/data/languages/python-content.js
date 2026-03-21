@@ -3478,7 +3478,7 @@ The Python packaging ecosystem has converged on \`pyproject.toml\` as the standa
 PYPROJECT_TOML = """
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "my-awesome-library"
@@ -3995,6 +3995,8 @@ Python offers multiple concurrency models: threading (for I/O-bound tasks), mult
 ### The GIL (Global Interpreter Lock)
 
 The GIL ensures only one thread executes Python bytecode at a time. This means threads do NOT provide true parallelism for CPU-bound work. However, threads DO release the GIL during I/O operations, making them useful for I/O-bound tasks.
+
+**Emerging: PEP 703 (Free-threaded Python).** Python 3.13+ includes an experimental build with the GIL disabled (\\`--disable-gil\\` / \\`-X gil=0\\`). This "free-threaded" mode allows true multi-threaded parallelism for CPU-bound work. As of 2026, it is experimental and opt-in, but it signals the long-term direction for Python concurrency. Keep an eye on adoption by key libraries (NumPy, etc.) before using it in production.
 
 \`\`\`mermaid
 graph TD

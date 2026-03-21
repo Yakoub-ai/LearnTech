@@ -7,9 +7,11 @@
 - Custom Properties (CSS Variables)
 - Animations and Transitions
 - BEM Naming Convention
-- Accessibility (ARIA, semantic structure, screen readers)
+- Accessibility (ARIA, semantic structure, WCAG 2.2)
 - SVG Integration and Styling
-- Pseudo-elements and Pseudo-classes
+- Advanced Grid Layouts (including Subgrid)
+- Pseudo-elements and Pseudo-classes (including `:has()`)
+- CSS Functions (calc, clamp, min, max, counters)
 
 ## Prerequisites
 

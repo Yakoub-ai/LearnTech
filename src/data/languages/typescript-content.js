@@ -1574,7 +1574,7 @@ function getArea(shape: Shape): number {
 
 ---
 
-## 6. Declaration Files (.d.ts)
+## 7. Declaration Files (.d.ts)
 
 Declaration files describe the shape of JavaScript code to TypeScript without providing implementations.
 
@@ -1638,7 +1638,7 @@ declare module "*.svg" {
 
 ---
 
-## 7. Module Augmentation and Ambient Modules
+## 8. Module Augmentation and Ambient Modules
 
 Module augmentation lets you extend existing types from libraries without modifying their source code.
 
@@ -1710,7 +1710,7 @@ declare module "totally-untyped-lib";
 
 ---
 
-## 8. Testing Typed Code
+## 9. Testing Typed Code
 
 TypeScript introduces unique testing considerations: type-level tests, generics mocking, and test utilities.
 
@@ -1806,7 +1806,7 @@ function createTestData<T>(defaults: T, overrides: Partial<T> = {}): T {
 
 ---
 
-## 9. Recommended Resources — Mid Level
+## 10. Recommended Resources — Mid Level
 
 - **Matt Pocock** — "Advanced TypeScript" series — https://www.youtube.com/watch?v=dLPgQRbVquo
 - **Jack Herrington** — "TypeScript Generics" — https://www.youtube.com/watch?v=nViEqpgwxHE
