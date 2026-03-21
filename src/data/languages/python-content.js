@@ -4292,6 +4292,77 @@ gil_demo()
 
 ---
 
+## 8. Modern Python 3.12+ Features
+
+Senior engineers should be familiar with recent additions to the language and standard library:
+
+### Exception Groups (PEP 654, Python 3.11+)
+
+Exception groups let you raise and handle multiple exceptions simultaneously, which is essential for concurrent code where multiple tasks can fail at once.
+
+\\\`\\\`\\\`python
+# Raising multiple exceptions
+def process_batch(items):
+    errors = []
+    results = []
+    for item in items:
+        try:
+            results.append(int(item))
+        except ValueError as e:
+            errors.append(e)
+    if errors:
+        raise ExceptionGroup("batch processing failed", errors)
+    return results
+
+# Handling exception groups with except*
+try:
+    process_batch(["1", "abc", "3", "def"])
+except* ValueError as eg:
+    print(f"Caught {len(eg.exceptions)} ValueErrors")
+    for e in eg.exceptions:
+        print(f"  - {e}")
+\\\`\\\`\\\`
+
+### tomllib (Python 3.11+)
+
+TOML parsing is now in the standard library. No need for third-party packages to read \\`pyproject.toml\\` or config files.
+
+\\\`\\\`\\\`python
+import tomllib
+from pathlib import Path
+
+# Read a TOML config file
+with Path("pyproject.toml").open("rb") as f:
+    config = tomllib.load(f)
+
+# Or parse a TOML string
+data = tomllib.loads('''
+[database]
+host = "localhost"
+port = 5432
+''')
+print(data["database"]["host"])  # localhost
+\\\`\\\`\\\`
+
+### StrEnum (Python 3.11+)
+
+\\`StrEnum\\` members are strings, making them ideal for API status codes, config values, etc.
+
+\\\`\\\`\\\`python
+from enum import StrEnum
+
+class Color(StrEnum):
+    RED = "red"
+    GREEN = "green"
+    BLUE = "blue"
+
+# StrEnum values work as plain strings
+print(f"Favorite color: {Color.RED}")  # "Favorite color: red"
+assert Color.RED == "red"  # True — unlike regular Enum
+\\\`\\\`\\\`
+
+---
+
 ## Summary
 
 You have covered seven advanced Python topics:
