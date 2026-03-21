@@ -287,7 +287,7 @@ SELECT * FROM products WHERE sku LIKE 'A_B__';
 SELECT * FROM employees WHERE first_name ILIKE 'john%';
 
 -- Escape special characters
-SELECT * FROM products WHERE description LIKE '%50\\%%' ESCAPE '\\\\';
+SELECT * FROM products WHERE description LIKE '%50\\%%' ESCAPE '\\';
 -- Matches descriptions containing "50%"
 \`\`\`
 
@@ -963,7 +963,7 @@ One of the most common indexing mistakes is wrapping an indexed column inside a 
 
 \`\`\`sql
 -- BAD: function on indexed column prevents index use
-SELECT SUM(total) FROM orders WHERE YEAR(order_date) = 2025;
+SELECT SUM(total) FROM orders WHERE EXTRACT(YEAR FROM order_date) = 2025;
 -- Performs a full table scan even when order_date is indexed!
 
 -- GOOD: rewrite as an explicit range so the B-tree is usable
@@ -2047,7 +2047,7 @@ UNION
 SELECT * FROM orders WHERE order_date = '2025-06-01';
 
 -- Anti-pattern: function on indexed column prevents index use
-SELECT * FROM orders WHERE YEAR(order_date) = 2025;
+SELECT * FROM orders WHERE EXTRACT(YEAR FROM order_date) = 2025;
 
 -- Rewrite to use range instead
 SELECT * FROM orders

@@ -842,6 +842,45 @@ AI-assisted development tools — code completion assistants, conversational cod
 
 ---
 
+## AI Policy — Organisational Principles
+
+The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English for accessibility.
+
+The policy is built on several pillars. Legal compliance requires that all AI use conforms to applicable regulations, including the EU AI Act and GDPR. Data protection obligations apply to any AI system that processes personal data — purpose limitation, data minimisation, and storage limitation must be enforced in system design.
+
+Responsible AI principles are embedded throughout the policy. These include diversity and non-discrimination (AI systems must not produce biased or discriminatory outcomes), transparency (users and affected parties must understand when and how AI is used), robustness (AI systems must perform reliably and handle errors gracefully), security (AI systems must be protected against adversarial manipulation and data breaches), and privacy (personal data must be handled in accordance with GDPR and internal data classification policies).
+
+The AI Register requires that all AI use cases within the organisation are registered and classified by risk level. This classification determines the governance requirements — from lightweight documentation for low-risk use cases to full conformity assessments for high-risk systems. High-risk AI systems require conformity assessments demonstrating compliance with transparency, human oversight, data quality, and technical robustness requirements.
+
+Staff using AI tools and systems must understand the limitations of AI technology and the requirements of the policy. This applies to all roles — from developers building AI-powered frontend features to engineers using AI-assisted development tools.
+
+**Why it matters:** The AI Policy is the organisation's binding commitment to responsible AI use. For frontend engineers, this matters when building interfaces that display AI-generated content, collecting user data that feeds into AI systems, or integrating AI-powered features such as chatbots, recommendations, or content generation. The policy's transparency requirements — informing users when they interact with AI — are directly implemented in the frontend.
+
+**Key things to understand:**
+- Every AI use case must be registered in the AI Register with a risk classification before development begins.
+- The risk classification determines governance requirements: low-risk use cases need basic documentation; high-risk use cases need conformity assessments.
+- Transparency obligations require the frontend to clearly communicate when users are interacting with AI-generated content or AI-powered features.
+- GDPR obligations apply to data collected through AI-powered interfaces — consent management and data minimisation are frontend concerns.
+
+**Common pitfalls:**
+- Building a frontend AI feature (chatbot, AI-generated content) without ensuring the use case is registered in the AI Register.
+- Not implementing the transparency requirements — users must be clearly informed when content is AI-generated or when they are interacting with an AI system.
+- Treating the AI Policy as a backend-only concern; frontend design decisions around data collection, user consent, and AI feature presentation are directly governed by the policy.
+
+---
+
+## EU Compliance for Frontend Developers
+
+Senior Frontend Developers in the EU carry direct responsibility for implementing GDPR and ePrivacy compliance at the user interface level. The frontend is where personal data is collected, where consent is obtained, and where transparency obligations are fulfilled — making it the primary enforcement point for many EU regulations. The ePrivacy Directive (and its national implementations) requires that cookies and similar tracking technologies are only set after the user has given informed, specific, and freely-given consent. The GDPR reinforces this with strict requirements for valid consent: it must be an unambiguous affirmative action (no pre-ticked checkboxes), it must be as easy to withdraw as to give, and consent for different purposes must be presented separately.
+
+Cookie consent implementation is one of the most visible compliance obligations for frontend developers. The Transparency and Consent Framework (TCF) 2.2, managed by IAB Europe, provides the industry-standard mechanism for collecting and propagating consent signals across the advertising ecosystem. A senior frontend developer should understand how TCF consent strings are generated, stored, and transmitted to downstream systems.
+
+The EU AI Act adds transparency obligations that are primarily implemented in the frontend. When users interact with an AI system (such as a chatbot or AI-generated content), they must be clearly informed that they are interacting with AI — not a human. The European Accessibility Act, applicable from June 2025, further requires that all digital interfaces — including consent mechanisms and AI disclosures — are accessible to people with disabilities, conforming to WCAG 2.2 Level AA.
+
+> **Why it matters:** GDPR consent violations carry penalties of up to 20 million EUR or 4% of global turnover. Frontend developers who implement compliant consent mechanisms, data-minimal forms, and AI transparency disclosures are the first line of defence against regulatory exposure.
+
+---
+
 ## Language Deep Dives
 
 - [JavaScript Deep Dive](/language/javascript) — The core language of web development

@@ -418,7 +418,7 @@ A security programme typically includes: a security policy (the top-level docume
 
 **Key things to understand:**
 
-- Risk management frameworks: NIST Cybersecurity Framework (Identify, Protect, Detect, Respond, Recover), ISO 27001 (information security management system), CIS Controls (prioritised set of security actions)
+- Risk management frameworks: NIST Cybersecurity Framework 2.0 (Govern, Identify, Protect, Detect, Respond, Recover), ISO 27001 (information security management system), CIS Controls (prioritised set of security actions)
 - Security metrics: vulnerability remediation time, mean time to detect (MTTD), mean time to respond (MTTR), patching compliance, security training completion, phishing simulation click rates
 - Compliance vs security: compliance (meeting regulatory requirements) is a subset of security (protecting the organisation); being compliant does not guarantee being secure
 - Security awareness training: the most technically secure system is still vulnerable to social engineering; training must be ongoing, relevant, and measured

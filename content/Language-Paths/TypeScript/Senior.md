@@ -7,8 +7,13 @@
 - Template Literal Types
 - Type-Level Programming and Recursive Types
 - Branded and Nominal Types
+- Variance (covariance, contravariance, explicit `in`/`out` annotations)
+- TC39 Decorators (Stage 3 standard — not legacy experimental decorators)
+- `const` Type Parameters (TS 5.0) and `using` Declarations (TS 5.2)
 - Monorepo Configuration (project references, composite builds)
 - JavaScript-to-TypeScript Migration Strategies
+- Performance — Type Checking Speed (`--generateTrace`, `isolatedDeclarations`)
+- Advanced Patterns (type-safe builders, state machines, dependency injection, opaque types)
 
 ## Prerequisites
 

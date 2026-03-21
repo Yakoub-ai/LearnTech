@@ -10,6 +10,9 @@
 - Profiling and Benchmarking
 - Design Patterns in Python
 - Concurrency (threading, multiprocessing, concurrent.futures)
+- The GIL and PEP 703 (free-threaded Python)
+- Modern Python 3.12+ features (exception groups PEP 654, `tomllib`, `StrEnum`)
+- Packaging with `pyproject.toml` and modern tooling (`uv`)
 
 ## Prerequisites
 

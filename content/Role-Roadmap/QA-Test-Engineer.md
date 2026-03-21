@@ -14,10 +14,10 @@ QA and Test Engineers ensure software quality through systematic testing strateg
 | Testing Fundamentals | [ISTQB Foundation Level Syllabus v4.0](https://www.istqb.org/certifications/certified-tester-foundation-level) | Syllabus |
 | QA Certification | [freeCodeCamp – Quality Assurance](https://www.freecodecamp.org/learn/quality-assurance/) | Interactive |
 | Manual Testing | [Software Testing Tutorial – Guru99](https://www.guru99.com/software-testing.html) | Article |
-| Testing Fundamentals | [Software Testing Explained in 100 Seconds – Fireship](https://www.youtube.com/watch?v=u6QfIXgjwGQ) | Video |
-| Testing Introduction | [JavaScript Testing Introduction Tutorial – Academind](https://www.youtube.com/watch?v=r9HdJ8P6GQI) | Video |
 | Bug Reporting | [How to Write a Good Bug Report – Ministry of Testing](https://www.ministryoftesting.com/articles/the-art-of-the-bug-report) | Article |
 | HTTP for Testers | [HTTP Crash Course – Traversy Media](https://www.youtube.com/watch?v=iYM2zFP3Zn0) | Video |
+| Testing Fundamentals | [Software Testing Explained in 100 Seconds – Fireship](https://www.youtube.com/watch?v=u6QfIXgjwGQ) | Video |
+| Testing Introduction | [JavaScript Testing Introduction Tutorial – Academind](https://www.youtube.com/watch?v=r9HdJ8P6GQI) | Video |
 | Browser Developer Tools | [Chrome DevTools Overview – Google](https://developer.chrome.com/docs/devtools/overview/) | Docs |
 | Testing Mindset | [Ministry of Testing – 30 Days of Testing](https://www.ministryoftesting.com/articles/30-days-of-testing) | Article |
 

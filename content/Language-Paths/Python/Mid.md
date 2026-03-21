@@ -4,11 +4,11 @@
 
 ## Topics Covered
 
-- Object-Oriented Programming (classes, inheritance, polymorphism)
+- Object-Oriented Programming (classes, inheritance, polymorphism, dataclasses)
 - Decorators and Higher-Order Functions
 - Generators and Iterators
 - Context Managers
-- Type Hints and Static Analysis
+- Type Hints and Static Analysis (PEP 695 type parameter syntax, `typing` module)
 - Testing (unittest, pytest)
 - Regular Expressions
 

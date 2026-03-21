@@ -1933,7 +1933,7 @@ dialog::backdrop {
 /* 5. Uses role="menu" and role="menuitem" */
 \\\`\\\`\\\`
 
-**Why it matters:** Approximately 15% of the world's population has some form of disability. Accessible websites are not just a moral imperative — they are often a legal requirement (ADA, WCAG 2.1 AA, EAA in Europe).
+**Why it matters:** Approximately 15% of the world's population has some form of disability. Accessible websites are not just a moral imperative — they are often a legal requirement (ADA, WCAG 2.2 AA, EAA in Europe).
 
 ---
 
@@ -2199,7 +2199,7 @@ Pseudo-elements create virtual elements you can style without adding HTML. Pseud
 /* Quotation marks on blockquotes */
 .fancy-quote {
   position: relative;
-  padding-left: var(--space-8);
+  padding-inline-start: var(--space-8);
   font-style: italic;
   color: var(--text-secondary);
 }
@@ -2225,7 +2225,7 @@ Pseudo-elements create virtual elements you can style without adding HTML. Pseud
 /* Custom bullet list */
 .custom-list {
   list-style: none;
-  padding-left: 0;
+  padding-inline-start: 0;
 }
 
 .custom-list li {
@@ -3063,7 +3063,7 @@ h2 { font-size: var(--global-font-size-2xl); }
 
 /* :where() for reset styles */
 :where(ul, ol) { list-style: none; padding: 0; }
-.article-content ul { list-style: disc; padding-left: 1.5rem; }
+.article-content ul { list-style: disc; padding-inline-start: 1.5rem; }
 \\\`\\\`\\\`
 
 ### Complex :not() and :has()
@@ -3292,7 +3292,7 @@ CSS is evolving rapidly. These cutting-edge features are shipping in browsers no
 
 /* EXERCISE: Create a page showcasing 5 modern CSS features: */
 /* nesting, color-mix(), container queries, scroll-driven */
-/* animations, and view transitions. -->
+/* animations, and view transitions. */
 \\\`\\\`\\\`
 
 **Why it matters:** Modern CSS features eliminate the need for JavaScript in many UI patterns — scroll effects, color manipulation, component responsiveness, page transitions. Staying current means shipping faster, lighter code.
@@ -3340,8 +3340,8 @@ At the senior level, your CSS decisions have organizational impact. You architec
 
 ## Recommended Videos — Senior Level
 
-- **Kevin Powell** — "Learn CSS Grid the easy way" — https://www.youtube.com/watch?v=rg7Fvvl3taU
-- **Fireship** — "HTML in 100 Seconds" — https://www.youtube.com/watch?v=ok-plXXHlWw
-- **freeCodeCamp** — "CSS Tutorial – Full Course for Beginners" — https://www.youtube.com/watch?v=OXGznpKZ_sA
+- **Kevin Powell** — "CSS :has() is more than a parent selector" — https://www.youtube.com/watch?v=Gu3E-IF9GkA
+- **Google Chrome Developers** — "View Transitions API" — https://www.youtube.com/watch?v=JCJUPJ_zDQ4
+- **Una Kravets** — "What's new in CSS" — https://www.youtube.com/watch?v=rEFgAQBmBSA
 `,
 }

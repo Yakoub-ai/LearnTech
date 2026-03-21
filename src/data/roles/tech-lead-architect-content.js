@@ -38,8 +38,11 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Tech
 | Topic | Resource | Type |
 |---|---|---|
 | System Design – 30 Concepts | [System Design was HARD until I Learned these 30 Concepts](https://www.youtube.com/watch?v=s9Qh9fWeOAk) | Video |
+| Domain-Driven Design | [DDD – Pluralsight Path](https://app.pluralsight.com/paths/skills/domain-driven-design) | Course |
+| Architecture Patterns | [Architecture Patterns for AI Systems – Pluralsight](https://www.pluralsight.com/courses/architecture-patterns-ai-systems) | Course |
+| Prompt Engineering | [Prompt Engineering and GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/prompt-engineering-and-generative-ai) | Course |
+| Leading Teams | [Leading Teams and Individuals – Pluralsight](https://app.pluralsight.com/paths/skills/leading-teams-and-individuals) | Course |
 | System Design Case Study | [Uber – System Design Interview](https://www.youtube.com/watch?v=DGtalg5efCw) | Video |
-| Domain-Driven Design | [DDD Crash Course](https://www.youtube.com/watch?v=4rhzdZIDX_k) | Video |
 | Security Architecture | [OWASP Top Ten](https://owasp.org/www-project-top-ten/) | Docs |
 | Azure Well-Architected Framework | [Microsoft Learn – Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/well-architected/) | Docs |
 | Cloud Adoption Framework | [Microsoft Learn – Cloud Adoption Framework](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/) | Docs |
@@ -49,9 +52,10 @@ For deep explanations of each concept, see the [Beginner Concept Reference](Tech
 
 - Break down a complex system into bounded contexts using DDD
 - Select appropriate architecture patterns for given requirements
-- Facilitate a system design discussion with a team, walking through functional and non-functional requirements
+- Facilitate a system design discussion with a team
 - Lead a code review effectively
-- Identify and articulate security risks in a system design using STRIDE and OWASP
+- Identify and articulate security risks in a system design
+- Apply prompt engineering to improve AI integrations
 - Apply the five pillars of the Azure Well-Architected Framework to evaluate a system design
 - Write and maintain Architecture Decision Records (ADRs) to document significant technical choices
 
@@ -63,10 +67,15 @@ For deep explanations of each concept, see the [Mid Concept Reference](Tech-Lead
 
 | Topic | Resource | Type |
 |---|---|---|
+| Enterprise GenAI Strategy | [Enterprise Strategy for GenAI – Pluralsight](https://app.pluralsight.com/paths/skills/enterprise-strategy-for-generative-ai-adoption) | Course |
 | LLM Agent Architecture | [Architecting Resilient LLM Agents](https://arxiv.org/abs/2509.08646) | Paper |
 | LLM Security Patterns | [Design Patterns for Securing LLM Agents](https://arxiv.org/abs/2506.08837) | Paper |
 | LLM Security Reference | [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/) — Industry-standard security reference for LLM systems | Reference |
+| Context Engineering | [Context Engineering – Pluralsight](https://app.pluralsight.com/paths/skills/context-engineering) | Course |
+| Advanced AI-Assisted Dev | [Advanced AI-Assisted Development – Pluralsight](https://www.pluralsight.com/courses/advanced-ai-assisted-development) | Course |
 | Secure AI Framework | [Secure AI Framework](Prerequisites/Secure-AI-Framework.md) | Guide |
+| AI Policy | [AI Policy – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) (Internal – requires company access) | Internal |
+| AI Checklist | [AI Checklista – Internal](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/SitePages/AI-Checklista.aspx) (Internal – requires company access) | Internal |
 | Incident Management | [PagerDuty Incident Response Documentation](https://response.pagerduty.com/) | Docs |
 
 ### After completing Senior you should be able to:
@@ -76,7 +85,6 @@ For deep explanations of each concept, see the [Mid Concept Reference](Tech-Lead
 - Design an LLM agent architecture with appropriate guardrails
 - Apply context engineering to production AI systems
 - Lead an incident response process and facilitate blameless post-mortems
-- Design a real-world, large-scale system end-to-end — decomposing requirements, selecting communication protocols, applying geospatial indexing and distributed locking patterns
 
 For deep explanations of each concept, see the [Senior Concept Reference](Tech-Lead-Architect/Senior.md).
 
