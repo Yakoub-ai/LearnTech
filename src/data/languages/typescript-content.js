@@ -1820,10 +1820,11 @@ function createTestData<T>(defaults: T, overrides: Partial<T> = {}): T {
 You now have intermediate mastery of TypeScript's type system:
 - **Advanced generics** — constraints, defaults, and inference patterns for building flexible APIs
 - **Zod integration** — single source of truth for runtime validation and compile-time types
-- **Utility types** — Partial, Required, Pick, Omit, Record, Exclude, Extract, ReturnType and when to use each
+- **Utility types** — Partial, Required, Pick, Omit, Record, Exclude, Extract, ReturnType, NoInfer and when to use each
+- **The \`satisfies\` operator** — type validation without widening, the best of both worlds
 - **Mapped types** — transforming object types programmatically with key remapping and modifier changes
 - **Conditional types** — type-level branching with infer, distribution, and recursive patterns
-- **Compiler flags** — noUncheckedIndexedAccess, isolatedModules, verbatimModuleSyntax
+- **Compiler flags** — noUncheckedIndexedAccess, verbatimModuleSyntax, isolatedModules
 - **Discriminated unions** — modeling domain logic with exhaustive checking
 - **Declaration files** — typing untyped JavaScript and module augmentation
 - **Testing typed code** — type-level tests, typed mocks, and assertion functions

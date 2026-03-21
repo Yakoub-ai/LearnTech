@@ -3631,6 +3631,13 @@ pip install --index-url https://test.pypi.org/simple/ my-awesome-library
 
 # Install locally in development mode
 pip install -e ".[dev]"
+
+# --- Modern alternative: uv (much faster than pip) ---
+# uv is a Rust-based Python package manager that is significantly faster.
+# Install: curl -LsSf https://astral.sh/uv/install.sh | sh
+# uv pip install -e ".[dev]"
+# uv venv .venv              # Create virtual environment
+# uv pip compile pyproject.toml -o requirements.txt  # Lock deps
 """
 print("Build commands:")
 print(BUILD_COMMANDS)
