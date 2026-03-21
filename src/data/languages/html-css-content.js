@@ -2228,16 +2228,16 @@ Pseudo-elements create virtual elements you can style without adding HTML. Pseud
   padding-inline-start: 0;
 }
 
-.custom-list li {  /* Using logical properties for RTL support */
+.custom-list li {
   position: relative;
-  padding-left: 1.75rem;
+  padding-inline-start: 1.75rem;
   margin-bottom: var(--space-2);
 }
 
 .custom-list li::before {
   content: '\\2713';
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   color: var(--color-success);
   font-weight: bold;
 }

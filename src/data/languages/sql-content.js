@@ -469,9 +469,70 @@ WHERE status = 'cancelled' AND order_date < '2024-01-01';
 
 ---
 
-## 4. JOINs
+## 4. SQL Injection Prevention
 
-JOINs combine rows from two or more tables based on a related column. They are the fundamental mechanism for working with relational data.
+SQL injection is one of the most dangerous and common security vulnerabilities. It occurs when user input is concatenated directly into SQL strings, allowing an attacker to execute arbitrary SQL.
+
+### The Danger of String Concatenation
+
+\`\`\`sql
+-- NEVER do this in application code (pseudocode):
+-- query = "SELECT * FROM users WHERE username = '" + userInput + "'"
+-- If userInput is: ' OR '1'='1
+-- The query becomes:
+-- SELECT * FROM users WHERE username = '' OR '1'='1'
+-- This returns ALL users!
+
+-- Even worse, an attacker could input: '; DROP TABLE users; --
+-- SELECT * FROM users WHERE username = ''; DROP TABLE users; --'
+-- This deletes your entire users table!
+\`\`\`
+
+### Parameterized Queries (Prepared Statements)
+
+Always use parameterized queries. The database treats parameters as data, never as executable SQL.
+
+\`\`\`sql
+-- PostgreSQL prepared statement
+PREPARE get_user(TEXT) AS
+SELECT user_id, username, email
+FROM users
+WHERE username = $1;
+
+EXECUTE get_user('alice');
+\`\`\`
+
+In application code, always use your language's parameterized query support:
+
+\`\`\`sql
+-- Python (psycopg2/psycopg3):
+-- cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+
+-- Node.js (pg):
+-- client.query('SELECT * FROM users WHERE username = $1', [username])
+
+-- Java (JDBC):
+-- PreparedStatement ps = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
+-- ps.setString(1, username);
+
+-- Go (database/sql):
+-- db.Query("SELECT * FROM users WHERE username = $1", username)
+
+-- NEVER use string concatenation or template literals for SQL values:
+-- BAD:  f"SELECT * FROM users WHERE username = '{username}'"
+-- BAD:  \\\`SELECT * FROM users WHERE username = '\${username}'\\\`
+-- GOOD: cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+\`\`\`
+
+**Why it matters:** SQL injection has been the #1 web application vulnerability for decades (OWASP Top 10). A single unparameterized query can expose your entire database. Parameterized queries are simple, have no performance penalty (in fact they are often faster due to plan caching), and completely eliminate SQL injection.
+
+> **Role connection:** Every developer who writes code that talks to a database must use parameterized queries. This is non-negotiable for backend developers, and code reviewers should reject any string-concatenated SQL on sight.
+
+---
+
+## 5. JOINs
+
+JOINs combine rows from two or more tables based on a related column. They are the fundamental mechanism for working with relational data. Always use explicit \`JOIN ... ON\` syntax rather than implicit comma joins with WHERE conditions — it is clearer and less error-prone.
 
 ### INNER JOIN
 

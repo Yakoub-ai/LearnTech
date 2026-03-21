@@ -895,6 +895,8 @@ print(f"Host: {url.hostname}, Path: {url.path}, Query: {url.query}")
 # 3. Use itertools.groupby to group a sorted list of dicts by a key.
 # 4. Set up a virtual environment and install the 'requests' package.
 #    (In terminal: python -m venv .venv && source .venv/bin/activate && pip install requests)
+#    Or use uv (modern, faster alternative to pip):
+#    (uv venv .venv && source .venv/bin/activate && uv pip install requests)
 \`\`\`
 
 **Why it matters:** Modules keep code organized and reusable. Virtual environments prevent dependency conflicts. The standard library provides battle-tested tools that save you from reinventing the wheel.
@@ -2023,11 +2025,13 @@ The \`typing\` module provides generics, unions, optionals, and other advanced t
 # =============================================================
 
 from typing import (
-    Optional, Union, List, Dict, Tuple, Set,
+    Optional,       # Use X | None in 3.10+ instead
     Callable, Iterator, Generator, Any,
     TypeVar, Generic, Protocol, Literal,
-    TypeAlias, overload
+    TypeAlias, overload,
 )
+# Note: List, Dict, Tuple, Set from typing are DEPRECATED since Python 3.9.
+# Use the built-in lowercase versions: list, dict, tuple, set instead.
 from dataclasses import dataclass, field
 from datetime import datetime
 
