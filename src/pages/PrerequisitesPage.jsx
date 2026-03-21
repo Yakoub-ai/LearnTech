@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { BookOpen, GitBranch, Code2, Shield, Users, GitPullRequest, Scale, Lock } from 'lucide-react'
-import { roleMarkdownContent } from '../data/markdownContent'
+import { prerequisites } from '../data/prerequisites'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import PageHelmet from '../components/seo/PageHelmet'
 
@@ -20,8 +20,7 @@ const sections = [
 export default function PrerequisitesPage() {
   const [activeSection, setActiveSection] = useState('overview')
 
-  const prereqContent = roleMarkdownContent._prerequisites || {}
-  const currentContent = prereqContent[activeSection] || prereqContent[sections.find(s => s.id === activeSection)?.key] || ''
+  const currentContent = prerequisites[sections.find(s => s.id === activeSection)?.key] || ''
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
