@@ -1,7 +1,18 @@
 export const content = {
   beginner: `# Python – Beginner Deep Dive
 
-This guide covers the foundational building blocks of Python programming. Each section includes detailed explanations, practical code examples, and exercises to solidify your understanding.
+Python is one of the most beginner-friendly languages ever designed, yet it powers everything from quick automation scripts to billion-scale data pipelines. Its philosophy — "there should be one obvious way to do it" — means less time arguing over syntax and more time solving problems. This guide walks you through the eight pillars every Python developer must own before moving on to intermediate work.
+
+## What you will learn
+
+- Declare and manipulate variables across all core data types
+- Write conditional logic and loop over data with \`for\` and \`while\`
+- Define reusable, well-documented functions with flexible argument styles
+- Choose the right built-in data structure (list, tuple, dict, set) for the job
+- Format and transform strings using f-strings, slices, and regular expressions
+- Read and write files safely using context managers and \`pathlib\`
+- Organise code into modules, packages, and virtual environments
+- Handle errors gracefully with specific exception types and custom exceptions
 
 ---
 
@@ -1075,12 +1086,23 @@ Move on to the **Mid** level when you are comfortable writing Python scripts tha
 ## Recommended Videos — Beginner
 
 - **Programming with Mosh** — "Python Full Course for Beginners" — https://www.youtube.com/watch?v=_uQrJ0TkZlc
-- **freeCodeCamp** — "Learn Python – Full Course for Beginners" — https://www.youtube.com/watch?v=rfscVS0vtbw
-- **Fireship** — "Python in 100 Seconds" — https://www.youtube.com/watch?v=x7X9w_GIm1s
+
+> The Mosh full-course video is a particularly solid companion to this guide: it covers variables, control flow, functions, and data structures with clear worked examples that mirror the concepts above.
 `,
   mid: `# Python – Mid-Level Deep Dive
 
-This guide covers intermediate Python concepts that separate beginners from effective Python developers. You will learn object-oriented programming, decorators, generators, context managers, type hints, testing, and more.
+Writing Python that works is the beginner goal. Writing Python that other engineers want to maintain, extend, and test is the intermediate goal. This guide bridges that gap. You will move from writing scripts to designing systems — learning how objects collaborate, how decorators transform behaviour, how generators stream data without exhausting memory, and how type hints make your intentions machine-verifiable. By the end you will have the toolkit to contribute confidently to professional Python codebases.
+
+## What you will learn
+
+- Design class hierarchies with inheritance, abstract base classes, and dunder methods
+- Write and chain decorators to add cross-cutting behaviour without modifying original functions
+- Build memory-efficient pipelines using generators and the \`yield\` keyword
+- Manage resources safely with context managers and the \`with\` statement
+- Flatten complex data transformations into readable comprehensions
+- Annotate code with type hints and validate them with static analysers
+- Structure test suites with pytest: fixtures, parametrize, and mocking
+- Extract structured data from text using regular expressions
 
 ---
 
@@ -2503,13 +2525,24 @@ Move on to the **Senior** level when you are comfortable building well-structure
 
 ## Recommended Videos — Mid Level
 
-- **Programming with Mosh** — "Object-Oriented Programming, Simplified" — https://www.youtube.com/watch?v=pTB0EiLXUC8
-- **Tech With Tim** — "Python Asynchronous Programming – AsyncIO & Async/Await" — https://www.youtube.com/watch?v=t5Bo1Je9EmE
-- **Corey Schafer** — "Python SQLite Tutorial" — https://www.youtube.com/watch?v=pd-0G0MigUA
+- **Programming with Mosh** — "Python Full Course for Beginners" — https://www.youtube.com/watch?v=_uQrJ0TkZlc
+
+> Mosh's full-course coverage of classes and modules is an excellent supplement to the OOP and testing sections above. The explanations of \`__init__\`, instance vs class variables, and method resolution order complement the material here directly.
 `,
   senior: `# Python – Senior Deep Dive
 
-This guide covers advanced Python concepts for experienced developers. Topics include async programming, metaclasses, memory management, profiling, packaging, design patterns, and concurrency.
+Senior Python engineers are expected to understand not just how Python works but why it works that way — and when to reach beyond the idiomatic solution. This guide covers the internals and architectural patterns that distinguish a senior practitioner: the event loop model behind \`asyncio\`, the class machinery exposed by metaclasses, the reference-counting and garbage-collection strategy that determines memory behaviour, and the concurrency primitives that bypass or work around the GIL. You will also learn how to package and distribute libraries professionally and how to apply classic design patterns in a Pythonic way.
+
+## What you will learn
+
+- Write concurrent I/O-bound code using \`asyncio\`, coroutines, and \`TaskGroup\`
+- Understand and use metaclasses to automate class configuration and registration
+- Optimise memory footprint with \`__slots__\`, weak references, and the garbage collector
+- Profile applications with \`cProfile\`, \`line_profiler\`, and \`tracemalloc\`
+- Package and publish libraries using \`pyproject.toml\`, \`build\`, and \`twine\`
+- Implement canonical design patterns (Singleton, Factory, Observer, Strategy, Decorator) idiomatically
+- Choose the right concurrency model — threading, multiprocessing, or asyncio — given the task profile
+- Reason about the Global Interpreter Lock and its implications for parallelism
 
 ---
 
@@ -4234,8 +4267,8 @@ These topics represent the knowledge expected of a senior Python developer. Mast
 
 ## Recommended Videos — Senior Level
 
-- **Tech With Tim** — "Python Asynchronous Programming – AsyncIO & Async/Await" — https://www.youtube.com/watch?v=t5Bo1Je9EmE
-- **freeCodeCamp** — "Scikit-Learn Course – Machine Learning in Python Tutorial" — https://www.youtube.com/watch?v=pqNCD_5r0IU
 - **Computerphile** — "Secret Key Exchange (Diffie-Hellman)" — https://www.youtube.com/watch?v=NmM9HA2MQGI
+
+> The Diffie-Hellman video is an excellent mental model for the kind of mathematical reasoning that underpins cryptographic Python libraries. The colour-mixing analogy used to explain key exchange maps directly to the modular exponentiation operations in Python's \`secrets\` and \`cryptography\` packages.
 `,
 }
