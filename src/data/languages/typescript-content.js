@@ -2714,7 +2714,7 @@ const submitted = order.transition("submitted");   // OK
 const approved = submitted.transition("approved");  // OK
 const shipped = approved.transition("shipped");     // OK
 const delivered = shipped.transition("delivered");  // OK
-// shipped.transition("cancelled"); // OK — cancelled is valid from shipped
+// shipped.transition("cancelled"); // Error — shipped can only transition to "delivered"
 // delivered.transition("anything"); // Error — delivered has no valid transitions
 \`\`\`
 
@@ -2939,6 +2939,7 @@ You now have expert-level TypeScript knowledge spanning:
 - **Migration strategies** — incremental adoption, progressive strict mode, and automation
 - **Performance** — measuring type-check speed, avoiding expensive patterns, isolatedDeclarations
 - **Advanced patterns** — type-safe builders, state machines, dependency injection, and opaque types
+- **TypeScript 5.x features** — \`const\` type parameters, \`using\` declarations, TC39 decorators, and decorator metadata
 
 These are the skills that enable you to design type systems for large-scale applications, guide migration efforts, and build libraries that provide exceptional developer experience through TypeScript's type system.
 `,
