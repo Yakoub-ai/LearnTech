@@ -4365,7 +4365,7 @@ assert Color.RED == "red"  # True — unlike regular Enum
 
 ## Summary
 
-You have covered seven advanced Python topics:
+You have covered eight advanced Python topics:
 
 | Topic | Key Takeaway |
 |-------|-------------|
@@ -4373,9 +4373,10 @@ You have covered seven advanced Python topics:
 | Metaclasses | Classes of classes; prefer \`__init_subclass__\` for simpler cases |
 | Memory Management | Reference counting + GC; use \`__slots__\` and weak references to optimize |
 | Profiling | Measure first, optimize second; cProfile for functions, line_profiler for lines |
-| Packaging | \`pyproject.toml\` is the standard; use \`build\` and \`twine\` for distribution |
+| Packaging | \`pyproject.toml\` is the standard; use \`build\`, \`twine\`, or \`uv\` for distribution |
 | Design Patterns | Singleton, Factory, Observer, Strategy, Decorator -- simpler in Python |
-| Concurrency | Threading for I/O, multiprocessing for CPU, asyncio for async I/O; mind the GIL |
+| Concurrency | Threading for I/O, multiprocessing for CPU, asyncio for async I/O; PEP 703 free-threaded mode is emerging |
+| Modern Features | Exception groups, \`tomllib\`, \`StrEnum\`, PEP 695 type syntax |
 
 These topics represent the knowledge expected of a senior Python developer. Mastery comes from applying them in real projects and understanding the trade-offs of each approach.
 
