@@ -20,7 +20,7 @@ export default function LanguagesPage() {
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium mb-4">
           <Sparkles className="w-4 h-4" />
-          5 Language Deep Dives
+          {languages.length} Language Deep Dives
         </div>
         <h1 className="text-4xl font-extrabold text-[var(--color-text)] mb-4">
           Language Learning Paths

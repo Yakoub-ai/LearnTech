@@ -5,11 +5,11 @@ import { Maximize2, Minimize2 } from 'lucide-react'
 mermaid.initialize({
   startOnLoad: false,
   theme: 'default',
-  securityLevel: 'loose',
+  securityLevel: 'strict',
   fontFamily: 'Inter, system-ui, sans-serif',
   flowchart: {
     useMaxWidth: true,
-    htmlLabels: true,
+    htmlLabels: false,
     curve: 'basis',
   },
   themeVariables: {

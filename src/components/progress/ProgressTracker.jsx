@@ -149,7 +149,7 @@ export default function ProgressTracker() {
           <div className="space-y-3">
             {interactiveLabs.slice(0, 10).map((lab) => {
               const labProgress = getAllLabProgress()[lab.id]
-              const completedSteps = labProgress ? labProgress.steps.filter(s => s.completed).length : 0
+              const completedSteps = labProgress?.steps ? labProgress.steps.filter(s => s?.completed).length : 0
               const totalSteps = lab.steps.length
               const pct = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0
               return (

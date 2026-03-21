@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useContext, useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { Sun, Moon, Search, BarChart3, Menu, X } from 'lucide-react'
 import { ThemeContext } from '../../App'
 import SearchModal from '../common/SearchModal'
@@ -10,14 +10,24 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(prev => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   return (
     <>
       <header className="sticky top-0 z-50 bg-[var(--color-surface)]/80 backdrop-blur-xl border-b border-[var(--color-border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3 no-underline">
-              <img src="/LF.png" alt="Tech Hub Learning" className="h-9 w-auto" />
-              <span className="font-bold text-lg text-[var(--color-text)] hidden sm:block">
+              <span className="font-bold text-lg text-[var(--color-text)]">
                 Tech Hub Learning
               </span>
             </Link>

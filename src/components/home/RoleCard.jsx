@@ -54,7 +54,7 @@ export default function RoleCard({ role, index }) {
           <Clock className="w-3.5 h-3.5" />
           <span>{totalHours}+ hours</span>
           <span className="mx-1">|</span>
-          <span>3 levels</span>
+          <span>{role.levels.length} levels</span>
         </div>
 
         <ProgressBar value={progress.overall} size="sm" />

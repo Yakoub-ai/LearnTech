@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { loadLanguageMarkdownContent, loadLanguageQuizzes } from '../data/loaders/languageDataLoader'
+import { setLanguageQuizScore } from '../utils/progressStorage'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import QuizBlock from '../components/interactive/QuizBlock'
 import Badge from '../components/common/Badge'
@@ -128,7 +129,7 @@ export default function LanguageLevelPage() {
             questions={levelQuizzes}
             roleId={languageId}
             level={level}
-            onComplete={() => {}}
+            onComplete={(score) => setLanguageQuizScore(languageId, level, score)}
           />
         </div>
       )}

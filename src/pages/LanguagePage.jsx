@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { getRoleById } from '../data/roles'
+import { setLanguageQuizScore } from '../utils/progressStorage'
 import PageHelmet from '../components/seo/PageHelmet'
 import {
   loadLanguageMarkdownContent,
@@ -209,7 +210,7 @@ export default function LanguagePage() {
                           questions={levelQuizzes}
                           roleId={languageId}
                           level={levelKey}
-                          onComplete={() => {}}
+                          onComplete={(score) => setLanguageQuizScore(languageId, levelKey, score)}
                         />
                       </div>
                     )}

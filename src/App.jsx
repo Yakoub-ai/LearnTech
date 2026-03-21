@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom'
 import { useState, useEffect, createContext, Suspense, lazy } from 'react'
 import Layout from './components/layout/Layout'
 import HomePage from './pages/HomePage'
+import NotFoundPage from './pages/NotFoundPage'
+import ErrorBoundary from './components/common/ErrorBoundary'
 
 const RolePage = lazy(() => import('./pages/RolePage'))
 const LevelPage = lazy(() => import('./pages/LevelPage'))
@@ -40,18 +42,21 @@ function App() {
   return (
     <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
       <Layout>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/prerequisites" element={<PrerequisitesPage />} />
-            <Route path="/role/:roleId" element={<RolePage />} />
-            <Route path="/role/:roleId/:level" element={<LevelPage />} />
-            <Route path="/languages" element={<LanguagesPage />} />
-            <Route path="/language/:languageId" element={<LanguagePage />} />
-            <Route path="/language/:languageId/:level" element={<LanguageLevelPage />} />
-            <Route path="/progress" element={<ProgressPage />} />
-          </Routes>
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/prerequisites" element={<PrerequisitesPage />} />
+              <Route path="/role/:roleId" element={<RolePage />} />
+              <Route path="/role/:roleId/:level" element={<LevelPage />} />
+              <Route path="/languages" element={<LanguagesPage />} />
+              <Route path="/language/:languageId" element={<LanguagePage />} />
+              <Route path="/language/:languageId/:level" element={<LanguageLevelPage />} />
+              <Route path="/progress" element={<ProgressPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </Layout>
     </ThemeContext.Provider>
   )

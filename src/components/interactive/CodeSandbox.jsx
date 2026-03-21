@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from 'react'
+import React, { useState, useEffect, lazy, Suspense } from 'react'
 import { Play, RotateCcw, Copy, Check } from 'lucide-react'
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react'))
@@ -8,6 +8,12 @@ export default function CodeSandbox({ examples = [], roleId }) {
   const [code, setCode] = useState(examples[0]?.code || '')
   const [output, setOutput] = useState('')
   const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    if (examples.length > 0 && !code) {
+      setCode(examples[0].code)
+    }
+  }, [examples])
 
   const currentExample = examples[activeExample]
 

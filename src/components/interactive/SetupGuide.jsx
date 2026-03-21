@@ -11,12 +11,10 @@ function StepItem({ step, index, isComplete, onToggle }) {
         ? 'border-[var(--color-success)]/30 bg-[var(--color-success)]/5'
         : 'border-[var(--color-border)] bg-[var(--color-surface)]'
     }`}>
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-start gap-3 p-4 cursor-pointer border-none bg-transparent text-left"
-      >
+      <div className="w-full flex items-start gap-3 p-4 text-left">
         <button
-          onClick={(e) => { e.stopPropagation(); onToggle() }}
+          onClick={onToggle}
+          aria-label={isComplete ? 'Mark incomplete' : 'Mark complete'}
           className="mt-0.5 shrink-0 border-none bg-transparent cursor-pointer p-0"
         >
           {isComplete ? (
@@ -25,19 +23,24 @@ function StepItem({ step, index, isComplete, onToggle }) {
             <Circle className="w-5 h-5 text-[var(--color-text-secondary)]/40" />
           )}
         </button>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-[var(--color-primary)]">Step {index + 1}</span>
-            <h4 className={`text-sm font-semibold ${isComplete ? 'text-[var(--color-success)] line-through' : 'text-[var(--color-text)]'}`}>
-              {step.title}
-            </h4>
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex-1 min-w-0 flex items-center gap-3 bg-transparent border-none cursor-pointer text-left p-0"
+        >
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono text-[var(--color-primary)]">Step {index + 1}</span>
+              <h4 className={`text-sm font-semibold ${isComplete ? 'text-[var(--color-success)] line-through' : 'text-[var(--color-text)]'}`}>
+                {step.title}
+              </h4>
+            </div>
+            {step.description && (
+              <p className="text-xs text-[var(--color-text-secondary)] mt-1">{step.description}</p>
+            )}
           </div>
-          {step.description && (
-            <p className="text-xs text-[var(--color-text-secondary)] mt-1">{step.description}</p>
-          )}
-        </div>
-        {expanded ? <ChevronDown className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0 mt-1" /> : <ChevronRight className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0 mt-1" />}
-      </button>
+          {expanded ? <ChevronDown className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0 mt-1" /> : <ChevronRight className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0 mt-1" />}
+        </button>
+      </div>
 
       {expanded && (
         <div className="px-4 pb-4 pt-0 space-y-3">

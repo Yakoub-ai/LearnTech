@@ -411,7 +411,8 @@ export function bulkUpdateProgress(roleId, level, updates) {
     const { type, index, completed } = update;
 
     if (type === 'objective') {
-      while ((levelProgress.objectives || []).length <= index) {
+      if (!levelProgress.objectives) levelProgress.objectives = [];
+      while (levelProgress.objectives.length <= index) {
         levelProgress.objectives.push({ completed: false, completedAt: null });
       }
       levelProgress.objectives[index] = {
@@ -419,7 +420,8 @@ export function bulkUpdateProgress(roleId, level, updates) {
         completedAt: completed ? new Date().toISOString() : null
       };
     } else if (type === 'resource') {
-      while ((levelProgress.resources || []).length <= index) {
+      if (!levelProgress.resources) levelProgress.resources = [];
+      while (levelProgress.resources.length <= index) {
         levelProgress.resources.push({ completed: false, completedAt: null });
       }
       levelProgress.resources[index] = {
@@ -453,6 +455,15 @@ export function exportProgressData() {
 export function importProgressData(jsonData) {
   try {
     const data = JSON.parse(jsonData);
+    if (
+      typeof data !== 'object' || data === null ||
+      typeof data.roles !== 'object' ||
+      typeof data.languages !== 'object' ||
+      typeof data.labs !== 'object'
+    ) {
+      console.warn('Invalid progress data structure');
+      return false;
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     return true;
   } catch (error) {

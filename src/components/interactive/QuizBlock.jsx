@@ -30,7 +30,9 @@ export default function QuizBlock({ questions = [], roleId, level, onComplete })
   const handleNext = () => {
     if (currentQ + 1 >= questions.length) {
       setFinished(true)
-      const finalScore = Math.round(((score + (selected === question?.correctIndex ? 0 : 0)) / questions.length) * 100)
+      const correct = selected === question?.correctIndex
+      const finalCorrect = answers.filter(a => a.correct).length + (correct ? 1 : 0)
+      const finalScore = Math.round((finalCorrect / questions.length) * 100)
       onComplete?.(finalScore)
     } else {
       setCurrentQ((q) => q + 1)

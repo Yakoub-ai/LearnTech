@@ -32,7 +32,7 @@ const levelConfig = {
 
 export default function RoadmapTimeline({ roleId, levels = ['Beginner', 'Mid', 'Senior'] }) {
   const location = useLocation()
-  const progress = getRoleProgress(roleId)
+  const progress = getRoleProgress(roleId) || {}
 
   return (
     <div className="relative">

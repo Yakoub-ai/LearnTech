@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import KeyTakeaway from './KeyTakeaway'
@@ -59,6 +60,16 @@ function processContent(markdown) {
   )
 
   return processed
+}
+
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    div: [...(defaultSchema.attributes?.div || []), ['data-callout']],
+    code: [...(defaultSchema.attributes?.code || []), ['className']],
+    span: [...(defaultSchema.attributes?.span || []), ['className']],
+  },
 }
 
 export default function MarkdownRenderer({ content, className = '' }) {
@@ -167,7 +178,7 @@ export default function MarkdownRenderer({ content, className = '' }) {
     <div className={`prose max-w-none ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw]}
+        rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
         components={components}
       >
         {processedContent}

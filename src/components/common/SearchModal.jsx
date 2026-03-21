@@ -12,14 +12,6 @@ export default function SearchModal({ open, onClose }) {
 
   useEffect(() => {
     function handleKeyDown(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault()
-        if (open) onClose()
-        else {
-          setQuery('')
-          setResults([])
-        }
-      }
       if (e.key === 'Escape' && open) onClose()
     }
     window.addEventListener('keydown', handleKeyDown)
