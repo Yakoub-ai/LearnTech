@@ -1568,6 +1568,69 @@ tier_summary AS (
 SELECT * FROM tier_summary ORDER BY avg_spending DESC;
 \`\`\`
 
+### LATERAL Joins
+
+A \`LATERAL\` join allows a subquery in the FROM clause to reference columns from preceding tables — like a correlated subquery, but returning multiple rows and columns. This is a powerful modern SQL feature (SQL:2003 standard, PostgreSQL 9.3+).
+
+\`\`\`sql
+-- Get the 3 most recent orders for each customer
+-- Without LATERAL, this requires window functions or correlated subqueries
+SELECT
+    c.customer_name,
+    recent.order_id,
+    recent.order_date,
+    recent.total
+FROM customers c
+CROSS JOIN LATERAL (
+    SELECT o.order_id, o.order_date, o.total
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+    ORDER BY o.order_date DESC
+    LIMIT 3
+) AS recent;
+
+-- LATERAL with aggregation: get stats per customer inline
+SELECT
+    c.customer_name,
+    stats.order_count,
+    stats.total_spent,
+    stats.last_order
+FROM customers c
+LEFT JOIN LATERAL (
+    SELECT
+        COUNT(*) AS order_count,
+        SUM(total) AS total_spent,
+        MAX(order_date) AS last_order
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+) AS stats ON true;
+\`\`\`
+
+**Why it matters:** LATERAL joins solve "top-N per group" problems more efficiently than window functions in many cases. They are also the cleanest way to call set-returning functions for each row of another table.
+
+### MERGE Statement (PostgreSQL 15+)
+
+\`MERGE\` (also known as "upsert on steroids") combines INSERT, UPDATE, and DELETE in a single atomic statement based on a match condition. It is part of the SQL:2003 standard.
+
+\`\`\`sql
+-- Synchronize a staging table into the main products table
+MERGE INTO products AS target
+USING staging_products AS source
+ON target.sku = source.sku
+WHEN MATCHED AND source.is_deleted = true THEN
+    DELETE
+WHEN MATCHED THEN
+    UPDATE SET
+        product_name = source.product_name,
+        price = source.price,
+        updated_at = NOW()
+WHEN NOT MATCHED THEN
+    INSERT (sku, product_name, price, created_at)
+    VALUES (source.sku, source.product_name, source.price, NOW());
+\`\`\`
+
+**Why it matters:** MERGE replaces complex INSERT ... ON CONFLICT or multi-step upsert patterns. It is especially useful for ETL pipelines and data synchronization tasks where you need to handle inserts, updates, and deletes in one pass.
+
 ### EXERCISE: CTEs
 
 \`\`\`sql
@@ -1578,6 +1641,8 @@ SELECT * FROM tier_summary ORDER BY avg_spending DESC;
 --    a. Calculates daily revenue
 --    b. Adds 7-day and 30-day moving averages
 --    c. Flags days where revenue dropped more than 20% from the 7-day average
+-- 3. Use a LATERAL join to get the 5 best-selling products per category
+-- 4. Write a MERGE statement to synchronize a staging table into a main table
 \`\`\`
 
 ---

@@ -754,3 +754,10 @@ class TCF22ConsentManager {
 ```
 
 > **Why it matters:** EU data protection authorities have levied hundreds of millions of euros in fines against organisations for advertising technology consent violations — including major fines for insufficient consent mechanisms, tracking without consent, and improper use of personal data for advertising. The EU AI Act adds further obligations for AI-powered marketing tools, with penalties of up to 35 million EUR or 7% of global turnover. Marketing technology developers who implement correct TCF 2.2 consent enforcement, ePrivacy-compliant tracking controls, and EU AI Act transparency for recommendation engines protect the organisation from regulatory exposure that has proven to be a top enforcement priority across EU member states.
+
+---
+
+## Language Deep Dives
+
+- [JavaScript Deep Dive](/language/javascript) — Client-side tracking, analytics, and integrations
+- [HTML & CSS Deep Dive](/language/html-css) — Landing pages, email templates, and web content
