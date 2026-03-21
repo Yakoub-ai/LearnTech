@@ -4,13 +4,19 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, BookOpen, List } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
 import PageHelmet from '../components/seo/PageHelmet'
-import { loadRoleMarkdownContent } from '../data/loaders/roleDataLoader'
+import { loadRoleMarkdownContent, loadRoleTopicQuizzes, loadRoleQuizzes } from '../data/loaders/roleDataLoader'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import Badge from '../components/common/Badge'
 import ProgressBar from '../components/progress/ProgressBar'
 import useProgress from '../components/progress/useProgress'
-import { parseObjectives } from '../utils/markdownLoader'
+import { parseObjectives, extractContentSections } from '../utils/markdownLoader'
 import ObjectiveChecklist from '../components/roadmap/ObjectiveChecklist'
+import QuizBlock from '../components/interactive/QuizBlock'
+import LevelExamBlock from '../components/interactive/LevelExamBlock'
+import ReportQuestionModal from '../components/interactive/ReportQuestionModal'
+import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
+import { syncProgressItemToSupabase } from '../utils/progressStorage'
 
 function TableOfContents({ content }) {
   const headings = []
@@ -19,7 +25,7 @@ function TableOfContents({ content }) {
   while ((match = regex.exec(content)) !== null) {
     headings.push({
       text: match[1],
-      id: match[1].toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      id: match[1].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
     })
   }
 
@@ -48,18 +54,28 @@ function TableOfContents({ content }) {
 
 export default function LevelPage() {
   const { roleId, level } = useParams()
+  const { user } = useAuth()
   const role = getRoleById(roleId)
-  const { isObjectiveComplete, toggleObjective, roleProgress } = useProgress(roleId)
+  const { isObjectiveComplete, toggleObjective, roleProgress, completeTopicQuiz, saveLevelExamScore, getTopicQuizScore, getLevelExamScore } = useProgress(roleId)
   const [markdownContent, setMarkdownContent] = useState({})
+  const [topicQuizzesByLevel, setTopicQuizzesByLevel] = useState({})
+  const [levelQuizzes, setLevelQuizzes] = useState([])
   const [loadError, setLoadError] = useState(null)
   const [contentLoading, setContentLoading] = useState(true)
+  const [reportModal, setReportModal] = useState({ isOpen: false, questionIndex: 0, questionText: '', topicId: '' })
 
   useEffect(() => {
     if (role?.fileName) {
       setContentLoading(true)
-      loadRoleMarkdownContent(role.fileName)
-        .then((data) => {
-          setMarkdownContent(data)
+      Promise.all([
+        loadRoleMarkdownContent(role.fileName),
+        loadRoleTopicQuizzes(roleId),
+        loadRoleQuizzes(roleId),
+      ])
+        .then(([contentData, topicData, quizData]) => {
+          setMarkdownContent(contentData)
+          setTopicQuizzesByLevel(topicData)
+          setLevelQuizzes(quizData[level] || [])
           setContentLoading(false)
         })
         .catch(() => {
@@ -67,7 +83,7 @@ export default function LevelPage() {
           setContentLoading(false)
         })
     }
-  }, [role?.fileName])
+  }, [role?.fileName, roleId, level])
 
   if (!role) {
     return (
@@ -88,9 +104,25 @@ export default function LevelPage() {
   const overviewSection = overviewMatch ? overviewMatch[0] : ''
   const objectives = parseObjectives(overviewSection)
 
+  const levelTopicQuizzes = topicQuizzesByLevel[level] || []
+  const topicQuizMap = Object.fromEntries(levelTopicQuizzes.map((tq) => [tq.topicId, tq]))
+  const quizLinkedIndexes = new Set(levelTopicQuizzes.map((tq) => tq.objectiveIndex))
+
+  const contentSections = content ? extractContentSections(content) : []
+
   const levelIndex = role.levels.findIndex((l) => l.toLowerCase() === level)
   const prevLevel = levelIndex > 0 ? role.levels[levelIndex - 1] : null
   const nextLevel = levelIndex < role.levels.length - 1 ? role.levels[levelIndex + 1] : null
+
+  const examScore = getLevelExamScore ? getLevelExamScore(level) : null
+
+  function openReportModal(topicId, questionIndex, questionText) {
+    setReportModal({ isOpen: true, questionIndex, questionText, topicId })
+  }
+
+  function closeReportModal() {
+    setReportModal((prev) => ({ ...prev, isOpen: false }))
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
@@ -139,6 +171,7 @@ export default function LevelPage() {
             level={level}
             isObjectiveComplete={isObjectiveComplete}
             toggleObjective={toggleObjective}
+            quizLinkedIndexes={quizLinkedIndexes}
           />
         </div>
       )}
@@ -150,7 +183,37 @@ export default function LevelPage() {
       ) : content ? (
         <>
           <TableOfContents content={content} />
-          <MarkdownRenderer content={content} />
+          {contentSections.length > 0 ? (
+            <div className="space-y-10">
+              {contentSections.map((section) => {
+                const topicQuiz = topicQuizMap[section.slug]
+                const savedScore = topicQuiz && getTopicQuizScore ? getTopicQuizScore(level, topicQuiz.topicId) : null
+                return (
+                  <div key={section.slug}>
+                    <MarkdownRenderer content={`## ${section.heading}\n\n${section.content}`} />
+                    {topicQuiz && (
+                      <div className="mt-6">
+                        <QuizBlock
+                          questions={topicQuiz.questions}
+                          topicTitle={topicQuiz.topicTitle}
+                          savedScore={savedScore}
+                          onComplete={(score) => {
+                            completeTopicQuiz(level, topicQuiz.topicId, topicQuiz.objectiveIndex, score)
+                            syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'topicQuiz', topicQuiz.topicId, { score, scoredAt: new Date().toISOString() })
+                          }}
+                          onReport={(questionIndex, questionText) =>
+                            openReportModal(topicQuiz.topicId, questionIndex, questionText)
+                          }
+                        />
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <MarkdownRenderer content={content} />
+          )}
         </>
       ) : (
         <div className="text-center py-16">
@@ -163,6 +226,24 @@ export default function LevelPage() {
             View Roadmap
             <ArrowRight className="w-4 h-4" />
           </Link>
+        </div>
+      )}
+
+      {levelQuizzes.length > 0 && (
+        <div className="mt-12">
+          <LevelExamBlock
+            questions={levelQuizzes}
+            roleId={roleId}
+            level={level}
+            savedScore={examScore}
+            onComplete={(score) => {
+              saveLevelExamScore(level, score)
+              syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'levelExam', 'score', { score, scoredAt: new Date().toISOString() })
+            }}
+            onReport={(questionIndex, questionText) =>
+              openReportModal('level-exam', questionIndex, questionText)
+            }
+          />
         </div>
       )}
 
@@ -186,6 +267,16 @@ export default function LevelPage() {
           </Link>
         ) : <div />}
       </div>
+
+      <ReportQuestionModal
+        isOpen={reportModal.isOpen}
+        onClose={closeReportModal}
+        roleId={roleId}
+        level={level}
+        topicId={reportModal.topicId}
+        questionIndex={reportModal.questionIndex}
+        questionText={reportModal.questionText}
+      />
     </div>
   )
 }

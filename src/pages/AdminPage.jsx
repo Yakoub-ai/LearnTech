@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Navigate } from 'react-router-dom'
-import { CheckCircle2, XCircle, Clock, Users, Shield, RefreshCw } from 'lucide-react'
+import { CheckCircle2, XCircle, Clock, Users, Shield, RefreshCw, Flag } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import UserProgressTable from '../components/admin/UserProgressTable'
 import UsageStats from '../components/admin/UsageStats'
+import QuizReportsPanel from '../components/admin/QuizReportsPanel'
 
 const STATUS_TABS = ['pending', 'approved', 'denied', 'all']
 
@@ -34,6 +35,8 @@ export default function AdminPage() {
   const [counts, setCounts] = useState({ pending: 0, approved: 0, denied: 0 })
   const [progressKey, setProgressKey] = useState(0)
   const [analyticsKey, setAnalyticsKey] = useState(0)
+  const [reportsKey, setReportsKey] = useState(0)
+  const [newReportCount, setNewReportCount] = useState(0)
   const [error, setError] = useState(null)
 
   const fetchUsers = useCallback(async () => {
@@ -83,6 +86,18 @@ export default function AdminPage() {
     fetchCounts()
   }, [fetchCounts, users])
 
+  useEffect(() => {
+    async function fetchNewReportCount() {
+      if (!supabase) return
+      const { count } = await supabase
+        .from('quiz_reports')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'new')
+      setNewReportCount(count || 0)
+    }
+    fetchNewReportCount()
+  }, [reportsKey])
+
   // Guard after all hooks — placing it earlier violates Rules of Hooks
   if (!isAdmin) return <Navigate to="/dashboard" replace />
 
@@ -113,6 +128,9 @@ export default function AdminPage() {
       setProgressKey(k => k + 1)
     } else if (activeSection === 'analytics') {
       setAnalyticsKey(k => k + 1)
+    } else if (activeSection === 'reports') {
+      setReportsKey(k => k + 1)
+      setNewReportCount(0)
     }
   }
 
@@ -138,6 +156,7 @@ export default function AdminPage() {
           { id: 'users', label: 'Users', badge: counts.pending > 0 ? counts.pending : null },
           { id: 'progress', label: 'Progress' },
           { id: 'analytics', label: 'Analytics' },
+          { id: 'reports', label: 'Reports', icon: Flag, badge: newReportCount > 0 ? newReportCount : null },
         ].map(({ id, label, badge }) => (
           <button
             key={id}
@@ -289,6 +308,13 @@ export default function AdminPage() {
       {activeSection === 'analytics' && (
         <div id="section-analytics" role="tabpanel">
           <UsageStats key={analyticsKey} />
+        </div>
+      )}
+
+      {/* Reports section */}
+      {activeSection === 'reports' && (
+        <div id="section-reports" role="tabpanel">
+          <QuizReportsPanel key={reportsKey} />
         </div>
       )}
     </div>

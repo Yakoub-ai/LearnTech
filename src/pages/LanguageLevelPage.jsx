@@ -9,6 +9,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import QuizBlock from '../components/interactive/QuizBlock'
+import ReportQuestionModal from '../components/interactive/ReportQuestionModal'
 import Badge from '../components/common/Badge'
 import PageHelmet from '../components/seo/PageHelmet'
 
@@ -29,6 +30,14 @@ export default function LanguageLevelPage() {
   const [levelQuizzes, setLevelQuizzes] = useState([])
   const [loadError, setLoadError] = useState(null)
   const [contentLoading, setContentLoading] = useState(true)
+  const [reportModal, setReportModal] = useState({ isOpen: false, questionIndex: 0, questionText: '' })
+
+  function openReportModal(questionIndex, questionText) {
+    setReportModal({ isOpen: true, questionIndex, questionText })
+  }
+  function closeReportModal() {
+    setReportModal((prev) => ({ ...prev, isOpen: false }))
+  }
 
   useEffect(() => {
     if (!language) return
@@ -136,9 +145,20 @@ export default function LanguageLevelPage() {
               setLanguageQuizScore(languageId, level, score)
               syncProgressItemToSupabase(supabase, user?.id, languageId, level, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
             }}
+            onReport={openReportModal}
           />
         </div>
       )}
+
+      <ReportQuestionModal
+        isOpen={reportModal.isOpen}
+        onClose={closeReportModal}
+        roleId={languageId}
+        level={level}
+        topicId=""
+        questionIndex={reportModal.questionIndex}
+        questionText={reportModal.questionText}
+      />
 
       <div className="flex justify-between mt-12 pt-6 border-t border-[var(--color-border)]">
         {prevLevel ? (

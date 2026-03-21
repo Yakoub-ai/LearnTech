@@ -302,3 +302,44 @@ export function sanitizeMarkdown(markdown) {
 
   return sanitized;
 }
+
+/**
+ * Extract ## level content sections from deep-dive markdown
+ * Returns sections split by ## headings with a URL-safe slug
+ *
+ * @param {string} markdown - The markdown content to parse
+ * @returns {Array<{heading: string, slug: string, content: string}>}
+ */
+export function extractContentSections(markdown) {
+  const sections = []
+  const lines = markdown.split('\n')
+  let currentHeading = null
+  let currentLines = []
+
+  for (const line of lines) {
+    const match = line.match(/^## (.+)$/)
+    if (match) {
+      if (currentHeading !== null) {
+        sections.push({
+          heading: currentHeading,
+          slug: currentHeading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+          content: currentLines.join('\n').trim(),
+        })
+      }
+      currentHeading = match[1]
+      currentLines = []
+    } else if (currentHeading !== null) {
+      currentLines.push(line)
+    }
+  }
+
+  if (currentHeading !== null) {
+    sections.push({
+      heading: currentHeading,
+      slug: currentHeading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+      content: currentLines.join('\n').trim(),
+    })
+  }
+
+  return sections
+}
