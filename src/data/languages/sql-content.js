@@ -3525,6 +3525,21 @@ LIMIT 20;
 
 -- Reset statistics
 SELECT pg_stat_statements_reset();
+
+-- pg_stat_io (PostgreSQL 16+): I/O statistics by backend type and context
+-- Helps identify whether I/O bottlenecks are from clients, autovacuum, checkpointer, etc.
+SELECT
+    backend_type,
+    object,
+    context,
+    reads,
+    writes,
+    extends,
+    hits,
+    ROUND(hits::numeric / NULLIF(hits + reads, 0) * 100, 2) AS hit_ratio_pct
+FROM pg_stat_io
+WHERE reads > 0 OR writes > 0
+ORDER BY reads + writes DESC;
 \`\`\`
 
 **Why it matters:** Performance tuning is the difference between a database that costs $100/month and one that costs $10,000/month. Connection pooling, COPY for bulk operations, proper VACUUM, and pg_stat_statements are the tools that keep production databases healthy.

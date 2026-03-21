@@ -3485,7 +3485,7 @@ version = "1.0.0"
 description = "A comprehensive example library"
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 authors = [
     {name = "Alice Developer", email = "alice@example.com"}
 ]
@@ -3494,9 +3494,8 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 dependencies = [
@@ -3533,11 +3532,11 @@ testpaths = ["tests"]
 addopts = "-v --cov=my_library --cov-report=term-missing"
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 strict = true
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py312"
 line-length = 88
 """
 
