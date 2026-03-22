@@ -20,6 +20,9 @@ Security Engineers protect systems, applications, and data by identifying vulner
 | Hands-on Security Labs | [TryHackMe – Introduction to Cyber Security](https://tryhackme.com/path/outline/introtocyber) | Interactive |
 | Cryptography Basics | [Khan Academy – Cryptography](https://www.khanacademy.org/computing/computer-science/cryptography) | Interactive |
 | Public Key Cryptography | [Public Key Cryptography – Art of the Problem](https://www.youtube.com/watch?v=YEBfamv-_do) | Video |
+| Authentication Patterns | [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) | Docs |
+| Passkeys / FIDO2 | [Passkeys.dev – Getting Started](https://passkeys.dev/) | Docs |
+| Secure Coding | [OWASP Secure Coding Practices Quick Reference](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/) | Docs |
 
 ### After completing Beginner you should be able to:
 
@@ -29,6 +32,8 @@ Security Engineers protect systems, applications, and data by identifying vulner
 - Describe the fundamentals of TCP/IP, DNS, HTTP/HTTPS, and how network traffic flows between client and server
 - Navigate a Linux system, manage file permissions, and explain the principle of least privilege
 - Explain the difference between symmetric and asymmetric encryption and describe when each is used
+- Describe how multi-factor authentication works and why passkeys (FIDO2/WebAuthn) are phishing-resistant
+- Identify insecure code patterns (command injection, path traversal, hardcoded secrets) and explain the secure alternative
 - Use a hands-on security lab environment to complete basic security challenges
 
 For deep explanations of each concept, see the [Beginner Concept Reference](Security-Engineer/Beginner.md).
