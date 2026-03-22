@@ -151,17 +151,108 @@ flowchart TD
 
 > The order above is the **logical processing order** of a SQL query. The database processes FROM first, then WHERE, then GROUP BY, and so on. Understanding this order helps you debug queries.
 
-### EXERCISE: SELECT Fundamentals
+### Exercises
+
+Given a \`products\` table with columns: \`product_id\`, \`product_name\`, \`category\`, \`price\`, \`stock_quantity\`, \`created_at\`.
+
+**1. Filter by category and sort**
+
+Select all products in the \`'Electronics'\` category, sorted by price descending.
+
+<details>
+<summary>Hint</summary>
+
+Use \`WHERE category = 'Electronics'\` and \`ORDER BY price DESC\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE: Given a "products" table with columns:
--- product_id, product_name, category, price, stock_quantity, created_at
-
--- 1. Select all products in the 'Electronics' category, sorted by price descending
--- 2. Get the 5 most recently created products
--- 3. Find all unique categories
--- 4. Select products priced between $10 and $50, showing only name and price
+SELECT product_id, product_name, category, price, stock_quantity, created_at
+FROM products
+WHERE category = 'Electronics'
+ORDER BY price DESC;
 \`\`\`
+
+Returns all Electronics products from most to least expensive.
+
+</details>
+
+**2. Most recently created**
+
+Get the 5 most recently created products.
+
+<details>
+<summary>Hint</summary>
+
+Sort by \`created_at DESC\` and use \`LIMIT 5\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT product_id, product_name, category, price, stock_quantity, created_at
+FROM products
+ORDER BY created_at DESC
+LIMIT 5;
+\`\`\`
+
+Returns the 5 newest products by creation date.
+
+</details>
+
+**3. Unique categories**
+
+Find all unique categories in the products table.
+
+<details>
+<summary>Hint</summary>
+
+Use \`SELECT DISTINCT category\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT DISTINCT category
+FROM products
+ORDER BY category;
+\`\`\`
+
+Returns one row per unique category, sorted alphabetically.
+
+</details>
+
+**4. Price range filter**
+
+Select products priced between $10 and $50, showing only name and price.
+
+<details>
+<summary>Hint</summary>
+
+Use \`WHERE price BETWEEN 10 AND 50\` and select only the two columns needed.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT product_name, price
+FROM products
+WHERE price BETWEEN 10 AND 50
+ORDER BY price;
+\`\`\`
+
+Returns product name and price for all products in the $10–$50 range, inclusive.
+
+</details>
 
 ### SELECT Anatomy
 
@@ -335,18 +426,131 @@ FROM orders;
 
 **Why it matters:** NULL handling is one of the trickiest parts of SQL. NULL propagates through expressions: \`NULL + 5 = NULL\`, \`NULL = NULL\` is not true (it is unknown). This "three-valued logic" causes subtle bugs in WHERE clauses and aggregations.
 
-### EXERCISE: Filtering & Sorting
+### Exercises
+
+Given an \`orders\` table with columns: \`order_id\`, \`customer_id\`, \`order_date\`, \`status\`, \`total\`, \`shipping_address\`, \`notes\`.
+
+**1. Status and date filter**
+
+Find all orders with status \`'pending'\` or \`'processing'\` placed in 2025.
+
+<details>
+<summary>Hint</summary>
+
+Use \`status IN ('pending', 'processing')\` combined with \`AND order_date BETWEEN '2025-01-01' AND '2025-12-31'\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE: Given an "orders" table with columns:
--- order_id, customer_id, order_date, status, total, shipping_address, notes
-
--- 1. Find all orders with status 'pending' or 'processing' placed in 2025
--- 2. Find orders where notes contain the word 'urgent' (case-insensitive)
--- 3. Find orders with a total between $100 and $500, excluding cancelled orders
--- 4. Find orders where shipping_address is not provided
--- 5. List orders sorted by status (ascending) then total (descending)
+SELECT order_id, customer_id, order_date, status, total
+FROM orders
+WHERE status IN ('pending', 'processing')
+  AND order_date BETWEEN '2025-01-01' AND '2025-12-31';
 \`\`\`
+
+Returns orders that are pending or processing and were placed any time in 2025.
+
+</details>
+
+**2. Case-insensitive pattern match**
+
+Find orders where \`notes\` contains the word \`'urgent'\` (case-insensitive).
+
+<details>
+<summary>Hint</summary>
+
+Use \`ILIKE '%urgent%'\` for case-insensitive pattern matching in PostgreSQL.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT order_id, customer_id, order_date, status, total, notes
+FROM orders
+WHERE notes ILIKE '%urgent%';
+\`\`\`
+
+Returns all orders whose notes field contains the word "urgent" in any capitalisation.
+
+</details>
+
+**3. Range with exclusion**
+
+Find orders with a total between $100 and $500, excluding cancelled orders.
+
+<details>
+<summary>Hint</summary>
+
+Combine \`total BETWEEN 100 AND 500\` with \`AND status <> 'cancelled'\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT order_id, customer_id, order_date, status, total
+FROM orders
+WHERE total BETWEEN 100 AND 500
+  AND status <> 'cancelled';
+\`\`\`
+
+Returns non-cancelled orders in the $100–$500 range inclusive.
+
+</details>
+
+**4. NULL check**
+
+Find orders where \`shipping_address\` is not provided.
+
+<details>
+<summary>Hint</summary>
+
+Use \`IS NULL\` — never \`= NULL\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT order_id, customer_id, order_date, status, total
+FROM orders
+WHERE shipping_address IS NULL;
+\`\`\`
+
+Returns orders that have no shipping address on file.
+
+</details>
+
+**5. Multi-column sort**
+
+List orders sorted by status ascending, then total descending.
+
+<details>
+<summary>Hint</summary>
+
+Use \`ORDER BY status ASC, total DESC\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT order_id, customer_id, order_date, status, total
+FROM orders
+ORDER BY status ASC, total DESC;
+\`\`\`
+
+Groups orders alphabetically by status, and within each status shows the highest-value orders first.
+
+</details>
 
 ---
 
@@ -470,16 +674,107 @@ WHERE status = 'cancelled' AND order_date < '2024-01-01';
 
 > **Role connection:** In production systems, many teams avoid hard DELETE and instead use "soft deletes" — setting a \`deleted_at\` timestamp column. This preserves data for auditing and makes recovery possible.
 
-### EXERCISE: DML Operations
+### Exercises
+
+**1. Insert multiple products**
+
+Insert 3 new products into the \`products\` table in a single statement.
+
+<details>
+<summary>Hint</summary>
+
+Use a multi-row \`INSERT INTO ... VALUES (...), (...), (...)\` statement.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Insert 3 new products into a products table
--- 2. Increase the price of all 'Electronics' products by 15%
--- 3. Delete all orders older than 2 years with status 'cancelled'
--- 4. Write an upsert that updates a product's price if the SKU exists,
---    or inserts a new product if it does not
+INSERT INTO products (product_name, category, price, stock_quantity)
+VALUES
+    ('Wireless Mouse', 'Electronics', 29.99, 200),
+    ('USB-C Hub', 'Electronics', 49.99, 150),
+    ('Desk Lamp', 'Office', 24.99, 300);
 \`\`\`
+
+Inserts all three rows in a single round trip, which is much faster than three separate INSERT statements.
+
+</details>
+
+**2. Percentage price increase**
+
+Increase the price of all \`'Electronics'\` products by 15%.
+
+<details>
+<summary>Hint</summary>
+
+Use \`SET price = price * 1.15\` with \`WHERE category = 'Electronics'\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+UPDATE products
+SET price = ROUND(price * 1.15, 2)
+WHERE category = 'Electronics';
+\`\`\`
+
+Multiplies each Electronics product's price by 1.15 and rounds to 2 decimal places. Always run a \`SELECT\` with the same \`WHERE\` first to verify the affected rows.
+
+</details>
+
+**3. Delete old cancelled orders**
+
+Delete all orders older than 2 years with status \`'cancelled'\`.
+
+<details>
+<summary>Hint</summary>
+
+Use \`order_date < NOW() - INTERVAL '2 years'\` combined with the status filter.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+DELETE FROM orders
+WHERE status = 'cancelled'
+  AND order_date < NOW() - INTERVAL '2 years';
+\`\`\`
+
+Removes cancelled orders that are more than two years old. Verify with a \`SELECT\` using the same conditions before running the \`DELETE\`.
+
+</details>
+
+**4. Upsert by SKU**
+
+Write an upsert that updates a product's price if the SKU exists, or inserts a new product if it does not.
+
+<details>
+<summary>Hint</summary>
+
+Use \`INSERT ... ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+INSERT INTO products (sku, product_name, price)
+VALUES ('WIDGET-001', 'Widget A', 34.99)
+ON CONFLICT (sku) DO UPDATE
+SET price = EXCLUDED.price,
+    updated_at = NOW();
+\`\`\`
+
+If a row with \`sku = 'WIDGET-001'\` already exists, its price is updated to 34.99. If it does not exist, a new row is inserted. \`EXCLUDED\` refers to the row that failed the uniqueness check.
+
+</details>
 
 ---
 
@@ -703,17 +998,160 @@ flowchart TD
     end
 \`\`\`
 
-### EXERCISE: JOINs
+### Exercises
+
+Given tables: \`customers\`, \`orders\`, \`order_items\`, \`products\`, and \`employees\`.
+
+**1. Customers with order count**
+
+List all customers with their order count, including customers who have never placed an order.
+
+<details>
+<summary>Hint</summary>
+
+Use a \`LEFT JOIN\` from \`customers\` to \`orders\`, then \`COUNT(o.order_id)\` to count only non-NULL order rows.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE: Given tables: customers, orders, order_items, products
-
--- 1. List all customers with their order count (include customers with 0 orders)
--- 2. Find products that have never been ordered
--- 3. Show each order with the customer name and total item count
--- 4. Find employees who report to the same manager
--- 5. Generate a report showing every product-month combination for 2025
+SELECT
+    c.customer_id,
+    c.customer_name,
+    COUNT(o.order_id) AS order_count
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name
+ORDER BY order_count DESC;
 \`\`\`
+
+Customers with zero orders appear with \`order_count = 0\` because \`COUNT(o.order_id)\` counts non-NULL values only.
+
+</details>
+
+**2. Products never ordered**
+
+Find products that have never been ordered.
+
+<details>
+<summary>Hint</summary>
+
+Use a \`LEFT JOIN\` from \`products\` to \`order_items\` and filter \`WHERE oi.product_id IS NULL\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT p.product_id, p.product_name, p.category, p.price
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+WHERE oi.product_id IS NULL;
+\`\`\`
+
+When no matching row exists in \`order_items\`, the LEFT JOIN produces NULL for \`oi.product_id\`, identifying products with no orders.
+
+</details>
+
+**3. Order with customer name and item count**
+
+Show each order with the customer name and total item count across all line items.
+
+<details>
+<summary>Hint</summary>
+
+Join \`orders\` to \`customers\` and \`order_items\`, then \`SUM(oi.quantity)\` grouped by order.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT
+    o.order_id,
+    c.customer_name,
+    o.order_date,
+    o.total,
+    SUM(oi.quantity) AS total_items
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.customer_id
+INNER JOIN order_items oi ON o.order_id = oi.order_id
+GROUP BY o.order_id, c.customer_name, o.order_date, o.total
+ORDER BY o.order_date DESC;
+\`\`\`
+
+Returns one row per order showing who placed it and how many total items it contains.
+
+</details>
+
+**4. Employees with the same manager**
+
+Find pairs of employees who report to the same manager.
+
+<details>
+<summary>Hint</summary>
+
+Self-join \`employees\` on \`manager_id\`, using \`e1.employee_id < e2.employee_id\` to avoid duplicate pairs.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT
+    e1.first_name || ' ' || e1.last_name AS employee_1,
+    e2.first_name || ' ' || e2.last_name AS employee_2,
+    mgr.first_name || ' ' || mgr.last_name AS shared_manager
+FROM employees e1
+INNER JOIN employees e2
+    ON e1.manager_id = e2.manager_id
+    AND e1.employee_id < e2.employee_id
+INNER JOIN employees mgr ON e1.manager_id = mgr.employee_id
+ORDER BY shared_manager, employee_1;
+\`\`\`
+
+The \`e1.employee_id < e2.employee_id\` condition ensures each pair appears only once.
+
+</details>
+
+**5. Product–month combination grid**
+
+Generate a report showing every product–month combination for 2025.
+
+<details>
+<summary>Hint</summary>
+
+Use \`CROSS JOIN\` between \`products\` and a month series generated with \`generate_series\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT
+    p.product_id,
+    p.product_name,
+    months.month
+FROM products p
+CROSS JOIN (
+    SELECT generate_series(
+        '2025-01-01'::date,
+        '2025-12-01'::date,
+        '1 month'::interval
+    ) AS month
+) months
+ORDER BY p.product_name, months.month;
+\`\`\`
+
+Produces one row for every (product, month) pair — useful as a base for a sales report where months with no sales should still appear as zero.
+
+</details>
 
 ---
 
@@ -832,17 +1270,158 @@ ORDER BY avg_salary DESC;
 
 > **Role connection:** Data analysts spend most of their time writing GROUP BY queries for dashboards and reports. Backend developers use them for summary endpoints. Understanding the WHERE vs HAVING distinction prevents a whole class of bugs.
 
-### EXERCISE: Aggregate Functions
+### Exercises
+
+**1. Revenue per category**
+
+Find the total revenue per product category.
+
+<details>
+<summary>Hint</summary>
+
+Join \`order_items\` to \`products\`, then \`SUM(oi.quantity * oi.unit_price)\` grouped by \`p.category\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Find the total revenue per product category
--- 2. List months where total revenue exceeded $50,000
--- 3. Find the top 5 customers by total spending
--- 4. Calculate the average order value per customer,
---    but only for customers with at least 3 orders
--- 5. Show the percentage of total revenue each category represents
+SELECT
+    p.category,
+    SUM(oi.quantity * oi.unit_price) AS total_revenue
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY p.category
+ORDER BY total_revenue DESC;
 \`\`\`
+
+Returns one row per category with its total revenue, sorted highest first.
+
+</details>
+
+**2. High-revenue months**
+
+List months where total revenue exceeded $50,000.
+
+<details>
+<summary>Hint</summary>
+
+Use \`DATE_TRUNC('month', order_date)\` in \`GROUP BY\`, then \`HAVING SUM(total) > 50000\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT
+    DATE_TRUNC('month', order_date) AS month,
+    SUM(total) AS monthly_revenue
+FROM orders
+WHERE status = 'completed'
+GROUP BY DATE_TRUNC('month', order_date)
+HAVING SUM(total) > 50000
+ORDER BY month;
+\`\`\`
+
+Only months whose completed-order revenue exceeds $50,000 appear in the result.
+
+</details>
+
+**3. Top 5 customers by spending**
+
+Find the top 5 customers by total spending.
+
+<details>
+<summary>Hint</summary>
+
+Join \`customers\` to \`orders\`, \`SUM(o.total)\`, \`GROUP BY\` customer, \`ORDER BY\` total DESC, \`LIMIT 5\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT
+    c.customer_id,
+    c.customer_name,
+    SUM(o.total) AS total_spent
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name
+ORDER BY total_spent DESC
+LIMIT 5;
+\`\`\`
+
+Returns the five highest-spending customers and their lifetime order totals.
+
+</details>
+
+**4. Average order value for active customers**
+
+Calculate the average order value per customer, but only for customers with at least 3 orders.
+
+<details>
+<summary>Hint</summary>
+
+Use \`HAVING COUNT(o.order_id) >= 3\` to filter out customers with fewer than 3 orders.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT
+    c.customer_id,
+    c.customer_name,
+    COUNT(o.order_id) AS order_count,
+    ROUND(AVG(o.total), 2) AS avg_order_value
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name
+HAVING COUNT(o.order_id) >= 3
+ORDER BY avg_order_value DESC;
+\`\`\`
+
+Customers with 0, 1, or 2 orders are excluded by the \`HAVING\` clause.
+
+</details>
+
+**5. Category revenue percentage**
+
+Show the percentage of total revenue each category represents.
+
+<details>
+<summary>Hint</summary>
+
+Divide each category's revenue by the grand total using \`SUM(...) OVER ()\` (a window function), or use a subquery for the total.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT
+    p.category,
+    SUM(oi.quantity * oi.unit_price) AS category_revenue,
+    ROUND(
+        SUM(oi.quantity * oi.unit_price) * 100.0
+        / SUM(SUM(oi.quantity * oi.unit_price)) OVER (),
+        2
+    ) AS revenue_pct
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY p.category
+ORDER BY category_revenue DESC;
+\`\`\`
+
+The window function \`SUM(...) OVER ()\` computes the grand total across all groups, enabling the percentage calculation in a single query.
+
+</details>
 
 ---
 
@@ -953,17 +1532,132 @@ WHERE NOT EXISTS (
 
 **Why it matters:** EXISTS often outperforms IN when the subquery returns many rows, because EXISTS can short-circuit — it stops as soon as it finds one matching row. NOT EXISTS is particularly useful and handles NULLs correctly, unlike NOT IN.
 
-### EXERCISE: Subqueries
+### Exercises
+
+**1. Products above average price**
+
+Find all products priced above the average product price.
+
+<details>
+<summary>Hint</summary>
+
+Use a scalar subquery \`(SELECT AVG(price) FROM products)\` in the \`WHERE\` clause.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Find all products priced above the average product price
--- 2. Find customers whose total spending is in the top 10%
--- 3. For each department, find the employee with the highest salary
---    (use a correlated subquery)
--- 4. Find orders that contain at least one product from the 'Electronics' category
---    (use EXISTS)
+SELECT product_id, product_name, category, price
+FROM products
+WHERE price > (SELECT AVG(price) FROM products)
+ORDER BY price DESC;
 \`\`\`
+
+The subquery computes the overall average once; the outer query filters products whose price exceeds it.
+
+</details>
+
+**2. Top 10% spenders**
+
+Find customers whose total spending is in the top 10%.
+
+<details>
+<summary>Hint</summary>
+
+Calculate total spending per customer in a subquery, then filter where \`total_spent >= PERCENTILE_CONT(0.9)\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT customer_id, customer_name, total_spent
+FROM (
+    SELECT
+        c.customer_id,
+        c.customer_name,
+        SUM(o.total) AS total_spent
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    GROUP BY c.customer_id, c.customer_name
+) customer_totals
+WHERE total_spent >= (
+    SELECT PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY total_spent)
+    FROM (
+        SELECT SUM(o.total) AS total_spent
+        FROM orders o
+        GROUP BY o.customer_id
+    ) all_totals
+)
+ORDER BY total_spent DESC;
+\`\`\`
+
+\`PERCENTILE_CONT(0.9)\` computes the 90th percentile of customer spending; only customers at or above that threshold are returned.
+
+</details>
+
+**3. Highest-paid employee per department**
+
+For each department, find the employee with the highest salary using a correlated subquery.
+
+<details>
+<summary>Hint</summary>
+
+In the \`WHERE\` clause, use \`e.salary = (SELECT MAX(e2.salary) FROM employees e2 WHERE e2.department = e.department)\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT e.first_name, e.last_name, e.department, e.salary
+FROM employees e
+WHERE e.salary = (
+    SELECT MAX(e2.salary)
+    FROM employees e2
+    WHERE e2.department = e.department
+)
+ORDER BY e.department;
+\`\`\`
+
+The correlated subquery runs once per row, comparing the employee's salary to the maximum salary in their own department.
+
+</details>
+
+**4. Orders containing Electronics**
+
+Find orders that contain at least one product from the \`'Electronics'\` category using \`EXISTS\`.
+
+<details>
+<summary>Hint</summary>
+
+Use \`WHERE EXISTS (SELECT 1 FROM order_items oi JOIN products p ON ... WHERE p.category = 'Electronics' AND oi.order_id = o.order_id)\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT o.order_id, o.order_date, o.total
+FROM orders o
+WHERE EXISTS (
+    SELECT 1
+    FROM order_items oi
+    JOIN products p ON oi.product_id = p.product_id
+    WHERE oi.order_id = o.order_id
+      AND p.category = 'Electronics'
+)
+ORDER BY o.order_date DESC;
+\`\`\`
+
+\`EXISTS\` short-circuits as soon as one matching Electronics item is found, making it efficient even for orders with many line items.
+
+</details>
 
 ---
 
@@ -1100,16 +1794,97 @@ Key things to look for in EXPLAIN output:
 
 **Why it matters:** EXPLAIN is how you diagnose slow queries methodically. A developer who can read an execution plan can fix a 30-second query in minutes; without it, performance tuning is guesswork.
 
-### EXERCISE: Indexing
+### Exercises
+
+**1. Create appropriate indexes**
+
+Create indexes to speed up these two queries:
+- \`SELECT * FROM orders WHERE customer_id = 123 AND status = 'pending';\`
+- \`SELECT * FROM products WHERE category = 'Electronics' ORDER BY price;\`
+
+<details>
+<summary>Hint</summary>
+
+For the first query, a composite index on \`(customer_id, status)\` lets the database satisfy both conditions from the index. For the second, a composite index on \`(category, price)\` covers the filter and the sort.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Create indexes to speed up these queries:
---    a. SELECT * FROM orders WHERE customer_id = 123 AND status = 'pending';
---    b. SELECT * FROM products WHERE category = 'Electronics' ORDER BY price;
--- 2. Run EXPLAIN on both queries before and after adding indexes
--- 3. Why would an index on a boolean column (like is_active) be less useful?
+-- Index for orders query: equality on customer_id first (more selective),
+-- then status narrows the result within each customer's rows
+CREATE INDEX idx_orders_customer_status ON orders (customer_id, status);
+
+-- Index for products query: category equality first, then price supports
+-- ORDER BY without a separate sort step
+CREATE INDEX idx_products_category_price ON products (category, price);
 \`\`\`
+
+For the orders query, \`customer_id\` is placed first because it is more selective (one customer's orders vs all pending orders). For products, \`category\` filters rows and \`price\` orders them — together they enable an Index Scan that returns rows already sorted.
+
+</details>
+
+**2. Compare EXPLAIN output**
+
+Run \`EXPLAIN\` on both queries before and after adding the indexes above and observe the difference.
+
+<details>
+<summary>Hint</summary>
+
+Before adding the index you should see \`Seq Scan\`. After adding it you should see \`Index Scan\` or \`Index Only Scan\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Before index (shows Seq Scan):
+EXPLAIN SELECT * FROM orders WHERE customer_id = 123 AND status = 'pending';
+
+-- Create the index:
+CREATE INDEX idx_orders_customer_status ON orders (customer_id, status);
+
+-- After index (shows Index Scan):
+EXPLAIN SELECT * FROM orders WHERE customer_id = 123 AND status = 'pending';
+\`\`\`
+
+The key difference in the plan output: \`Seq Scan\` reads every row; \`Index Scan\` navigates the B-tree directly to matching rows, dramatically reducing I/O on large tables.
+
+</details>
+
+**3. Low-selectivity boolean index**
+
+Explain why an index on a boolean column like \`is_active\` is often less useful.
+
+<details>
+<summary>Hint</summary>
+
+Think about how many distinct values a boolean has and what fraction of rows each value matches.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- A boolean column has only two values: true and false.
+-- If 80% of rows are is_active = true, the index covers 80% of the table.
+-- The query planner will prefer a Seq Scan over an Index Scan when the
+-- match fraction is high, because fetching scattered heap pages is slower
+-- than reading the table sequentially.
+
+-- A partial index is much better when one value is rare:
+CREATE INDEX idx_users_inactive ON users (user_id)
+WHERE is_active = false;
+-- This index is small (only inactive users) and highly selective.
+\`\`\`
+
+Boolean indexes are useful only when one value is rare (e.g., \`is_deleted = true\` on a table where 99% of rows are not deleted). A partial index on the rare value is the correct solution.
+
+</details>
 
 ---
 
@@ -1254,18 +2029,123 @@ erDiagram
 
 > **Role connection:** Schema design with proper types and constraints is a critical skill for backend developers, data engineers, and DBAs. Getting the schema right at the start saves enormous refactoring effort later.
 
-### EXERCISE: Data Types & Constraints
+### Exercises
+
+**1–2. Blog schema with constraints**
+
+Design a schema for a blog application with tables: \`users\`, \`posts\`, \`comments\`, \`tags\`, \`post_tags\` (many-to-many). Include appropriate data types, primary keys, foreign keys, \`NOT NULL\`, \`UNIQUE\`, \`CHECK\`, and \`DEFAULT\` constraints.
+
+<details>
+<summary>Hint</summary>
+
+\`post_tags\` needs a composite primary key \`(post_id, tag_id)\`. Posts need a foreign key to \`users.user_id\`. Comments need foreign keys to both \`posts\` and \`users\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Design a schema for a blog application with tables:
---    users, posts, comments, tags, post_tags (many-to-many)
--- 2. Include appropriate data types, primary keys, foreign keys,
---    NOT NULL, UNIQUE, CHECK, and DEFAULT constraints
--- 3. Add an index on posts.author_id and comments.post_id
--- 4. What happens when you try to delete a user who has posts?
---    How should you handle this with ON DELETE?
+CREATE TABLE users (
+    user_id     SERIAL PRIMARY KEY,
+    username    VARCHAR(50) NOT NULL UNIQUE,
+    email       VARCHAR(255) NOT NULL UNIQUE,
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE posts (
+    post_id     SERIAL PRIMARY KEY,
+    author_id   INTEGER NOT NULL REFERENCES users(user_id) ON DELETE RESTRICT,
+    title       VARCHAR(500) NOT NULL,
+    body        TEXT NOT NULL,
+    status      VARCHAR(20) NOT NULL DEFAULT 'draft'
+                    CHECK (status IN ('draft', 'published', 'archived')),
+    published_at TIMESTAMP,
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE comments (
+    comment_id  SERIAL PRIMARY KEY,
+    post_id     INTEGER NOT NULL REFERENCES posts(post_id) ON DELETE CASCADE,
+    author_id   INTEGER NOT NULL REFERENCES users(user_id) ON DELETE RESTRICT,
+    body        TEXT NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE tags (
+    tag_id   SERIAL PRIMARY KEY,
+    name     VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE post_tags (
+    post_id  INTEGER NOT NULL REFERENCES posts(post_id) ON DELETE CASCADE,
+    tag_id   INTEGER NOT NULL REFERENCES tags(tag_id) ON DELETE CASCADE,
+    PRIMARY KEY (post_id, tag_id)
+);
 \`\`\`
+
+Each relationship is enforced with a foreign key. \`ON DELETE CASCADE\` on \`comments\` and \`post_tags\` means deleting a post automatically removes its comments and tag associations.
+
+</details>
+
+**3. Indexes for common queries**
+
+Add an index on \`posts.author_id\` and \`comments.post_id\`.
+
+<details>
+<summary>Hint</summary>
+
+Foreign key columns are not automatically indexed in PostgreSQL — you must create them explicitly.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+CREATE INDEX idx_posts_author ON posts (author_id);
+CREATE INDEX idx_comments_post ON comments (post_id);
+\`\`\`
+
+These indexes speed up queries like "all posts by a user" and "all comments on a post", which are the most common access patterns in a blog application.
+
+</details>
+
+**4. ON DELETE behaviour**
+
+What happens when you try to delete a user who has posts, and how should you handle it?
+
+<details>
+<summary>Hint</summary>
+
+Consider \`ON DELETE RESTRICT\`, \`ON DELETE CASCADE\`, and \`ON DELETE SET NULL\` — each has different implications.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- With ON DELETE RESTRICT (used in the schema above):
+DELETE FROM users WHERE user_id = 42;
+-- ERROR: update or delete on table "users" violates foreign key constraint
+-- "posts_author_id_fkey" on table "posts"
+-- The delete is blocked as long as the user has any posts.
+
+-- To allow user deletion while keeping posts (reassign to a "deleted" account):
+ALTER TABLE posts
+    DROP CONSTRAINT posts_author_id_fkey,
+    ADD CONSTRAINT posts_author_id_fkey
+        FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE SET NULL;
+
+-- Or, soft-delete the user instead of hard-deleting:
+ALTER TABLE users ADD COLUMN deleted_at TIMESTAMP;
+UPDATE users SET deleted_at = NOW() WHERE user_id = 42;
+\`\`\`
+
+\`RESTRICT\` is the safest default — it prevents accidental data loss. Use \`SET NULL\` if posts should survive their author's deletion. Use \`CASCADE\` only when child rows are meaningless without the parent (like \`comments\` belonging to a deleted \`post\`).
+
+</details>
 
 ---
 
@@ -1478,16 +2358,187 @@ flowchart LR
 
 **Why it matters:** Running totals and moving averages are essential for financial reporting, dashboards, and time-series analysis. Without window functions, these calculations require self-joins or application-level code that is both slower and harder to maintain.
 
-### EXERCISE: Window Functions
+### Exercises
+
+**1. Rank products by sales volume within category**
+
+Rank products within each category by total sales volume (units sold).
+
+<details>
+<summary>Hint</summary>
+
+Aggregate sales per product first (in a CTE or subquery), then use \`RANK() OVER (PARTITION BY category ORDER BY units_sold DESC)\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Rank products within each category by sales volume
--- 2. Calculate month-over-month growth percentage for revenue
--- 3. Find the 2nd most recent order for each customer
--- 4. Compute a 30-day moving average of daily signups
--- 5. Assign customers to deciles (10 groups) by lifetime value
+SELECT
+    p.category,
+    p.product_name,
+    SUM(oi.quantity) AS units_sold,
+    RANK() OVER (
+        PARTITION BY p.category
+        ORDER BY SUM(oi.quantity) DESC
+    ) AS category_rank
+FROM products p
+JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY p.category, p.product_id, p.product_name
+ORDER BY p.category, category_rank;
 \`\`\`
+
+Within each category, rank 1 is the best-selling product. Tied sales volumes share the same rank.
+
+</details>
+
+**2. Month-over-month revenue growth**
+
+Calculate month-over-month revenue growth percentage.
+
+<details>
+<summary>Hint</summary>
+
+Use \`LAG(revenue) OVER (ORDER BY month)\` to get the previous month's value, then compute \`(current - previous) / previous * 100\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+WITH monthly AS (
+    SELECT
+        DATE_TRUNC('month', order_date) AS month,
+        SUM(total) AS revenue
+    FROM orders
+    WHERE status = 'completed'
+    GROUP BY DATE_TRUNC('month', order_date)
+)
+SELECT
+    month,
+    revenue,
+    LAG(revenue) OVER (ORDER BY month) AS prev_revenue,
+    ROUND(
+        (revenue - LAG(revenue) OVER (ORDER BY month))
+        / LAG(revenue) OVER (ORDER BY month) * 100,
+        2
+    ) AS mom_growth_pct
+FROM monthly
+ORDER BY month;
+\`\`\`
+
+The first month has \`NULL\` for \`prev_revenue\` and \`mom_growth_pct\` because there is no prior month.
+
+</details>
+
+**3. Second most recent order per customer**
+
+Find the 2nd most recent order for each customer.
+
+<details>
+<summary>Hint</summary>
+
+Use \`ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC)\` and filter \`WHERE rn = 2\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+WITH ranked_orders AS (
+    SELECT
+        order_id,
+        customer_id,
+        order_date,
+        total,
+        ROW_NUMBER() OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date DESC
+        ) AS rn
+    FROM orders
+)
+SELECT order_id, customer_id, order_date, total
+FROM ranked_orders
+WHERE rn = 2
+ORDER BY customer_id;
+\`\`\`
+
+Customers with only one order do not appear in the result because there is no row with \`rn = 2\`.
+
+</details>
+
+**4. 30-day moving average of daily signups**
+
+Compute a 30-day moving average of daily user signups.
+
+<details>
+<summary>Hint</summary>
+
+Aggregate signups per day first, then use \`AVG(daily_signups) OVER (ORDER BY signup_date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW)\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+WITH daily_signups AS (
+    SELECT
+        DATE_TRUNC('day', created_at) AS signup_date,
+        COUNT(*) AS signups
+    FROM users
+    GROUP BY DATE_TRUNC('day', created_at)
+)
+SELECT
+    signup_date,
+    signups,
+    ROUND(
+        AVG(signups) OVER (
+            ORDER BY signup_date
+            ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
+        ),
+        2
+    ) AS moving_avg_30d
+FROM daily_signups
+ORDER BY signup_date;
+\`\`\`
+
+\`ROWS BETWEEN 29 PRECEDING AND CURRENT ROW\` includes today plus the previous 29 days — a 30-day window.
+
+</details>
+
+**5. Customers in deciles by lifetime value**
+
+Assign customers to deciles (10 groups) by lifetime value.
+
+<details>
+<summary>Hint</summary>
+
+Use \`NTILE(10) OVER (ORDER BY total_spent DESC)\` — decile 1 will be the top 10% of spenders.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT
+    c.customer_id,
+    c.customer_name,
+    SUM(o.total) AS lifetime_value,
+    NTILE(10) OVER (ORDER BY SUM(o.total) DESC) AS decile
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name
+ORDER BY lifetime_value DESC;
+\`\`\`
+
+Decile 1 contains the top 10% of customers by lifetime value; decile 10 contains the bottom 10%.
+
+</details>
 
 ---
 
@@ -1645,19 +2696,176 @@ WHEN NOT MATCHED THEN
 
 **Why it matters:** MERGE replaces complex INSERT ... ON CONFLICT or multi-step upsert patterns. It is especially useful for ETL pipelines and data synchronization tasks where you need to handle inserts, updates, and deletes in one pass.
 
-### EXERCISE: CTEs
+### Exercises
+
+**1. Churned customers**
+
+Find "churned" customers: those who placed at least one order before 90 days ago but have placed no order in the last 90 days.
+
+<details>
+<summary>Hint</summary>
+
+Use two CTEs — one for customers with recent orders and one for customers with any historical order — then find customers in the second but not the first.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Write a CTE-based query to find "churned" customers
---    (no order in the last 90 days, but had orders before)
--- 2. Build a multi-step CTE that:
---    a. Calculates daily revenue
---    b. Adds 7-day and 30-day moving averages
---    c. Flags days where revenue dropped more than 20% from the 7-day average
--- 3. Use a LATERAL join to get the 5 best-selling products per category
--- 4. Write a MERGE statement to synchronize a staging table into a main table
+WITH recent_orders AS (
+    SELECT DISTINCT customer_id
+    FROM orders
+    WHERE order_date >= NOW() - INTERVAL '90 days'
+),
+historical_orders AS (
+    SELECT DISTINCT customer_id
+    FROM orders
+    WHERE order_date < NOW() - INTERVAL '90 days'
+)
+SELECT
+    c.customer_id,
+    c.customer_name,
+    c.email,
+    MAX(o.order_date) AS last_order_date
+FROM customers c
+JOIN historical_orders h ON c.customer_id = h.customer_id
+LEFT JOIN recent_orders r ON c.customer_id = r.customer_id
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE r.customer_id IS NULL
+GROUP BY c.customer_id, c.customer_name, c.email
+ORDER BY last_order_date ASC;
 \`\`\`
+
+Customers in \`historical_orders\` but not in \`recent_orders\` have gone quiet. The result shows when each churned customer last ordered.
+
+</details>
+
+**2. Revenue trend with anomaly flag**
+
+Build a multi-step CTE that calculates daily revenue, adds 7-day and 30-day moving averages, and flags days where revenue dropped more than 20% below the 7-day average.
+
+<details>
+<summary>Hint</summary>
+
+Chain three CTEs: \`daily_revenue\` → \`with_averages\` → final \`SELECT\` with the flag.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+WITH daily_revenue AS (
+    SELECT
+        DATE_TRUNC('day', order_date) AS day,
+        SUM(total) AS revenue
+    FROM orders
+    WHERE status = 'completed'
+    GROUP BY DATE_TRUNC('day', order_date)
+),
+with_averages AS (
+    SELECT
+        day,
+        revenue,
+        AVG(revenue) OVER (
+            ORDER BY day
+            ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+        ) AS avg_7d,
+        AVG(revenue) OVER (
+            ORDER BY day
+            ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
+        ) AS avg_30d
+    FROM daily_revenue
+)
+SELECT
+    day,
+    revenue,
+    ROUND(avg_7d, 2) AS avg_7d,
+    ROUND(avg_30d, 2) AS avg_30d,
+    CASE
+        WHEN revenue < avg_7d * 0.80 THEN 'ANOMALY'
+        ELSE 'normal'
+    END AS flag
+FROM with_averages
+ORDER BY day;
+\`\`\`
+
+Days flagged as \`'ANOMALY'\` had revenue more than 20% below their 7-day moving average.
+
+</details>
+
+**3. Top 5 products per category with LATERAL**
+
+Use a \`LATERAL\` join to get the 5 best-selling products per category.
+
+<details>
+<summary>Hint</summary>
+
+\`CROSS JOIN LATERAL\` a subquery that selects from \`products\` and \`order_items\` filtered by the outer category, \`ORDER BY units_sold DESC LIMIT 5\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+SELECT
+    cat.category,
+    top5.product_name,
+    top5.units_sold
+FROM (SELECT DISTINCT category FROM products) cat
+CROSS JOIN LATERAL (
+    SELECT
+        p.product_name,
+        SUM(oi.quantity) AS units_sold
+    FROM products p
+    JOIN order_items oi ON p.product_id = oi.product_id
+    WHERE p.category = cat.category
+    GROUP BY p.product_id, p.product_name
+    ORDER BY units_sold DESC
+    LIMIT 5
+) top5
+ORDER BY cat.category, top5.units_sold DESC;
+\`\`\`
+
+The \`LATERAL\` subquery runs once per category, returning only the top 5 products for that category.
+
+</details>
+
+**4. MERGE to synchronise a staging table**
+
+Write a \`MERGE\` statement to synchronise \`staging_products\` into the main \`products\` table: update matching SKUs, delete rows marked for deletion, and insert new ones.
+
+<details>
+<summary>Hint</summary>
+
+Use \`MERGE INTO products USING staging_products ON (sku match)\` with \`WHEN MATCHED\`, \`WHEN MATCHED AND is_deleted\`, and \`WHEN NOT MATCHED\` clauses.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+MERGE INTO products AS target
+USING staging_products AS source
+ON target.sku = source.sku
+WHEN MATCHED AND source.is_deleted = true THEN
+    DELETE
+WHEN MATCHED THEN
+    UPDATE SET
+        product_name = source.product_name,
+        price        = source.price,
+        updated_at   = NOW()
+WHEN NOT MATCHED THEN
+    INSERT (sku, product_name, price, created_at)
+    VALUES (source.sku, source.product_name, source.price, NOW());
+\`\`\`
+
+A single \`MERGE\` statement handles all three cases atomically, which is cleaner than separate \`INSERT\`, \`UPDATE\`, and \`DELETE\` statements. Requires PostgreSQL 15+.
+
+</details>
 
 ---
 
@@ -1800,17 +3008,135 @@ flowchart TD
 
 **Why it matters:** Recursive queries handle hierarchical data that would otherwise require multiple round trips to the database or complex application logic. Org charts, category trees, file systems, and dependency graphs all benefit from recursive CTEs.
 
-### EXERCISE: Recursive Queries
+### Exercises
+
+**1. Full chain of command**
+
+Build an org chart query that shows each employee's full chain of command from the CEO down to them.
+
+<details>
+<summary>Hint</summary>
+
+Start the recursive CTE with employees where \`manager_id IS NULL\`, then recursively join subordinates and concatenate the path string.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Build an org chart query that shows each employee's
---    full chain of command from CEO to them
--- 2. Given a "categories" table with parent_id, build a breadcrumb
---    path for each category (e.g., "Electronics > Computers > Laptops")
--- 3. Write a recursive query that generates a date series
---    from 2025-01-01 to 2025-12-31
+WITH RECURSIVE org_chain AS (
+    -- Base: CEO
+    SELECT
+        employee_id,
+        first_name,
+        last_name,
+        manager_id,
+        0 AS depth,
+        first_name || ' ' || last_name AS chain
+    FROM employees
+    WHERE manager_id IS NULL
+
+    UNION ALL
+
+    -- Recursive: each employee below
+    SELECT
+        e.employee_id,
+        e.first_name,
+        e.last_name,
+        e.manager_id,
+        oc.depth + 1,
+        oc.chain || ' > ' || e.first_name || ' ' || e.last_name
+    FROM employees e
+    INNER JOIN org_chain oc ON e.manager_id = oc.employee_id
+)
+SELECT
+    REPEAT('  ', depth) || first_name || ' ' || last_name AS employee,
+    chain AS command_chain
+FROM org_chain
+ORDER BY chain;
 \`\`\`
+
+Each row shows the indented name and the full path from CEO to that employee, for example: \`Alice > Bob > Carol\`.
+
+</details>
+
+**2. Category breadcrumb paths**
+
+Given a \`categories\` table with \`category_id\`, \`name\`, and \`parent_id\`, build a breadcrumb path for each category (e.g., \`"Electronics > Computers > Laptops"\`).
+
+<details>
+<summary>Hint</summary>
+
+Start with root categories (\`parent_id IS NULL\`), then recursively append child names with \`' > '\` as the separator.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+WITH RECURSIVE category_path AS (
+    -- Base: root categories
+    SELECT
+        category_id,
+        name,
+        parent_id,
+        name AS breadcrumb
+    FROM categories
+    WHERE parent_id IS NULL
+
+    UNION ALL
+
+    -- Recursive: append child name
+    SELECT
+        c.category_id,
+        c.name,
+        c.parent_id,
+        cp.breadcrumb || ' > ' || c.name
+    FROM categories c
+    INNER JOIN category_path cp ON c.parent_id = cp.category_id
+)
+SELECT category_id, name, breadcrumb
+FROM category_path
+ORDER BY breadcrumb;
+\`\`\`
+
+Returns every category with its full path, e.g., \`Electronics > Computers > Laptops\`.
+
+</details>
+
+**3. Date series via recursive CTE**
+
+Write a recursive query that generates a date series from 2025-01-01 to 2025-12-31.
+
+<details>
+<summary>Hint</summary>
+
+Start with \`'2025-01-01'::date\` as the anchor and recursively add \`1 day\` until the date exceeds \`'2025-12-31'\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+WITH RECURSIVE date_series AS (
+    SELECT '2025-01-01'::date AS d
+
+    UNION ALL
+
+    SELECT d + 1
+    FROM date_series
+    WHERE d < '2025-12-31'
+)
+SELECT d AS calendar_date
+FROM date_series;
+\`\`\`
+
+Produces 365 rows, one per day in 2025. In PostgreSQL you can also use \`generate_series('2025-01-01'::date, '2025-12-31'::date, '1 day')\` — the recursive CTE demonstrates the general pattern that works across any SQL database supporting \`WITH RECURSIVE\`.
+
+</details>
 
 ---
 
@@ -1935,17 +3261,141 @@ COMMIT;
 
 > **Role connection:** Every backend developer who works with databases must understand transactions. Mishandled transactions cause data corruption, lost updates, and race conditions that are extremely hard to debug in production.
 
-### EXERCISE: Transactions
+### Exercises
+
+**1. Transfer with balance check**
+
+Write a transaction that transfers money between accounts, verifying sufficient balance before the transfer.
+
+<details>
+<summary>Hint</summary>
+
+Lock the source row with \`FOR UPDATE\`, check the balance, debit/credit, then \`COMMIT\`. Use \`ROLLBACK\` if balance is insufficient.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Write a transaction that transfers money between accounts,
---    verifying sufficient balance before the transfer
--- 2. Write a transaction with a savepoint that inserts an order
---    and its items, rolling back only the items if they fail
--- 3. Describe a scenario where Repeatable Read prevents a bug
---    that Read Committed would allow
+BEGIN;
+
+-- Lock the source row to prevent concurrent withdrawals
+DO $$
+DECLARE
+    current_balance DECIMAL;
+    transfer_amount DECIMAL := 500;
+    from_id INTEGER := 1;
+    to_id   INTEGER := 2;
+BEGIN
+    SELECT balance INTO current_balance
+    FROM accounts
+    WHERE account_id = from_id
+    FOR UPDATE;
+
+    IF current_balance < transfer_amount THEN
+        RAISE EXCEPTION 'Insufficient funds: balance %, requested %',
+            current_balance, transfer_amount;
+    END IF;
+
+    UPDATE accounts SET balance = balance - transfer_amount WHERE account_id = from_id;
+    UPDATE accounts SET balance = balance + transfer_amount WHERE account_id = to_id;
+END $$;
+
+COMMIT;
 \`\`\`
+
+\`FOR UPDATE\` prevents another concurrent transaction from reading and modifying the same row simultaneously, eliminating the race condition where two withdrawals could both see a sufficient balance.
+
+</details>
+
+**2. Savepoint for partial rollback**
+
+Write a transaction with a savepoint that inserts an order and its items, rolling back only the items if they fail while keeping the order.
+
+<details>
+<summary>Hint</summary>
+
+Create a \`SAVEPOINT\` after inserting the order row, then use \`ROLLBACK TO SAVEPOINT\` if the item insert fails.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+BEGIN;
+
+INSERT INTO orders (customer_id, total, status)
+VALUES (1, 199.99, 'pending')
+RETURNING order_id;
+-- Assume order_id = 1001 was returned
+
+SAVEPOINT order_saved;
+
+-- Try inserting order items
+INSERT INTO order_items (order_id, product_id, quantity, unit_price)
+VALUES (1001, 99, 2, 99.99);  -- product_id 99 might not exist
+
+-- If the insert above fails, roll back only the item:
+-- ROLLBACK TO SAVEPOINT order_saved;
+
+-- Try a different product
+INSERT INTO order_items (order_id, product_id, quantity, unit_price)
+VALUES (1001, 42, 1, 99.99);
+
+COMMIT;
+\`\`\`
+
+\`ROLLBACK TO SAVEPOINT order_saved\` undoes the failed item insert but preserves the order row, allowing a retry with different item data.
+
+</details>
+
+**3. Repeatable Read vs Read Committed**
+
+Describe a scenario where \`REPEATABLE READ\` prevents a bug that \`READ COMMITTED\` would allow.
+
+<details>
+<summary>Hint</summary>
+
+Think about a transaction that reads the same data twice — for example, checking a balance and then making a decision based on it.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Scenario: generating a financial report that sums account balances
+-- Transaction A (report generator) under READ COMMITTED:
+
+-- Step 1: Read total balance of accounts 1-500
+SELECT SUM(balance) FROM accounts WHERE account_id BETWEEN 1 AND 500;
+-- Returns $1,000,000
+
+-- Meanwhile, Transaction B transfers $50,000 from account 300 to account 600
+-- (account 600 is outside our range 1-500)
+
+-- Step 2: Read total balance of accounts 501-1000
+SELECT SUM(balance) FROM accounts WHERE account_id BETWEEN 501 AND 1000;
+-- Under READ COMMITTED, this sees Transaction B's commit
+-- account 300 lost $50,000, account 600 gained $50,000
+-- But account 300 is in range 1-500 (already counted), account 600 is in 501-1000
+-- Result: we COUNT the $50,000 twice — phantom money!
+
+-- Under REPEATABLE READ, both SELECTs see the same snapshot from
+-- before Transaction B committed. Total is always consistent.
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+BEGIN;
+SELECT SUM(balance) FROM accounts WHERE account_id BETWEEN 1 AND 500;
+SELECT SUM(balance) FROM accounts WHERE account_id BETWEEN 501 AND 1000;
+COMMIT;
+-- Both reads see the pre-Transaction-B state: no phantom money.
+\`\`\`
+
+\`REPEATABLE READ\` takes a snapshot at transaction start. All reads within that transaction see the same data, preventing phantom inconsistencies in multi-step reports.
+
+</details>
 
 ---
 
@@ -2086,16 +3536,146 @@ EXECUTE FUNCTION refresh_sales_report();
 -- Implemented in application logic
 \`\`\`
 
-### EXERCISE: Views
+### Exercises
+
+**1. Product summary view**
+
+Create a view that shows each product with its total sales, average rating, and stock status.
+
+<details>
+<summary>Hint</summary>
+
+Join \`products\`, \`order_items\`, and a \`reviews\` table (or simulate it). Use \`CASE\` to derive a stock status label from the \`stock\` column.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Create a view that shows each product with its total sales,
---    average rating, and stock status
--- 2. Create a materialized view for a monthly revenue dashboard
--- 3. Add a unique index and set up concurrent refresh
--- 4. When would you choose a regular view vs. a materialized view?
+CREATE VIEW product_summary AS
+SELECT
+    p.product_id,
+    p.product_name,
+    p.category,
+    p.price,
+    p.stock,
+    CASE
+        WHEN p.stock = 0 THEN 'Out of Stock'
+        WHEN p.stock < 10 THEN 'Low Stock'
+        ELSE 'In Stock'
+    END AS stock_status,
+    COALESCE(SUM(oi.quantity), 0) AS total_units_sold,
+    COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS total_revenue
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY p.product_id, p.product_name, p.category, p.price, p.stock;
 \`\`\`
+
+Products with no sales still appear with zero totals because of the \`LEFT JOIN\`. The \`stock_status\` label is derived at query time so it always reflects current stock.
+
+</details>
+
+**2. Materialized view for monthly revenue**
+
+Create a materialized view for a monthly revenue dashboard.
+
+<details>
+<summary>Hint</summary>
+
+Use \`CREATE MATERIALIZED VIEW ... AS SELECT DATE_TRUNC('month', ...), ...\` with \`GROUP BY\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+CREATE MATERIALIZED VIEW monthly_revenue_dashboard AS
+SELECT
+    DATE_TRUNC('month', o.order_date) AS month,
+    p.category,
+    COUNT(DISTINCT o.order_id)          AS order_count,
+    SUM(oi.quantity)                    AS units_sold,
+    SUM(oi.quantity * oi.unit_price)    AS revenue
+FROM orders o
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p     ON oi.product_id = p.product_id
+WHERE o.status = 'completed'
+GROUP BY DATE_TRUNC('month', o.order_date), p.category
+ORDER BY month, p.category;
+\`\`\`
+
+Because the result is stored physically, dashboard queries run against pre-computed data rather than re-joining millions of rows every time.
+
+</details>
+
+**3. Unique index and concurrent refresh**
+
+Add a unique index to the materialized view and set up concurrent refresh.
+
+<details>
+<summary>Hint</summary>
+
+A unique index is required for \`REFRESH MATERIALIZED VIEW CONCURRENTLY\`. The unique key should be the combination of columns that uniquely identifies each row.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Unique index required for CONCURRENTLY
+CREATE UNIQUE INDEX idx_mrd_month_category
+    ON monthly_revenue_dashboard (month, category);
+
+-- Standard refresh (blocks reads while refreshing):
+REFRESH MATERIALIZED VIEW monthly_revenue_dashboard;
+
+-- Concurrent refresh (non-blocking — requires the unique index):
+REFRESH MATERIALIZED VIEW CONCURRENTLY monthly_revenue_dashboard;
+\`\`\`
+
+\`CONCURRENTLY\` swaps the old and new data atomically after building the new dataset in the background. Reads against the view are never blocked, making it safe to schedule via a cron job on a live system.
+
+</details>
+
+**4. Regular view vs materialized view**
+
+When would you choose a regular view over a materialized view, and vice versa?
+
+<details>
+<summary>Hint</summary>
+
+Consider freshness requirements, query complexity, write frequency, and whether the view's underlying data changes often.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Use a REGULAR VIEW when:
+-- - You always need real-time data (e.g., current account balance)
+-- - The underlying query is fast enough on its own
+-- - The base tables are updated frequently and staleness is unacceptable
+-- - You want the schema abstraction without storage cost
+
+-- Use a MATERIALIZED VIEW when:
+-- - The query is expensive (many JOINs, large aggregations)
+-- - Slightly stale data is acceptable (e.g., yesterday's sales report)
+-- - The view is queried much more often than the underlying data changes
+-- - You need to add indexes to the result set for further filtering
+
+-- Example decision:
+-- "Current cart total" → regular view (must be real-time)
+-- "Monthly sales by region for the last 2 years" → materialized view
+--    (expensive to compute, refreshed nightly)
+\`\`\`
+
+The fundamental trade-off is freshness versus read performance. A materialized view is essentially a cache with a manual or scheduled invalidation mechanism.
+
+</details>
 
 ---
 
@@ -2260,20 +3840,108 @@ ORDER BY n_live_tup DESC;
 
 **Why it matters:** Query optimization is a critical skill for anyone working with databases at scale. A single slow query can bring down an entire application. Understanding execution plans lets you fix performance problems methodically rather than guessing.
 
-### EXERCISE: Query Optimization
+### Exercises
+
+**1. EXPLAIN ANALYZE before and after an index**
+
+Run \`EXPLAIN ANALYZE\` on a query with and without an index. Compare the execution times and scan types.
+
+<details>
+<summary>Hint</summary>
+
+Drop the index (if it exists), run \`EXPLAIN ANALYZE\`, create the index, then run the same \`EXPLAIN ANALYZE\` again.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Run EXPLAIN ANALYZE on a query with and without an index.
---    Compare the execution times and scan types.
--- 2. Find a query that uses Seq Scan and rewrite it or add an
---    index to switch it to Index Scan.
--- 3. Identify which of these queries can use an index on (status, order_date):
---    a. WHERE status = 'active'
---    b. WHERE order_date = '2025-01-01'
---    c. WHERE status = 'active' AND order_date > '2025-01-01'
---    d. WHERE status IN ('active', 'pending') AND order_date > '2025-01-01'
+-- Without index (Seq Scan):
+DROP INDEX IF EXISTS idx_orders_customer;
+EXPLAIN ANALYZE
+SELECT * FROM orders WHERE customer_id = 100;
+-- Seq Scan on orders  (cost=0.00..1500.00 rows=50 width=64)
+--                     (actual time=0.123..45.678 rows=50 loops=1)
+
+-- Create the index:
+CREATE INDEX idx_orders_customer ON orders (customer_id);
+
+-- With index (Index Scan):
+EXPLAIN ANALYZE
+SELECT * FROM orders WHERE customer_id = 100;
+-- Index Scan using idx_orders_customer on orders
+--   (cost=0.43..120.45 rows=50 width=64)
+--   (actual time=0.023..0.456 rows=50 loops=1)
 \`\`\`
+
+The index reduces the actual time from tens of milliseconds (sequential scan of the whole table) to sub-millisecond (direct B-tree lookup). The savings grow proportionally with table size.
+
+</details>
+
+**2. Rewrite a Seq Scan query**
+
+Find a query that uses \`Seq Scan\` due to a function on an indexed column and rewrite it to use the index.
+
+<details>
+<summary>Hint</summary>
+
+Functions applied to indexed columns prevent index use. Rewrite the condition as a range instead.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- BAD: function on order_date prevents index use → Seq Scan
+EXPLAIN ANALYZE
+SELECT SUM(total) FROM orders
+WHERE EXTRACT(YEAR FROM order_date) = 2025;
+
+-- GOOD: rewrite as a range so the B-tree index on order_date is usable
+EXPLAIN ANALYZE
+SELECT SUM(total) FROM orders
+WHERE order_date >= '2025-01-01'
+  AND order_date < '2026-01-01';
+\`\`\`
+
+The range form lets the planner use a B-tree index scan, jumping directly to the start of 2025 data and scanning forward — avoiding a full table scan.
+
+</details>
+
+**3. Which queries use the composite index?**
+
+Given \`CREATE INDEX idx_orders_status_date ON orders (status, order_date)\`, identify which queries can use it.
+
+<details>
+<summary>Hint</summary>
+
+A composite index is usable from left to right. You can skip trailing columns but not leading ones. Equality filters allow use of subsequent columns; range filters do not.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- a. WHERE status = 'active'
+--    YES — uses the leading column. Only the status part of the index is used.
+
+-- b. WHERE order_date = '2025-01-01'
+--    NO — skips the leading column (status). This query needs a separate index on order_date.
+
+-- c. WHERE status = 'active' AND order_date > '2025-01-01'
+--    YES — equality on the leading column, range on the second. Both columns used.
+
+-- d. WHERE status IN ('active', 'pending') AND order_date > '2025-01-01'
+--    YES — the planner can use the index for each value in the IN list (bitmap or multiple scans),
+--    then combine results. Effective, but less clean than a single equality.
+\`\`\`
+
+The rule: put equality conditions first in a composite index, range conditions last. Never skip the leading column or the index cannot be used.
+
+</details>
 
 ---
 
@@ -2417,17 +4085,132 @@ flowchart TD
     E -.->|"Denormalize for<br/>read performance"| I["Strategic<br/>denormalization"]
 \`\`\`
 
-### EXERCISE: Normalization
+### Exercises
+
+**1. Identify normal form violations**
+
+Identify the normal form violations in this table:
+
+| student_id | name  | courses       | advisor_name | advisor_dept |
+|------------|-------|---------------|--------------|--------------|
+| 1          | Alice | Math, Physics | Dr. Smith    | Science      |
+
+<details>
+<summary>Hint</summary>
+
+Check for: multiple values in one cell (1NF), partial dependencies on the primary key (2NF), and transitive dependencies between non-key columns (3NF).
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Identify the normal form violations in this table:
---    | student_id | name    | courses          | advisor_name | advisor_dept |
---    | 1          | Alice   | Math, Physics    | Dr. Smith    | Science      |
--- 2. Normalize it to 3NF, creating appropriate tables
--- 3. For a high-traffic e-commerce product page, what data would
---    you denormalize and why?
+-- Violation 1 (1NF): "courses" contains multiple values ("Math, Physics")
+--   → Not atomic. Each cell must hold one value.
+
+-- Violation 2 (2NF): Not applicable here since the key is student_id alone
+--   (no composite key), so no partial dependency.
+
+-- Violation 3 (3NF): advisor_dept depends on advisor_name, not on student_id.
+--   This is a transitive dependency: student_id → advisor_name → advisor_dept.
 \`\`\`
+
+The table violates both 1NF (non-atomic \`courses\`) and 3NF (\`advisor_dept\` depends on \`advisor_name\`, not the primary key).
+
+</details>
+
+**2. Normalize to 3NF**
+
+Normalize the table above to 3NF by creating appropriate tables.
+
+<details>
+<summary>Hint</summary>
+
+Fix 1NF by extracting courses into a junction table. Fix 3NF by moving advisor info into its own table.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Fix 3NF: advisor info in its own table
+CREATE TABLE advisors (
+    advisor_id   SERIAL PRIMARY KEY,
+    advisor_name VARCHAR(100) NOT NULL UNIQUE,
+    advisor_dept VARCHAR(100) NOT NULL
+);
+
+-- Students reference their advisor
+CREATE TABLE students (
+    student_id  SERIAL PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    advisor_id  INTEGER REFERENCES advisors(advisor_id)
+);
+
+-- Fix 1NF: courses in their own table
+CREATE TABLE courses (
+    course_id   SERIAL PRIMARY KEY,
+    course_name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- Many-to-many: student enrollments
+CREATE TABLE student_courses (
+    student_id  INTEGER REFERENCES students(student_id),
+    course_id   INTEGER REFERENCES courses(course_id),
+    PRIMARY KEY (student_id, course_id)
+);
+\`\`\`
+
+Updating an advisor's department now requires changing one row in \`advisors\` instead of updating every student row. Each course–student relationship is its own row with no comma-separated values.
+
+</details>
+
+**3. Strategic denormalization for e-commerce**
+
+For a high-traffic e-commerce product page, what data would you denormalize and why?
+
+<details>
+<summary>Hint</summary>
+
+Think about what data is read on every product page load and what joins would be needed to assemble it.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Data to denormalize onto the products table or a dedicated read model:
+
+-- 1. Aggregate review stats (avg_rating, review_count)
+--    Reason: every product page shows these; computing AVG/COUNT live on the
+--    reviews table at every request is expensive. Update via trigger or background job.
+
+-- 2. Category breadcrumb path
+--    Reason: requires a recursive query at runtime. Pre-compute and store as text.
+
+-- 3. Primary image URL
+--    Reason: product_images is a separate table (one-to-many). Storing the
+--    primary image URL directly on products eliminates a JOIN for every listing.
+
+-- 4. Stock status ("In Stock" / "Low Stock" / "Out of Stock")
+--    Reason: avoid a JOIN to inventory on every page. Update asynchronously
+--    when stock changes.
+
+-- Example denormalized products table additions:
+ALTER TABLE products
+    ADD COLUMN avg_rating       NUMERIC(3, 2),
+    ADD COLUMN review_count     INTEGER DEFAULT 0,
+    ADD COLUMN breadcrumb       TEXT,
+    ADD COLUMN primary_image_url TEXT,
+    ADD COLUMN stock_status     VARCHAR(20);
+\`\`\`
+
+Denormalize read-heavy, write-rarely data. Keep normalized anything that changes frequently and must be consistent (e.g., actual stock quantity, order totals).
+
+</details>
 
 ---
 
@@ -2644,17 +4427,160 @@ CALL process_pending_orders();
 
 > **Role connection:** Stored procedures and functions move business logic into the database. This can be beneficial for performance (no network round trips) and for enforcing rules regardless of which application accesses the database. However, it can make testing and version control harder, so many teams prefer application-level logic with transactions.
 
-### EXERCISE: Stored Procedures & Functions
+### Exercises
+
+**1. Product sales summary function**
+
+Write a function that takes a \`product_id\` and returns its total sales, average order quantity, and number of orders.
+
+<details>
+<summary>Hint</summary>
+
+Use \`RETURNS TABLE (...)\` with \`RETURN QUERY SELECT SUM(...), AVG(...), COUNT(...)\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Write a function that takes a product_id and returns its
---    total sales, average order quantity, and number of orders
--- 2. Write a function with error handling that creates a user
---    account, checking for duplicate email and username
--- 3. Write a procedure that processes refunds in batches,
---    committing after each batch
+CREATE OR REPLACE FUNCTION get_product_sales(p_product_id INTEGER)
+RETURNS TABLE (
+    total_revenue    DECIMAL,
+    avg_quantity     NUMERIC,
+    order_count      BIGINT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        SUM(oi.quantity * oi.unit_price),
+        ROUND(AVG(oi.quantity), 2),
+        COUNT(DISTINCT oi.order_id)
+    FROM order_items oi
+    WHERE oi.product_id = p_product_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Usage:
+SELECT * FROM get_product_sales(42);
 \`\`\`
+
+Returns a single row with total revenue, average quantity per order, and the number of distinct orders containing that product.
+
+</details>
+
+**2. User creation with duplicate check**
+
+Write a function with error handling that creates a user account, checking for duplicate email and username.
+
+<details>
+<summary>Hint</summary>
+
+Check for duplicates explicitly before the INSERT, raising a descriptive exception for each case. Catch \`unique_violation\` as a fallback.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+CREATE OR REPLACE FUNCTION create_user_account(
+    p_username VARCHAR,
+    p_email    VARCHAR,
+    p_password_hash TEXT
+)
+RETURNS INTEGER AS $$
+DECLARE
+    new_user_id INTEGER;
+BEGIN
+    -- Check for duplicate username
+    IF EXISTS (SELECT 1 FROM users WHERE username = p_username) THEN
+        RAISE EXCEPTION 'Username "%" is already taken', p_username;
+    END IF;
+
+    -- Check for duplicate email
+    IF EXISTS (SELECT 1 FROM users WHERE email = p_email) THEN
+        RAISE EXCEPTION 'Email "%" is already registered', p_email;
+    END IF;
+
+    INSERT INTO users (username, email, password_hash)
+    VALUES (p_username, p_email, p_password_hash)
+    RETURNING user_id INTO new_user_id;
+
+    RETURN new_user_id;
+
+EXCEPTION
+    WHEN unique_violation THEN
+        RAISE EXCEPTION 'Duplicate username or email (concurrent insert race)';
+END;
+$$ LANGUAGE plpgsql;
+
+-- Usage:
+SELECT create_user_account('alice', 'alice@example.com', 'hashed_pw');
+\`\`\`
+
+The explicit checks give clear error messages. The \`unique_violation\` handler is a safety net for concurrent inserts that pass the IF checks simultaneously.
+
+</details>
+
+**3. Batched refund procedure**
+
+Write a procedure that processes refunds in batches, committing after each batch.
+
+<details>
+<summary>Hint</summary>
+
+Use a \`FOR\` loop or \`LOOP ... EXIT WHEN\` with \`LIMIT batch_size\`. Call \`COMMIT\` inside the loop (only valid inside a procedure, not a function).
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+CREATE OR REPLACE PROCEDURE process_refunds_in_batches(batch_size INTEGER DEFAULT 100)
+LANGUAGE plpgsql AS $$
+DECLARE
+    processed INTEGER;
+    total     INTEGER := 0;
+BEGIN
+    LOOP
+        -- Process one batch of pending refunds
+        WITH batch AS (
+            SELECT refund_id
+            FROM refunds
+            WHERE status = 'pending'
+            ORDER BY created_at
+            LIMIT batch_size
+            FOR UPDATE SKIP LOCKED
+        )
+        UPDATE refunds r
+        SET status = 'processed',
+            processed_at = NOW()
+        FROM batch
+        WHERE r.refund_id = batch.refund_id;
+
+        GET DIAGNOSTICS processed = ROW_COUNT;
+        total := total + processed;
+
+        COMMIT;  -- Release locks and let other transactions proceed
+
+        EXIT WHEN processed = 0;
+
+        PERFORM pg_sleep(0.05);  -- Brief pause to reduce contention
+    END LOOP;
+
+    RAISE NOTICE 'Total refunds processed: %', total;
+END;
+$$;
+
+-- Call it:
+CALL process_refunds_in_batches(100);
+\`\`\`
+
+\`SKIP LOCKED\` prevents this procedure from blocking on rows another worker is already processing. Committing after each batch keeps transactions short and prevents table bloat from long-lived transactions blocking VACUUM.
+
+</details>
 
 ---
 
@@ -2819,18 +4745,123 @@ SHOW effective_cache_size; -- Hint about OS cache size
 
 **Why it matters:** When you see a slow query in production, the execution plan is your diagnostic tool. Understanding scan types, join algorithms, and cost estimates lets you identify the bottleneck and choose the right fix — whether it is adding an index, rewriting the query, or adjusting database configuration.
 
-### EXERCISE: Execution Plans
+### Exercises
+
+**1. Read a complex execution plan**
+
+Take a query with 3+ JOINs and run \`EXPLAIN ANALYZE\`. Identify: which join algorithm is used for each join, which tables use index vs. seq scans, and where the most time is spent.
+
+<details>
+<summary>Hint</summary>
+
+Look for the node with the highest \`actual time\` value. Each join node shows its algorithm (Hash Join, Nested Loop, Merge Join) and its input nodes show the scan type.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Take a complex query with 3+ JOINs and run EXPLAIN ANALYZE.
---    Identify: which join algorithm is used for each join, which
---    tables use index scans vs. seq scans, and where the most time is spent.
--- 2. Force the planner to use a different join strategy (disable one type).
---    Compare the execution time. Why did the planner choose the original strategy?
--- 3. Find a query where estimated rows differ significantly from actual rows.
---    Run ANALYZE on the affected tables and re-check.
+EXPLAIN ANALYZE
+SELECT
+    o.order_id,
+    c.customer_name,
+    p.product_name,
+    oi.quantity,
+    oi.unit_price
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+WHERE o.order_date >= '2025-01-01';
+
+-- What to look for in the output:
+-- 1. The outermost node is the last operation (often Sort or Aggregate)
+-- 2. Find "Hash Join", "Nested Loop", or "Merge Join" nodes — note which tables
+-- 3. Find "Seq Scan" nodes on large tables — these are bottlenecks
+-- 4. Find "(actual time=X..Y rows=Z loops=N)" — the node with highest Y*N is slowest
+-- 5. Compare "rows=estimated" vs "(actual... rows=actual)" — large gaps = stale stats
 \`\`\`
+
+The execution plan is a tree read bottom-up. Each parent node consumes its children's output. The highest \`actual time\` in the plan is your primary optimization target.
+
+</details>
+
+**2. Force a different join strategy**
+
+Force the planner to use a different join algorithm and compare execution times to understand why the planner chose its original strategy.
+
+<details>
+<summary>Hint</summary>
+
+Use \`SET enable_hashjoin = off\` (or \`enable_nestloop\`, \`enable_mergejoin\`) to disable one algorithm, then re-run \`EXPLAIN ANALYZE\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Record the original plan and time
+EXPLAIN ANALYZE
+SELECT o.order_id, c.customer_name
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id;
+-- Suppose: Hash Join, actual time = 12ms
+
+-- Force Nested Loop (disabling Hash Join)
+SET enable_hashjoin = off;
+EXPLAIN ANALYZE
+SELECT o.order_id, c.customer_name
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id;
+-- Now: Nested Loop, actual time = 340ms
+
+-- Restore default
+RESET enable_hashjoin;
+\`\`\`
+
+The planner chose Hash Join because both tables are large and there is no index on \`orders.customer_id\`. Hash Join builds a hash table from \`customers\` once and probes it for every order row — O(N+M). Nested Loop would do a full scan of \`customers\` for each of the thousands of order rows — much slower without an index.
+
+</details>
+
+**3. Fix stale statistics**
+
+Find a query where estimated rows differ significantly from actual rows, then run \`ANALYZE\` and re-check.
+
+<details>
+<summary>Hint</summary>
+
+A large difference between \`rows=estimated\` and \`(actual... rows=actual)\` in \`EXPLAIN ANALYZE\` output means the planner's statistics are out of date. \`ANALYZE table_name\` refreshes them.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Identify the problem: look for large row estimate discrepancies
+EXPLAIN ANALYZE
+SELECT * FROM orders WHERE status = 'completed' AND order_date >= '2025-01-01';
+-- e.g., rows=50 (estimated) vs (actual... rows=15000) — 300x off!
+
+-- Check when the table was last analyzed
+SELECT relname, last_analyze, last_autoanalyze, n_live_tup, n_dead_tup
+FROM pg_stat_user_tables
+WHERE relname = 'orders';
+
+-- Refresh statistics
+ANALYZE orders;
+
+-- Re-run the plan — estimate should now be close to actual
+EXPLAIN ANALYZE
+SELECT * FROM orders WHERE status = 'completed' AND order_date >= '2025-01-01';
+-- Now rows=14800 (estimated) vs (actual... rows=15000) — much closer
+\`\`\`
+
+Stale statistics cause the planner to choose suboptimal join algorithms and scan types. High-churn tables should be analyzed more frequently — tune \`autovacuum_analyze_scale_factor\` for those tables.
+
+</details>
 
 ---
 
@@ -3018,19 +5049,171 @@ WHERE customer_id = 100;
 
 **Why it matters:** Index selection is one of the highest-leverage performance decisions in database design. The wrong index wastes disk space and slows writes without speeding reads. The right index turns a 30-second query into a 3-millisecond query.
 
-### EXERCISE: Index Internals
+### Exercises
+
+**1. GIN index on JSONB**
+
+Create a GIN index on a JSONB column and demonstrate queries that use it versus queries that cannot use it.
+
+<details>
+<summary>Hint</summary>
+
+GIN supports containment (\`@>\`), key existence (\`?\`), and array overlap (\`&&\`). It does NOT support plain equality or range comparisons on JSONB values.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Create a GIN index on a JSONB column and demonstrate queries
---    that use it vs. queries that cannot use it.
--- 2. Create a partial index for "recent orders" (last 30 days).
---    Show the size difference vs. a full index on the same column.
--- 3. Design a covering index for a query used in your application's
---    most-viewed page. Verify it produces an Index Only Scan.
--- 4. Compare the size and performance of a B-tree vs. hash index
---    on a UUID column with equality-only queries.
+-- Create GIN index
+CREATE INDEX idx_events_payload ON events USING gin (payload);
+
+-- Queries that USE the GIN index:
+
+-- Containment: find events with a specific source
+SELECT * FROM events WHERE payload @> '{"source": "google_ads"}';
+
+-- Key existence: find events that have an error_code field
+SELECT * FROM events WHERE payload ? 'error_code';
+
+-- Array overlap (if payload contains a tags array)
+SELECT * FROM events WHERE payload->'tags' ?| ARRAY['sql', 'performance'];
+
+-- Queries that CANNOT use this GIN index:
+
+-- Plain equality on a nested text value (no GIN support for this form)
+SELECT * FROM events WHERE payload->>'user_id' = '42';
+-- Fix: create an expression index instead:
+CREATE INDEX idx_events_user_id ON events ((payload->>'user_id'));
+
+-- Range comparison on a JSONB numeric value
+SELECT * FROM events WHERE (payload->>'amount')::numeric > 100;
+-- Fix: extract to a real column or use an expression index.
 \`\`\`
+
+GIN indexes excel at "does this document contain X?" queries. For queries that extract a single field and compare it, an expression B-tree index on that extracted value is more appropriate.
+
+</details>
+
+**2. Partial index for recent orders**
+
+Create a partial index for orders from the last 30 days and compare its size to a full index on the same column.
+
+<details>
+<summary>Hint</summary>
+
+Use \`WHERE order_date >= NOW() - INTERVAL '30 days'\` in the \`CREATE INDEX\` statement. Compare sizes with \`pg_relation_size\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Full index on order_date
+CREATE INDEX idx_orders_date_full ON orders (order_date);
+
+-- Partial index: only recent orders
+CREATE INDEX idx_orders_date_recent ON orders (order_date)
+WHERE order_date >= NOW() - INTERVAL '30 days';
+
+-- Compare sizes
+SELECT
+    indexname,
+    pg_size_pretty(pg_relation_size(indexname::regclass)) AS index_size
+FROM pg_indexes
+WHERE tablename = 'orders'
+  AND indexname IN ('idx_orders_date_full', 'idx_orders_date_recent');
+
+-- On a table with 5 years of data, the partial index might be
+-- 10-50x smaller than the full index, and queries for recent orders
+-- will see better cache hit rates because the smaller index fits in RAM.
+\`\`\`
+
+A partial index is a powerful tool when most queries filter for a small, known subset of rows. The index is smaller, faster to scan, and cheaper to maintain on writes.
+
+</details>
+
+**3. Covering index for Index Only Scan**
+
+Design a covering index for a frequently used query and verify it produces an \`Index Only Scan\`.
+
+<details>
+<summary>Hint</summary>
+
+Include all columns the query needs — both the \`WHERE\` column(s) and the \`SELECT\` columns — using \`INCLUDE (...)\` so the planner never needs to access the table heap.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Query: the most-viewed API endpoint returns order summaries for a customer
+SELECT customer_id, order_date, total, status
+FROM orders
+WHERE customer_id = 100
+ORDER BY order_date DESC;
+
+-- Without covering index: Index Scan + heap fetch for each row
+CREATE INDEX idx_orders_customer ON orders (customer_id, order_date DESC);
+
+-- With covering index: Index Only Scan (no heap access)
+CREATE INDEX idx_orders_customer_covering ON orders (customer_id, order_date DESC)
+INCLUDE (total, status);
+
+-- Verify:
+EXPLAIN ANALYZE
+SELECT customer_id, order_date, total, status
+FROM orders
+WHERE customer_id = 100
+ORDER BY order_date DESC;
+-- Should show: Index Only Scan ... Heap Fetches: 0
+\`\`\`
+
+\`Heap Fetches: 0\` in the plan confirms the query was answered entirely from the index — no table pages were read.
+
+</details>
+
+**4. B-tree vs hash index on a UUID column**
+
+Compare the size and equality-query performance of a B-tree versus a hash index on a UUID primary key.
+
+<details>
+<summary>Hint</summary>
+
+Create both index types on the same column, compare sizes with \`pg_relation_size\`, and benchmark equality lookups with \`EXPLAIN ANALYZE\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- B-tree index (default)
+CREATE INDEX idx_sessions_btree ON user_sessions USING btree (session_id);
+
+-- Hash index (equality only, since PostgreSQL 10: WAL-safe)
+CREATE INDEX idx_sessions_hash ON user_sessions USING hash (session_id);
+
+-- Compare sizes
+SELECT
+    indexname,
+    pg_size_pretty(pg_relation_size(indexname::regclass)) AS size
+FROM pg_indexes
+WHERE tablename = 'user_sessions'
+  AND indexname IN ('idx_sessions_btree', 'idx_sessions_hash');
+
+-- Compare equality lookup performance
+EXPLAIN ANALYZE
+SELECT * FROM user_sessions WHERE session_id = 'some-uuid-here'::uuid;
+-- Try with each index individually (drop the other, then test)
+\`\`\`
+
+For equality-only lookups on high-cardinality columns (like UUIDs), a hash index is typically the same speed or faster, and slightly smaller. However, a B-tree index is more versatile — it also supports range scans, \`ORDER BY\`, and \`IS NULL\` — making it the better default choice unless you are certain equality-only access is all you need.
+
+</details>
 
 ---
 
@@ -3195,17 +5378,183 @@ flowchart TD
 
 **Why it matters:** Partitioning is critical for tables that grow without bound — event logs, time-series data, audit trails. Without partitioning, these tables become unmanageable: indexes grow huge, VACUUM takes hours, and DROP TABLE is the only fast way to remove old data.
 
-### EXERCISE: Partitioning
+### Exercises
+
+**1. Partitioning strategy for high-volume logs**
+
+Design a partitioning strategy for a table that stores 100 million log entries per month.
+
+<details>
+<summary>Hint</summary>
+
+Consider the retention period, query patterns (time-range filters?), and how you will drop old data. Range partitioning by month is the standard approach for time-series logs.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Design a partitioning strategy for a table that stores
---    100 million log entries per month
--- 2. Create monthly partitions for 2025 and a default partition
--- 3. Write a query that benefits from partition pruning and verify
---    with EXPLAIN ANALYZE
--- 4. Write a script to detach and archive partitions older than 1 year
+-- Strategy: range partitioning by month on created_at
+-- Reasons:
+-- 1. Most queries filter by date range → partition pruning skips irrelevant months
+-- 2. Old partitions can be dropped (not deleted row-by-row) in milliseconds
+-- 3. Each partition can be vacuumed independently
+-- 4. New partitions added monthly via automation (pg_partman)
+
+CREATE TABLE app_logs (
+    log_id      BIGSERIAL,
+    level       VARCHAR(10) NOT NULL,
+    message     TEXT NOT NULL,
+    context     JSONB,
+    created_at  TIMESTAMP NOT NULL,
+    PRIMARY KEY (log_id, created_at)
+) PARTITION BY RANGE (created_at);
+
+-- Default partition catches any data outside defined ranges
+CREATE TABLE app_logs_default PARTITION OF app_logs DEFAULT;
+
+-- Index created once — automatically applied to each partition
+CREATE INDEX ON app_logs (level, created_at);
+CREATE INDEX ON app_logs USING gin (context);
 \`\`\`
+
+At 100M rows/month, a single partition is ~50-100 GB. Monthly partitions mean queries for "last 7 days" only scan the current (and possibly previous) partition rather than years of data.
+
+</details>
+
+**2. Monthly partitions for 2025**
+
+Create monthly partitions for all 12 months of 2025 plus a default partition.
+
+<details>
+<summary>Hint</summary>
+
+Each partition uses \`FOR VALUES FROM ('YYYY-MM-01') TO ('YYYY-MM-01' of next month)\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+CREATE TABLE app_logs_2025_01 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-01-01') TO ('2025-02-01');
+CREATE TABLE app_logs_2025_02 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-02-01') TO ('2025-03-01');
+CREATE TABLE app_logs_2025_03 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-03-01') TO ('2025-04-01');
+CREATE TABLE app_logs_2025_04 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-04-01') TO ('2025-05-01');
+CREATE TABLE app_logs_2025_05 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-05-01') TO ('2025-06-01');
+CREATE TABLE app_logs_2025_06 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-06-01') TO ('2025-07-01');
+CREATE TABLE app_logs_2025_07 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-07-01') TO ('2025-08-01');
+CREATE TABLE app_logs_2025_08 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-08-01') TO ('2025-09-01');
+CREATE TABLE app_logs_2025_09 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-09-01') TO ('2025-10-01');
+CREATE TABLE app_logs_2025_10 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-10-01') TO ('2025-11-01');
+CREATE TABLE app_logs_2025_11 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-11-01') TO ('2025-12-01');
+CREATE TABLE app_logs_2025_12 PARTITION OF app_logs
+    FOR VALUES FROM ('2025-12-01') TO ('2026-01-01');
+\`\`\`
+
+The upper bound is exclusive (\`TO\` is not included), so \`'2025-02-01'\` means up to but not including Feb 1st — i.e., all of January.
+
+</details>
+
+**3. Query that benefits from partition pruning**
+
+Write a query that benefits from partition pruning and verify it with \`EXPLAIN ANALYZE\`.
+
+<details>
+<summary>Hint</summary>
+
+The filter must reference the partition key (\`created_at\`) as a literal range so the planner can determine at plan time which partitions to skip.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Query with a time-range filter on the partition key
+EXPLAIN ANALYZE
+SELECT level, COUNT(*) AS count
+FROM app_logs
+WHERE created_at >= '2025-06-01' AND created_at < '2025-07-01'
+GROUP BY level;
+
+-- Expected output shows ONLY app_logs_2025_06:
+-- Append
+--   -> Seq Scan on app_logs_2025_06
+--        Filter: (created_at >= '2025-06-01' AND created_at < '2025-07-01')
+-- (All other 11 partitions are pruned — not even mentioned)
+
+-- Confirm pruning is enabled:
+SHOW enable_partition_pruning;  -- Should be 'on'
+\`\`\`
+
+Only one partition appears in the plan. All others are pruned at planning time, meaning the database never opens or reads them.
+
+</details>
+
+**4. Detach and archive old partitions**
+
+Write a script to detach and archive partitions older than 1 year.
+
+<details>
+<summary>Hint</summary>
+
+\`DETACH PARTITION\` separates the partition from the parent table into a standalone table. You can then rename it, move it to a cold tablespace, or \`DROP\` it.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Detach the old partition (it becomes a standalone table, data preserved)
+ALTER TABLE app_logs DETACH PARTITION app_logs_2024_01;
+
+-- Optionally: rename for clarity
+ALTER TABLE app_logs_2024_01 RENAME TO app_logs_archive_2024_01;
+
+-- Optionally: move to a cheaper tablespace
+ALTER TABLE app_logs_archive_2024_01 SET TABLESPACE cold_storage;
+
+-- Or DROP immediately if retention period has expired:
+DROP TABLE app_logs_2024_01;
+
+-- Automate with a DO block (example: drop all partitions older than 1 year)
+DO $$
+DECLARE
+    partition_name TEXT;
+    cutoff_date DATE := DATE_TRUNC('month', NOW() - INTERVAL '1 year');
+BEGIN
+    FOR partition_name IN
+        SELECT child.relname
+        FROM pg_inherits
+        JOIN pg_class parent ON pg_inherits.inhparent = parent.oid
+        JOIN pg_class child  ON pg_inherits.inhrelid  = child.oid
+        WHERE parent.relname = 'app_logs'
+          AND child.relname < 'app_logs_' || TO_CHAR(cutoff_date, 'YYYY_MM')
+    LOOP
+        EXECUTE 'ALTER TABLE app_logs DETACH PARTITION ' || partition_name;
+        EXECUTE 'DROP TABLE ' || partition_name;
+        RAISE NOTICE 'Dropped partition: %', partition_name;
+    END LOOP;
+END $$;
+\`\`\`
+
+\`DROP TABLE\` on a partition is instantaneous — it removes the partition's file without scanning rows. This is orders of magnitude faster than \`DELETE FROM app_logs WHERE created_at < ...\` on 100M rows.
+
+</details>
 
 ---
 
@@ -3402,16 +5751,207 @@ WHERE product_id = 42
 
 > **Role connection:** Every backend developer needs to understand locking. The difference between a system that handles 100 concurrent users and one that handles 10,000 often comes down to locking strategy. Pessimistic locking is simpler but creates contention. Optimistic locking scales better but requires retry logic.
 
-### EXERCISE: Locking & Concurrency
+### Exercises
+
+**1. Job queue with SKIP LOCKED**
+
+Implement a job queue using \`SELECT ... FOR UPDATE SKIP LOCKED\` so multiple workers can process jobs concurrently without conflicts.
+
+<details>
+<summary>Hint</summary>
+
+Each worker claims one job atomically by locking it, processing it, then updating its status. \`SKIP LOCKED\` ensures two workers never claim the same job.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Implement a job queue using SELECT ... FOR UPDATE SKIP LOCKED
--- 2. Demonstrate a deadlock scenario and fix it with consistent lock ordering
--- 3. Implement optimistic locking for a shopping cart checkout that
---    decrements product stock
--- 4. Use advisory locks to prevent duplicate cron job execution
+-- Schema
+CREATE TABLE job_queue (
+    job_id     BIGSERIAL PRIMARY KEY,
+    payload    JSONB NOT NULL,
+    status     VARCHAR(20) NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    started_at TIMESTAMP,
+    finished_at TIMESTAMP
+);
+
+-- Worker: claim and process one job
+BEGIN;
+
+UPDATE job_queue
+SET status = 'processing', started_at = NOW()
+WHERE job_id = (
+    SELECT job_id
+    FROM job_queue
+    WHERE status = 'pending'
+    ORDER BY created_at
+    LIMIT 1
+    FOR UPDATE SKIP LOCKED
+)
+RETURNING job_id, payload;
+
+-- ... process the job using the returned payload in application code ...
+
+UPDATE job_queue
+SET status = 'done', finished_at = NOW()
+WHERE job_id = :claimed_job_id;
+
+COMMIT;
 \`\`\`
+
+\`SKIP LOCKED\` means any job already locked by another worker is invisible to this worker, so two workers can run this pattern simultaneously without blocking each other or claiming the same job.
+
+</details>
+
+**2. Deadlock and consistent lock ordering**
+
+Demonstrate a deadlock scenario and show how to fix it with consistent lock ordering.
+
+<details>
+<summary>Hint</summary>
+
+A deadlock occurs when two transactions each hold a lock the other needs. Fixing it means always acquiring locks in the same order (e.g., by ascending \`account_id\`).
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- DEADLOCK SCENARIO:
+-- Transaction A: lock account 1, then try to lock account 2
+-- Transaction B: lock account 2, then try to lock account 1
+-- → Deadlock. PostgreSQL detects it and aborts one transaction.
+
+-- FIX: always lock accounts in ascending account_id order
+CREATE OR REPLACE FUNCTION transfer_funds(
+    from_id INTEGER,
+    to_id   INTEGER,
+    amount  DECIMAL
+) RETURNS void AS $$
+BEGIN
+    -- Lock in consistent order (lower ID first) regardless of direction
+    IF from_id < to_id THEN
+        PERFORM * FROM accounts WHERE account_id = from_id FOR UPDATE;
+        PERFORM * FROM accounts WHERE account_id = to_id   FOR UPDATE;
+    ELSE
+        PERFORM * FROM accounts WHERE account_id = to_id   FOR UPDATE;
+        PERFORM * FROM accounts WHERE account_id = from_id FOR UPDATE;
+    END IF;
+
+    UPDATE accounts SET balance = balance - amount WHERE account_id = from_id;
+    UPDATE accounts SET balance = balance + amount WHERE account_id = to_id;
+END;
+$$ LANGUAGE plpgsql;
+\`\`\`
+
+When all callers acquire locks in the same order, a circular wait (the root cause of deadlocks) becomes impossible.
+
+</details>
+
+**3. Optimistic locking for cart checkout**
+
+Implement optimistic locking for a shopping cart checkout that decrements product stock.
+
+<details>
+<summary>Hint</summary>
+
+Read the current \`version\` (or \`updated_at\`) of the product row, attempt the UPDATE with a \`WHERE version = :known_version\` condition, and check if any rows were affected.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Step 1: Read current stock and version
+SELECT product_id, stock, version
+FROM products
+WHERE product_id = 42;
+-- Returns: stock = 5, version = 12
+
+-- Step 2: Attempt the decrement with version check
+UPDATE products
+SET stock   = stock - 1,
+    version = version + 1
+WHERE product_id = 42
+  AND version = 12     -- Must still be the version we read
+  AND stock >= 1;      -- Must have stock available
+
+-- Step 3: In application code, check affected rows
+-- If 0 rows updated: someone else modified the product concurrently → retry
+-- If 1 row updated: success
+
+-- Full pattern in pseudocode:
+-- retries = 0
+-- while retries < 3:
+--     row = SELECT product_id, stock, version FROM products WHERE product_id = 42
+--     if row.stock < quantity: raise OutOfStock
+--     affected = UPDATE products SET stock = stock - quantity, version = version + 1
+--                WHERE product_id = 42 AND version = row.version AND stock >= quantity
+--     if affected == 1: return success
+--     retries += 1
+-- raise ConcurrentModification
+\`\`\`
+
+Optimistic locking avoids holding a lock during the application-side computation, maximising concurrency. It is ideal when conflicts are rare (most checkouts succeed without contention).
+
+</details>
+
+**4. Advisory locks for cron job deduplication**
+
+Use advisory locks to prevent a cron job from running twice concurrently.
+
+<details>
+<summary>Hint</summary>
+
+Use \`pg_try_advisory_lock(id)\` — it returns \`false\` immediately if the lock is already held, instead of waiting.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- In the cron job's SQL (or called from application code at job start):
+
+-- Use a unique numeric ID for this specific job type
+-- Hash the job name to get a stable integer, or use a hardcoded constant
+DO $$
+DECLARE
+    lock_id BIGINT := 1234567890;  -- Unique ID for "nightly_report" job
+    acquired BOOLEAN;
+BEGIN
+    SELECT pg_try_advisory_lock(lock_id) INTO acquired;
+
+    IF NOT acquired THEN
+        RAISE NOTICE 'Job already running, skipping this execution.';
+        RETURN;
+    END IF;
+
+    -- Job logic here
+    RAISE NOTICE 'Running nightly report job...';
+    -- ... actual work ...
+
+    -- Lock is automatically released when the session ends,
+    -- or release it explicitly:
+    PERFORM pg_advisory_unlock(lock_id);
+END $$;
+
+-- For transaction-scoped advisory locks (auto-released at COMMIT/ROLLBACK):
+BEGIN;
+SELECT pg_advisory_xact_lock(1234567890);
+-- If this returns (doesn't raise), we hold the lock for this transaction
+-- ... job logic ...
+COMMIT;  -- Lock released automatically
+\`\`\`
+
+\`pg_try_advisory_lock\` returns \`false\` without blocking if another session holds the same lock ID. This is ideal for cron jobs where you want to skip the run rather than queue behind a running instance.
+
+</details>
 
 ---
 
@@ -3612,19 +6152,202 @@ ORDER BY reads + writes DESC;
 
 **Why it matters:** Performance tuning is the difference between a database that costs $100/month and one that costs $10,000/month. Connection pooling, COPY for bulk operations, proper VACUUM, and pg_stat_statements are the tools that keep production databases healthy.
 
-### EXERCISE: Performance Tuning
+### Exercises
+
+**1. Find slowest queries with pg_stat_statements**
+
+Set up \`pg_stat_statements\` and identify the top 5 slowest queries in your application.
+
+<details>
+<summary>Hint</summary>
+
+Enable the extension, then query \`pg_stat_statements\` ordering by \`total_exec_time DESC\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Set up pg_stat_statements and identify the top 5 slowest
---    queries in your application
--- 2. Implement COPY-based data import and compare performance
---    to individual INSERTs (try 100,000 rows)
--- 3. Check your tables for autovacuum configuration and dead tuple
---    ratios. Tune a high-churn table.
--- 4. Set up PgBouncer in transaction mode and measure the difference
---    in max connections your application can handle.
+-- Enable the extension (requires adding to postgresql.conf:
+-- shared_preload_libraries = 'pg_stat_statements')
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+
+-- Top 5 queries by total execution time
+SELECT
+    LEFT(query, 120)                           AS query_preview,
+    calls,
+    ROUND(total_exec_time::numeric, 0)         AS total_ms,
+    ROUND(mean_exec_time::numeric, 2)          AS avg_ms,
+    ROUND(stddev_exec_time::numeric, 2)        AS stddev_ms,
+    rows
+FROM pg_stat_statements
+ORDER BY total_exec_time DESC
+LIMIT 5;
+
+-- Top 5 by average execution time (worst per-call performance)
+SELECT
+    LEFT(query, 120)                           AS query_preview,
+    calls,
+    ROUND(mean_exec_time::numeric, 2)          AS avg_ms
+FROM pg_stat_statements
+WHERE calls > 10   -- Ignore one-off queries
+ORDER BY mean_exec_time DESC
+LIMIT 5;
+
+-- Reset statistics after optimization to measure improvement
+SELECT pg_stat_statements_reset();
 \`\`\`
+
+Focus first on queries with high \`total_exec_time\` — they have the most impact on overall database load. Then address queries with high \`avg_ms\` that are called frequently.
+
+</details>
+
+**2. COPY vs individual INSERTs**
+
+Implement COPY-based data import and compare its performance to individual \`INSERT\` statements for 100,000 rows.
+
+<details>
+<summary>Hint</summary>
+
+Write a CSV file and use \`COPY ... FROM\`. Compare wall-clock time against a loop of single-row \`INSERT\` statements.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Method 1: Individual INSERTs (slow — one transaction per row by default)
+-- Approximate benchmark: ~100,000 ms (100 seconds) for 100k rows
+
+-- Method 2: Multi-row INSERT (better — one transaction)
+INSERT INTO products (product_name, category, price)
+SELECT
+    'Product ' || i,
+    'Category ' || (i % 10),
+    ROUND((random() * 100)::numeric, 2)
+FROM generate_series(1, 100000) AS i;
+-- Approximate benchmark: ~2-5 seconds
+
+-- Method 3: COPY (fastest — bulk protocol, minimal WAL, no row-by-row overhead)
+-- First, generate the CSV:
+COPY (
+    SELECT
+        'Product ' || i AS product_name,
+        'Category ' || (i % 10) AS category,
+        ROUND((random() * 100)::numeric, 2) AS price
+    FROM generate_series(1, 100000) AS i
+) TO '/tmp/products_100k.csv' WITH (FORMAT csv, HEADER true);
+
+-- Then load it:
+COPY products (product_name, category, price)
+FROM '/tmp/products_100k.csv'
+WITH (FORMAT csv, HEADER true);
+-- Approximate benchmark: ~0.5-1 second
+\`\`\`
+
+\`COPY\` is typically 10–100x faster than individual \`INSERT\` statements because it bypasses per-row overhead, uses an efficient binary protocol, and minimises WAL (write-ahead log) writes.
+
+</details>
+
+**3. Tune autovacuum for a high-churn table**
+
+Check a table's dead tuple ratio and tune autovacuum for a high-churn table.
+
+<details>
+<summary>Hint</summary>
+
+Check \`pg_stat_user_tables\` for \`n_dead_tup\` and \`last_autovacuum\`. Lower \`autovacuum_vacuum_scale_factor\` to trigger more frequent vacuuming.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Check dead tuple ratios
+SELECT
+    relname,
+    n_live_tup,
+    n_dead_tup,
+    ROUND(n_dead_tup::numeric / NULLIF(n_live_tup, 0) * 100, 2) AS dead_pct,
+    last_vacuum,
+    last_autovacuum
+FROM pg_stat_user_tables
+WHERE n_dead_tup > 1000
+ORDER BY dead_pct DESC;
+
+-- If orders table has 20%+ dead tuples and autovacuum is not keeping up:
+ALTER TABLE orders SET (
+    -- Vacuum when 5% of rows are dead (default: 20%)
+    autovacuum_vacuum_scale_factor = 0.05,
+    -- Analyze when 2% of rows have changed (default: 10%)
+    autovacuum_analyze_scale_factor = 0.02,
+    -- Less throttling for high-churn tables
+    autovacuum_vacuum_cost_delay = 5
+);
+
+-- Force an immediate vacuum (use during maintenance window)
+VACUUM ANALYZE orders;
+
+-- Check bloat after vacuum
+SELECT
+    relname,
+    pg_size_pretty(pg_total_relation_size(relname::regclass)) AS total_size,
+    pg_size_pretty(pg_relation_size(relname::regclass))       AS table_size
+FROM pg_stat_user_tables
+WHERE relname = 'orders';
+\`\`\`
+
+A dead tuple ratio above 10-20% on a busy table is a sign that autovacuum needs to run more aggressively. High dead tuple counts slow down queries (more pages to scan) and waste disk space.
+
+</details>
+
+**4. PgBouncer in transaction mode**
+
+Set up PgBouncer in transaction mode and measure the difference in maximum concurrency.
+
+<details>
+<summary>Hint</summary>
+
+PgBouncer in transaction mode returns the server connection to the pool after each transaction completes. This means 1,000 application connections can share 20 server connections.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- pgbouncer.ini configuration for transaction mode:
+-- [databases]
+-- myapp = host=127.0.0.1 port=5432 dbname=myapp
+--
+-- [pgbouncer]
+-- listen_port = 6432
+-- listen_addr = 127.0.0.1
+-- auth_type = md5
+-- auth_file = /etc/pgbouncer/userlist.txt
+-- pool_mode = transaction          <- key setting
+-- max_client_conn = 1000           <- accept up to 1000 app connections
+-- default_pool_size = 20           <- but only 20 real DB connections
+-- server_idle_timeout = 600
+
+-- Check active connections through PgBouncer (run against the pgbouncer admin):
+-- SHOW POOLS;
+-- SHOW STATS;
+
+-- Verify from PostgreSQL side:
+SELECT COUNT(*), state
+FROM pg_stat_activity
+WHERE backend_type = 'client backend'
+GROUP BY state;
+-- Should show only ~20 connections from PgBouncer, even with 1000 app clients
+\`\`\`
+
+Without PgBouncer, 1,000 concurrent app connections = 1,000 PostgreSQL processes consuming ~5 GB RAM and competing for CPU. With PgBouncer in transaction mode, the same 1,000 app connections share 20 server connections — 50x reduction in database-side resource usage.
+
+</details>
 
 ---
 
@@ -3778,18 +6501,201 @@ flowchart TD
 
 > **Role connection:** Migration strategy is one of the most critical skills for senior backend developers and platform engineers. A botched migration can cause extended downtime, data loss, or corruption. The expand/contract pattern should be second nature.
 
-### EXERCISE: Migration Strategies
+### Exercises
+
+**1. Zero-downtime column split**
+
+Design a zero-downtime migration to split a \`name\` column into \`first_name\` and \`last_name\` columns.
+
+<details>
+<summary>Hint</summary>
+
+Use the expand-and-contract pattern: add new columns → backfill → deploy code to write both → drop old column. Never rename in one step.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Design a zero-downtime migration to split a "name" column into
---    "first_name" and "last_name" columns
--- 2. Write a batched backfill script with progress tracking
--- 3. Create an index concurrently on a large table and handle the
---    scenario where it fails partway through
--- 4. Add a foreign key constraint to an existing table with
---    millions of rows without blocking writes
+-- Step 1 (Migration): Add new nullable columns
+ALTER TABLE users ADD COLUMN first_name VARCHAR(100);
+ALTER TABLE users ADD COLUMN last_name  VARCHAR(100);
+
+-- Step 2 (Migration): Backfill from existing name column
+-- Simple split on first space (adjust for your data):
+UPDATE users
+SET
+    first_name = SPLIT_PART(name, ' ', 1),
+    last_name  = NULLIF(SUBSTRING(name FROM POSITION(' ' IN name) + 1), '');
+
+-- Step 3 (Code deploy): Application writes to name, first_name, AND last_name
+-- Application reads from first_name/last_name (falling back to name if NULL)
+
+-- Step 4 (Migration): Add NOT NULL constraints after all data is backfilled
+ALTER TABLE users ALTER COLUMN first_name SET NOT NULL;
+ALTER TABLE users ALTER COLUMN last_name  SET NOT NOT NULL;
+
+-- Step 5 (Code deploy): Application uses only first_name and last_name
+
+-- Step 6 (Migration): Drop old column
+ALTER TABLE users DROP COLUMN name;
 \`\`\`
+
+Each step is backward-compatible with the currently deployed code. If any step fails, the application continues working with the previous data model.
+
+</details>
+
+**2. Batched backfill with progress tracking**
+
+Write a batched backfill script with progress tracking.
+
+<details>
+<summary>Hint</summary>
+
+Process in batches using \`WHERE id > last_id LIMIT batch_size\`. Store progress in a tracking table or use \`RAISE NOTICE\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Progress tracking table
+CREATE TABLE IF NOT EXISTS migration_progress (
+    migration_name    VARCHAR(100) PRIMARY KEY,
+    last_processed_id BIGINT      DEFAULT 0,
+    total_processed   BIGINT      DEFAULT 0,
+    started_at        TIMESTAMP   DEFAULT NOW(),
+    updated_at        TIMESTAMP   DEFAULT NOW()
+);
+
+INSERT INTO migration_progress (migration_name)
+VALUES ('backfill_first_last_name')
+ON CONFLICT (migration_name) DO NOTHING;
+
+-- Batched backfill procedure
+DO $$
+DECLARE
+    batch_size   INTEGER := 10000;
+    last_id      BIGINT;
+    affected     INTEGER;
+    total        BIGINT := 0;
+BEGIN
+    SELECT last_processed_id INTO last_id
+    FROM migration_progress
+    WHERE migration_name = 'backfill_first_last_name';
+
+    LOOP
+        UPDATE users
+        SET
+            first_name = SPLIT_PART(name, ' ', 1),
+            last_name  = NULLIF(SUBSTRING(name FROM POSITION(' ' IN name) + 1), '')
+        WHERE user_id > last_id
+          AND user_id <= last_id + batch_size
+          AND first_name IS NULL;
+
+        GET DIAGNOSTICS affected = ROW_COUNT;
+        total := total + affected;
+        last_id := last_id + batch_size;
+
+        UPDATE migration_progress
+        SET last_processed_id = last_id,
+            total_processed   = total_processed + affected,
+            updated_at        = NOW()
+        WHERE migration_name = 'backfill_first_last_name';
+
+        RAISE NOTICE 'Processed up to id %, batch affected %, total %',
+            last_id, affected, total;
+
+        PERFORM pg_sleep(0.1);  -- Brief pause to allow autovacuum to run
+        EXIT WHEN affected = 0 AND last_id > (SELECT MAX(user_id) FROM users);
+    END LOOP;
+
+    RAISE NOTICE 'Backfill complete. Total rows updated: %', total;
+END $$;
+\`\`\`
+
+Storing progress in a table means the backfill is resumable — if it is interrupted, restart from \`last_processed_id\` rather than the beginning.
+
+</details>
+
+**3. Concurrent index creation with failure handling**
+
+Create an index concurrently on a large table and handle the scenario where it fails partway through.
+
+<details>
+<summary>Hint</summary>
+
+\`CREATE INDEX CONCURRENTLY\` can leave an \`INVALID\` index if it fails. Check \`pg_index.indisvalid\` and drop + recreate if needed.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Create the index without blocking writes
+CREATE INDEX CONCURRENTLY idx_orders_customer_date
+ON orders (customer_id, order_date DESC);
+
+-- Check if the index was created successfully
+SELECT indexname, indexdef
+FROM pg_indexes
+WHERE tablename = 'orders' AND indexname = 'idx_orders_customer_date';
+
+-- Check for INVALID indexes (left over from a failed CONCURRENTLY build)
+SELECT indexrelid::regclass::text AS index_name, indisvalid
+FROM pg_index
+WHERE indrelid = 'orders'::regclass
+  AND NOT indisvalid;
+
+-- If the index is INVALID, drop it and retry:
+DROP INDEX CONCURRENTLY IF EXISTS idx_orders_customer_date;
+-- Wait for other long-running transactions to finish, then retry:
+CREATE INDEX CONCURRENTLY idx_orders_customer_date
+ON orders (customer_id, order_date DESC);
+\`\`\`
+
+An \`INVALID\` index is not used by the planner and wastes space. Always check \`indisvalid\` after a \`CONCURRENTLY\` build, especially in busy production systems.
+
+</details>
+
+**4. Add a foreign key without blocking writes**
+
+Add a foreign key constraint to an existing table with millions of rows without blocking writes.
+
+<details>
+<summary>Hint</summary>
+
+Use \`NOT VALID\` to add the constraint instantly (skipping existing row validation), then \`VALIDATE CONSTRAINT\` to check existing rows with a weaker lock.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Step 1: Add the constraint as NOT VALID
+-- This is instant — it applies only to future inserts/updates, not existing rows
+ALTER TABLE orders ADD CONSTRAINT fk_orders_customer
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    NOT VALID;
+
+-- Step 2: Validate existing rows (takes ShareUpdateExclusiveLock — does not block reads or writes)
+-- This can run during business hours on a live system
+ALTER TABLE orders VALIDATE CONSTRAINT fk_orders_customer;
+
+-- Check the constraint is now valid:
+SELECT conname, convalidated
+FROM pg_constraint
+WHERE conrelid = 'orders'::regclass AND conname = 'fk_orders_customer';
+-- convalidated should be true
+\`\`\`
+
+\`NOT VALID\` acquires only a brief \`AccessExclusiveLock\` to add the constraint metadata, then immediately releases it. \`VALIDATE CONSTRAINT\` uses a weaker lock that allows concurrent reads and writes while scanning the existing rows — safe on a live production table.
+
+</details>
 
 ---
 
@@ -4094,22 +7000,327 @@ flowchart TD
 
 **Why it matters:** These patterns appear in virtually every production system. Audit logging is often legally required (GDPR, SOX, HIPAA). Soft deletes prevent accidental data loss and enable undo functionality. JSONB gives you schema flexibility where you need it. Full-text search saves you from deploying Elasticsearch for simpler search requirements.
 
-### EXERCISE: Advanced Patterns
+### Exercises
+
+**1. Temporal table with time-travel queries**
+
+Implement a temporal table for products with time-travel query support.
+
+<details>
+<summary>Hint</summary>
+
+Add \`valid_from\` and \`valid_to\` columns. An \`INSTEAD OF UPDATE\` trigger on a view closes the old version and inserts a new one. Query with \`WHERE valid_from <= :date AND valid_to > :date\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
 
 \`\`\`sql
--- EXERCISE:
--- 1. Implement a temporal table for products with time-travel query support
--- 2. Add audit logging to your orders table and query "who changed
---    order #12345 in the last 7 days"
--- 3. Store user preferences as JSONB and write queries to:
---    a. Find users with a specific preference set
---    b. Update a nested preference value
---    c. Aggregate preferences across all users
--- 4. Implement full-text search for a blog with weighted ranking
---    (title 3x, body 1x, tags 2x)
--- 5. Design a soft-delete system with Row-Level Security that
---    automatically hides deleted records
+-- Temporal products table
+CREATE TABLE products_history (
+    product_id   INTEGER NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    price        DECIMAL(10, 2) NOT NULL,
+    valid_from   TIMESTAMP NOT NULL DEFAULT NOW(),
+    valid_to     TIMESTAMP NOT NULL DEFAULT 'infinity'
+);
+
+CREATE INDEX idx_ph_product_valid ON products_history (product_id, valid_from, valid_to);
+
+-- View showing current state
+CREATE VIEW products_current AS
+SELECT * FROM products_history WHERE valid_to = 'infinity';
+
+-- Trigger to handle updates as temporal inserts
+CREATE OR REPLACE FUNCTION products_temporal_update()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE products_history
+    SET valid_to = NOW()
+    WHERE product_id = OLD.product_id AND valid_to = 'infinity';
+
+    INSERT INTO products_history (product_id, product_name, price)
+    VALUES (OLD.product_id, NEW.product_name, NEW.price);
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_products_temporal
+INSTEAD OF UPDATE ON products_current
+FOR EACH ROW EXECUTE FUNCTION products_temporal_update();
+
+-- Time-travel: what was the price on 2025-03-01?
+SELECT product_id, product_name, price
+FROM products_history
+WHERE product_id = 42
+  AND valid_from <= '2025-03-01'::timestamp
+  AND valid_to   > '2025-03-01'::timestamp;
+
+-- Full history of a product
+SELECT product_name, price, valid_from, valid_to
+FROM products_history
+WHERE product_id = 42
+ORDER BY valid_from;
 \`\`\`
+
+Each \`UPDATE\` through the view appends a new version row rather than overwriting the old one, preserving the complete price history.
+
+</details>
+
+**2. Audit logging query**
+
+Attach audit logging to the \`orders\` table, then query "who changed order #12345 in the last 7 days?"
+
+<details>
+<summary>Hint</summary>
+
+Use the generic \`audit_trigger_function\` from the section content — attach it to \`orders\`, then \`SELECT\` from \`audit_log\` filtered by \`table_name\`, \`record_id\`, and \`changed_at\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Attach the audit trigger (audit_trigger_function already defined in section content)
+CREATE TRIGGER trg_orders_audit
+AFTER INSERT OR UPDATE OR DELETE ON orders
+FOR EACH ROW EXECUTE FUNCTION audit_trigger_function();
+
+-- Query: who changed order #12345 in the last 7 days?
+SELECT
+    audit_id,
+    action,
+    changed_by,
+    changed_at,
+    old_data,
+    new_data
+FROM audit_log
+WHERE table_name = 'orders'
+  AND record_id  = '12345'
+  AND changed_at >= NOW() - INTERVAL '7 days'
+ORDER BY changed_at DESC;
+
+-- What specifically changed? (Compare old vs new JSONB)
+SELECT
+    changed_at,
+    changed_by,
+    action,
+    old_data - new_data AS removed_fields,
+    new_data - old_data AS added_fields
+FROM audit_log
+WHERE table_name = 'orders' AND record_id = '12345'
+ORDER BY changed_at DESC;
+\`\`\`
+
+The JSONB \`old_data\` and \`new_data\` columns capture the full row before and after each change, enabling "what exactly was different?" queries.
+
+</details>
+
+**3. JSONB user preferences**
+
+Store user preferences as JSONB and write queries to find users with a specific preference, update a nested value, and aggregate preferences across all users.
+
+<details>
+<summary>Hint</summary>
+
+Use \`@>\` for containment searches, \`jsonb_set\` for nested updates, and \`jsonb_each\` or \`jsonb_object_agg\` for aggregation.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Schema
+ALTER TABLE users ADD COLUMN preferences JSONB NOT NULL DEFAULT '{}';
+CREATE INDEX idx_users_prefs ON users USING gin (preferences);
+
+-- a. Find users with a specific preference set
+-- Users who have dark mode enabled
+SELECT user_id, username
+FROM users
+WHERE preferences @> '{"theme": "dark"}';
+
+-- Users who have email notifications on and language set to English
+SELECT user_id, username
+FROM users
+WHERE preferences @> '{"notifications": {"email": true}, "language": "en"}';
+
+-- b. Update a nested preference value
+-- Set a user's timezone preference
+UPDATE users
+SET preferences = jsonb_set(
+    preferences,
+    '{timezone}',
+    '"America/New_York"'
+)
+WHERE user_id = 42;
+
+-- Toggle a nested notification setting
+UPDATE users
+SET preferences = jsonb_set(
+    preferences,
+    '{notifications, email}',
+    'false'
+)
+WHERE user_id = 42;
+
+-- c. Aggregate preferences across all users
+-- Count how many users have each theme
+SELECT
+    preferences->>'theme' AS theme,
+    COUNT(*) AS user_count
+FROM users
+WHERE preferences ? 'theme'
+GROUP BY preferences->>'theme'
+ORDER BY user_count DESC;
+
+-- Distribution of language preferences
+SELECT
+    preferences->>'language' AS language,
+    COUNT(*) AS user_count,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS pct
+FROM users
+WHERE preferences ? 'language'
+GROUP BY preferences->>'language'
+ORDER BY user_count DESC;
+\`\`\`
+
+The GIN index on \`preferences\` makes the containment queries (\`@>\`) fast, even across millions of users.
+
+</details>
+
+**4. Full-text search with weighted ranking**
+
+Implement full-text search for a blog with weighted ranking: title 3×, tags 2×, body 1×.
+
+<details>
+<summary>Hint</summary>
+
+Use \`setweight(..., 'A')\` for title (highest), \`setweight(..., 'B')\` for tags, \`setweight(..., 'C')\` for body. \`ts_rank\` uses these weights automatically.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Add weighted search vector column
+ALTER TABLE posts ADD COLUMN search_vector tsvector;
+
+-- Backfill weighted vector (title=A, tags=B, body=C)
+UPDATE posts
+SET search_vector =
+    setweight(to_tsvector('english', COALESCE(title, '')), 'A') ||
+    setweight(to_tsvector('english', COALESCE(
+        array_to_string(tags, ' '), ''
+    )), 'B') ||
+    setweight(to_tsvector('english', COALESCE(body, '')), 'C');
+
+CREATE INDEX idx_posts_search ON posts USING gin (search_vector);
+
+-- Keep vector updated on insert/update
+CREATE OR REPLACE FUNCTION posts_search_update()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.search_vector :=
+        setweight(to_tsvector('english', COALESCE(NEW.title, '')), 'A') ||
+        setweight(to_tsvector('english', COALESCE(
+            array_to_string(NEW.tags, ' '), ''
+        )), 'B') ||
+        setweight(to_tsvector('english', COALESCE(NEW.body, '')), 'C');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_posts_search
+BEFORE INSERT OR UPDATE ON posts
+FOR EACH ROW EXECUTE FUNCTION posts_search_update();
+
+-- Search with ranking (weights: {D, C, B, A} = {0.1, 0.2, 0.4, 1.0})
+SELECT
+    post_id,
+    title,
+    ts_rank(search_vector, query, 1) AS rank,
+    ts_headline('english', body, query,
+        'StartSel=<mark>, StopSel=</mark>, MaxFragments=2'
+    ) AS snippet
+FROM posts
+CROSS JOIN to_tsquery('english', 'postgresql & performance') AS query
+WHERE search_vector @@ query
+ORDER BY rank DESC
+LIMIT 20;
+\`\`\`
+
+The \`setweight\` labels (A, B, C, D) map to multipliers (1.0, 0.4, 0.2, 0.1) used by \`ts_rank\`. A match in the title scores 10× more than a match in the body.
+
+</details>
+
+**5. Soft-delete with Row-Level Security**
+
+Design a soft-delete system with Row-Level Security that automatically hides deleted records from all queries.
+
+<details>
+<summary>Hint</summary>
+
+\`ALTER TABLE ... ENABLE ROW LEVEL SECURITY\` and \`CREATE POLICY ... USING (deleted_at IS NULL)\`. Roles with \`BYPASSRLS\` (like superusers) can still see deleted rows.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`sql
+-- Add soft-delete columns
+ALTER TABLE users ADD COLUMN deleted_at TIMESTAMP;
+ALTER TABLE users ADD COLUMN deleted_by INTEGER;
+
+-- Partial index: fast lookups on active users
+CREATE INDEX idx_users_active ON users (email) WHERE deleted_at IS NULL;
+
+-- Partial unique constraint: unique email only among active users
+CREATE UNIQUE INDEX idx_users_active_email ON users (email)
+WHERE deleted_at IS NULL;
+
+-- Enable RLS
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE users FORCE ROW LEVEL SECURITY;  -- applies to table owner too
+
+-- Policy: SELECT only returns active (non-deleted) users
+CREATE POLICY users_hide_deleted ON users
+    FOR ALL
+    USING (deleted_at IS NULL);
+
+-- Admin role that can see deleted users:
+CREATE ROLE admin_role;
+ALTER ROLE admin_role BYPASSRLS;
+-- When connected as admin_role, all rows are visible
+
+-- Soft-delete operation
+UPDATE users
+SET deleted_at = NOW(), deleted_by = 1  -- 1 = acting admin user_id
+WHERE user_id = 42;
+
+-- From a normal user session: deleted user is invisible
+SELECT * FROM users WHERE user_id = 42;  -- Returns 0 rows
+
+-- From admin session: deleted user is visible
+SET ROLE admin_role;
+SELECT * FROM users WHERE user_id = 42;  -- Returns the row
+RESET ROLE;
+
+-- Restore a soft-deleted user
+UPDATE users
+SET deleted_at = NULL, deleted_by = NULL
+WHERE user_id = 42;
+\`\`\`
+
+RLS policies apply to every query on the table from every role (unless \`BYPASSRLS\`), so application code never accidentally exposes deleted users — even if a developer forgets to add \`AND deleted_at IS NULL\` to a query.
+
+</details>
 
 ---
 

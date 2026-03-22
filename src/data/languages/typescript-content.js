@@ -132,6 +132,72 @@ let company: {
 
 When you define an object type inline, TypeScript will reject any property not included in that shape. This is called **excess property checking** and it prevents silent bugs from misspelled field names.
 
+### Exercises
+
+**1. Annotate a user profile object**
+Declare a variable \`profile\` with explicit type annotations for \`username\` (string), \`level\` (number), and \`isPremium\` (boolean). Assign it values and log the username.
+
+<details>
+<summary>Hint</summary>
+
+Use an inline object type annotation: \`let profile: { username: string; level: number; isPremium: boolean } = { ... }\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+let profile: { username: string; level: number; isPremium: boolean } = {
+    username: "alice",
+    level: 5,
+    isPremium: true
+};
+console.log(profile.username);
+\`\`\`
+
+Expected output:
+\`\`\`
+alice
+\`\`\`
+
+</details>
+
+**2. Fix a tuple type**
+The following code has a type error. Identify the problem and fix it so TypeScript accepts it.
+
+\`\`\`typescript
+let point: [number, number] = [10, 20, 30];
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+A tuple type \`[number, number]\` only allows exactly two elements. Either change the tuple type or remove the extra element.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+// Option 1: fix the value
+let point: [number, number] = [10, 20];
+console.log(point[0], point[1]);
+
+// Option 2: fix the type
+let point2: [number, number, number] = [10, 20, 30];
+console.log(point2[0], point2[1], point2[2]);
+\`\`\`
+
+Expected output:
+\`\`\`
+10 20
+10 20 30
+\`\`\`
+
+</details>
+
 ---
 
 ## 2. Interfaces vs Type Aliases
@@ -231,6 +297,99 @@ graph TD
 - Avoid the pattern of creating a separate \`types.ts\` file for every feature folder — co-locate types with the code that uses them and let inference carry them further.
 
 > **Role connection:** Frontend Developers define component prop interfaces. Backend Developers define API request/response interfaces. Full-Stack Developers share interfaces between client and server code.
+
+### Exercises
+
+**1. Model a blog post with an interface**
+Define an \`interface Post\` with \`id\` (number), \`title\` (string), \`body\` (string), \`publishedAt\` (Date), and an optional \`tags\` (string array). Then write a function \`summarize(post: Post): string\` that returns the title and tag count.
+
+<details>
+<summary>Hint</summary>
+
+Use \`post.tags?.length ?? 0\` or check if \`tags\` is defined before accessing \`.length\`. Optional properties are accessed the same way as regular ones, but TypeScript requires you to handle the undefined case.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+interface Post {
+    id: number;
+    title: string;
+    body: string;
+    publishedAt: Date;
+    tags?: string[];
+}
+
+function summarize(post: Post): string {
+    const tagCount = post.tags ? post.tags.length : 0;
+    return post.title + " (" + tagCount + " tags)";
+}
+
+const post: Post = {
+    id: 1,
+    title: "Hello TypeScript",
+    body: "...",
+    publishedAt: new Date("2024-01-01"),
+    tags: ["ts", "tutorial"]
+};
+
+console.log(summarize(post));
+\`\`\`
+
+Expected output:
+\`\`\`
+Hello TypeScript (2 tags)
+\`\`\`
+
+</details>
+
+**2. Extend an interface**
+Starting from the \`Post\` interface above, define a \`FeaturedPost\` interface that extends \`Post\` and adds a \`heroImageUrl\` (string) and \`priority\` (number). Create a value of this type and log its title and priority.
+
+<details>
+<summary>Hint</summary>
+
+Use \`interface FeaturedPost extends Post { ... }\`. The extending interface inherits all fields from the base interface.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+interface Post {
+    id: number;
+    title: string;
+    body: string;
+    publishedAt: Date;
+    tags?: string[];
+}
+
+interface FeaturedPost extends Post {
+    heroImageUrl: string;
+    priority: number;
+}
+
+const featured: FeaturedPost = {
+    id: 2,
+    title: "TypeScript Tips",
+    body: "...",
+    publishedAt: new Date("2024-06-01"),
+    heroImageUrl: "https://example.com/img.png",
+    priority: 1
+};
+
+console.log(featured.title + " — priority " + featured.priority);
+\`\`\`
+
+Expected output:
+\`\`\`
+TypeScript Tips — priority 1
+\`\`\`
+
+</details>
 
 ---
 
@@ -359,6 +518,80 @@ type Direction = typeof DIRECTIONS[keyof typeof DIRECTIONS];
 
 > **Role connection:** Backend Developers use enums or \`as const\` for status codes, roles, and config options. Frontend Developers use them for component variants and theme values. The \`as const\` pattern is increasingly the community standard.
 
+### Exercises
+
+**1. Create an \`as const\` status object**
+Define a \`STATUSES\` object using \`as const\` with values \`"pending"\`, \`"active"\`, and \`"archived"\`. Derive a \`Status\` type from it. Write a function \`describe(s: Status): string\` that returns a human-readable label for each status.
+
+<details>
+<summary>Hint</summary>
+
+Use \`type Status = typeof STATUSES[keyof typeof STATUSES]\` to extract the union. Then use a series of \`if\` checks or a switch statement on the string value inside the function.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+const STATUSES = {
+    Pending: "pending",
+    Active: "active",
+    Archived: "archived"
+} as const;
+
+type Status = typeof STATUSES[keyof typeof STATUSES];
+
+function describe(s: Status): string {
+    switch (s) {
+        case "pending": return "Awaiting review";
+        case "active": return "Currently active";
+        case "archived": return "No longer active";
+    }
+}
+
+console.log(describe("active"));
+console.log(describe(STATUSES.Pending));
+\`\`\`
+
+Expected output:
+\`\`\`
+Currently active
+Awaiting review
+\`\`\`
+
+</details>
+
+**2. Spot the runtime surprise**
+Given \`enum Color { Red, Green, Blue }\`, what does \`Object.values(Color).length\` equal at runtime, and why?
+
+<details>
+<summary>Hint</summary>
+
+Numeric enums generate reverse mappings. The compiled object contains both \`Red: 0\` and \`0: "Red"\` — so the number of entries is doubled.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+enum Color { Red, Green, Blue }
+
+console.log(Object.values(Color).length); // 6
+console.log(Object.values(Color));
+\`\`\`
+
+Expected output:
+\`\`\`
+6
+[ 0, 1, 2, 'Red', 'Green', 'Blue' ]
+\`\`\`
+
+The numeric enum compiles to an object with both forward (\`Red → 0\`) and reverse (\`0 → "Red"\`) mappings, giving 6 entries instead of 3. This is why \`as const\` objects are often preferred.
+
+</details>
+
 ---
 
 ## 4. Union and Intersection Types
@@ -456,6 +689,83 @@ graph LR
 - Unions of object types with a shared discriminant field (like \`kind\`) enable **discriminated unions** — one of TypeScript's most powerful patterns
 - String literal unions like \`"pending" | "active" | "inactive"\` are often a better choice than \`enum\` for simple categorical values
 
+### Exercises
+
+**1. Write a \`formatId\` function**
+Write a function \`formatId\` that accepts \`id: string | number\`. If it is a string, return it in uppercase. If it is a number, return it formatted as a 4-digit zero-padded string (e.g. \`7\` → \`"0007"\`).
+
+<details>
+<summary>Hint</summary>
+
+Use \`typeof id === "string"\` to narrow the type. For the number case, \`id.toString().padStart(4, "0")\` produces the zero-padded string.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function formatId(id: string | number): string {
+    if (typeof id === "string") {
+        return id.toUpperCase();
+    } else {
+        return id.toString().padStart(4, "0");
+    }
+}
+
+console.log(formatId("abc"));
+console.log(formatId(7));
+console.log(formatId(42));
+\`\`\`
+
+Expected output:
+\`\`\`
+ABC
+0007
+0042
+\`\`\`
+
+</details>
+
+**2. Compute the area of a discriminated union shape**
+Define a \`Shape\` union with \`"circle"\` (radius) and \`"square"\` (side). Write \`getArea(shape: Shape): number\`.
+
+<details>
+<summary>Hint</summary>
+
+Use a \`switch\` on \`shape.kind\`. The area of a circle is \`Math.PI * radius ** 2\`. The area of a square is \`side ** 2\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type Shape =
+    | { kind: "circle"; radius: number }
+    | { kind: "square"; side: number };
+
+function getArea(shape: Shape): number {
+    switch (shape.kind) {
+        case "circle":
+            return Math.PI * shape.radius ** 2;
+        case "square":
+            return shape.side ** 2;
+    }
+}
+
+console.log(getArea({ kind: "circle", radius: 5 }).toFixed(2));
+console.log(getArea({ kind: "square", side: 4 }));
+\`\`\`
+
+Expected output:
+\`\`\`
+78.54
+16
+\`\`\`
+
+</details>
+
 ---
 
 ## 5. Generics Basics
@@ -536,7 +846,7 @@ function divide(a: number, b: number): Result<number, string> {
 
 const result = divide(10, 3);
 if (result.ok) {
-    console.log(result.value); // TypeScript knows this is number
+    console.log(result.value.toFixed(4)); // TypeScript knows this is number
 } else {
     console.log(result.error); // TypeScript knows this is string
 }
@@ -585,6 +895,75 @@ graph TD
 **Why it matters:** Without generics, you would either lose type safety (using \`any\`) or duplicate code for every type. Generics give you both flexibility and safety. Every major TypeScript library — React, Express, Prisma — uses generics extensively. When you write \`useState<User | null>(null)\` in React, you are passing a type argument to a generic function.
 
 > **Role connection:** Frontend Developers use generics with React component props and hooks. Backend Developers use them with ORM models and API handlers. Library authors use generics to make their APIs flexible yet type-safe.
+
+### Exercises
+
+**1. Write a generic \`identity\` function**
+Write a generic function \`identity<T>(value: T): T\` that returns whatever is passed in. Call it with a string and a number and log both results.
+
+<details>
+<summary>Hint</summary>
+
+The type parameter \`T\` is declared inside angle brackets after the function name. TypeScript infers it automatically from the argument — you do not need to write \`identity<string>("hello")\` explicitly.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function identity<T>(value: T): T {
+    return value;
+}
+
+const s = identity("hello");
+const n = identity(42);
+console.log(s);
+console.log(n);
+\`\`\`
+
+Expected output:
+\`\`\`
+hello
+42
+\`\`\`
+
+</details>
+
+**2. Generic Stack — push and pop**
+Using the \`Stack<T>\` class from the examples above, create a \`Stack<string>\`, push \`"first"\` and \`"second"\`, then pop twice and log each popped value.
+
+<details>
+<summary>Hint</summary>
+
+\`pop()\` returns \`T | undefined\` because the stack might be empty. You can use \`console.log(stack.pop())\` directly — \`undefined\` would just print as \`undefined\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+class Stack<T> {
+    private items: T[] = [];
+    push(item: T): void { this.items.push(item); }
+    pop(): T | undefined { return this.items.pop(); }
+}
+
+const stack = new Stack<string>();
+stack.push("first");
+stack.push("second");
+console.log(stack.pop());
+console.log(stack.pop());
+\`\`\`
+
+Expected output:
+\`\`\`
+second
+first
+\`\`\`
+
+</details>
 
 ---
 
@@ -713,6 +1092,74 @@ if (typeof safe === "string") {
 - Use \`unknown\` instead of \`any\` when you do not know the type — it forces you to check before using it
 - \`any\` disables type checking; \`unknown\` preserves it
 
+### Exercises
+
+**1. Type a \`sum\` variadic function**
+Write a function \`sum\` that accepts any number of \`number\` arguments using a rest parameter and returns their total. Log \`sum(1, 2, 3, 4, 5)\`.
+
+<details>
+<summary>Hint</summary>
+
+Rest parameters use the syntax \`...numbers: number[]\`. Use \`Array.prototype.reduce\` or a \`for...of\` loop to total them up.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function sum(...numbers: number[]): number {
+    return numbers.reduce((acc, n) => acc + n, 0);
+}
+
+console.log(sum(1, 2, 3, 4, 5));
+\`\`\`
+
+Expected output:
+\`\`\`
+15
+\`\`\`
+
+</details>
+
+**2. Safe \`processInput\` with \`unknown\`**
+Write a function \`processInput(input: unknown): string\` that returns \`"string: <value>"\` for strings, \`"number: <value>"\` for numbers, and \`"other"\` for anything else.
+
+<details>
+<summary>Hint</summary>
+
+Use \`typeof input === "string"\` and \`typeof input === "number"\` to narrow the type before accessing it. You cannot call string or number methods on \`unknown\` without narrowing first.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function processInput(input: unknown): string {
+    if (typeof input === "string") {
+        return "string: " + input;
+    }
+    if (typeof input === "number") {
+        return "number: " + input;
+    }
+    return "other";
+}
+
+console.log(processInput("hello"));
+console.log(processInput(42));
+console.log(processInput(true));
+\`\`\`
+
+Expected output:
+\`\`\`
+string: hello
+number: 42
+other
+\`\`\`
+
+</details>
+
 ---
 
 ## 7. tsconfig.json Essentials
@@ -815,14 +1262,10 @@ const config = {
 } as const;
 // All properties are readonly literal types
 
+const names = ["Alice", "Bob", "Charlie"];
 names.forEach((name) => {
     // TypeScript knows name is string — no annotation needed
     console.log(name.toUpperCase());
-});
-
-document.addEventListener("click", (event) => {
-    // TypeScript knows event is MouseEvent — inferred from the event name
-    console.log(event.clientX, event.clientY);
 });
 \`\`\`
 
@@ -949,6 +1392,83 @@ function double(input: unknown): number {
 - \`typeof null === "object"\` — this JavaScript quirk means typeof narrowing does not filter out null
 - Narrowing only works in the same scope — assign to a variable if you need to narrow across function calls
 - Array.filter does not narrow types by default — use a type predicate: \`arr.filter((x): x is string => typeof x === "string")\`
+
+### Exercises
+
+**1. Narrow a \`string | number | boolean\` union**
+Write a function \`describe(value: string | number | boolean): string\` that returns \`"text: <value>"\` for strings, \`"num: <value>"\` for numbers, and \`"flag: <value>"\` for booleans.
+
+<details>
+<summary>Hint</summary>
+
+Use a chain of \`typeof\` checks. After checking for \`"string"\` and \`"number"\`, TypeScript narrows the remaining type to \`boolean\` automatically — no third \`typeof\` check is needed.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function describe(value: string | number | boolean): string {
+    if (typeof value === "string") {
+        return "text: " + value;
+    }
+    if (typeof value === "number") {
+        return "num: " + value;
+    }
+    return "flag: " + value;
+}
+
+console.log(describe("hello"));
+console.log(describe(42));
+console.log(describe(true));
+\`\`\`
+
+Expected output:
+\`\`\`
+text: hello
+num: 42
+flag: true
+\`\`\`
+
+</details>
+
+**2. Write a custom type guard**
+Write a type guard \`isDate(value: unknown): value is Date\` that returns \`true\` only when \`value\` is an instance of \`Date\`. Then use it to safely call \`.toISOString()\` on an unknown value.
+
+<details>
+<summary>Hint</summary>
+
+Use \`value instanceof Date\` as the check. The return type \`value is Date\` is a type predicate — it tells TypeScript to narrow the type to \`Date\` inside any \`if\` block where this function returns \`true\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function isDate(value: unknown): value is Date {
+    return value instanceof Date;
+}
+
+function formatMaybeDate(value: unknown): string {
+    if (isDate(value)) {
+        return value.toISOString();
+    }
+    return "not a date";
+}
+
+console.log(formatMaybeDate(new Date("2024-01-15")));
+console.log(formatMaybeDate("2024-01-15"));
+\`\`\`
+
+Expected output:
+\`\`\`
+2024-01-15T00:00:00.000Z
+not a date
+\`\`\`
+
+</details>
 
 ---
 
@@ -1146,6 +1666,73 @@ const user = await fetchTyped("/api/users/1", UserSchema);
 
 > **Role connection:** Full-Stack Developers use generic inference in tRPC and Zod. Backend Developers use constrained generics in ORM type definitions. Library authors build entire APIs around generic inference chains.
 
+### Exercises
+
+**1. Write a type-safe \`merge\` function**
+Write a generic function \`merge<T extends object, U extends object>(a: T, b: U): T & U\` that combines two objects. Verify that the result has all properties from both objects with correct types.
+
+<details>
+<summary>Hint</summary>
+
+Use the spread operator \`{ ...a, ...b }\` for the implementation. The return type \`T & U\` is an intersection — TypeScript ensures the result has all properties of both \`T\` and \`U\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function merge<T extends object, U extends object>(a: T, b: U): T & U {
+    return { ...a, ...b };
+}
+
+const result = merge({ name: "Alice" }, { age: 30, role: "admin" });
+console.log(result.name);
+console.log(result.age);
+console.log(result.role);
+\`\`\`
+
+Expected output:
+\`\`\`
+Alice
+30
+admin
+\`\`\`
+
+</details>
+
+**2. Generic \`transform\` function**
+Write a generic function \`transform<T, R>(value: T, fn: (input: T) => R): R\` that applies \`fn\` to \`value\` and returns the result. Call it to convert a string to its length, and to convert a number to a boolean (\`n > 0\`).
+
+<details>
+<summary>Hint</summary>
+
+TypeScript will infer both \`T\` and \`R\` from the arguments — you do not need to write the type parameters explicitly when calling.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function transform<T, R>(value: T, fn: (input: T) => R): R {
+    return fn(value);
+}
+
+const len = transform("hello", (s) => s.length);
+const isPositive = transform(5, (n) => n > 0);
+console.log(len);
+console.log(isPositive);
+\`\`\`
+
+Expected output:
+\`\`\`
+5
+true
+\`\`\`
+
+</details>
+
 ---
 
 ## 2. Utility Types
@@ -1218,12 +1805,15 @@ type PublicUserProfile = Readonly<Pick<User, "name" | "role">>;
 \`\`\`typescript
 type AllStatuses = "pending" | "active" | "inactive" | "deleted";
 type ActiveStatuses = Exclude<AllStatuses, "deleted" | "inactive">;
+// "pending" | "active"
 
 type StringOrNumber = string | number | boolean | null;
 type OnlyStrOrNum = Extract<StringOrNumber, string | number>;
+// string | number
 
 type MaybeString = string | null | undefined;
 type DefiniteString = NonNullable<MaybeString>;
+// string
 
 function createUser(name: string, age: number) {
     return { id: Math.random(), name, age, createdAt: new Date() };
@@ -1232,12 +1822,14 @@ function createUser(name: string, age: number) {
 type NewUser = ReturnType<typeof createUser>;
 
 type CreateUserParams = Parameters<typeof createUser>;
+// [string, number]
 
 type UserPromise = Promise<User>;
 type ResolvedUser = Awaited<UserPromise>;
 
 type DeepPromise = Promise<Promise<Promise<string>>>;
 type DeepResolved = Awaited<DeepPromise>;
+// string
 
 // NoInfer (TS 5.4) — prevents a type parameter from being inferred from a specific argument
 function createFSM<S extends string>(config: {
@@ -1275,15 +1867,93 @@ graph TD
 - \`ReturnType\` requires \`typeof\` when used with a value: \`ReturnType<typeof myFunction>\`
 - Prefer \`ReturnType\` and \`Parameters\` over manually duplicating type signatures from existing functions
 
+### Exercises
+
+**1. Build an update payload type**
+Given an interface \`Product { id: number; name: string; price: number; stock: number }\`, use a utility type to create an \`UpdateProductPayload\` type where \`id\` is required but all other fields are optional. Write a function \`applyUpdate\` that merges the payload into an existing product.
+
+<details>
+<summary>Hint</summary>
+
+Combine \`Pick\` and \`Partial\`: \`Pick<Product, "id"> & Partial<Omit<Product, "id">>\`. This keeps \`id\` required while making every other field optional.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    stock: number;
+}
+
+type UpdateProductPayload = Pick<Product, "id"> & Partial<Omit<Product, "id">>;
+
+function applyUpdate(existing: Product, update: UpdateProductPayload): Product {
+    return { ...existing, ...update };
+}
+
+const original: Product = { id: 1, name: "Widget", price: 9.99, stock: 100 };
+const updated = applyUpdate(original, { id: 1, price: 7.99 });
+console.log(updated.name + " now costs $" + updated.price);
+\`\`\`
+
+Expected output:
+\`\`\`
+Widget now costs $7.99
+\`\`\`
+
+</details>
+
+**2. Use \`ReturnType\` and \`Parameters\`**
+Given a function \`createSession(userId: string, expiresIn: number): { token: string; userId: string; expiresAt: number }\`, use \`ReturnType\` and \`Parameters\` to derive types for the return value and the parameter tuple without duplicating the type definitions.
+
+<details>
+<summary>Hint</summary>
+
+Use \`typeof createSession\` to refer to the function type at the type level. \`ReturnType<typeof createSession>\` gives the return type; \`Parameters<typeof createSession>\` gives a tuple of parameter types.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function createSession(userId: string, expiresIn: number) {
+    return {
+        token: "tok_" + Math.random().toString(36).slice(2),
+        userId,
+        expiresAt: Date.now() + expiresIn * 1000
+    };
+}
+
+type Session = ReturnType<typeof createSession>;
+type CreateSessionArgs = Parameters<typeof createSession>;
+
+const args: CreateSessionArgs = ["user_42", 3600];
+const session: Session = createSession(...args);
+console.log("Token for", session.userId, ":", session.token.slice(0, 12) + "...");
+\`\`\`
+
+Expected output:
+\`\`\`
+Token for user_42 : tok_...
+\`\`\`
+
+</details>
+
 ---
 
-## 3. The \\\`satisfies\\\` Operator (TypeScript 5.0+)
+## 3. The \`satisfies\` Operator (TypeScript 5.0+)
 
-The \\\`satisfies\\\` operator validates that a value matches a type without widening it. This gives you the best of both worlds: type checking AND precise inference.
+The \`satisfies\` operator validates that a value matches a type without widening it. This gives you the best of both worlds: type checking AND precise inference.
 
-### The Problem \\\`satisfies\\\` Solves
+### The Problem \`satisfies\` Solves
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 interface ColorConfig {
     primary: string;
     secondary: string;
@@ -1312,11 +1982,11 @@ const colors3 = {
     secondary: "#00ff00",
     accent: "#0000ff"
 } as const satisfies ColorConfig;
-\\\`\\\`\\\`
+\`\`\`
 
 ### Practical Uses
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 // Type-safe configuration with precise inference
 type Route = {
     path: string;
@@ -1340,9 +2010,90 @@ const themeLabels = {
     system: "System Default",
 } satisfies Record<Theme, string>;
 // If you forget a key, TypeScript errors at compile time
-\\\`\\\`\\\`
+\`\`\`
 
-**Why it matters:** Before \\\`satisfies\\\`, you had to choose between type validation (annotation) and precise inference (\\\`as const\\\`). The \\\`satisfies\\\` operator removes this trade-off. Use it for configuration objects, route definitions, theme values, and any constant data that should be validated against a type while retaining its literal types.
+**Why it matters:** Before \`satisfies\`, you had to choose between type validation (annotation) and precise inference (\`as const\`). The \`satisfies\` operator removes this trade-off. Use it for configuration objects, route definitions, theme values, and any constant data that should be validated against a type while retaining its literal types.
+
+### Exercises
+
+**1. Use \`satisfies\` for a theme config**
+Define a \`type Theme = "light" | "dark" | "high-contrast"\`. Create a \`themeColors\` object mapping each theme to a hex string, using \`satisfies Record<Theme, string>\`. Verify that TypeScript catches a missing key.
+
+<details>
+<summary>Hint</summary>
+
+If you omit one of the three keys from the object, TypeScript will show an error at compile time because \`satisfies Record<Theme, string>\` requires all three keys to be present. Add all three to make it compile.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type Theme = "light" | "dark" | "high-contrast";
+
+const themeColors = {
+    light: "#ffffff",
+    dark: "#1a1a1a",
+    "high-contrast": "#000000",
+} satisfies Record<Theme, string>;
+
+// themeColors.dark is "#1a1a1a" — literal type preserved
+console.log(themeColors.dark);
+console.log(themeColors.light);
+\`\`\`
+
+Expected output:
+\`\`\`
+#1a1a1a
+#ffffff
+\`\`\`
+
+</details>
+
+**2. Compare annotation vs \`satisfies\`**
+Create two objects: one annotated as \`ColorConfig\` and one using \`satisfies ColorConfig\`. Access the \`primary\` property of both and explain what type TypeScript infers in each case.
+
+<details>
+<summary>Hint</summary>
+
+With a type annotation \`const x: ColorConfig = { ... }\`, TypeScript widens the type to \`string\`. With \`satisfies\`, the literal type \`"#ff0000"\` is preserved. Both compile correctly — the difference shows up when you hover over the property in an IDE.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+interface ColorConfig {
+    primary: string;
+    secondary: string;
+}
+
+// Annotated: primary is widened to string
+const colors1: ColorConfig = {
+    primary: "#ff0000",
+    secondary: "#00ff00",
+};
+
+// satisfies: primary retains literal type "#ff0000"
+const colors2 = {
+    primary: "#ff0000",
+    secondary: "#00ff00",
+} satisfies ColorConfig;
+
+// Both log the same value at runtime
+console.log(colors1.primary); // string at type level
+console.log(colors2.primary); // "#ff0000" at type level
+\`\`\`
+
+Expected output:
+\`\`\`
+#ff0000
+#ff0000
+\`\`\`
+
+</details>
 
 ---
 
@@ -1481,6 +2232,82 @@ graph TD
 - These are the building blocks for the utility types you already use (Partial, Pick, ReturnType, etc.)
 
 > **Role connection:** Library authors use mapped and conditional types to build type-safe APIs. Frontend Developers encounter them in React's component type utilities. Backend Developers use them in ORM type builders.
+
+### Exercises
+
+**1. Build a \`Nullable<T>\` mapped type**
+Implement \`type Nullable<T> = { [K in keyof T]: T[K] | null }\`. Apply it to a \`Point\` interface with \`x\` and \`y\` as numbers. Verify the result allows \`null\` for both fields.
+
+<details>
+<summary>Hint</summary>
+
+A mapped type iterates over \`keyof T\` and transforms each value type. Appending \`| null\` to \`T[K]\` makes every property nullable.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type Nullable<T> = {
+    [K in keyof T]: T[K] | null;
+};
+
+interface Point {
+    x: number;
+    y: number;
+}
+
+type NullablePoint = Nullable<Point>;
+
+const p: NullablePoint = { x: 10, y: null };
+console.log(p.x, p.y);
+\`\`\`
+
+Expected output:
+\`\`\`
+10 null
+\`\`\`
+
+</details>
+
+**2. Use \`infer\` to extract array element type**
+Write a conditional type \`ElementType<T>\` that extracts the element type from an array type. If \`T\` is not an array, it should resolve to \`never\`. Test it with \`number[]\`, \`string[]\`, and \`boolean\`.
+
+<details>
+<summary>Hint</summary>
+
+Use the pattern \`T extends (infer E)[] ? E : never\`. The \`infer E\` captures whatever type the array contains.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type ElementType<T> = T extends (infer E)[] ? E : never;
+
+// These are type-level assertions — no runtime output, verified by the compiler:
+type N = ElementType<number[]>;  // number
+type S = ElementType<string[]>;  // string
+type X = ElementType<boolean>;   // never
+
+// Runtime demonstration using a generic function:
+function first<T>(arr: T[]): ElementType<T[]> {
+    return arr[0] as ElementType<T[]>;
+}
+
+console.log(first([1, 2, 3]));
+console.log(first(["a", "b"]));
+\`\`\`
+
+Expected output:
+\`\`\`
+1
+a
+\`\`\`
+
+</details>
 
 ---
 
@@ -1635,6 +2462,97 @@ function getArea(shape: Shape): number {
 
 > **Role connection:** Frontend Developers model UI state machines (loading, error, success). Backend Developers model request processing pipelines. Full-Stack Developers share domain types with exhaustive patterns across the stack.
 
+### Exercises
+
+**1. Model a loading state machine**
+Define \`type LoadState<T>\` as a discriminated union with variants: \`"idle"\`, \`"loading"\`, \`"success"\` (with \`data: T\`), and \`"error"\` (with \`message: string\`). Write \`renderMessage\` that returns a human-readable string for each variant.
+
+<details>
+<summary>Hint</summary>
+
+Use \`status\` as the discriminant field. A \`switch\` on \`state.status\` will narrow the type inside each case, giving you access to \`state.data\` only in the \`"success"\` case and \`state.message\` only in the \`"error"\` case.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type LoadState<T> =
+    | { status: "idle" }
+    | { status: "loading" }
+    | { status: "success"; data: T }
+    | { status: "error"; message: string };
+
+function renderMessage<T>(state: LoadState<T>): string {
+    switch (state.status) {
+        case "idle":    return "Nothing loaded yet";
+        case "loading": return "Loading...";
+        case "success": return "Loaded: " + JSON.stringify(state.data);
+        case "error":   return "Error: " + state.message;
+    }
+}
+
+console.log(renderMessage({ status: "idle" }));
+console.log(renderMessage({ status: "loading" }));
+console.log(renderMessage({ status: "success", data: { name: "Alice" } }));
+console.log(renderMessage({ status: "error", message: "Not found" }));
+\`\`\`
+
+Expected output:
+\`\`\`
+Nothing loaded yet
+Loading...
+Loaded: {"name":"Alice"}
+Error: Not found
+\`\`\`
+
+</details>
+
+**2. Add exhaustive checking with \`assertNever\`**
+Take the \`Shape\` union from above and add a fourth variant \`{ kind: "pentagon"; sides: number }\`. Update \`getArea\` to handle it, using \`assertNever\` in the \`default\` case. Demonstrate that forgetting to handle the new case causes a compile error.
+
+<details>
+<summary>Hint</summary>
+
+The \`assertNever\` function takes \`never\` as its parameter. If your switch is not exhaustive, TypeScript will error because the value passed to \`assertNever\` won't be \`never\` — it will be the unhandled variant type.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function assertNever(value: never): never {
+    throw new Error("Unhandled case: " + JSON.stringify(value));
+}
+
+type Shape =
+    | { kind: "circle"; radius: number }
+    | { kind: "square"; side: number }
+    | { kind: "triangle"; base: number; height: number }
+    | { kind: "pentagon"; sides: number };
+
+function getArea(shape: Shape): number {
+    switch (shape.kind) {
+        case "circle":   return Math.PI * shape.radius ** 2;
+        case "square":   return shape.side ** 2;
+        case "triangle": return 0.5 * shape.base * shape.height;
+        case "pentagon": return (shape.sides ** 2 * Math.sqrt(5 * (5 + 2 * Math.sqrt(5)))) / 4;
+        default:         return assertNever(shape);
+    }
+}
+
+console.log(getArea({ kind: "square", side: 4 }));
+\`\`\`
+
+Expected output:
+\`\`\`
+16
+\`\`\`
+
+</details>
+
 ---
 
 ## 7. Declaration Files (.d.ts)
@@ -1771,6 +2689,80 @@ declare module "totally-untyped-lib";
 
 > **Role connection:** Backend Developers augment Express, Fastify, and Prisma types. Frontend Developers augment React, CSS, and component library types. DevOps Engineers augment environment and configuration types.
 
+### Exercises
+
+**1. Augment the Express \`Request\` type**
+Write a module augmentation that adds \`currentUser?: { id: string; role: string }\` to Express's \`Request\` interface. Show how middleware would set this property and a route handler would read it.
+
+<details>
+<summary>Hint</summary>
+
+Module augmentation for Express requires importing the module first, then using \`declare module "express" { interface Request { ... } }\`. The \`currentUser\` property should be optional since unauthenticated requests won't have it.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+import "express";
+
+declare module "express" {
+    interface Request {
+        currentUser?: { id: string; role: string };
+    }
+}
+
+// Middleware sets the property
+import { Request, Response, NextFunction } from "express";
+
+function authMiddleware(req: Request, _res: Response, next: NextFunction): void {
+    // In a real app, decode a JWT here
+    req.currentUser = { id: "user_42", role: "admin" };
+    next();
+}
+
+// Route handler reads it
+function getProfile(req: Request, res: Response): void {
+    if (!req.currentUser) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+    }
+    res.json({ userId: req.currentUser.id, role: req.currentUser.role });
+}
+\`\`\`
+
+</details>
+
+**2. Write an ambient module declaration**
+Write a \`.d.ts\` declaration for a hypothetical \`"simple-logger"\` module that exports a \`log(level: "info" | "warn" | "error", message: string): void\` function and a \`Logger\` class with the same method as an instance method.
+
+<details>
+<summary>Hint</summary>
+
+Use \`declare module "simple-logger" { ... }\`. Inside, use \`export function\` for the standalone function and \`export class Logger { ... }\` for the class. No implementation bodies — only type signatures.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+// simple-logger.d.ts
+declare module "simple-logger" {
+    type LogLevel = "info" | "warn" | "error";
+
+    export function log(level: LogLevel, message: string): void;
+
+    export class Logger {
+        constructor(prefix?: string);
+        log(level: LogLevel, message: string): void;
+    }
+}
+\`\`\`
+
+</details>
+
 ---
 
 ## 9. Testing Typed Code
@@ -1866,6 +2858,93 @@ function createTestData<T>(defaults: T, overrides: Partial<T> = {}): T {
 - \`satisfies\` is excellent for test data — it validates the type without widening
 - Assertion functions (\`asserts x is Y\`) make tests cleaner by narrowing types after validation
 - Mock factories using \`Partial<T>\` keep tests type-safe while allowing overrides
+
+### Exercises
+
+**1. Build a typed mock factory**
+Write a generic function \`createMock<T>(defaults: T, overrides: Partial<T> = {}): T\` that merges defaults with overrides. Use it to create a test user object with a default name that can be overridden.
+
+<details>
+<summary>Hint</summary>
+
+The implementation is \`{ ...defaults, ...overrides }\`. The generic constraint ensures \`overrides\` only contains keys that exist in \`T\`, preventing typos in test setup.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    role: "admin" | "user";
+}
+
+function createMock<T>(defaults: T, overrides: Partial<T> = {}): T {
+    return { ...defaults, ...overrides };
+}
+
+const defaultUser: User = { id: 1, name: "Test User", email: "test@test.com", role: "user" };
+
+const adminUser = createMock(defaultUser, { name: "Alice", role: "admin" });
+const guestUser = createMock(defaultUser, { id: 2, name: "Bob" });
+
+console.log(adminUser.name + " is " + adminUser.role);
+console.log(guestUser.name + " is " + guestUser.role);
+\`\`\`
+
+Expected output:
+\`\`\`
+Alice is admin
+Bob is user
+\`\`\`
+
+</details>
+
+**2. Use an assertion function in a test**
+Write an assertion function \`assertDefined<T>(value: T | null | undefined): asserts value is T\` that throws if the value is nullish. Show how this narrows the type so you can access properties without further null checks.
+
+<details>
+<summary>Hint</summary>
+
+The return type \`asserts value is T\` tells TypeScript that after this function returns normally (without throwing), the type of \`value\` has been narrowed to \`T\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+function assertDefined<T>(value: T | null | undefined): asserts value is T {
+    if (value === null || value === undefined) {
+        throw new Error("Expected a defined value, got " + value);
+    }
+}
+
+interface User {
+    name: string;
+    email: string;
+}
+
+function findUser(id: number): User | null {
+    return id === 1 ? { name: "Alice", email: "alice@example.com" } : null;
+}
+
+const user = findUser(1);
+assertDefined(user); // TypeScript now knows user is User, not User | null
+console.log(user.name);
+console.log(user.email);
+\`\`\`
+
+Expected output:
+\`\`\`
+Alice
+alice@example.com
+\`\`\`
+
+</details>
 
 ---
 
@@ -2005,6 +3084,89 @@ createRoute("/users/:userId/posts/:postId", (params) => {
 
 > **Role connection:** Full-Stack Developers use template literal types in route definitions (Hono, Express). Backend Developers use them for type-safe query builders. Library authors use them to build string-aware APIs.
 
+### Exercises
+
+**1. Build an \`EventName\` mapped type**
+Using template literal types, define \`type EventHandlers<Events extends string>\` that maps each event name to an \`on\${Capitalize<Event>}\` handler function \`(event: Event) => void\`. Apply it to \`"click" | "submit" | "reset"\`.
+
+<details>
+<summary>Hint</summary>
+
+Use a mapped type with key remapping: \`[E in Events as \`on\${Capitalize<E>}\`]: (event: E) => void\`. The \`Capitalize\` built-in type capitalizes the first letter of a string type.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type EventHandlers<Events extends string> = {
+    [E in Events as \`on\${Capitalize<E>}\`]: (event: E) => void;
+};
+
+type FormHandlers = EventHandlers<"click" | "submit" | "reset">;
+// { onClick: (event: "click") => void; onSubmit: ...; onReset: ... }
+
+const handlers: FormHandlers = {
+    onClick: (e) => console.log("clicked:", e),
+    onSubmit: (e) => console.log("submitted:", e),
+    onReset: (e) => console.log("reset:", e),
+};
+
+handlers.onClick("click");
+handlers.onSubmit("submit");
+\`\`\`
+
+Expected output:
+\`\`\`
+clicked: click
+submitted: submit
+\`\`\`
+
+</details>
+
+**2. Extract URL parameters with template literal types**
+Define \`ExtractParams<T extends string>\` that extracts \`":param"\` names from a URL pattern string. Test it with \`"/products/:productId/reviews/:reviewId"\`.
+
+<details>
+<summary>Hint</summary>
+
+Use recursive conditional types with \`infer\`: \`T extends \`\${string}:\${infer Param}/\${infer Rest}\` ? Param | ExtractParams<Rest> : ...\`. The recursion handles multiple parameters.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type ExtractParams<T extends string> =
+    T extends \`\${string}:\${infer Param}/\${infer Rest}\`
+        ? Param | ExtractParams<Rest>
+        : T extends \`\${string}:\${infer Param}\`
+            ? Param
+            : never;
+
+type ProductReviewParams = ExtractParams<"/products/:productId/reviews/:reviewId">;
+// "productId" | "reviewId"
+
+type RouteHandler<T extends string> = (params: Record<ExtractParams<T>, string>) => void;
+
+const handler: RouteHandler<"/products/:productId/reviews/:reviewId"> = (params) => {
+    console.log("Product:", params.productId);
+    console.log("Review:", params.reviewId);
+};
+
+handler({ productId: "prod_1", reviewId: "rev_42" });
+\`\`\`
+
+Expected output:
+\`\`\`
+Product: prod_1
+Review: rev_42
+\`\`\`
+
+</details>
+
 ---
 
 ### TypeScript Compiler Pipeline
@@ -2105,7 +3267,7 @@ type Tail<T extends readonly unknown[]> = T extends readonly [unknown, ...infer 
 type Last<T extends readonly unknown[]> = T extends readonly [...unknown[], infer L] ? L : never;
 
 type H = Head<[1, 2, 3]>;  // 1
-type T2 = Tail<[1, 2, 3]>;  // [2, 3]
+type T2 = Tail<[1, 2, 3]>; // [2, 3]
 type L = Last<[1, 2, 3]>;  // 3
 
 type Reverse<T extends readonly unknown[]> =
@@ -2167,6 +3329,107 @@ type EQ = IsGreaterThan<3, 3>; // false
 - Use tail-call style recursion with accumulators to go deeper
 - Type-level arithmetic is fun but rarely needed in production — use it sparingly
 - The real value is in recursive utility types (DeepPartial, DeepReadonly, path types)
+
+### Exercises
+
+**1. Implement \`DeepPartial<T>\`**
+Write a recursive \`DeepPartial<T>\` type that makes every property at every nesting level optional. Test it against a nested config interface.
+
+<details>
+<summary>Hint</summary>
+
+Check \`T extends object\` before recursing. For non-object types (strings, numbers, etc.) just return \`T\` unchanged. This prevents infinite recursion on primitives.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type DeepPartial<T> = T extends Function
+    ? T
+    : T extends object
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : T;
+
+interface AppConfig {
+    server: {
+        host: string;
+        port: number;
+    };
+    database: {
+        url: string;
+        pool: {
+            min: number;
+            max: number;
+        };
+    };
+}
+
+type PartialConfig = DeepPartial<AppConfig>;
+
+// All fields are optional at every level
+const patch: PartialConfig = {
+    server: { port: 5000 },
+    database: { pool: { max: 20 } }
+};
+
+console.log(patch.server?.port);
+console.log(patch.database?.pool?.max);
+\`\`\`
+
+Expected output:
+\`\`\`
+5000
+20
+\`\`\`
+
+</details>
+
+**2. Build tuple \`Head\` and \`Tail\` types**
+Implement \`Head<T>\` (returns the first element type) and \`Tail<T>\` (returns the remaining elements as a tuple). Verify with \`[string, number, boolean]\`.
+
+<details>
+<summary>Hint</summary>
+
+Use rest patterns in conditional types: \`T extends [infer H, ...unknown[]] ? H : never\` for Head, and \`T extends [unknown, ...infer R] ? R : []\` for Tail.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type Head<T extends readonly unknown[]> =
+    T extends readonly [infer H, ...unknown[]] ? H : never;
+
+type Tail<T extends readonly unknown[]> =
+    T extends readonly [unknown, ...infer R] ? R : [];
+
+// Type-level verification (no runtime output — checked by compiler):
+type H = Head<[string, number, boolean]>; // string
+type T = Tail<[string, number, boolean]>; // [number, boolean]
+
+// Runtime demonstration
+function head<T extends unknown[]>(arr: T): Head<T> {
+    return arr[0] as Head<T>;
+}
+
+function tail<T extends unknown[]>(arr: T): Tail<T> {
+    return arr.slice(1) as unknown as Tail<T>;
+}
+
+console.log(head([1, 2, 3]));
+console.log(tail([1, 2, 3]));
+\`\`\`
+
+Expected output:
+\`\`\`
+1
+[ 2, 3 ]
+\`\`\`
+
+</details>
 
 ---
 
@@ -2272,6 +3535,97 @@ graph LR
 
 > **Role connection:** Backend Developers use branded types for IDs, validated inputs, and monetary amounts. Full-Stack Developers use them with Zod for end-to-end type safety. Security-conscious teams brand sensitive data (PII, tokens) to prevent accidental logging.
 
+### Exercises
+
+**1. Create branded ID types**
+Define a \`Brand<T, B>\` utility and use it to create distinct \`UserId\`, \`PostId\`, and \`CommentId\` types from \`number\`. Write constructor functions for each and a \`getPost(id: PostId)\` function. Demonstrate that passing a \`UserId\` causes a compile error.
+
+<details>
+<summary>Hint</summary>
+
+Use \`declare const brand: unique symbol\` and \`type Brand<T, B extends string> = T & { readonly [brand]: B }\`. The constructor functions use \`id as UserId\` to cast the plain number to the branded type — this is the only place the cast is needed.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+declare const brand: unique symbol;
+type Brand<T, B extends string> = T & { readonly [brand]: B };
+
+type UserId = Brand<number, "UserId">;
+type PostId = Brand<number, "PostId">;
+type CommentId = Brand<number, "CommentId">;
+
+const toUserId = (id: number): UserId => id as UserId;
+const toPostId = (id: number): PostId => id as PostId;
+const toCommentId = (id: number): CommentId => id as CommentId;
+
+function getPost(id: PostId): string {
+    return "Fetching post " + id;
+}
+
+const uid = toUserId(1);
+const pid = toPostId(2);
+
+console.log(getPost(pid));
+// getPost(uid); // Error: Argument of type 'UserId' is not assignable to parameter of type 'PostId'
+\`\`\`
+
+Expected output:
+\`\`\`
+Fetching post 2
+\`\`\`
+
+</details>
+
+**2. Brand a validated string**
+Create a \`ValidatedEmail\` branded type. Write \`parseEmail(input: string): ValidatedEmail | null\` that validates the format and returns the branded type on success. Write \`sendWelcome(email: ValidatedEmail): void\`. Show that a plain string cannot be passed to \`sendWelcome\`.
+
+<details>
+<summary>Hint</summary>
+
+The validation function is the boundary where you cast from \`string\` to \`ValidatedEmail\` using \`input as ValidatedEmail\`. Everything downstream that requires \`ValidatedEmail\` is protected — only strings that passed through \`parseEmail\` will have that type.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+declare const brand: unique symbol;
+type Brand<T, B extends string> = T & { readonly [brand]: B };
+
+type ValidatedEmail = Brand<string, "ValidatedEmail">;
+
+function parseEmail(input: string): ValidatedEmail | null {
+    const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    return re.test(input) ? (input as ValidatedEmail) : null;
+}
+
+function sendWelcome(email: ValidatedEmail): void {
+    console.log("Welcome email sent to:", email);
+}
+
+const good = parseEmail("alice@example.com");
+const bad = parseEmail("not-an-email");
+
+if (good) sendWelcome(good);
+if (bad) sendWelcome(bad); // never runs — bad is null
+console.log("bad result:", bad);
+
+// sendWelcome("alice@example.com"); // Error: plain string not assignable to ValidatedEmail
+\`\`\`
+
+Expected output:
+\`\`\`
+Welcome email sent to: alice@example.com
+bad result: null
+\`\`\`
+
+</details>
+
 ---
 
 ## 4. Variance (Covariance and Contravariance)
@@ -2361,6 +3715,80 @@ graph TD
 - **Invariance**: required for read-write access. No subtype relationship.
 - \`strictFunctionTypes\` enables correct contravariance for function types — always keep it on
 - Explicit variance annotations (\`in\`, \`out\`) help the compiler check faster and catch incorrect usage
+
+### Exercises
+
+**1. Demonstrate covariance with a readonly box**
+Define \`ReadonlyBox<T> = { readonly value: T }\`. Show that a \`ReadonlyBox<Dog>\` can be assigned to \`ReadonlyBox<Animal>\` (covariant), but a \`MutableBox<Dog>\` cannot be assigned to \`MutableBox<Animal>\` (invariant).
+
+<details>
+<summary>Hint</summary>
+
+Covariance is safe because a readonly box only ever produces values — you can safely read a \`Dog\` as an \`Animal\`. Mutability breaks this because if you could write an \`Animal\` into a \`MutableBox<Dog>\`, you could put a \`Cat\` there, corrupting the \`Dog\` box.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+class Animal { name: string = ""; }
+class Dog extends Animal { breed: string = ""; }
+
+type ReadonlyBox<T> = { readonly value: T };
+type MutableBox<T> = { value: T };
+
+const dogReadonlyBox: ReadonlyBox<Dog> = { value: new Dog() };
+const animalReadonlyBox: ReadonlyBox<Animal> = dogReadonlyBox; // OK — covariant
+
+console.log("Covariant assignment works:", animalReadonlyBox.value.name);
+
+const dogMutableBox: MutableBox<Dog> = { value: new Dog() };
+// const animalMutableBox: MutableBox<Animal> = dogMutableBox; // Error — invariant
+
+console.log("Mutable box stays as Dog:", dogMutableBox.value.name);
+\`\`\`
+
+Expected output:
+\`\`\`
+Covariant assignment works:
+Mutable box stays as Dog:
+\`\`\`
+
+</details>
+
+**2. Contravariance with function parameters**
+Define \`type Printer<T> = (value: T) => void\`. Show that a \`Printer<Animal>\` can be assigned to \`Printer<Dog>\` (contravariant), and explain why this is safe.
+
+<details>
+<summary>Hint</summary>
+
+A function that handles \`Animal\` can safely handle a \`Dog\` because \`Dog\` is a subtype of \`Animal\` — it has everything \`Animal\` has plus more. The subtype relationship flips for function parameters: \`Printer<Animal>\` is a subtype of \`Printer<Dog>\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+class Animal { name: string = "Animal"; }
+class Dog extends Animal { breed: string = "Unknown"; }
+
+type Printer<T> = (value: T) => void;
+
+const printAnimal: Printer<Animal> = (a) => console.log("Animal:", a.name);
+const printDog: Printer<Dog> = printAnimal; // OK — contravariant
+
+// Safe: printAnimal accepts any Animal, and Dog is an Animal
+printDog(Object.assign(new Dog(), { name: "Rex", breed: "Labrador" }));
+\`\`\`
+
+Expected output:
+\`\`\`
+Animal: Rex
+\`\`\`
+
+</details>
 
 ---
 
@@ -2473,6 +3901,68 @@ tsc --build --watch
 - \`tsc --build\` is different from \`tsc\` — it uses project references, while \`tsc\` alone does not
 
 > **Role connection:** DevOps Engineers configure monorepo build pipelines with project references. Architecture-focused Seniors design the package dependency graph. Full-Stack Developers maintain shared type packages consumed by both frontend and backend.
+
+### Exercises
+
+**1. Design a monorepo tsconfig structure**
+Describe the three tsconfig files you would create for a monorepo with packages \`shared\`, \`api\` (depends on shared), and \`web\` (depends on shared). What fields are required in each, and why?
+
+<details>
+<summary>Hint</summary>
+
+The root \`tsconfig.json\` has \`files: []\` and only \`references\`. Each package needs \`composite: true\` and \`declaration: true\`. Packages that depend on others list them in \`references\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`json
+// Root tsconfig.json — orchestrates builds
+{
+    "files": [],
+    "references": [
+        { "path": "./packages/shared" },
+        { "path": "./packages/api" },
+        { "path": "./packages/web" }
+    ]
+}
+\`\`\`
+
+\`\`\`json
+// packages/shared/tsconfig.json — no dependencies
+{
+    "compilerOptions": {
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "strict": true
+    },
+    "include": ["src/**/*"]
+}
+\`\`\`
+
+\`\`\`json
+// packages/api/tsconfig.json — depends on shared
+{
+    "compilerOptions": {
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "strict": true
+    },
+    "references": [{ "path": "../shared" }],
+    "include": ["src/**/*"]
+}
+\`\`\`
+
+Key reasons: \`composite: true\` enables incremental builds and cross-project references. \`declaration: true\` generates .d.ts files that other packages consume. \`declarationMap: true\` enables "Go to Definition" to jump to source files.
+
+</details>
 
 ---
 
@@ -2617,6 +4107,72 @@ console.log("JavaScript: " + result.js + "/" + total);
 - Prefer \`@ts-expect-error\` over \`@ts-ignore\` — it errors if the suppression is no longer needed
 - Avoid using \`any\` as a crutch — it defeats the purpose of the migration
 
+### Exercises
+
+**1. Plan a migration strategy**
+You have a 500-file JavaScript codebase. Describe the four phases of a progressive TypeScript migration and which tsconfig flags you would enable in each phase.
+
+<details>
+<summary>Hint</summary>
+
+Phase 1 adds TypeScript to the toolchain without breaking anything. Phase 2 enables the flag with the highest benefit-to-effort ratio. Phase 3 tackles the most common and hardest flag. Phase 4 turns on full strict mode.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+**Phase 1 — Zero friction entry:**
+Enable \`allowJs: true\`, \`checkJs: false\`, \`strict: false\`. TypeScript is now in the build pipeline but makes no demands. Start renaming the most stable utility files from \`.js\` to \`.ts\`.
+
+**Phase 2 — noImplicitAny:**
+Enable \`noImplicitAny: true\`. This single flag delivers the most type-safety improvement for the effort. It forces all parameters and return values to have explicit types, which surfaces most structural type information.
+
+**Phase 3 — strictNullChecks:**
+Enable \`strictNullChecks: true\`. This is typically the hardest phase because null/undefined are pervasive. Use \`@ts-expect-error\` (never \`@ts-ignore\`) for genuine unknowns and track them in a backlog.
+
+**Phase 4 — Full strict:**
+Enable \`strict: true\` plus \`noUncheckedIndexedAccess: true\`. By this point most errors are already fixed so the remaining count is manageable.
+
+</details>
+
+**2. Explain \`@ts-expect-error\` vs \`@ts-ignore\`**
+Describe the difference between \`@ts-expect-error\` and \`@ts-ignore\`, and explain which one you should use during a migration and why.
+
+<details>
+<summary>Hint</summary>
+
+The key difference is what happens when the suppressed error no longer exists. One directive will itself become an error (useful for tracking progress); the other stays silent forever.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+// @ts-ignore: silently suppresses the next line — forever.
+// Even after you fix the underlying issue, it stays quiet.
+// Never use in migrated code — it hides bugs.
+
+// @ts-expect-error: suppresses the next line BUT raises its own error
+// if the suppressed error is no longer present.
+// This makes stale suppressions visible — ideal for migration tracking.
+
+function legacyFn(data: any) {
+    // @ts-expect-error — TODO: type this properly in JIRA-1234
+    const result = data.untypedMethod();
+    return result;
+}
+
+// Once you type data properly, the @ts-expect-error itself becomes an error:
+// "Unused '@ts-expect-error' directive."
+// This tells you the suppression is no longer needed — clean it up.
+\`\`\`
+
+During migration always use \`@ts-expect-error\`. It acts as a self-cleaning TODO: as you fix the underlying types, suppressions automatically surface as errors to be removed.
+
+</details>
+
 ---
 
 ## 7. Performance — Type Checking Speed
@@ -2705,6 +4261,53 @@ type DeepReadonly<T, Depth extends unknown[] = []> =
 - Incremental builds (\`--incremental\`) cache type-checking results between builds
 
 > **Role connection:** Tech Leads monitor type-check times as part of CI performance. Architecture Seniors design type structures that scale. DevOps Engineers configure incremental and parallel builds in CI/CD.
+
+### Exercises
+
+**1. Rewrite a slow intersection as a fast interface**
+Rewrite \`type Config = BaseConfig & DatabaseConfig & CacheConfig\` as an \`interface Config\` that extends all three. Explain why this is faster for the TypeScript compiler.
+
+<details>
+<summary>Hint</summary>
+
+The TypeScript compiler caches interface relationships between builds but must recompute intersection types each time they are encountered. Use \`interface Config extends BaseConfig, DatabaseConfig, CacheConfig {}\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+interface BaseConfig { host: string; port: number; }
+interface DatabaseConfig { dbUrl: string; poolSize: number; }
+interface CacheConfig { cacheUrl: string; ttl: number; }
+
+// Slow — intersection recomputed every time
+type SlowConfig = BaseConfig & DatabaseConfig & CacheConfig;
+
+// Fast — interface relationship is cached
+interface FastConfig extends BaseConfig, DatabaseConfig, CacheConfig {}
+
+const config: FastConfig = {
+    host: "localhost",
+    port: 3000,
+    dbUrl: "postgres://...",
+    poolSize: 10,
+    cacheUrl: "redis://...",
+    ttl: 300
+};
+
+console.log(config.host + ":" + config.port);
+\`\`\`
+
+Expected output:
+\`\`\`
+localhost:3000
+\`\`\`
+
+The TypeScript compiler caches interface \`extends\` relationships in its internal symbol table. Type intersections (\`&\`) are recomputed at each use site. For configs extended in many files, \`interface extends\` can cut type-check time significantly.
+
+</details>
 
 ---
 
@@ -2883,15 +4486,115 @@ const total = add(usd, money(50, "USD")); // OK — same currency
 
 **Why it matters:** These advanced patterns encode business rules directly into the type system. A state machine type prevents invalid state transitions. A builder type prevents incomplete construction. Branded money types prevent currency mixing. Bugs that would otherwise require careful runtime checks or code review are caught instantly by the compiler.
 
+### Exercises
+
+**1. Build a type-safe state machine**
+Define a traffic light state machine with states \`"red"\`, \`"green"\`, \`"yellow"\` and a transition map where \`red → green\`, \`green → yellow\`, \`yellow → red\`. Write a \`transition\` function that only accepts valid next states.
+
+<details>
+<summary>Hint</summary>
+
+Use a \`TransitionMap\` type that maps each state to its allowed next states. The \`transition\` function should be generic: \`function transition<S extends State, Next extends TransitionMap[S]>(current: S, next: Next): Next\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+type TrafficState = "red" | "green" | "yellow";
+
+type TransitionMap = {
+    red: "green";
+    green: "yellow";
+    yellow: "red";
+};
+
+function transition<S extends TrafficState, Next extends TransitionMap[S]>(
+    _current: S,
+    next: Next
+): Next {
+    return next;
+}
+
+const s1 = transition("red", "green");     // OK
+const s2 = transition("green", "yellow");  // OK
+const s3 = transition("yellow", "red");    // OK
+// transition("red", "yellow"); // Error — red can only go to green
+
+console.log("red →", s1);
+console.log("green →", s2);
+console.log("yellow →", s3);
+\`\`\`
+
+Expected output:
+\`\`\`
+red → green
+green → yellow
+yellow → red
+\`\`\`
+
+</details>
+
+**2. Type-safe Money with currency branding**
+Define a \`Money<C extends string>\` type branded by currency. Write \`add\` and \`subtract\` functions that only work on the same currency. Demonstrate that mixing currencies is a compile error.
+
+<details>
+<summary>Hint</summary>
+
+Use \`declare const currencyBrand: unique symbol\` and include it as a readonly property in the \`Money\` type. The generic parameter \`C\` ties the currency string to the brand, making \`Money<"USD">\` and \`Money<"EUR">\` incompatible.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+declare const currencyBrand: unique symbol;
+
+type Money<C extends string> = {
+    readonly amount: number;
+    readonly currency: C;
+    readonly [currencyBrand]: C;
+};
+
+function money<C extends string>(amount: number, currency: C): Money<C> {
+    return { amount, currency } as Money<C>;
+}
+
+function add<C extends string>(a: Money<C>, b: Money<C>): Money<C> {
+    return money(a.amount + b.amount, a.currency);
+}
+
+function subtract<C extends string>(a: Money<C>, b: Money<C>): Money<C> {
+    return money(a.amount - b.amount, a.currency);
+}
+
+const price = money(100, "USD");
+const tax = money(8.5, "USD");
+const total = add(price, tax);
+console.log(total.amount + " " + total.currency);
+
+const eur = money(50, "EUR");
+// add(price, eur); // Error: Money<"USD"> is not assignable to Money<"EUR">
+\`\`\`
+
+Expected output:
+\`\`\`
+108.5 USD
+\`\`\`
+
+</details>
+
 ---
 
 ## 9. TypeScript 5.x Features for Seniors
 
-### \\\`const\\\` Type Parameters (TS 5.0)
+### \`const\` Type Parameters (TS 5.0)
 
-The \\\`const\\\` modifier on a type parameter infers literal types by default — no \\\`as const\\\` needed at the call site.
+The \`const\` modifier on a type parameter infers literal types by default — no \`as const\` needed at the call site.
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 // Without const: T is inferred as string[]
 function routes<T extends readonly string[]>(paths: T): T {
     return paths;
@@ -2914,13 +4617,13 @@ const events = defineEvents({
     keydown: [{ key: "" }],
 });
 // events.click is [{ x: number; y: number }] — literal structure preserved
-\\\`\\\`\\\`
+\`\`\`
 
-### \\\`using\\\` Declarations — Explicit Resource Management (TS 5.2)
+### \`using\` Declarations — Explicit Resource Management (TS 5.2)
 
-The \\\`using\\\` keyword implements the TC39 Explicit Resource Management proposal. It ensures cleanup via the \\\`Symbol.dispose\\\` and \\\`Symbol.asyncDispose\\\` protocols.
+The \`using\` keyword implements the TC39 Explicit Resource Management proposal. It ensures cleanup via the \`Symbol.dispose\` and \`Symbol.asyncDispose\` protocols.
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 class DatabaseConnection implements Disposable {
     constructor(private url: string) {
         console.log("Connected to " + url);
@@ -2954,15 +4657,15 @@ async function processFile() {
     await using handle = new FileHandle();
     // handle is disposed when scope exits
 }
-\\\`\\\`\\\`
+\`\`\`
 
-**Why it matters:** \\\`using\\\` replaces try/finally for resource cleanup (database connections, file handles, locks). It is the TypeScript equivalent of Python's \\\`with\\\` statement or C#'s \\\`using\\\` block.
+**Why it matters:** \`using\` replaces try/finally for resource cleanup (database connections, file handles, locks). It is the TypeScript equivalent of Python's \`with\` statement or C#'s \`using\` block.
 
 ### TC39 Decorators (TS 5.0+ — Stage 3 Standard)
 
-TypeScript 5.0 ships TC39 standard decorators. These are **different from legacy experimental decorators** (\\\`experimentalDecorators: true\\\`). The new decorators follow the Stage 3 TC39 proposal and will work in plain JavaScript too.
+TypeScript 5.0 ships TC39 standard decorators. These are **different from legacy experimental decorators** (\`experimentalDecorators: true\`). The new decorators follow the Stage 3 TC39 proposal and will work in plain JavaScript too.
 
-\\\`\\\`\\\`typescript
+\`\`\`typescript
 // TC39 decorator — a plain function that receives the target and context
 function log<This, Args extends unknown[], Return>(
     target: (this: This, ...args: Args) => Return,
@@ -3003,14 +4706,120 @@ class UserForm {
     @validate(/^\\+?[\\d\\s-]{7,15}$/)
     accessor phone = "" as string;
 }
-\\\`\\\`\\\`
+\`\`\`
 
 **Key things to understand:**
-- TC39 decorators are **not compatible** with legacy \\\`experimentalDecorators\\\` — do not mix them
+- TC39 decorators are **not compatible** with legacy \`experimentalDecorators\` — do not mix them
 - Legacy decorators are still supported but should be considered deprecated for new projects
 - TC39 decorators work on classes, methods, accessors, and fields
-- Decorator metadata (\\\`context.metadata\\\`) replaces \\\`reflect-metadata\\\` for new code
+- Decorator metadata (\`context.metadata\`) replaces \`reflect-metadata\` for new code
 - Frameworks like Angular and NestJS are migrating to TC39 decorators — check your framework's documentation
+
+### Exercises
+
+**1. Use \`const\` type parameters**
+Write a function \`defineRoutes<const T extends Record<string, { path: string; method: string }>>(routes: T): T\`. Verify that without the \`const\` modifier the method values are widened to \`string\`, but with it they retain their literal types like \`"GET"\`.
+
+<details>
+<summary>Hint</summary>
+
+Declare two versions of the function — one with \`const T\` and one without. Compare what TypeScript infers for the \`method\` property of the returned object.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+// Without const: method is inferred as string
+function defineRoutesWide<T extends Record<string, { path: string; method: string }>>(
+    routes: T
+): T {
+    return routes;
+}
+
+// With const: method retains literal type "GET", "POST", etc.
+function defineRoutes<const T extends Record<string, { path: string; method: string }>>(
+    routes: T
+): T {
+    return routes;
+}
+
+const wide = defineRoutesWide({
+    getUser: { path: "/users/:id", method: "GET" },
+});
+// wide.getUser.method is string
+
+const precise = defineRoutes({
+    getUser: { path: "/users/:id", method: "GET" },
+    createUser: { path: "/users", method: "POST" },
+});
+// precise.getUser.method is "GET"
+// precise.createUser.method is "POST"
+
+console.log(precise.getUser.method);
+console.log(precise.createUser.method);
+\`\`\`
+
+Expected output:
+\`\`\`
+GET
+POST
+\`\`\`
+
+</details>
+
+**2. Implement a \`Disposable\` class with \`using\`**
+Create a \`Timer\` class that implements \`Disposable\`. The constructor logs \`"Timer started"\` and \`[Symbol.dispose]\` logs \`"Timer stopped"\`. Use it with the \`using\` keyword in a function and verify the dispose log appears.
+
+<details>
+<summary>Hint</summary>
+
+\`using\` requires the \`lib\` in tsconfig to include \`"ES2022"\` or higher, and the \`target\` to be ES2022+. The dispose method is called automatically when the variable goes out of scope, whether the scope exits normally or via an exception.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`typescript
+class Timer implements Disposable {
+    private start: number;
+
+    constructor(private name: string) {
+        this.start = Date.now();
+        console.log("Timer started: " + name);
+    }
+
+    elapsed(): number {
+        return Date.now() - this.start;
+    }
+
+    [Symbol.dispose](): void {
+        console.log("Timer stopped: " + this.name + " (" + this.elapsed() + "ms)");
+    }
+}
+
+function runTask(): void {
+    using timer = new Timer("task");
+    // do some work
+    let sum = 0;
+    for (let i = 0; i < 1000000; i++) sum += i;
+    console.log("Sum:", sum);
+    // timer is disposed here automatically
+}
+
+runTask();
+\`\`\`
+
+Expected output (timing will vary):
+\`\`\`
+Timer started: task
+Sum: 499999500000
+Timer stopped: task (Xms)
+\`\`\`
+
+</details>
 
 ---
 

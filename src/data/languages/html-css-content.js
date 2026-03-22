@@ -132,10 +132,78 @@ These elements provide native, interactive disclosure widgets without JavaScript
      own <code>&lt;header&gt;</code> and <code>&lt;footer&gt;</code>.</p>
 </details>
 
-<!-- EXERCISE: Create a FAQ page with at least 5 <details> elements -->
-<!-- covering HTML5 semantic elements. Each answer should contain -->
-<!-- at least one code example. -->
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. FAQ page with \`<details>\` elements**
+Create a complete FAQ page with at least 5 \`<details>\` elements covering questions about HTML5 semantic elements. Each answer should contain at least one inline code reference.
+
+<details>
+<summary>Hint</summary>
+
+Use \`<details>\` and \`<summary>\` inside a \`<section>\` or \`<article>\`. The \`open\` attribute on \`<details>\` makes an item expanded by default. Wrap the whole FAQ in a \`<main>\` with a \`<h1>\` heading.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML5 Semantic Elements FAQ</title>
+</head>
+<body>
+  <main>
+    <h1>HTML5 Semantic Elements — FAQ</h1>
+
+    <details open>
+      <summary>What is the difference between &lt;article&gt; and &lt;section&gt;?</summary>
+      <p>An <code>&lt;article&gt;</code> is self-contained and could stand alone
+         (a blog post, a news story). A <code>&lt;section&gt;</code> groups
+         thematically related content within a larger whole.</p>
+    </details>
+
+    <details>
+      <summary>When should I use &lt;aside&gt;?</summary>
+      <p>Use <code>&lt;aside&gt;</code> for content that is tangentially related
+         to the surrounding content — sidebars, pull quotes, or related links.</p>
+    </details>
+
+    <details>
+      <summary>Can I have more than one &lt;nav&gt; on a page?</summary>
+      <p>Yes. Use the <code>aria-label</code> attribute to distinguish them,
+         for example <code>&lt;nav aria-label="Primary navigation"&gt;</code>
+         and <code>&lt;nav aria-label="Footer navigation"&gt;</code>.</p>
+    </details>
+
+    <details>
+      <summary>What does the &lt;main&gt; element do?</summary>
+      <p>The <code>&lt;main&gt;</code> element wraps the dominant content of the
+         page. There should be only one <code>&lt;main&gt;</code> per page, and
+         it must not be nested inside <code>&lt;article&gt;</code>,
+         <code>&lt;aside&gt;</code>, <code>&lt;footer&gt;</code>,
+         <code>&lt;header&gt;</code>, or <code>&lt;nav&gt;</code>.</p>
+    </details>
+
+    <details>
+      <summary>What is the &lt;figure&gt; element for?</summary>
+      <p>Use <code>&lt;figure&gt;</code> to wrap self-contained content like
+         images, diagrams, or code snippets. Add an optional
+         <code>&lt;figcaption&gt;</code> inside it to provide a caption.</p>
+    </details>
+  </main>
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: A page renders with a heading and five collapsible FAQ items. The first item is open by default. Clicking a summary toggles its answer open or closed.
+
+</details>
 
 ### The \\\`<dialog>\\\` Element
 
@@ -315,10 +383,84 @@ Forms are the primary way users interact with web applications — from login sc
   <button type="reset">Clear Form</button>
 </form>
 
-<!-- EXERCISE: Build a contact form with fields for name, email, -->
-<!-- subject (dropdown), message (textarea), and a file upload. -->
-<!-- Use appropriate validation attributes on every field. -->
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Contact form with validation**
+Build a contact form with fields for name, email, subject (dropdown with at least 4 options), message (\`<textarea>\`), and a file attachment. Apply appropriate HTML5 validation attributes to every field.
+
+<details>
+<summary>Hint</summary>
+
+Use \`required\` on all fields. Use \`type="email"\` for the email field. Add \`accept\` to the file input to limit allowed file types. Wrap related controls in \`<div class="form-group">\` and always pair each input with a \`<label>\` using matching \`for\` and \`id\` values.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us</title>
+</head>
+<body>
+  <main>
+    <h1>Contact Us</h1>
+    <form action="/api/contact" method="POST" enctype="multipart/form-data">
+
+      <div class="form-group">
+        <label for="contactName">Full Name</label>
+        <input type="text" id="contactName" name="name"
+               required minlength="2" maxlength="100"
+               placeholder="Your full name" autocomplete="name" />
+      </div>
+
+      <div class="form-group">
+        <label for="contactEmail">Email Address</label>
+        <input type="email" id="contactEmail" name="email"
+               required placeholder="you@example.com"
+               autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label for="contactSubject">Subject</label>
+        <select id="contactSubject" name="subject" required>
+          <option value="" disabled selected>Choose a subject...</option>
+          <option value="general">General Inquiry</option>
+          <option value="support">Technical Support</option>
+          <option value="billing">Billing Question</option>
+          <option value="feedback">Feedback</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="contactMessage">Message</label>
+        <textarea id="contactMessage" name="message"
+                  rows="6" required minlength="20" maxlength="2000"
+                  placeholder="Describe your question or issue..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="contactAttachment">Attachment (optional)</label>
+        <input type="file" id="contactAttachment" name="attachment"
+               accept=".pdf,.png,.jpg,.jpeg,.gif" />
+      </div>
+
+      <button type="submit">Send Message</button>
+    </form>
+  </main>
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: A contact form renders with five fields. Submitting with any required field empty triggers browser-native validation messages. The email field rejects addresses missing an @ symbol. The file picker filters to the specified formats.
+
+</details>
 
 ### HTML5 Input Types Reference
 
@@ -489,15 +631,50 @@ p { color: black; }            /* 0-0-1 */
 .intro { color: blue; }       /* 0-1-0  — this wins over the p rule */
 #hero .intro { color: red; }  /* 1-1-0  — this wins over .intro */
 
-/* EXERCISE: Calculate the specificity of each selector below */
-/* and determine which background-color would be applied to */
-/* <div id="app" class="container main"> */
-/*   div            -> ??? */
-/*   .container     -> ??? */
-/*   div.container  -> ??? */
-/*   #app           -> ??? */
-/*   #app.container -> ??? */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Specificity calculation**
+Calculate the specificity of each selector below and determine which \`background-color\` would be applied to \`<div id="app" class="container main">\`. Write out each selector's specificity score in the format \`(ID, Class, Type)\`.
+
+Selectors to evaluate:
+- \`div\`
+- \`.container\`
+- \`div.container\`
+- \`#app\`
+- \`#app.container\`
+
+<details>
+<summary>Hint</summary>
+
+Specificity is counted as three parts: ID selectors score in the first column, class/attribute/pseudo-class selectors in the second, and type (element) selectors in the third. A higher number in the leftmost column always wins, regardless of the other columns.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`css
+/* Specificity scores for <div id="app" class="container main"> */
+
+div             /* (0, 0, 1) — type selector only */
+.container      /* (0, 1, 0) — one class */
+div.container   /* (0, 1, 1) — one class + one type */
+#app            /* (1, 0, 0) — one ID */
+#app.container  /* (1, 1, 0) — one ID + one class  ← wins */
+
+/* Applied styles: */
+div            { background-color: lightgray; }   /* 0-0-1 */
+.container     { background-color: lightblue; }   /* 0-1-0 */
+div.container  { background-color: lightyellow; } /* 0-1-1 */
+#app           { background-color: lightgreen; }  /* 1-0-0 */
+#app.container { background-color: coral; }       /* 1-1-0  ← this wins */
+\\\`\\\`\\\`
+
+Expected result: The \`background-color: coral\` rule from \`#app.container\` is applied because \`(1, 1, 0)\` beats all other selectors. If the \`#app.container\` rule were removed, \`#app\` at \`(1, 0, 0)\` would win next.
+
+</details>
 
 **Why it matters:** Specificity bugs are among the most common CSS issues. Understanding how specificity works prevents the temptation to use \\\`!important\\\` everywhere, leading to maintainable stylesheets.
 
@@ -630,11 +807,53 @@ flowchart LR
   - On floated or absolutely positioned elements
 */
 
-/* EXERCISE: Create a card component that is 350px wide, has */
-/* 24px of internal spacing, a 2px border, and 16px of space */
-/* between cards. Use border-box sizing. Calculate the content */
-/* area width. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Card component with box model**
+Create a card component that is 350px wide, has 24px of internal spacing, a 2px border, and 16px of space between stacked cards. Use \`border-box\` sizing. Calculate what the content area width will be.
+
+<details>
+<summary>Hint</summary>
+
+With \`box-sizing: border-box\`, the \`width\` includes padding and border. Content area = width − (padding-left + padding-right) − (border-left + border-right). For space between cards, use \`margin-bottom\` on the card or \`gap\` on a flex/grid container.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`css
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.card {
+  width: 350px;
+  padding: 24px;          /* 24px on all sides */
+  border: 2px solid #e2e8f0;
+  margin-bottom: 16px;    /* space between cards */
+  border-radius: 8px;
+  background: white;
+}
+
+/*
+  Content area width calculation (border-box):
+  350px total
+  − 24px padding-left
+  − 24px padding-right
+  − 2px border-left
+  − 2px border-right
+  = 298px content width
+*/
+\\\`\\\`\\\`
+
+Expected result: Each card renders at exactly 350px wide. The content inside sits in a 298px wide area. A 16px gap separates each card from the next.
+
+</details>
 
 **Why it matters:** If you do not understand the box model, every layout you build will behave unpredictably. The \\\`border-box\\\` fix alone prevents countless layout bugs.
 
@@ -774,12 +993,85 @@ Flexbox is a one-dimensional layout model designed for distributing space among 
   max-width: 400px;
 }
 
-/* EXERCISE: Create a footer with three columns: */
-/* company info (left), navigation links (center), */
-/* and social media icons (right). Use flexbox to */
-/* distribute them evenly. On small screens, they */
-/* should stack vertically. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Three-column flexbox footer**
+Create a footer with three columns: company info (left), navigation links (center), and social media icons (right). Use flexbox to distribute them evenly. On small screens (below 640px), the columns should stack vertically.
+
+<details>
+<summary>Hint</summary>
+
+Set \`display: flex\` on the footer with \`justify-content: space-between\`. For stacking on small screens, use a media query to switch to \`flex-direction: column\` and \`align-items: center\`. Give each column \`flex: 1\` so they share space equally on wide screens.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<footer class="site-footer">
+  <div class="footer-col footer-col--brand">
+    <h3>TechHub</h3>
+    <p>Learn to code with depth and context.</p>
+  </div>
+  <nav class="footer-col footer-col--nav" aria-label="Footer navigation">
+    <ul>
+      <li><a href="/courses">Courses</a></li>
+      <li><a href="/paths">Learning Paths</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="footer-col footer-col--social">
+    <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+  </div>
+</footer>
+\\\`\\\`\\\`
+
+\\\`\\\`\\\`css
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 3rem 2rem;
+  background: #1a202c;
+  color: white;
+}
+
+.footer-col { flex: 1; }
+
+.footer-col--nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col--nav li + li { margin-top: 0.5rem; }
+
+.footer-col--social {
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 639px) {
+  .site-footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-col--social { justify-content: center; }
+}
+\\\`\\\`\\\`
+
+Expected result: On wide screens the footer shows three equal-width columns side by side. Below 640px the columns stack vertically and center-align.
+
+</details>
 
 **Why it matters:** Flexbox solves layout problems that plagued CSS for years — vertical centering, equal-height columns, and dynamic spacing. It is the go-to tool for component-level layouts.
 
@@ -919,10 +1211,60 @@ CSS Grid is a two-dimensional layout system that handles both rows and columns s
   gap: 1rem;
 }
 
-/* EXERCISE: Build a photo gallery layout where the first image */
-/* spans 2 columns and 2 rows, while the rest are 1x1. Use */
-/* grid-template-columns with auto-fit and minmax. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Photo gallery with CSS Grid**
+Build a photo gallery where the first image spans 2 columns and 2 rows (a featured image), while the remaining images fill 1×1 cells. Use \`grid-template-columns\` with \`auto-fit\` and \`minmax\`.
+
+<details>
+<summary>Hint</summary>
+
+Set \`grid-column: span 2\` and \`grid-row: span 2\` on the first \`<img>\` or its wrapper. Use \`object-fit: cover\` so all images fill their cells without distortion. Make sure the first item appears first in the HTML so the browser places it at the grid's start.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<section class="gallery">
+  <div class="gallery__item gallery__item--featured">
+    <img src="/images/photo-1.jpg" alt="Featured landscape" />
+  </div>
+  <div class="gallery__item"><img src="/images/photo-2.jpg" alt="City skyline" /></div>
+  <div class="gallery__item"><img src="/images/photo-3.jpg" alt="Forest path" /></div>
+  <div class="gallery__item"><img src="/images/photo-4.jpg" alt="Mountain lake" /></div>
+  <div class="gallery__item"><img src="/images/photo-5.jpg" alt="Desert dunes" /></div>
+  <div class="gallery__item"><img src="/images/photo-6.jpg" alt="Ocean waves" /></div>
+</section>
+\\\`\\\`\\\`
+
+\\\`\\\`\\\`css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.gallery__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+}
+
+.gallery__item--featured {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+\\\`\\\`\\\`
+
+Expected result: The first photo renders large, occupying a 2×2 area. The remaining five photos fill the remaining cells in a responsive grid that adjusts the number of columns based on available width.
+
+</details>
 
 **Why it matters:** CSS Grid is the most powerful layout tool in CSS. Combined with Flexbox, you can build any layout imaginable without hacks, floats, or external frameworks.
 
@@ -1040,10 +1382,75 @@ h2 {
   max-width: 65ch; /* Roughly 65 characters per line — ideal for reading */
 }
 
-/* EXERCISE: Create a hero section that takes up the full viewport */
-/* height, centers its content, and uses fluid typography for the */
-/* heading (min 2rem, max 5rem). */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Hero section with fluid typography**
+Create a hero section that takes up the full viewport height, centers its content both vertically and horizontally, and uses \`clamp()\` for the heading font size with a minimum of \`2rem\` and a maximum of \`5rem\`.
+
+<details>
+<summary>Hint</summary>
+
+Use \`min-height: 100dvh\` to fill the viewport. Center content with \`display: flex; align-items: center; justify-content: center;\`. For fluid typography, the middle value of \`clamp()\` is a viewport-relative value like \`5vw\` so the size scales with the browser window.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<section class="hero">
+  <div class="hero__content">
+    <h1 class="hero__heading">Learn to Build the Web</h1>
+    <p class="hero__subtext">Master HTML, CSS, and JavaScript from the ground up.</p>
+    <a href="/courses" class="hero__cta">Browse Courses</a>
+  </div>
+</section>
+\\\`\\\`\\\`
+
+\\\`\\\`\\\`css
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  background: linear-gradient(135deg, #1a202c, #2d3748);
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+.hero__content {
+  max-width: 65ch;
+}
+
+.hero__heading {
+  font-size: clamp(2rem, 5vw, 5rem);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.hero__subtext {
+  font-size: clamp(1rem, 2vw, 1.375rem);
+  margin-bottom: 2rem;
+  opacity: 0.85;
+}
+
+.hero__cta {
+  display: inline-block;
+  padding: 0.875rem 2rem;
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+\\\`\\\`\\\`
+
+Expected result: A full-viewport-height hero section renders with dark background and centered text. The heading scales smoothly between 2rem on narrow mobile screens and 5rem on wide desktops without any media queries.
+
+</details>
 
 ### The Viewport Meta Tag
 
@@ -1195,14 +1602,101 @@ img {
   display: block;
 }
 
-/* EXERCISE: Create an image gallery page with at least 6 images */
-/* using the <picture> element. Each image should have: */
-/*   - AVIF and WebP sources for large screens */
-/*   - A JPEG fallback */
-/*   - Proper alt text */
-/*   - Lazy loading */
-/*   - Width and height attributes to prevent CLS */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Responsive image gallery with \`<picture>\`**
+Create an image gallery page with at least 6 images. Each image must use the \`<picture>\` element with AVIF and WebP sources for large screens, a JPEG fallback, proper \`alt\` text, lazy loading, and \`width\`/\`height\` attributes to prevent layout shift (CLS).
+
+<details>
+<summary>Hint</summary>
+
+Inside \`<picture>\`, list \`<source>\` elements from most-preferred to least-preferred format. The browser picks the first source it supports. The \`<img>\` at the end is the universal fallback — always include \`width\`, \`height\`, \`alt\`, and \`loading="lazy"\` on it. Do not put \`loading\` on the \`<source>\` elements.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Gallery</title>
+  <style>
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .gallery img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Photo Gallery</h1>
+    <section class="gallery">
+
+      <picture>
+        <source media="(min-width: 640px)" srcset="/images/photo1.avif" type="image/avif" />
+        <source media="(min-width: 640px)" srcset="/images/photo1.webp" type="image/webp" />
+        <img src="/images/photo1.jpg" alt="Sunrise over mountain peaks"
+             width="800" height="600" loading="lazy" decoding="async" />
+      </picture>
+
+      <picture>
+        <source media="(min-width: 640px)" srcset="/images/photo2.avif" type="image/avif" />
+        <source media="(min-width: 640px)" srcset="/images/photo2.webp" type="image/webp" />
+        <img src="/images/photo2.jpg" alt="Dense rainforest canopy"
+             width="800" height="600" loading="lazy" decoding="async" />
+      </picture>
+
+      <picture>
+        <source media="(min-width: 640px)" srcset="/images/photo3.avif" type="image/avif" />
+        <source media="(min-width: 640px)" srcset="/images/photo3.webp" type="image/webp" />
+        <img src="/images/photo3.jpg" alt="Calm ocean at dusk"
+             width="800" height="600" loading="lazy" decoding="async" />
+      </picture>
+
+      <picture>
+        <source media="(min-width: 640px)" srcset="/images/photo4.avif" type="image/avif" />
+        <source media="(min-width: 640px)" srcset="/images/photo4.webp" type="image/webp" />
+        <img src="/images/photo4.jpg" alt="City lights at night"
+             width="800" height="600" loading="lazy" decoding="async" />
+      </picture>
+
+      <picture>
+        <source media="(min-width: 640px)" srcset="/images/photo5.avif" type="image/avif" />
+        <source media="(min-width: 640px)" srcset="/images/photo5.webp" type="image/webp" />
+        <img src="/images/photo5.jpg" alt="Autumn forest trail"
+             width="800" height="600" loading="lazy" decoding="async" />
+      </picture>
+
+      <picture>
+        <source media="(min-width: 640px)" srcset="/images/photo6.avif" type="image/avif" />
+        <source media="(min-width: 640px)" srcset="/images/photo6.webp" type="image/webp" />
+        <img src="/images/photo6.jpg" alt="Snow-capped volcanic peak"
+             width="800" height="600" loading="lazy" decoding="async" />
+      </picture>
+
+    </section>
+  </main>
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: A responsive grid of six photos renders. Modern browsers load AVIF or WebP on wide screens; older browsers receive JPEG. Images below the fold are deferred until the user scrolls near them. Space is reserved for each image before it loads, preventing layout shift.
+
+</details>
 
 ### Link Best Practices
 
@@ -1452,11 +1946,114 @@ body {
   const currentPrimary = styles.getPropertyValue('--color-primary').trim();
 </script>
 
-<!-- EXERCISE: Create a theme customizer panel that lets users -->
-<!-- adjust primary color, border-radius, and font-size using -->
-<!-- range sliders and a color picker. All changes should be -->
-<!-- reflected in real-time across the entire page via CSS variables. -->
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Real-time theme customizer**
+Create a theme customizer panel that lets users adjust the primary color (color picker), border-radius (range slider, 0–24px), and base font size (range slider, 12–24px). All changes must reflect in real-time across a preview area via CSS custom properties updated with JavaScript.
+
+<details>
+<summary>Hint</summary>
+
+Use \`document.documentElement.style.setProperty('--color-primary', value)\` inside an \`input\` event listener on each control. Display the current slider value in a \`<span>\` next to the input so users can see the number as they drag.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theme Customizer</title>
+  <style>
+    :root {
+      --color-primary: #3b82f6;
+      --border-radius: 8px;
+      --font-size-base: 16px;
+    }
+
+    body {
+      font-family: sans-serif;
+      font-size: var(--font-size-base);
+      padding: 2rem;
+    }
+
+    .preview-card {
+      padding: 1.5rem;
+      border: 2px solid var(--color-primary);
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      max-width: 400px;
+    }
+
+    .preview-btn {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--border-radius);
+      font-size: var(--font-size-base);
+      cursor: pointer;
+    }
+
+    .customizer { display: flex; flex-direction: column; gap: 1rem; max-width: 400px; }
+    .customizer label { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .customizer input[type="range"] { flex: 1; }
+  </style>
+</head>
+<body>
+  <div class="preview-card">
+    <h2>Preview Card</h2>
+    <p>This card updates as you change the controls below.</p>
+    <button class="preview-btn">Click Me</button>
+  </div>
+
+  <div class="customizer">
+    <label>
+      Primary Color
+      <input type="color" id="colorPicker" value="#3b82f6" />
+    </label>
+
+    <label>
+      Border Radius: <span id="radiusValue">8</span>px
+      <input type="range" id="radiusSlider" min="0" max="24" value="8" />
+    </label>
+
+    <label>
+      Font Size: <span id="fontSizeValue">16</span>px
+      <input type="range" id="fontSizeSlider" min="12" max="24" value="16" />
+    </label>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+
+    document.getElementById('colorPicker').addEventListener('input', (e) => {
+      root.style.setProperty('--color-primary', e.target.value);
+    });
+
+    document.getElementById('radiusSlider').addEventListener('input', (e) => {
+      root.style.setProperty('--border-radius', e.target.value + 'px');
+      document.getElementById('radiusValue').textContent = e.target.value;
+    });
+
+    document.getElementById('fontSizeSlider').addEventListener('input', (e) => {
+      root.style.setProperty('--font-size-base', e.target.value + 'px');
+      document.getElementById('fontSizeValue').textContent = e.target.value;
+    });
+  </script>
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: A preview card and three controls render. Dragging the radius slider rounds the card corners and button. Dragging the font-size slider makes all text grow or shrink. Picking a color instantly changes the card border and button background across the page.
+
+</details>
 
 **Why it matters:** CSS Custom Properties are the foundation of modern theming and design tokens. They enable dark mode, user preferences, and dynamic styling without CSS-in-JS overhead.
 
@@ -1661,10 +2258,71 @@ Smooth animations and transitions make interfaces feel responsive and polished. 
   transform: rotateY(180deg);
 }
 
-/* EXERCISE: Create a notification toast that slides in from the */
-/* right side, stays for 3 seconds, then slides out. Use */
-/* @keyframes with animation-fill-mode: forwards. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Notification toast with keyframe animation**
+Create a notification toast that slides in from the right edge of the screen, remains visible for roughly 3 seconds, then slides out to the right. Use \`@keyframes\` and \`animation-fill-mode: forwards\` so the toast stays hidden after the exit animation completes.
+
+<details>
+<summary>Hint</summary>
+
+Define two keyframe animations: one for sliding in (translateX from 110% to 0) and one for sliding out (translateX from 0 to 110%). Chain them with \`animation\` shorthand using a delay on the slide-out so it starts after the visible period. Set \`animation-fill-mode: forwards\` so the element stays in its final position after each animation ends.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toast Demo</title>
+  <style>
+    @keyframes slide-in {
+      from { transform: translateX(110%); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+
+    @keyframes slide-out {
+      from { transform: translateX(0);    opacity: 1; }
+      to   { transform: translateX(110%); opacity: 0; }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #1f2937;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      max-width: 320px;
+      font-size: 0.9375rem;
+
+      /* slide in over 0.4s, stay for ~3s, slide out over 0.4s */
+      animation:
+        slide-in  0.4s ease forwards,
+        slide-out 0.4s ease 3.4s forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="toast" role="status" aria-live="polite">
+    Your changes have been saved successfully.
+  </div>
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: When the page loads, a dark toast notification slides in from the right. It stays visible for about 3 seconds, then slides back out to the right and disappears. No JavaScript is needed.
+
+</details>
 
 ### Respecting User Preferences
 
@@ -1812,10 +2470,111 @@ BEM (Block-Element-Modifier) is a naming convention for CSS classes that makes y
   </footer>
 </article>
 
-<!-- EXERCISE: Design a navigation component using BEM with -->
-<!-- .nav, .nav__list, .nav__item, .nav__link, and modifiers -->
-<!-- for --active, --disabled, and --mobile. -->
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. BEM navigation component**
+Design a navigation component using strict BEM naming: \`.nav\`, \`.nav__list\`, \`.nav__item\`, \`.nav__link\`, with modifiers \`--active\` (highlighted current page), \`--disabled\` (greyed out, non-clickable), and \`--mobile\` (vertical stacked layout).
+
+<details>
+<summary>Hint</summary>
+
+A modifier on a block looks like \`.nav--mobile\`. A modifier on an element looks like \`.nav__link--active\`. Apply multiple classes to a single element: \`class="nav__item nav__item--active"\`. Do not use descendant selectors like \`.nav .link\` — every class should be self-contained.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<nav class="nav" aria-label="Primary navigation">
+  <ul class="nav__list">
+    <li class="nav__item nav__item--active">
+      <a class="nav__link nav__link--active" href="/" aria-current="page">Home</a>
+    </li>
+    <li class="nav__item">
+      <a class="nav__link" href="/courses">Courses</a>
+    </li>
+    <li class="nav__item">
+      <a class="nav__link" href="/paths">Learning Paths</a>
+    </li>
+    <li class="nav__item nav__item--disabled">
+      <a class="nav__link nav__link--disabled" href="/community"
+         aria-disabled="true" tabindex="-1">Community</a>
+    </li>
+  </ul>
+</nav>
+\\\`\\\`\\\`
+
+\\\`\\\`\\\`css
+/* Block */
+.nav {
+  background: #1a202c;
+  padding: 0 1.5rem;
+}
+
+/* Element: list */
+.nav__list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.25rem;
+}
+
+/* Element: item */
+.nav__item { display: flex; }
+
+/* Element: link */
+.nav__link {
+  display: block;
+  padding: 1rem 0.75rem;
+  color: #e2e8f0;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.nav__link:hover {
+  color: white;
+  border-bottom-color: #3b82f6;
+}
+
+/* Modifier: active */
+.nav__link--active {
+  color: white;
+  border-bottom-color: #3b82f6;
+  font-weight: 600;
+}
+
+/* Modifier: disabled */
+.nav__link--disabled {
+  color: #4a5568;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Block modifier: mobile (stacked layout) */
+.nav--mobile .nav__list {
+  flex-direction: column;
+  gap: 0;
+}
+
+.nav--mobile .nav__link {
+  border-bottom: none;
+  border-left: 3px solid transparent;
+  padding: 0.875rem 1rem;
+}
+
+.nav--mobile .nav__link--active {
+  border-left-color: #3b82f6;
+}
+\\\`\\\`\\\`
+
+Expected result: A dark navigation bar renders with four links. The Home link appears highlighted with a blue underline. The Community link is greyed out and does not respond to clicks. Adding the \`nav--mobile\` class to the \`<nav>\` switches all links to a vertical stacked layout with a left border accent instead of a bottom border.
+
+</details>
 
 **Why it matters:** As projects grow, CSS without a naming convention becomes a tangled mess of overrides and \\\`!important\\\` hacks. BEM provides a clear contract: every class tells you what component it belongs to, what part it is, and what variation it represents.
 
@@ -1979,13 +2738,143 @@ dialog::backdrop {
   margin-top: var(--space-6);
 }
 
-/* EXERCISE: Build an accessible dropdown menu that: */
-/* 1. Toggles with aria-expanded */
-/* 2. Traps focus within the menu when open */
-/* 3. Closes on Escape key */
-/* 4. Returns focus to the trigger button on close */
-/* 5. Uses role="menu" and role="menuitem" */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Accessible dropdown menu**
+Build an accessible dropdown menu that: toggles open/closed via a button with \`aria-expanded\`, traps focus within the menu when it is open, closes when the user presses Escape, returns focus to the trigger button on close, and uses \`role="menu"\` and \`role="menuitem"\`.
+
+<details>
+<summary>Hint</summary>
+
+On open: set \`aria-expanded="true"\`, remove the \`hidden\` attribute, and move focus to the first menu item. On close: set \`aria-expanded="false"\`, add \`hidden\`, and call \`triggerButton.focus()\`. For focus trapping, listen to \`keydown\` and intercept Tab — if on the last item, wrap to the first; if on the first and Shift+Tab, wrap to the last.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accessible Dropdown</title>
+  <style>
+    .dropdown { position: relative; display: inline-block; }
+
+    .dropdown__menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 180px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 0.25rem 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .dropdown__menu[hidden] { display: none; }
+
+    .dropdown__item a {
+      display: block;
+      padding: 0.625rem 1rem;
+      color: #1a202c;
+      text-decoration: none;
+    }
+
+    .dropdown__item a:hover,
+    .dropdown__item a:focus {
+      background: #f7fafc;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="dropdown">
+    <button id="dropdownTrigger"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="dropdownMenu">
+      My Account
+    </button>
+
+    <ul id="dropdownMenu" role="menu" hidden>
+      <li role="none" class="dropdown__item">
+        <a role="menuitem" href="/profile">Profile</a>
+      </li>
+      <li role="none" class="dropdown__item">
+        <a role="menuitem" href="/settings">Settings</a>
+      </li>
+      <li role="none" class="dropdown__item">
+        <a role="menuitem" href="/logout">Log Out</a>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    const trigger = document.getElementById('dropdownTrigger');
+    const menu    = document.getElementById('dropdownMenu');
+
+    function getItems() {
+      return Array.from(menu.querySelectorAll('[role="menuitem"]'));
+    }
+
+    function openMenu() {
+      trigger.setAttribute('aria-expanded', 'true');
+      menu.removeAttribute('hidden');
+      getItems()[0].focus();
+    }
+
+    function closeMenu() {
+      trigger.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('hidden', '');
+      trigger.focus();
+    }
+
+    trigger.addEventListener('click', () => {
+      trigger.getAttribute('aria-expanded') === 'true' ? closeMenu() : openMenu();
+    });
+
+    menu.addEventListener('keydown', (e) => {
+      const items = getItems();
+      const idx   = items.indexOf(document.activeElement);
+
+      if (e.key === 'Escape') { closeMenu(); return; }
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        items[(idx + 1) % items.length].focus();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        items[(idx - 1 + items.length) % items.length].focus();
+      } else if (e.key === 'Tab') {
+        if (!e.shiftKey && idx === items.length - 1) {
+          e.preventDefault(); items[0].focus();
+        } else if (e.shiftKey && idx === 0) {
+          e.preventDefault(); items[items.length - 1].focus();
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!trigger.contains(e.target) && !menu.contains(e.target)) {
+        if (trigger.getAttribute('aria-expanded') === 'true') closeMenu();
+      }
+    });
+  </script>
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: Clicking the button opens the dropdown and moves keyboard focus to the first item. Arrow keys navigate between items. Escape closes the menu and returns focus to the button. Clicking outside the menu also closes it. Screen readers announce the button's expanded state correctly.
+
+</details>
 
 **Why it matters:** Approximately 15% of the world's population has some form of disability. Accessible websites are not just a moral imperative — they are often a legal requirement (ADA, WCAG 2.2 AA, EAA in Europe).
 
@@ -2082,10 +2971,116 @@ SVG provides resolution-independent graphics that look sharp on any screen. They
   </text>
 </svg>
 
-<!-- EXERCISE: Create an SVG bar chart showing monthly revenue -->
-<!-- data for 6 months. Use <rect> for bars, <text> for labels, -->
-<!-- and CSS for colors. Add a hover highlight effect. -->
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. SVG bar chart**
+Create an inline SVG bar chart showing monthly revenue data for 6 months. Use \`<rect>\` for bars, \`<text>\` for month labels and value labels, and CSS for colors. Add a hover highlight effect using CSS.
+
+<details>
+<summary>Hint</summary>
+
+In SVG, the Y axis increases downward. To make a bar grow upward from the baseline, set \`y\` to \`(chartHeight - barHeight)\` and \`height\` to \`barHeight\`. Use \`<title>\` inside each bar group for screen reader accessibility. The \`viewBox\` defines the coordinate space — you can use any units you like.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revenue Bar Chart</title>
+  <style>
+    .bar { fill: #3b82f6; transition: fill 150ms ease; }
+    .bar:hover { fill: #1d4ed8; }
+    .label { font-family: sans-serif; font-size: 12px; fill: #4b5563; }
+    .value { font-family: sans-serif; font-size: 11px; fill: #1f2937; }
+  </style>
+</head>
+<body>
+  <figure>
+    <figcaption>Monthly Revenue (USD thousands) — 2026</figcaption>
+
+    <!--
+      viewBox: 0 0 420 260
+      Chart area: x=40 to 400, y=20 to 200 (baseline)
+      Bar width: 40px, gap: ~16px
+    -->
+    <svg viewBox="0 0 420 260" width="420" height="260"
+         xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Bar chart of monthly revenue for 6 months">
+
+      <!-- Y-axis baseline -->
+      <line x1="40" y1="200" x2="400" y2="200"
+            stroke="#e5e7eb" stroke-width="1" />
+
+      <!-- January: $42k, bar height=84 -->
+      <g>
+        <rect class="bar" x="50" y="116" width="40" height="84" rx="3">
+          <title>January: $42,000</title>
+        </rect>
+        <text class="value" x="70" y="110" text-anchor="middle">42k</text>
+        <text class="label" x="70" y="218" text-anchor="middle">Jan</text>
+      </g>
+
+      <!-- February: $55k, bar height=110 -->
+      <g>
+        <rect class="bar" x="110" y="90" width="40" height="110" rx="3">
+          <title>February: $55,000</title>
+        </rect>
+        <text class="value" x="130" y="84" text-anchor="middle">55k</text>
+        <text class="label" x="130" y="218" text-anchor="middle">Feb</text>
+      </g>
+
+      <!-- March: $48k, bar height=96 -->
+      <g>
+        <rect class="bar" x="170" y="104" width="40" height="96" rx="3">
+          <title>March: $48,000</title>
+        </rect>
+        <text class="value" x="190" y="98" text-anchor="middle">48k</text>
+        <text class="label" x="190" y="218" text-anchor="middle">Mar</text>
+      </g>
+
+      <!-- April: $72k, bar height=144 -->
+      <g>
+        <rect class="bar" x="230" y="56" width="40" height="144" rx="3">
+          <title>April: $72,000</title>
+        </rect>
+        <text class="value" x="250" y="50" text-anchor="middle">72k</text>
+        <text class="label" x="250" y="218" text-anchor="middle">Apr</text>
+      </g>
+
+      <!-- May: $68k, bar height=136 -->
+      <g>
+        <rect class="bar" x="290" y="64" width="40" height="136" rx="3">
+          <title>May: $68,000</title>
+        </rect>
+        <text class="value" x="310" y="58" text-anchor="middle">68k</text>
+        <text class="label" x="310" y="218" text-anchor="middle">May</text>
+      </g>
+
+      <!-- June: $85k, bar height=170 -->
+      <g>
+        <rect class="bar" x="350" y="30" width="40" height="170" rx="3">
+          <title>June: $85,000</title>
+        </rect>
+        <text class="value" x="370" y="24" text-anchor="middle">85k</text>
+        <text class="label" x="370" y="218" text-anchor="middle">Jun</text>
+      </g>
+    </svg>
+  </figure>
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: A bar chart renders with six blue bars of varying heights representing monthly revenue. Month names appear below each bar and revenue values appear above. Hovering a bar darkens it to a deeper blue.
+
+</details>
 
 **Why it matters:** SVG icons are smaller than icon fonts, can be individually styled and animated, and provide better accessibility. SVG illustrations scale perfectly on retina displays.
 
@@ -2215,9 +3210,137 @@ Building on Grid fundamentals, advanced techniques include subgrid, named grid l
   padding: var(--space-4);
 }
 
-/* EXERCISE: Build a Kanban board layout with Grid for the */
-/* columns and Flexbox for the vertically stacked cards. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Kanban board layout**
+Build a Kanban board with three columns (To Do, In Progress, Done) using CSS Grid for the column layout and Flexbox for the vertically stacked cards within each column. Each card should display a title, a label badge, and an assignee name.
+
+<details>
+<summary>Hint</summary>
+
+Give the board container \`display: grid; grid-template-columns: repeat(3, 1fr);\`. Each column is a flex container with \`flex-direction: column\` and \`gap\` between cards. The column itself can also be a flex container so a footer button sticks to the bottom using \`margin-top: auto\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<div class="kanban">
+  <section class="kanban__column">
+    <h2 class="kanban__heading">To Do</h2>
+    <div class="kanban__cards">
+      <article class="kanban-card">
+        <h3 class="kanban-card__title">Design landing page</h3>
+        <span class="kanban-card__label kanban-card__label--design">Design</span>
+        <p class="kanban-card__assignee">Alice</p>
+      </article>
+      <article class="kanban-card">
+        <h3 class="kanban-card__title">Write API docs</h3>
+        <span class="kanban-card__label kanban-card__label--docs">Docs</span>
+        <p class="kanban-card__assignee">Bob</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="kanban__column">
+    <h2 class="kanban__heading">In Progress</h2>
+    <div class="kanban__cards">
+      <article class="kanban-card">
+        <h3 class="kanban-card__title">Implement auth flow</h3>
+        <span class="kanban-card__label kanban-card__label--dev">Dev</span>
+        <p class="kanban-card__assignee">Carol</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="kanban__column">
+    <h2 class="kanban__heading">Done</h2>
+    <div class="kanban__cards">
+      <article class="kanban-card">
+        <h3 class="kanban-card__title">Set up CI pipeline</h3>
+        <span class="kanban-card__label kanban-card__label--dev">Dev</span>
+        <p class="kanban-card__assignee">Dave</p>
+      </article>
+    </div>
+  </section>
+</div>
+\\\`\\\`\\\`
+
+\\\`\\\`\\\`css
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: #f1f5f9;
+  min-height: 100vh;
+  align-items: start;
+}
+
+.kanban__column {
+  background: #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.kanban__heading {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+  margin-bottom: 0.75rem;
+}
+
+.kanban__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.kanban-card {
+  background: white;
+  border-radius: 6px;
+  padding: 0.875rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.kanban-card__title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+}
+
+.kanban-card__label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  margin-bottom: 0.5rem;
+}
+
+.kanban-card__label--design { background: #ede9fe; color: #5b21b6; }
+.kanban-card__label--docs   { background: #fef9c3; color: #854d0e; }
+.kanban-card__label--dev    { background: #dbeafe; color: #1e40af; }
+
+.kanban-card__assignee {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: 0;
+}
+\\\`\\\`\\\`
+
+Expected result: A three-column Kanban board renders against a light grey background. Each column contains cards stacked vertically. Cards have white backgrounds, colored label badges, and a subtle shadow. The columns are equal width and span the full page.
+
+</details>
 
 **Why it matters:** Real-world layouts require combining layout tools. Knowing when to use Grid vs. Flexbox (and how to nest them) is what distinguishes mid-level from junior CSS developers.
 
@@ -2342,11 +3465,128 @@ input:not([type="submit"]):not([type="button"]) {
   background: var(--color-gray-100);
 }
 
-/* EXERCISE: Create a pricing table where: */
-/* 1. The middle plan uses :nth-child(2) for emphasis */
-/* 2. Each feature list uses ::before with a checkmark or X */
-/* 3. The :has() selector highlights the hovered card */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Pricing table with pseudo-classes and pseudo-elements**
+Create a three-plan pricing table where: the middle (recommended) plan is visually emphasized using \`:nth-child(2)\`; each feature list uses \`::before\` to prepend a checkmark (✓) or X (✗) depending on a class; and the \`:has()\` selector adds a highlight when a card is hovered.
+
+<details>
+<summary>Hint</summary>
+
+Use \`.plan:nth-child(2)\` to target the middle card without adding a class to the HTML. For feature items, add two classes like \`.feature--included\` and \`.feature--excluded\` and use \`::before\` with \`content: '✓'\` or \`content: '✗'\`. For the \`:has()\` hover, write \`.pricing:has(.plan:hover) .plan:not(:hover)\` to dim the non-hovered cards.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<section class="pricing">
+  <article class="plan">
+    <h2 class="plan__name">Starter</h2>
+    <p class="plan__price">$9<span>/mo</span></p>
+    <ul class="plan__features">
+      <li class="feature feature--included">5 projects</li>
+      <li class="feature feature--included">Basic analytics</li>
+      <li class="feature feature--excluded">Custom domain</li>
+      <li class="feature feature--excluded">Priority support</li>
+    </ul>
+    <a href="/signup?plan=starter" class="plan__cta">Get Started</a>
+  </article>
+
+  <article class="plan">
+    <h2 class="plan__name">Pro</h2>
+    <p class="plan__price">$29<span>/mo</span></p>
+    <ul class="plan__features">
+      <li class="feature feature--included">Unlimited projects</li>
+      <li class="feature feature--included">Advanced analytics</li>
+      <li class="feature feature--included">Custom domain</li>
+      <li class="feature feature--excluded">Priority support</li>
+    </ul>
+    <a href="/signup?plan=pro" class="plan__cta">Get Started</a>
+  </article>
+
+  <article class="plan">
+    <h2 class="plan__name">Enterprise</h2>
+    <p class="plan__price">$99<span>/mo</span></p>
+    <ul class="plan__features">
+      <li class="feature feature--included">Unlimited projects</li>
+      <li class="feature feature--included">Advanced analytics</li>
+      <li class="feature feature--included">Custom domain</li>
+      <li class="feature feature--included">Priority support</li>
+    </ul>
+    <a href="/signup?plan=enterprise" class="plan__cta">Get Started</a>
+  </article>
+</section>
+\\\`\\\`\\\`
+
+\\\`\\\`\\\`css
+.pricing {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  padding: 3rem 1rem;
+  transition: opacity 200ms ease;
+}
+
+.plan {
+  flex: 1;
+  max-width: 300px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 200ms ease, box-shadow 200ms ease, opacity 200ms ease;
+}
+
+/* Emphasise the middle plan */
+.plan:nth-child(2) {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px #3b82f6, 0 8px 24px rgba(59,130,246,0.2);
+  transform: scale(1.04);
+}
+
+/* Feature list */
+.plan__features {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.feature { padding: 0.375rem 0; padding-inline-start: 1.75rem; position: relative; }
+
+.feature::before {
+  position: absolute;
+  inset-inline-start: 0;
+  font-weight: 700;
+}
+
+.feature--included::before { content: '✓'; color: #10b981; }
+.feature--excluded::before { content: '✗'; color: #ef4444; }
+
+/* Dim non-hovered cards when any card is hovered */
+.pricing:has(.plan:hover) .plan:not(:hover) {
+  opacity: 0.6;
+}
+
+.plan__cta {
+  display: block;
+  padding: 0.75rem;
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+\\\`\\\`\\\`
+
+Expected result: Three pricing cards render side by side. The middle Pro card appears slightly larger with a blue border and shadow. Each feature row shows a green checkmark or red X before the text. When you hover any card, the other two fade to 60% opacity, drawing attention to the hovered option.
+
+</details>
 
 **Why it matters:** Pseudo-elements reduce HTML clutter. Advanced pseudo-classes like \\\`:has()\\\` and \\\`:focus-visible\\\` are game-changers that reduce the need for JavaScript.
 
@@ -2422,12 +3662,133 @@ CSS includes powerful built-in functions that enable dynamic calculations, respo
   padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
 }
 
-/* EXERCISE: Create a table of contents component that: */
-/* 1. Automatically numbers chapters and sections using CSS counters */
-/* 2. Uses clamp() for fluid font sizing */
-/* 3. Handles safe-area-inset for mobile devices */
-/* 4. Uses min() for a responsive max-width */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Table of contents with CSS functions**
+Create a table of contents component that: automatically numbers chapters and sections using CSS counters; uses \`clamp()\` for fluid font sizing on headings; uses \`min()\` for a responsive max-width on the container; and applies \`env(safe-area-inset-*)\` padding for mobile devices.
+
+<details>
+<summary>Hint</summary>
+
+Define \`counter-reset: chapter\` on the list container. Use \`counter-increment: chapter\` on each chapter item and \`counter(chapter)\` inside a \`::before\` pseudo-element with \`content\`. For nested sections, define a second counter \`section\` on each chapter item and increment it on section sub-items. Reset \`section\` on each new chapter item.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Table of Contents</title>
+  <style>
+    .toc-wrapper {
+      width: min(680px, 100%);
+      margin-inline: auto;
+      padding-inline: max(1rem, env(safe-area-inset-left));
+      padding-inline-end: max(1rem, env(safe-area-inset-right));
+      padding-block-end: max(1rem, env(safe-area-inset-bottom));
+    }
+
+    .toc-title {
+      font-size: clamp(1.25rem, 3vw, 1.875rem);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Chapters */
+    .toc {
+      counter-reset: chapter;
+      list-style: none;
+      padding: 0;
+    }
+
+    .toc__chapter {
+      counter-increment: chapter;
+      counter-reset: section;
+      margin-bottom: 1.25rem;
+    }
+
+    .toc__chapter-link {
+      font-size: clamp(0.9375rem, 2vw, 1.125rem);
+      font-weight: 600;
+      color: #1e293b;
+      text-decoration: none;
+    }
+
+    .toc__chapter-link::before {
+      content: counter(chapter) ". ";
+      color: #3b82f6;
+    }
+
+    /* Sections nested inside chapters */
+    .toc__sections {
+      list-style: none;
+      padding-inline-start: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .toc__section {
+      counter-increment: section;
+      margin-bottom: 0.375rem;
+    }
+
+    .toc__section-link {
+      font-size: clamp(0.875rem, 1.8vw, 1rem);
+      color: #475569;
+      text-decoration: none;
+    }
+
+    .toc__section-link::before {
+      content: counter(chapter) "." counter(section) " ";
+      color: #94a3b8;
+      font-size: 0.8125rem;
+    }
+
+    .toc__section-link:hover,
+    .toc__chapter-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="toc-wrapper">
+    <h1 class="toc-title">Table of Contents</h1>
+    <ol class="toc">
+      <li class="toc__chapter">
+        <a class="toc__chapter-link" href="#ch1">Introduction to HTML</a>
+        <ol class="toc__sections">
+          <li class="toc__section"><a class="toc__section-link" href="#s1-1">What is HTML?</a></li>
+          <li class="toc__section"><a class="toc__section-link" href="#s1-2">Document Structure</a></li>
+          <li class="toc__section"><a class="toc__section-link" href="#s1-3">Semantic Elements</a></li>
+        </ol>
+      </li>
+      <li class="toc__chapter">
+        <a class="toc__chapter-link" href="#ch2">CSS Fundamentals</a>
+        <ol class="toc__sections">
+          <li class="toc__section"><a class="toc__section-link" href="#s2-1">Selectors</a></li>
+          <li class="toc__section"><a class="toc__section-link" href="#s2-2">The Box Model</a></li>
+        </ol>
+      </li>
+      <li class="toc__chapter">
+        <a class="toc__chapter-link" href="#ch3">Layout Systems</a>
+        <ol class="toc__sections">
+          <li class="toc__section"><a class="toc__section-link" href="#s3-1">Flexbox</a></li>
+          <li class="toc__section"><a class="toc__section-link" href="#s3-2">CSS Grid</a></li>
+          <li class="toc__section"><a class="toc__section-link" href="#s3-3">Responsive Design</a></li>
+        </ol>
+      </li>
+    </ol>
+  </div>
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: A table of contents renders with three chapters automatically numbered 1, 2, 3 by CSS counters. Their sections are numbered 1.1, 1.2, 2.1, 2.2, and so on. All headings scale fluidly with the viewport. On a device with notch or home-bar safe areas, the container respects those insets.
+
+</details>
 
 **Why it matters:** CSS functions replace much of what previously required JavaScript calculations. \\\`clamp()\\\` alone can eliminate most media queries for typography.
 
@@ -2674,9 +4035,168 @@ a:hover { text-decoration: underline; }
 .w-full { width: 100%; }
 .max-w-prose { max-width: 65ch; }
 
-/* EXERCISE: Design a CSS architecture for a medium-sized SaaS */
-/* application. Document your approach and create the first 3 layers. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. CSS architecture for a SaaS application**
+Design a CSS architecture for a medium-sized SaaS application using ITCSS or CUBE CSS. Document your layer decisions in comments and implement the first three layers: settings/tokens, generic reset, and base element styles.
+
+<details>
+<summary>Hint</summary>
+
+Start by declaring your layer order with \`@layer\` so the cascade is explicit. Put all custom properties in the settings layer — no actual CSS output, just variable declarations. The generic layer should contain only the box-sizing reset and any normalize rules. The base layer styles bare HTML elements (\`body\`, headings, \`a\`, \`p\`) with no classes.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`css
+/*
+  CSS Architecture: ITCSS + Cascade Layers
+  Chosen for: medium team, component library, dark mode requirement
+
+  Layer order (lowest to highest priority):
+  1. reset      — normalize browser defaults
+  2. tokens     — design tokens (CSS custom properties)
+  3. base        — bare element styles
+  4. layouts     — page-level layout primitives
+  5. components  — UI component styles
+  6. utilities   — single-purpose override classes
+*/
+
+@layer reset, tokens, base, layouts, components, utilities;
+
+/* ============================================================
+   Layer 1: Reset
+   Goal: Predictable baseline across all browsers.
+   ============================================================ */
+@layer reset {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  img, video, svg { display: block; max-width: 100%; }
+  input, button, textarea, select { font: inherit; }
+}
+
+/* ============================================================
+   Layer 2: Tokens
+   Goal: Single source of truth for all design values.
+   ============================================================ */
+@layer tokens {
+  :root {
+    /* Colour — global scale */
+    --global-blue-500: #3b82f6;
+    --global-blue-600: #2563eb;
+    --global-gray-50:  #f9fafb;
+    --global-gray-200: #e5e7eb;
+    --global-gray-700: #374151;
+    --global-gray-900: #111827;
+    --global-red-500:  #ef4444;
+    --global-green-500:#10b981;
+
+    /* Colour — semantic aliases */
+    --color-bg:           var(--global-gray-50);
+    --color-surface:      white;
+    --color-text:         var(--global-gray-900);
+    --color-text-muted:   var(--global-gray-700);
+    --color-action:       var(--global-blue-600);
+    --color-border:       var(--global-gray-200);
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'Fira Code', monospace;
+    --text-sm:   0.875rem;
+    --text-base: 1rem;
+    --text-lg:   1.125rem;
+    --text-xl:   1.25rem;
+    --text-2xl:  1.5rem;
+    --text-4xl:  2.25rem;
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+
+    /* Shape */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+
+    /* Shadow */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+  }
+
+  /* Dark theme */
+  [data-theme="dark"] {
+    --color-bg:         #111827;
+    --color-surface:    #1f2937;
+    --color-text:       #f9fafb;
+    --color-text-muted: #d1d5db;
+    --color-border:     #374151;
+  }
+}
+
+/* ============================================================
+   Layer 3: Base
+   Goal: Opinionated element defaults using only tag selectors.
+   ============================================================ */
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  h1 { font-size: clamp(var(--text-2xl), 5vw, var(--text-4xl)); }
+  h2 { font-size: var(--text-2xl); }
+  h3 { font-size: var(--text-xl); }
+
+  a { color: var(--color-action); }
+  a:hover { text-decoration: underline; }
+
+  p { margin-block-end: var(--space-4); }
+  p:last-child { margin-block-end: 0; }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--color-border);
+    padding: 0.1em 0.35em;
+    border-radius: var(--radius-sm);
+  }
+}
+\\\`\\\`\\\`
+
+Expected result: No visible UI — these are architectural CSS rules. In a project, this file is imported first and every subsequent stylesheet builds on these token values and base styles. Adding \`data-theme="dark"\` to \`<html>\` switches the page to dark mode automatically.
+
+</details>
 
 **Why it matters:** CSS architecture determines how quickly your team can ship features and how maintainable your codebase remains at scale.
 
@@ -2763,9 +4283,110 @@ Container queries are a paradigm shift in responsive design. Instead of adapting
   .card { background: var(--color-gray-800); color: var(--color-gray-100); }
 }
 
-/* EXERCISE: Build a responsive dashboard widget that adapts */
-/* at 300px, 500px container widths using container queries only. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Container query dashboard widget**
+Build a stats widget that adapts its layout using container queries only (no media queries). Below 300px it shows a single stacked column. At 300–499px it shows a 2-column grid. At 500px and above it shows a horizontal row with icon, metric, and trend side by side.
+
+<details>
+<summary>Hint</summary>
+
+Wrap the widget in a container element and set \`container-type: inline-size\` on it. Write \`@container (min-width: 300px)\` and \`@container (min-width: 500px)\` rules. Because container queries respond to the container — not the viewport — the same widget component can be placed in a narrow sidebar or a wide main area and will adapt accordingly.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<div class="widget-container">
+  <div class="stat-widget">
+    <div class="stat-widget__icon" aria-hidden="true">📈</div>
+    <div class="stat-widget__body">
+      <p class="stat-widget__label">Monthly Revenue</p>
+      <p class="stat-widget__value">$84,320</p>
+    </div>
+    <div class="stat-widget__trend stat-widget__trend--up">
+      +12.4% vs last month
+    </div>
+  </div>
+</div>
+\\\`\\\`\\\`
+
+\\\`\\\`\\\`css
+/* Establish containment context */
+.widget-container {
+  container-type: inline-size;
+  container-name: widget;
+}
+
+/* Base styles: single column (narrow) */
+.stat-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.stat-widget__icon { font-size: 2rem; }
+
+.stat-widget__label {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.stat-widget__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.stat-widget__trend {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.stat-widget__trend--up   { color: #10b981; }
+.stat-widget__trend--down { color: #ef4444; }
+
+/* 2-column grid at 300px+ */
+@container widget (min-width: 300px) {
+  .stat-widget {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .stat-widget__icon { grid-row: span 2; align-self: center; }
+  .stat-widget__trend { grid-column: 2; }
+}
+
+/* Horizontal row at 500px+ */
+@container widget (min-width: 500px) {
+  .stat-widget {
+    grid-template-columns: 3.5rem 1fr auto;
+    grid-template-rows: auto;
+    align-items: center;
+  }
+
+  .stat-widget__icon  { grid-row: 1; }
+  .stat-widget__body  { grid-column: 2; }
+  .stat-widget__trend { grid-column: 3; grid-row: 1; text-align: right; }
+}
+\\\`\\\`\\\`
+
+Expected result: Place the widget inside different width containers to see it adapt. In a narrow sidebar (under 300px) it stacks vertically. Between 300–499px it uses a two-column layout with the icon spanning both rows. At 500px and wider it spreads into a single horizontal row. No media queries are involved — the widget responds to its own container width.
+
+</details>
 
 **Why it matters:** Container queries solve the "component reusability" problem that media queries cannot. A card that adapts to its container works everywhere without modification.
 
@@ -2847,9 +4468,108 @@ Container queries are a paradigm shift in responsive design. Instead of adapting
   This is by design — it provides an escape hatch.
 */
 
-/* EXERCISE: Refactor a project's CSS into cascade layers */
-/* handling reset, third-party, base, layouts, components, utilities. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Refactor CSS into cascade layers**
+Take the flat CSS below and refactor it into named cascade layers: \`reset\`, \`third-party\`, \`base\`, \`layouts\`, \`components\`, \`utilities\`. Declare the layer order first so their priority is explicit and does not depend on source order.
+
+Flat CSS to refactor:
+
+\\\`\\\`\\\`css
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: sans-serif; line-height: 1.5; }
+h1 { font-size: 2rem; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+.grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.card { background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.btn { padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+.btn--primary { background: #3b82f6; color: white; border: none; }
+.text-center { text-align: center !important; }
+.hidden { display: none !important; }
+\\\`\\\`\\\`
+
+<details>
+<summary>Hint</summary>
+
+Declare all layer names on a single \`@layer\` line at the top of the file in the order you want (later = higher priority). Then wrap each rule set in its appropriate \`@layer name { ... }\` block. Utilities should be last so they can override components. The \`!important\` in utility classes is no longer needed once they are in the highest-priority layer — but keeping it is not wrong.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`css
+/* Declare priority order — later layers win */
+@layer reset, third-party, base, layouts, components, utilities;
+
+@layer reset {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* third-party would be populated via @import ... layer(third-party) */
+@layer third-party {}
+
+@layer base {
+  body {
+    font-family: sans-serif;
+    line-height: 1.5;
+  }
+
+  h1 { font-size: 2rem; }
+}
+
+@layer layouts {
+  .container {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  .grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@layer components {
+  .card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn--primary {
+    background: #3b82f6;
+    color: white;
+    border: none;
+  }
+}
+
+@layer utilities {
+  /* In the top-priority layer, !important is optional */
+  .text-center { text-align: center; }
+  .hidden { display: none; }
+}
+\\\`\\\`\\\`
+
+Expected result: The CSS produces identical visual output to the original flat CSS. The key difference is architectural: the \`utilities\` layer now reliably overrides \`components\` regardless of selector specificity or source order. Third-party CSS imported into the \`third-party\` layer can never accidentally override your component or utility styles.
+
+</details>
 
 **Why it matters:** Cascade layers solve the specificity management problem that has plagued CSS since its inception. They are critical for large codebases and design systems.
 
@@ -2960,9 +4680,99 @@ body { font-family: 'Inter', 'Inter-fallback', sans-serif; }
 
 .complex-animation { isolation: isolate; }
 
-/* EXERCISE: Audit a real website using DevTools Performance tab. */
-/* Identify CSS-caused layout shifts and document fixes. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. CSS performance audit**
+Audit the CSS patterns below. Identify which ones cause layout (reflow), which cause paint, and which are compositor-only. Rewrite the problematic animation to use only compositor-accelerated properties.
+
+Patterns to audit:
+
+\\\`\\\`\\\`css
+/* Pattern A */
+.drawer { transition: width 300ms ease; }
+.drawer.open { width: 280px; }
+
+/* Pattern B */
+.fade { transition: opacity 300ms ease; }
+.fade.visible { opacity: 1; }
+
+/* Pattern C */
+.slide { transition: top 300ms ease; position: relative; top: -100%; }
+.slide.visible { top: 0; }
+
+/* Pattern D */
+.loader { animation: spin 0.8s linear infinite; }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+\\\`\\\`\\\`
+
+<details>
+<summary>Hint</summary>
+
+Properties that change geometry (width, height, top, left, margin, padding) trigger layout recalculation on every frame — this is the most expensive path. Properties that change appearance without geometry (color, background, box-shadow) trigger paint. Only \`transform\` and \`opacity\` bypass both layout and paint and run entirely on the GPU compositor thread.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`css
+/*
+  Pattern A — triggers LAYOUT (reflow) on every frame.
+  "width" changes cause the browser to recalculate the positions
+  of all surrounding elements on every animation frame.
+  Fix: use transform: scaleX() or translate instead.
+*/
+.drawer {
+  transform: translateX(-280px);
+  transition: transform 300ms ease;
+  width: 280px; /* set once, not animated */
+}
+.drawer.open { transform: translateX(0); }
+
+/*
+  Pattern B — compositor only. opacity is GPU-accelerated.
+  No change needed.
+*/
+.fade { opacity: 0; transition: opacity 300ms ease; }
+.fade.visible { opacity: 1; }
+
+/*
+  Pattern C — triggers LAYOUT on every frame.
+  "top" on a positioned element forces reflow.
+  Fix: use transform: translateY() instead.
+*/
+.slide {
+  transform: translateY(-100%);
+  transition: transform 300ms ease;
+}
+.slide.visible { transform: translateY(0); }
+
+/*
+  Pattern D — compositor only. transform: rotate() is GPU-accelerated.
+  No change needed.
+*/
+.loader { animation: spin 0.8s linear infinite; }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/*
+  Summary:
+  Layout (expensive):  width, height, top, left, margin, padding
+  Paint (moderate):    color, background, border-color, box-shadow
+  Composite (free):    transform, opacity
+*/
+\\\`\\\`\\\`
+
+Expected result: After the refactor, Patterns A and C no longer trigger layout recalculation. The DevTools Performance flame chart shows no "Layout" entries during those animations. Patterns B and D were already optimal and required no changes.
+
+</details>
 
 **Why it matters:** A 100ms increase in load time can reduce conversions by 7%. CSS performance directly affects LCP and CLS.
 
@@ -3100,10 +4910,166 @@ Design tokens are the atomic values of a design system — colors, typography, s
   }
 */
 
-/* EXERCISE: Design a complete token architecture for a SaaS product */
-/* with color, typography, spacing, radius, and shadow scales. */
-/* Include semantic aliases and a dark theme. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Complete design token architecture**
+Design a three-tier token architecture for a SaaS product. Tier 1 is the global scale (raw values for color, typography, spacing, radius, and shadow). Tier 2 is semantic aliases (surface, text, action, border). Tier 3 is component-level tokens scoped to a \`.c-input\` component. Include a dark theme that only overrides Tier 2 tokens.
+
+<details>
+<summary>Hint</summary>
+
+Use a naming convention like \`--global-color-blue-500\` for Tier 1, \`--color-action-primary\` for Tier 2, and \`--_input-border\` (leading underscore signals private/component scope) for Tier 3. Dark theme should be applied with \`[data-theme="dark"]\` on \`<html>\` and should only redeclare Tier 2 aliases — never Tier 1 raw values.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`css
+/* ==========================================================
+   TIER 1 — Global tokens (raw values, never used directly)
+   ========================================================== */
+:root {
+  /* Colour scale */
+  --global-blue-50:   #eff6ff;
+  --global-blue-500:  #3b82f6;
+  --global-blue-600:  #2563eb;
+  --global-blue-700:  #1d4ed8;
+  --global-gray-50:   #f9fafb;
+  --global-gray-100:  #f3f4f6;
+  --global-gray-200:  #e5e7eb;
+  --global-gray-600:  #4b5563;
+  --global-gray-900:  #111827;
+  --global-red-500:   #ef4444;
+  --global-green-500: #10b981;
+  --global-white:     #ffffff;
+
+  /* Typography */
+  --global-font-sans: 'Inter', system-ui, sans-serif;
+  --global-font-mono: 'Fira Code', monospace;
+  --global-text-xs:   0.75rem;
+  --global-text-sm:   0.875rem;
+  --global-text-base: 1rem;
+  --global-text-lg:   1.125rem;
+  --global-text-xl:   1.25rem;
+  --global-text-2xl:  1.5rem;
+  --global-text-4xl:  2.25rem;
+  --global-weight-normal:   400;
+  --global-weight-semibold: 600;
+  --global-weight-bold:     700;
+
+  /* Spacing */
+  --global-space-1: 0.25rem;
+  --global-space-2: 0.5rem;
+  --global-space-3: 0.75rem;
+  --global-space-4: 1rem;
+  --global-space-6: 1.5rem;
+  --global-space-8: 2rem;
+
+  /* Radius */
+  --global-radius-sm:   4px;
+  --global-radius-md:   8px;
+  --global-radius-lg:   12px;
+  --global-radius-full: 9999px;
+
+  /* Shadow */
+  --global-shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --global-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+  --global-shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+/* ==========================================================
+   TIER 2 — Semantic aliases (light theme default)
+   ========================================================== */
+:root {
+  --color-bg-page:       var(--global-gray-50);
+  --color-bg-surface:    var(--global-white);
+  --color-bg-subtle:     var(--global-gray-100);
+
+  --color-text-primary:  var(--global-gray-900);
+  --color-text-secondary:var(--global-gray-600);
+  --color-text-inverse:  var(--global-white);
+  --color-text-disabled: var(--global-gray-200);
+
+  --color-action-primary:      var(--global-blue-600);
+  --color-action-primary-hover:var(--global-blue-700);
+  --color-action-primary-subtle:var(--global-blue-50);
+
+  --color-feedback-error:   var(--global-red-500);
+  --color-feedback-success: var(--global-green-500);
+
+  --color-border-default: var(--global-gray-200);
+  --color-border-focus:   var(--global-blue-500);
+  --color-border-error:   var(--global-red-500);
+
+  --shadow-card: var(--global-shadow-sm);
+  --radius-card: var(--global-radius-md);
+}
+
+/* Dark theme — only Tier 2 aliases change */
+[data-theme="dark"] {
+  --color-bg-page:        #0f172a;
+  --color-bg-surface:     #1e293b;
+  --color-bg-subtle:      #334155;
+
+  --color-text-primary:   var(--global-gray-50);
+  --color-text-secondary: #94a3b8;
+  --color-text-disabled:  #475569;
+
+  --color-border-default: #334155;
+  --color-border-focus:   var(--global-blue-500);
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* ==========================================================
+   TIER 3 — Component tokens (.c-input)
+   Leading underscore = private to this component.
+   ========================================================== */
+.c-input {
+  --_input-height:      2.5rem;
+  --_input-padding-x:   var(--global-space-3);
+  --_input-border:      1px solid var(--color-border-default);
+  --_input-border-focus:2px solid var(--color-border-focus);
+  --_input-radius:      var(--global-radius-md);
+  --_input-bg:          var(--color-bg-surface);
+  --_input-text:        var(--color-text-primary);
+  --_input-placeholder: var(--color-text-secondary);
+
+  height: var(--_input-height);
+  padding-inline: var(--_input-padding-x);
+  border: var(--_input-border);
+  border-radius: var(--_input-radius);
+  background: var(--_input-bg);
+  color: var(--_input-text);
+  font-size: var(--global-text-base);
+  width: 100%;
+  outline: none;
+}
+
+.c-input::placeholder { color: var(--_input-placeholder); }
+
+.c-input:focus {
+  border: var(--_input-border-focus);
+}
+
+.c-input[aria-invalid="true"] {
+  --_input-border: 1px solid var(--color-border-error);
+  --_input-border-focus: 2px solid var(--color-border-error);
+}
+
+.c-input:disabled {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+\\\`\\\`\\\`
+
+Expected result: No visual output from the token declarations alone. When the \`.c-input\` component is applied to an \`<input>\` element it renders a styled text field that automatically adapts to light and dark themes. Changing \`--global-blue-600\` in Tier 1 updates the focus ring color across the entire system without touching any component styles.
+
+</details>
 
 **Why it matters:** Design tokens ensure consistency across platforms and enable theming. They are the single source of truth for a design system.
 
@@ -3197,10 +5163,83 @@ body:has(.sidebar.is-collapsed) .main-content { grid-column: 1 / -1; }
   on elements appearing thousands of times.
 */
 
-/* EXERCISE: Refactor these selectors using :is(), :where(), :has(): */
-/*   div.container > ul > li.active > a.link:hover { } */
-/*   .nav a:hover, .nav a:focus, .nav a:active { } */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Refactor selectors with :is(), :where(), and :has()**
+Refactor the selectors below. Use \`:is()\` or \`:where()\` to reduce repetition, and \`:has()\` where appropriate. For each refactored selector, note the new specificity score.
+
+Original selectors to refactor:
+
+\\\`\\\`\\\`css
+/* A */
+div.container > ul > li.active > a.link:hover { color: blue; }
+
+/* B */
+.nav a:hover, .nav a:focus, .nav a:active { color: white; }
+
+/* C */
+.header a:hover, .header a:focus,
+.footer a:hover, .footer a:focus,
+.sidebar a:hover, .sidebar a:focus { text-decoration: underline; }
+
+/* D — flag a form-group that contains an invalid input */
+.form-group input:invalid { border: 2px solid red; }
+\\\`\\\`\\\`
+
+<details>
+<summary>Hint</summary>
+
+For selector A, the deep descendant chain \`div.container > ul > li.active > a.link:hover\` has high specificity (0,3,3). Flattening it with a single BEM class + \`:is()\` on states reduces both verbosity and specificity. For selector D, \`:has(:invalid)\` on the parent \`.form-group\` lets you style the container rather than just the input.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`css
+/* A — original specificity: (0, 3, 3) */
+/* Refactored: target only the meaningful parts */
+/* Using :is() for the interactive state */
+.container .nav-link--active:is(:hover, :focus) {
+  color: blue;
+  /* Specificity: (0, 2, 0) — much lower, easier to override */
+}
+
+/* B — original: three identical rules */
+/* Refactored: :is() collapses them into one */
+.nav a:is(:hover, :focus, :active) {
+  color: white;
+  /* Specificity: (0, 2, 0) — same as .nav a:hover */
+}
+
+/* C — original: six rules across three selectors */
+/* Refactored: :is() for both the containers and the states */
+:is(.header, .footer, .sidebar) a:is(:hover, :focus) {
+  text-decoration: underline;
+  /* Specificity: (0, 2, 0) — :is() takes the highest in the list */
+}
+
+/* Use :where() for zero-specificity base styles that are easy to override */
+:where(.header, .footer, .sidebar) a:where(:hover, :focus) {
+  text-decoration: underline;
+  /* Specificity: (0, 0, 0) — any class selector can override this */
+}
+
+/* D — original: styles the input itself */
+/* Refactored with :has() — styles the parent container */
+.form-group:has(input:invalid) {
+  border-left: 3px solid red;
+  padding-inline-start: 0.75rem;
+  /* Now the entire form group is flagged, not just the input */
+  /* Specificity: (0, 2, 0) */
+}
+\\\`\\\`\\\`
+
+Expected result: All refactored selectors produce the same visual result as the originals. The \`:is()\` versions reduce line count by 60%. The \`:where()\` version produces zero-specificity base styles that any downstream class can override without \`!important\`. The \`:has()\` version enables styling the parent \`.form-group\` based on its child's validity state.
+
+</details>
 
 **Why it matters:** \\\`:is()\\\`, \\\`:where()\\\`, and \\\`:has()\\\` are the biggest selector additions in a decade, drastically reducing repetition and enabling patterns that previously required JavaScript.
 
@@ -3347,9 +5386,159 @@ CSS is evolving rapidly. These cutting-edge features are shipping in browsers no
   to { --_header-height: 56px; box-shadow: var(--global-shadow-md); }
 }
 
-/* EXERCISE: Build a storytelling page with scroll-driven animations */
-/* for revealing sections, fading backgrounds, and a progress bar. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Scroll-driven animations storytelling page**
+Build a storytelling page with three scroll-driven effects using only CSS: a reading progress bar at the top of the page, sections that fade and slide in as they enter the viewport, and a hero background that moves at a slower rate than the scroll (parallax).
+
+<details>
+<summary>Hint</summary>
+
+Use \`animation-timeline: scroll()\` for the progress bar (tied to the document scroll). Use \`animation-timeline: view()\` with \`animation-range\` for the reveal animations (tied to element visibility). For parallax, also use \`scroll()\` with a \`translateY\` keyframe that moves the element a fraction of the scroll distance. All three require no JavaScript.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scroll Story</title>
+  <style>
+    /* ---- Progress bar ---- */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #3b82f6;
+      transform-origin: left center;
+      transform: scaleX(0);
+      animation: grow-progress linear both;
+      animation-timeline: scroll(root block);
+      z-index: 1000;
+    }
+
+    @keyframes grow-progress {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+
+    /* ---- Base layout ---- */
+    body { margin: 0; font-family: sans-serif; }
+
+    .hero {
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---- Parallax hero background ---- */
+    .hero__bg {
+      position: absolute;
+      inset: -20%;
+      background: linear-gradient(135deg, #1e3a5f, #3b82f6);
+      animation: parallax linear both;
+      animation-timeline: scroll(root block);
+    }
+
+    @keyframes parallax {
+      from { transform: translateY(0); }
+      to   { transform: translateY(20%); }
+    }
+
+    .hero__text {
+      position: relative;
+      color: white;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .hero__text h1 { font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 1rem; }
+
+    /* ---- Scroll-reveal sections ---- */
+    .section {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 50%;
+    }
+
+    @keyframes reveal-up {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .progress-bar,
+      .hero__bg,
+      .reveal {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" aria-hidden="true"></div>
+
+  <section class="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__text">
+      <h1>Scroll to Explore</h1>
+      <p>A CSS-only scroll-driven experience.</p>
+    </div>
+  </section>
+
+  <main>
+    <article class="section">
+      <div class="reveal">
+        <h2>Chapter One</h2>
+        <p>This section fades and slides in as it enters the viewport.
+           No JavaScript required — only CSS scroll-driven animations.</p>
+      </div>
+    </article>
+
+    <article class="section">
+      <div class="reveal">
+        <h2>Chapter Two</h2>
+        <p>Each section animates independently as you scroll it into view.
+           The progress bar at the top tracks how far you've read.</p>
+      </div>
+    </article>
+
+    <article class="section">
+      <div class="reveal">
+        <h2>Chapter Three</h2>
+        <p>Users who prefer reduced motion see the content immediately
+           without animation, thanks to the media query at the bottom.</p>
+      </div>
+    </article>
+  </main>
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: A blue progress bar grows from left to right as you scroll the page. The hero background moves more slowly than the scroll, creating a parallax depth effect. Each article section starts invisible and slides up into view as it enters the viewport. Users with reduced-motion preferences set in their OS see static content without any animation.
+
+</details>
 
 ### Additional Modern Features
 
@@ -3387,10 +5576,270 @@ CSS is evolving rapidly. These cutting-edge features are shipping in browsers no
   translate: -50% 8px;
 }
 
-/* EXERCISE: Create a page showcasing 5 modern CSS features: */
-/* nesting, color-mix(), container queries, scroll-driven */
-/* animations, and view transitions. */
 \\\`\\\`\\\`
+
+### Exercises
+
+**1. Modern CSS features showcase**
+Create a single page that demonstrates five modern CSS features in isolated, labeled sections: native CSS nesting, \`color-mix()\`, container queries, scroll-driven animations, and the View Transitions API triggered by a JavaScript button click.
+
+<details>
+<summary>Hint</summary>
+
+For native nesting, write selectors inside a rule block using \`&\` for the parent reference. For \`color-mix()\`, combine a brand color with black or white to create hover states without hardcoding a second hex value. For view transitions, wrap the DOM change in \`document.startViewTransition(() => { ... })\` and use \`::view-transition-old\` / \`::view-transition-new\` pseudos to define the animation.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\\\`\\\`\\\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern CSS Showcase</title>
+  <style>
+    :root {
+      --brand: #3b82f6;
+      font-family: sans-serif;
+    }
+
+    body { margin: 0; padding: 2rem; background: #f9fafb; }
+    h2 { margin-bottom: 1rem; }
+    .demo { margin-bottom: 4rem; }
+
+    /* ================================================
+       1. Native CSS Nesting
+       ================================================ */
+    .nested-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: box-shadow 200ms ease;
+
+      & .nested-card__title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.5rem;
+      }
+
+      & p { color: #6b7280; }
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+
+      @media (min-width: 640px) {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+      }
+    }
+
+    /* ================================================
+       2. color-mix()
+       ================================================ */
+    .color-mix-btn {
+      background: var(--brand);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 200ms ease;
+    }
+
+    .color-mix-btn:hover {
+      background: color-mix(in oklch, var(--brand) 80%, black);
+    }
+
+    .color-mix-btn:active {
+      background: color-mix(in oklch, var(--brand) 60%, black);
+    }
+
+    .color-swatch {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .swatch {
+      width: 80px;
+      height: 40px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .swatch--100 { background: color-mix(in oklch, var(--brand) 20%, white); color: #1e40af; }
+    .swatch--300 { background: color-mix(in oklch, var(--brand) 60%, white); }
+    .swatch--500 { background: var(--brand); }
+    .swatch--700 { background: color-mix(in oklch, var(--brand) 70%, black); }
+    .swatch--900 { background: color-mix(in oklch, var(--brand) 30%, black); }
+
+    /* ================================================
+       3. Container Queries
+       ================================================ */
+    .cq-wrapper {
+      container-type: inline-size;
+      container-name: showcase;
+      resize: horizontal;
+      overflow: hidden;
+      border: 2px dashed #d1d5db;
+      border-radius: 8px;
+      padding: 1rem;
+      min-width: 200px;
+      max-width: 100%;
+    }
+
+    .cq-card {
+      background: white;
+      border-radius: 6px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    @container showcase (min-width: 400px) {
+      .cq-card {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    /* ================================================
+       4. Scroll-Driven Animation (progress bar)
+       ================================================ */
+    .scroll-progress {
+      position: sticky;
+      top: 0;
+      height: 4px;
+      background: var(--brand);
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: fill-bar linear both;
+      animation-timeline: scroll(root block);
+    }
+
+    @keyframes fill-bar {
+      to { transform: scaleX(1); }
+    }
+
+    /* ================================================
+       5. View Transitions
+       ================================================ */
+    .vt-box {
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      background: var(--brand);
+      view-transition-name: demo-box;
+    }
+
+    .vt-box.is-circle { border-radius: 50%; background: #10b981; }
+
+    ::view-transition-old(demo-box) {
+      animation: vt-out 300ms ease both;
+    }
+
+    ::view-transition-new(demo-box) {
+      animation: vt-in 300ms ease both;
+    }
+
+    @keyframes vt-out {
+      to { opacity: 0; transform: scale(0.8); }
+    }
+
+    @keyframes vt-in {
+      from { opacity: 0; transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scroll-progress" aria-hidden="true"></div>
+
+  <h1>Modern CSS Features Showcase</h1>
+
+  <!-- 1. Nesting -->
+  <section class="demo">
+    <h2>1. Native CSS Nesting</h2>
+    <div class="nested-card">
+      <div class="nested-card__title">Nesting Demo</div>
+      <p>Child selectors and media queries are written inside the parent rule using &amp; notation.</p>
+    </div>
+  </section>
+
+  <!-- 2. color-mix() -->
+  <section class="demo">
+    <h2>2. color-mix()</h2>
+    <button class="color-mix-btn">Hover me for a mixed hover color</button>
+    <div class="color-swatch">
+      <div class="swatch swatch--100">100</div>
+      <div class="swatch swatch--300">300</div>
+      <div class="swatch swatch--500">500</div>
+      <div class="swatch swatch--700">700</div>
+      <div class="swatch swatch--900">900</div>
+    </div>
+  </section>
+
+  <!-- 3. Container Queries -->
+  <section class="demo">
+    <h2>3. Container Queries</h2>
+    <p>Drag the right edge of the dashed box to resize it.</p>
+    <div class="cq-wrapper">
+      <div class="cq-card">
+        <strong>Container-aware card</strong>
+        <span>Stacks below 400px, horizontal above.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Scroll-Driven (see progress bar at top) -->
+  <section class="demo">
+    <h2>4. Scroll-Driven Animation</h2>
+    <p>The blue bar at the very top of this page grows as you scroll — no JavaScript.</p>
+  </section>
+
+  <!-- 5. View Transitions -->
+  <section class="demo">
+    <h2>5. View Transitions</h2>
+    <div id="vtBox" class="vt-box" aria-live="polite"></div>
+    <button onclick="toggleShape()" style="margin-top:1rem;padding:0.5rem 1rem;cursor:pointer;">
+      Toggle Shape
+    </button>
+  </section>
+
+  <script>
+    function toggleShape() {
+      if (!document.startViewTransition) {
+        document.getElementById('vtBox').classList.toggle('is-circle');
+        return;
+      }
+      document.startViewTransition(() => {
+        document.getElementById('vtBox').classList.toggle('is-circle');
+      });
+    }
+  </script>
+
+</body>
+</html>
+\\\`\\\`\\\`
+
+Expected result: A page with five labeled demo sections. The nesting demo shows a card whose child styles and hover state are defined with native CSS nesting. The color-mix demo shows a button that darkens on hover and a scale of five swatches derived from one brand color. The container query demo adapts its layout when you drag the dashed box narrower or wider. The scroll-driven bar fills as you scroll. The view transitions demo morphs a square into a circle and back with a CSS-animated cross-fade when you click the button.
+
+</details>
 
 **Why it matters:** Modern CSS features eliminate the need for JavaScript in many UI patterns — scroll effects, color manipulation, component responsiveness, page transitions. Staying current means shipping faster, lighter code.
 
