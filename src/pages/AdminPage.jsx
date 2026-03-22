@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Navigate } from 'react-router-dom'
 import { CheckCircle2, XCircle, Clock, Users, Shield, RefreshCw, Flag } from 'lucide-react'
 import { supabase } from '../lib/supabase'

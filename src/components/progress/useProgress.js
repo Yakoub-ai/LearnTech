@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import {
   getProgress,
   setObjectiveComplete,
@@ -13,52 +13,66 @@ import { useAuth } from '../../contexts/AuthContext'
 import { supabase } from '../../lib/supabase'
 
 const emptyProgress = { beginner: 0, mid: 0, senior: 0, overall: 0 }
+const SYNC_DEBOUNCE_MS = 400
 
 export default function useProgress(roleId) {
   const [, setTick] = useState(0)
   const { user } = useAuth()
+  // Map of "roleId:level:type:itemId" → timeout ID. Coalesces rapid sync calls
+  // for the same item so only the final state reaches Supabase.
+  const pendingSyncs = useRef({})
 
   const refresh = useCallback(() => setTick((t) => t + 1), [])
+
+  const debouncedSync = useCallback((level, type, itemId, data) => {
+    if (!user?.id) return
+    const key = `${roleId}:${level}:${type}:${itemId}`
+    clearTimeout(pendingSyncs.current[key])
+    pendingSyncs.current[key] = setTimeout(() => {
+      delete pendingSyncs.current[key]
+      syncProgressItemToSupabase(supabase, user.id, roleId, level, type, itemId, data)
+    }, SYNC_DEBOUNCE_MS)
+  }, [roleId, user])
 
   const toggleObjective = useCallback((level, index) => {
     const progress = getProgress()
     const current = progress?.roles?.[roleId]?.[level]?.objectives?.[index]?.completed || false
     const newCompleted = !current
     setObjectiveComplete(roleId, level, index, newCompleted)
-    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'objective', String(index), { completed: newCompleted, completedAt: newCompleted ? new Date().toISOString() : null })
+    debouncedSync(level, 'objective', String(index), { completed: newCompleted, completedAt: newCompleted ? new Date().toISOString() : null })
     refresh()
-  }, [roleId, refresh, user])
+  }, [roleId, refresh, debouncedSync])
 
   const toggleResource = useCallback((level, index) => {
     const progress = getProgress()
     const current = progress?.roles?.[roleId]?.[level]?.resources?.[index]?.completed || false
     const newCompleted = !current
     setResourceComplete(roleId, level, index, newCompleted)
-    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'resource', String(index), { completed: newCompleted, completedAt: newCompleted ? new Date().toISOString() : null })
+    debouncedSync(level, 'resource', String(index), { completed: newCompleted, completedAt: newCompleted ? new Date().toISOString() : null })
     refresh()
-  }, [roleId, refresh, user])
+  }, [roleId, refresh, debouncedSync])
 
   const saveQuizScore = useCallback((level, score) => {
     setQuizScore(roleId, level, score)
-    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
+    debouncedSync(level, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
     refresh()
-  }, [roleId, refresh, user])
+  }, [roleId, refresh, debouncedSync])
 
   // completeTopicQuiz: saves topic quiz score AND auto-marks the mapped objective complete
   const completeTopicQuiz = useCallback((level, topicId, objectiveIndex, score) => {
     const now = new Date().toISOString()
     setTopicQuizScore(roleId, level, topicId, score)
     setObjectiveComplete(roleId, level, objectiveIndex, true)
-    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'topic_quiz', topicId, { score, scoredAt: now })
-    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'objective', String(objectiveIndex), { completed: true, completedAt: now })
+    debouncedSync(level, 'topic_quiz', topicId, { score, scoredAt: now })
+    debouncedSync(level, 'objective', String(objectiveIndex), { completed: true, completedAt: now })
     refresh()
-  }, [roleId, refresh, user])
+  }, [roleId, refresh, debouncedSync])
 
   const saveLevelExamScore = useCallback((level, score) => {
     setLevelExamScore(roleId, level, score)
-    syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'level_exam', 'score', { score, scoredAt: new Date().toISOString() })
+    debouncedSync(level, 'level_exam', 'score', { score, scoredAt: new Date().toISOString() })
     refresh()
-  }, [roleId, refresh, user])
+  }, [roleId, refresh, debouncedSync])
 
   const isObjectiveComplete = useCallback((level, index) => {
     const progress = getProgress()
