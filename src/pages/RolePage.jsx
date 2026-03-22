@@ -33,7 +33,7 @@ export default function RolePage() {
   const { roleId } = useParams()
   const role = getRoleById(roleId)
   const [activeTab, setActiveTab] = useState('roadmap')
-  const { isObjectiveComplete, isResourceComplete, toggleObjective, toggleResource, saveQuizScore } = useProgress(roleId)
+  const { roleProgress, isObjectiveComplete, isResourceComplete, toggleObjective, toggleResource, saveQuizScore } = useProgress(roleId)
 
   const [markdownContent, setMarkdownContent] = useState(null)
   const [quizzes, setQuizzes] = useState(null)
@@ -197,6 +197,7 @@ export default function RolePage() {
                       isObjectiveComplete={isObjectiveComplete}
                       toggleResource={toggleResource}
                       toggleObjective={toggleObjective}
+                      levelProgress={roleProgress[level.toLowerCase()]}
                     />
 
                     {quizzes && quizzes[level.toLowerCase()] && (

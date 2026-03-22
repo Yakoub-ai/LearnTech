@@ -59,6 +59,14 @@ function CodeBlock({ className, children }) {
   )
 }
 
+function extractTextContent(node) {
+  if (typeof node === 'string') return node
+  if (typeof node === 'number') return String(node)
+  if (Array.isArray(node)) return node.map(extractTextContent).join('')
+  if (node?.props?.children) return extractTextContent(node.props.children)
+  return ''
+}
+
 function processContent(markdown) {
   if (!markdown) return ''
 
@@ -198,14 +206,17 @@ export default function MarkdownRenderer({ content, className = '' }) {
     strong: ({ children }) => <strong className="text-[var(--color-text)] font-semibold">{children}</strong>,
     div: ({ children, ...props }) => {
       const calloutType = props['data-callout']
-      if (calloutType === 'takeaway') {
-        return <KeyTakeaway>{children}</KeyTakeaway>
-      }
-      if (calloutType === 'pitfall') {
-        return <PitfallAlert>{children}</PitfallAlert>
-      }
-      if (calloutType === 'key') {
-        return <ConceptCard>{children}</ConceptCard>
+      if (calloutType) {
+        const rawText = extractTextContent(children)
+        const { div: _div, ...innerComponents } = components
+        const parsed = (
+          <ReactMarkdown remarkPlugins={[remarkGfm]} components={innerComponents}>
+            {rawText}
+          </ReactMarkdown>
+        )
+        if (calloutType === 'takeaway') return <KeyTakeaway>{parsed}</KeyTakeaway>
+        if (calloutType === 'pitfall') return <PitfallAlert>{parsed}</PitfallAlert>
+        if (calloutType === 'key') return <ConceptCard>{parsed}</ConceptCard>
       }
       return <div {...props}>{children}</div>
     },

@@ -1,10 +1,10 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { ArrowLeft, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, BookOpen, Wrench, BrainCircuit, FlaskConical, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { getRoleById } from '../data/roles'
-import { setLanguageQuizScore, syncProgressItemToSupabase } from '../utils/progressStorage'
+import { setLanguageQuizScore, syncProgressItemToSupabase, getLanguageProgress } from '../utils/progressStorage'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import PageHelmet from '../components/seo/PageHelmet'
@@ -21,6 +21,75 @@ import SetupGuide from '../components/interactive/SetupGuide'
 import QuizBlock from '../components/interactive/QuizBlock'
 import InteractiveLab from '../components/interactive/InteractiveLab'
 import Badge from '../components/common/Badge'
+
+function LanguageLevelSection({ level, levelKey, languageId, levelContent, levelQuizzes, isComplete, user }) {
+  const [expanded, setExpanded] = useState(!isComplete)
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3 flex-wrap">
+          <Badge variant={levelKey}>{level}</Badge>
+          <Link
+            to={`/dashboard/language/${languageId}/${levelKey}`}
+            className={`text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline transition-all ${isComplete ? 'line-through opacity-60' : ''}`}
+          >
+            View full guide →
+          </Link>
+          {isComplete && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Complete
+            </span>
+          )}
+        </div>
+        {isComplete && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="p-1 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-3)] transition-colors cursor-pointer bg-transparent border-none"
+            aria-label={expanded ? 'Collapse section' : 'Expand section'}
+          >
+            {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+        )}
+      </div>
+
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden"
+          >
+            {levelContent ? (
+              <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](/dashboard/language/' + languageId + '/' + levelKey + ')*'} />
+            ) : (
+              <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
+                <p className="text-[var(--color-text-secondary)]">Content coming soon for {level}</p>
+              </div>
+            )}
+            {levelQuizzes && levelQuizzes.length > 0 && (
+              <div className="mt-6">
+                <QuizBlock
+                  questions={levelQuizzes}
+                  roleId={languageId}
+                  level={levelKey}
+                  onComplete={(score) => {
+                    setLanguageQuizScore(languageId, levelKey, score)
+                    syncProgressItemToSupabase(supabase, user?.id, languageId, levelKey, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
+                  }}
+                />
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
 
 const tabs = [
   { id: 'roadmap', label: 'Roadmap', icon: BookOpen },
@@ -181,38 +250,19 @@ export default function LanguagePage() {
                 const levelKey = level.toLowerCase()
                 const levelContent = content ? content[levelKey] : null
                 const levelQuizzes = langQuizzes ? langQuizzes[levelKey] : null
+                const langProgress = getLanguageProgress(languageId)
+                const isComplete = (langProgress?.[levelKey]?.percentage ?? 0) >= 100
                 return (
-                  <div key={level}>
-                    <div className="flex items-center gap-3 mb-4">
-                      <Badge variant={levelKey}>{level}</Badge>
-                      <Link
-                        to={`/dashboard/language/${languageId}/${levelKey}`}
-                        className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline"
-                      >
-                        View full guide →
-                      </Link>
-                    </div>
-                    {levelContent ? (
-                      <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](/dashboard/language/' + languageId + '/' + levelKey + ')*'} />
-                    ) : (
-                      <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
-                        <p className="text-[var(--color-text-secondary)]">Content coming soon for {language.name} {level}</p>
-                      </div>
-                    )}
-                    {levelQuizzes && levelQuizzes.length > 0 && (
-                      <div className="mt-6">
-                        <QuizBlock
-                          questions={levelQuizzes}
-                          roleId={languageId}
-                          level={levelKey}
-                          onComplete={(score) => {
-                            setLanguageQuizScore(languageId, levelKey, score)
-                            syncProgressItemToSupabase(supabase, user?.id, languageId, levelKey, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
+                  <LanguageLevelSection
+                    key={level}
+                    level={level}
+                    levelKey={levelKey}
+                    languageId={languageId}
+                    levelContent={levelContent}
+                    levelQuizzes={levelQuizzes}
+                    isComplete={isComplete}
+                    user={user}
+                  />
                 )
               })}
             </div>

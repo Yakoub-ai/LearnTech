@@ -58,7 +58,7 @@ export default function RoadmapTimeline({ roleId, levels = ['Beginner', 'Mid', '
                   isActive
                     ? `${config.bgClass} ${config.borderClass}`
                     : 'border-[var(--color-border)] hover:border-[var(--color-primary)]/30 bg-[var(--color-surface)]'
-                }`}
+                } ${isComplete && !isActive ? 'opacity-60' : ''}`}
               >
                 <div className="relative z-10 mt-1">
                   {isComplete ? (
@@ -72,7 +72,7 @@ export default function RoadmapTimeline({ roleId, levels = ['Beginner', 'Mid', '
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-1">
-                    <h3 className={`text-lg font-bold ${isActive ? config.textClass : 'text-[var(--color-text)]'}`}>
+                    <h3 className={`text-lg font-bold ${isActive ? config.textClass : 'text-[var(--color-text)]'} ${isComplete ? 'line-through' : ''}`}>
                       {level}
                     </h3>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${config.bgClass} ${config.textClass}`}>

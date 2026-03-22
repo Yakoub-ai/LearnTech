@@ -9,7 +9,7 @@ export default function KeyTakeaway({ children }) {
         </div>
         <div>
           <h5 className="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-1">Why It Matters</h5>
-          <div className="text-sm text-blue-700 dark:text-blue-300/80 leading-relaxed [&>p]:mb-2 [&>p:last-child]:mb-0">
+          <div className="text-sm text-blue-700 dark:text-blue-300/80 leading-relaxed [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:list-disc [&>ul]:pl-4 [&>ul]:space-y-1">
             {children}
           </div>
         </div>
