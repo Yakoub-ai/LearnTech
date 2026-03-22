@@ -640,7 +640,7 @@ flowchart LR
     Load --> Stress[Stress Test]
     Stress --> Analyze[Analyze p95/p99]
     Analyze -->|Pass| Report[Report Results]
-    Analyze -->|Fail| Optimize[Optimize & Retest]
+    Analyze -->|Fail| Optimize["Optimize & Retest"]
     Optimize --> Load
 \`\`\`
 

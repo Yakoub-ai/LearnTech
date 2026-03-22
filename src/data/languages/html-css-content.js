@@ -1256,14 +1256,14 @@ img {
 
 \\\`\\\`\\\`mermaid
 graph TD
-    A[HTML & CSS Fundamentals] --> B[Semantic HTML5]
-    A --> C[Forms & Inputs]
+    A["HTML & CSS Fundamentals"] --> B[Semantic HTML5]
+    A --> C["Forms & Inputs"]
     A --> D[CSS Selectors]
     A --> E[Box Model]
     A --> F[Flexbox]
     A --> G[CSS Grid]
     A --> H[Responsive Design]
-    A --> I[Links Images & Media]
+    A --> I["Links Images & Media"]
 
     B --> J[Accessible Structure]
     C --> J
@@ -2439,16 +2439,16 @@ CSS includes powerful built-in functions that enable dynamic calculations, respo
 
 \\\`\\\`\\\`mermaid
 graph TD
-    A[Mid-Level HTML & CSS] --> B[CSS Custom Properties]
-    A --> C[Animations & Transitions]
+    A["Mid-Level HTML & CSS"] --> B[CSS Custom Properties]
+    A --> C["Animations & Transitions"]
     A --> D[BEM Methodology]
     A --> E[Accessibility / ARIA]
     A --> F[SVG]
     A --> G[Advanced Grid]
-    A --> H[Pseudo-elements & Pseudo-classes]
+    A --> H["Pseudo-elements & Pseudo-classes"]
     A --> I[CSS Functions]
 
-    B --> J[Theming & Design Tokens]
+    B --> J["Theming & Design Tokens"]
     C --> K[Polished UX]
     D --> L[Scalable CSS Architecture]
     E --> M[Inclusive Interfaces]
@@ -3402,7 +3402,7 @@ CSS is evolving rapidly. These cutting-edge features are shipping in browsers no
 
 \\\`\\\`\\\`mermaid
 graph TD
-    A[Senior HTML & CSS] --> B[CSS Architecture]
+    A["Senior HTML & CSS"] --> B[CSS Architecture]
     A --> C[Container Queries]
     A --> D[Cascade Layers]
     A --> E[Performance]

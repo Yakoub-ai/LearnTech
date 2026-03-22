@@ -643,7 +643,7 @@ flowchart TB
     Triage -->|Low/Medium| Track[Track in Backlog]
     Block --> Fix[Developer Fix]
     Fix --> PR
-    Track --> Build[Build & Deploy to Staging]
+    Track --> Build["Build & Deploy to Staging"]
     Build --> DAST[DAST Scan: Running App]
     DAST --> Review[Security Review]
 \`\`\`

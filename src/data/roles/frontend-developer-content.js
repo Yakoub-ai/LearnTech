@@ -856,9 +856,9 @@ flowchart TB
     A[Shell Application] --> B[Team A: Auth Module]
     A --> C[Team B: Dashboard Module]
     A --> D[Team C: Settings Module]
-    B --> E[Independent Build & Deploy]
-    C --> F[Independent Build & Deploy]
-    D --> G[Independent Build & Deploy]
+    B --> E["Independent Build & Deploy"]
+    C --> F["Independent Build & Deploy"]
+    D --> G["Independent Build & Deploy"]
     E --> H[Shared Design System]
     F --> H
     G --> H

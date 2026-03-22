@@ -444,7 +444,7 @@ type DBProduct = WithId<Timestamped<Product>>;
 graph LR
     A[Union A | B] --> A1[Value is A]
     A --> A2[Value is B]
-    B[Intersection A & B] --> B1[Value has all of A AND all of B]
+    B["Intersection A & B"] --> B1["Value has all of A AND all of B"]
 
     style A fill:#e3f2fd
     style B fill:#e8f5e9

@@ -856,7 +856,7 @@ flowchart TB
     D --> E[Cloud Provider APIs]
     F[Observability] --> C
     F --> D
-    G[Security & Policy] --> B
+    G["Security & Policy"] --> B
     G --> C
     G --> D
 \`\`\`
