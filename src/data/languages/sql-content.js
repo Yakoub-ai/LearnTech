@@ -163,6 +163,19 @@ flowchart TD
 -- 4. Select products priced between $10 and $50, showing only name and price
 \`\`\`
 
+### SELECT Anatomy
+
+\`\`\`mermaid
+flowchart LR
+    A[SELECT columns] --> B[FROM table]
+    B --> C[JOIN other tables]
+    C --> D[WHERE conditions]
+    D --> E[GROUP BY columns]
+    E --> F[HAVING group filter]
+    F --> G[ORDER BY columns]
+    G --> H[LIMIT count]
+\`\`\`
+
 ---
 
 ## 2. Filtering & Sorting
@@ -2088,6 +2101,34 @@ EXECUTE FUNCTION refresh_sales_report();
 
 ## 6. Query Optimization
 
+### Join Algorithm Decision
+
+\`\`\`mermaid
+flowchart LR
+    A[Join Required] --> B{Table sizes and indexes?}
+    B -->|"Small table + indexed column"| C[Nested Loop Join]
+    B -->|"Large tables, no useful index"| D[Hash Join]
+    B -->|"Both inputs pre-sorted"| E[Merge Join]
+    C --> F["Best for selective lookups"]
+    D --> G["Builds hash table from smaller side"]
+    E --> H["Scans both in sorted order"]
+\`\`\`
+
+### Index B-tree Structure
+
+\`\`\`mermaid
+flowchart TB
+    R["Root Node"] --> I1["Internal Node - Low Keys"]
+    R --> I2["Internal Node - High Keys"]
+    I1 --> L1["Leaf: rows 1-100"]
+    I1 --> L2["Leaf: rows 101-200"]
+    I2 --> L3["Leaf: rows 201-300"]
+    I2 --> L4["Leaf: rows 301-400"]
+    L1 ---|"linked"| L2
+    L2 ---|"linked"| L3
+    L3 ---|"linked"| L4
+\`\`\`
+
 ### EXPLAIN ANALYZE
 
 \`EXPLAIN ANALYZE\` actually runs the query and shows both the planned and actual execution metrics.
@@ -3169,6 +3210,33 @@ flowchart TD
 ---
 
 ## 4. Locking & Concurrency
+
+\`\`\`interactive-flow
+sqlQueryExecution
+\`\`\`
+
+### Transaction Isolation Levels
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> ReadUncommitted
+    ReadUncommitted --> ReadCommitted: Prevents dirty reads
+    ReadCommitted --> RepeatableRead: Prevents non-repeatable reads
+    RepeatableRead --> Serializable: Prevents phantom reads
+
+    state ReadUncommitted {
+        [*] --> DirtyReads: Allows dirty reads
+    }
+    state ReadCommitted {
+        [*] --> NoDirty: Default in PostgreSQL
+    }
+    state RepeatableRead {
+        [*] --> Snapshot: Snapshot isolation
+    }
+    state Serializable {
+        [*] --> Full: Full isolation
+    }
+\`\`\`
 
 ### Row-Level Locks
 

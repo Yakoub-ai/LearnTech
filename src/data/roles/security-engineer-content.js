@@ -148,6 +148,24 @@ These three properties are often in tension. Encrypting all data at rest and in 
 
 **Key things to understand:**
 
+### CIA Triad
+
+\`\`\`mermaid
+flowchart TB
+    CIA[Information Security] --> C[Confidentiality]
+    CIA --> I[Integrity]
+    CIA --> A[Availability]
+    C --> C1[Encryption]
+    C --> C2[Access Controls]
+    C --> C3[Data Classification]
+    I --> I1[Hashing]
+    I --> I2[Digital Signatures]
+    I --> I3[Audit Logs]
+    A --> A1[Redundancy]
+    A --> A2[Backups]
+    A --> A3[DDoS Protection]
+\`\`\`
+
 - Confidentiality: encryption, access controls, data classification, need-to-know principle
 - Integrity: hashing, digital signatures, checksums, audit logs, input validation
 - Availability: redundancy, backups, DDoS protection, capacity planning, disaster recovery
@@ -201,6 +219,23 @@ The three most fundamental web attacks every Security Engineer must understand a
 **Why it matters:** You cannot defend against attacks you do not understand. A Security Engineer must be able to recognise, demonstrate, and explain these attacks before they can effectively test for them, design mitigations, or review code for vulnerabilities. Hands-on practice in lab environments like PortSwigger Web Security Academy makes these concepts concrete.
 
 **Key things to understand:**
+
+### Basic Attack Surface Map
+
+\`\`\`mermaid
+flowchart LR
+    Attacker[Attacker] --> Web[Web Application]
+    Attacker --> API[API Endpoints]
+    Attacker --> Mail[Email / Phishing]
+    Web --> Auth[Authentication Layer]
+    Web --> Input[User Input Fields]
+    API --> AuthAPI[API Auth Tokens]
+    API --> Data[Data Endpoints]
+    Mail --> Users[Employee Accounts]
+    Auth --> DB[(Database)]
+    Input --> DB
+    Data --> DB
+\`\`\`
 
 - SQL Injection: attacker supplies input like \`' OR 1=1 --\` that is concatenated into a SQL query, allowing data extraction or manipulation; prevented by parameterised queries
 - Cross-Site Scripting (XSS): attacker injects JavaScript that executes in other users' browsers; Stored XSS persists in the database, Reflected XSS is in the URL; prevented by output encoding and Content Security Policy
@@ -398,6 +433,21 @@ A penetration test follows a methodology: reconnaissance (gathering information 
 
 **Key things to understand:**
 
+### Zero-Trust Architecture
+
+\`\`\`mermaid
+flowchart LR
+    User[User / Device] --> IdP[Identity Provider]
+    IdP --> CA[Conditional Access]
+    CA --> MFA{MFA Required?}
+    MFA -->|Yes| Verify[MFA Verification]
+    MFA -->|No| Deny[Deny Access]
+    Verify --> Policy[Policy Engine]
+    Policy --> Micro[Micro-segmented Resource]
+    Policy --> Monitor[Continuous Monitoring]
+    Monitor -->|Anomaly| Revoke[Revoke Session]
+\`\`\`
+
 - Methodology: reconnaissance → enumeration → vulnerability analysis → exploitation → post-exploitation → reporting
 - Burp Suite: the industry-standard web application testing proxy; intercept and modify requests, scan for vulnerabilities, test authentication flows
 - Common attack types to practice: SQL injection (error-based, blind, time-based), XSS (stored, reflected, DOM-based), authentication bypass, IDOR (Insecure Direct Object References), SSRF, path traversal
@@ -580,6 +630,24 @@ SAST and DAST are complementary. SAST finds issues in the code before it is depl
 
 **Key things to understand:**
 
+### SAST/DAST Pipeline Integration
+
+\`\`\`mermaid
+flowchart TB
+    Code[Code Commit] --> PR[Pull Request]
+    PR --> SAST[SAST Scan: Source Code]
+    PR --> SCA[SCA Scan: Dependencies]
+    SAST --> Triage[Triage Findings]
+    SCA --> Triage
+    Triage -->|High/Critical| Block[Block Merge]
+    Triage -->|Low/Medium| Track[Track in Backlog]
+    Block --> Fix[Developer Fix]
+    Fix --> PR
+    Track --> Build[Build & Deploy to Staging]
+    Build --> DAST[DAST Scan: Running App]
+    DAST --> Review[Security Review]
+\`\`\`
+
 - SAST: analyses source code or bytecode; produces results mapped to specific code lines; examples include SonarQube, Semgrep, CodeQL, and Checkmarx
 - DAST: tests the running application over HTTP; does not require access to source code; examples include OWASP ZAP, Burp Suite (automated scan mode), and Nuclei
 - SCA (Software Composition Analysis): scans dependencies for known vulnerabilities (CVEs); examples include Snyk, Dependabot, and \`pip-audit\`
@@ -664,6 +732,35 @@ A security incident is any event that compromises the confidentiality, integrity
 **Why it matters:** Every organisation will experience security incidents. The difference between a minor disruption and a catastrophic breach often comes down to how quickly and effectively the incident is detected and contained. A senior Security Engineer must be able to lead incident response, coordinate across teams, and make time-critical decisions under pressure.
 
 **Key things to understand:**
+
+### Threat Modeling Flow
+
+\`\`\`mermaid
+flowchart TB
+    Assets[Identify Assets] --> DFD[Create Data Flow Diagram]
+    DFD --> Threats[Enumerate Threats: STRIDE]
+    Threats --> Risk[Analyze Risk: Likelihood x Impact]
+    Risk --> Prioritize[Prioritize Threats]
+    Prioritize --> Mitigate[Design Mitigations]
+    Mitigate --> Validate[Validate Controls]
+    Validate --> Update[Update on Architecture Change]
+    Update --> Assets
+\`\`\`
+
+### Incident Response Lifecycle
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Preparation
+    Preparation --> Detection: Alert triggered
+    Detection --> Analysis: Triage confirms incident
+    Analysis --> Containment: Scope determined
+    Containment --> Eradication: Threat isolated
+    Eradication --> Recovery: Root cause removed
+    Recovery --> PostIncident: Systems restored
+    PostIncident --> Preparation: Lessons learned applied
+    PostIncident --> [*]
+\`\`\`
 
 - Preparation: incident response plan, contact lists, communication templates, forensic toolkits, log collection and retention policies, tabletop exercises
 - Detection and Analysis: monitoring (SIEM, EDR, network analysis), alert triage (true positive vs false positive), severity classification, initial scoping (what systems are affected?)

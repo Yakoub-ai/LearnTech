@@ -156,6 +156,23 @@ The core components of any ML system are data, algorithms, models, and training 
 
 These three terms describe the fundamental modes by which ML models are trained, and they differ in what kind of signal the algorithm uses to learn.
 
+### ML Learning Paradigms
+
+\`\`\`mermaid
+flowchart TB
+    ML[Machine Learning] --> Sup[Supervised Learning]
+    ML --> Unsup[Unsupervised Learning]
+    ML --> RL[Reinforcement Learning]
+    Sup --> Class[Classification]
+    Sup --> Reg[Regression]
+    Class --> Ex1[Spam Detection]
+    Reg --> Ex2[Price Prediction]
+    Unsup --> Clust[Clustering]
+    Unsup --> DimR[Dimensionality Reduction]
+    Clust --> Ex3[Customer Segmentation]
+    RL --> Ex4[Game Playing / RLHF]
+\`\`\`
+
 **Supervised learning** is the most common approach, making up around 70% of ML applications. The training data consists of input-output pairs — for example, images labelled as "cat" or "not cat", or houses with known sale prices. The algorithm learns a function that maps inputs to outputs by minimising the difference between its predictions and the correct labels. There are two main task types: classification (predicting a discrete category, such as spam/not spam or digit 0–9) and regression (predicting a continuous value, such as house price or tomorrow's temperature). Both are supervised learning — the difference is in the output type.
 
 Supervised learning requires labelled data, which is expensive to produce. Experts must manually categorise thousands of examples, and the quality of those labels directly caps the quality of the model. Many creative approaches exist to generate labels at scale, including crowdsourcing, programmatic labelling, and using existing model predictions as soft labels.
@@ -184,6 +201,20 @@ A fourth type, semi-supervised learning, combines a small amount of labelled dat
 ## The ML Training Pipeline – Data, Features, Model, Evaluation
 
 Building an ML model is not a single step — it is a sequential pipeline. Understanding each stage and how they interact is essential before writing a line of model code.
+
+### ML Pipeline Overview
+
+\`\`\`mermaid
+flowchart LR
+    Data[Raw Data] --> FE[Feature Engineering]
+    FE --> Train[Model Training]
+    Train --> Model[Trained Model]
+    Model --> Eval{Evaluation}
+    Eval -->|Meets threshold| Deploy[Deployment]
+    Eval -->|Below threshold| FE
+    Deploy --> Monitor[Monitoring]
+    Monitor -->|Drift detected| Data
+\`\`\`
 
 **Data collection and preparation** is almost always the longest phase. Raw data is messy: it contains missing values, inconsistent formatting, duplicates, and noise. Engineers must clean it, handle missing entries (by imputation or removal), and split it into training, validation, and test sets. The split ensures that the model is evaluated on data it has never seen during training. The training set teaches the model; the validation set tunes hyperparameters; the test set gives a final unbiased estimate of real-world performance. Using the test set to make decisions about the model defeats its purpose — this is data leakage.
 
@@ -250,9 +281,9 @@ NumPy arrays are homogeneous: all elements must be the same data type. This enab
 
 **Key things to understand:**
 - NumPy arrays are homogeneous: all elements must be the same data type. This enables the memory efficiency that makes vectorised operations fast.
-- Broadcasting rules govern how NumPy handles operations between arrays of different shapes. Always check array shapes with `.shape` before operations.
+- Broadcasting rules govern how NumPy handles operations between arrays of different shapes. Always check array shapes with \`.shape\` before operations.
 - Avoid Python loops over array elements wherever possible; always seek a vectorised equivalent.
-- NumPy slices are views, not copies — modifying a slice modifies the original array. Use `.copy()` when a copy is needed.
+- NumPy slices are views, not copies — modifying a slice modifies the original array. Use \`.copy()\` when a copy is needed.
 
 **Common pitfalls:**
 - Confusing 1D arrays with column or row vectors, leading to shape errors in matrix operations.
@@ -403,6 +434,20 @@ A neural network consists of layers of artificial neurons, inspired by — thoug
 
 ## Feature Engineering – Transforming Raw Data into Model-Ready Features
 
+### Feature Store Architecture
+
+\`\`\`mermaid
+flowchart TB
+    Raw[Raw Data Sources] --> FP[Feature Pipeline]
+    FP --> FS[Feature Store]
+    FS --> Offline[Offline Store]
+    FS --> Online[Online Store]
+    Offline --> Training[Model Training]
+    Online --> Serving[Real-time Serving]
+    Training --> Registry[Model Registry]
+    Registry --> Serving
+\`\`\`
+
 Feature engineering is the process of transforming raw data into features that better represent the underlying problem to the model. It is often the single highest-leverage activity in an ML project — a well-engineered feature set can make a simple model outperform a complex one trained on raw data.
 
 **Numerical features** (age, income, temperature) may need scaling. Standardisation (zero mean, unit variance) is the standard approach for distance-based and gradient-based algorithms — SVMs, KNN, and neural networks are all sensitive to feature scale. Min-max normalisation scales to a fixed range (often 0 to 1). Tree-based models (decision trees, random forests, gradient boosting) do not require scaling because they split on thresholds, not distances.
@@ -460,6 +505,20 @@ The model registry provides version control for models analogous to what Git pro
 ## MLOps Fundamentals – Operationalising ML Models
 
 MLOps is the set of practices for deploying, monitoring, and maintaining ML models in production. Training a model is only part of the job — getting it into production reliably and keeping it healthy over time is where most operational effort is spent.
+
+### Model Serving Flow
+
+\`\`\`mermaid
+flowchart LR
+    MR[Model Registry] --> Deploy[Container Deployment]
+    Deploy --> API[REST API Endpoint]
+    API --> Val[Input Validation]
+    Val --> Inf[Inference]
+    Inf --> Resp[Response]
+    Resp --> Log[Prediction Logging]
+    Log --> Monitor[Performance Monitor]
+    Monitor -->|Drift alert| Retrain[Retrain Pipeline]
+\`\`\`
 
 **Model serving** is the process of deploying a trained model as an API endpoint. The standard approach is containerisation with Docker: the model, its dependencies, and a serving framework (FastAPI, Flask, or a specialised server like TorchServe) are packaged into a container image that can be deployed consistently across environments. Containerisation decouples the model from the infrastructure it runs on — the same image runs identically in development, staging, and production.
 
@@ -626,6 +685,23 @@ Senior ML engineers do not just use MLOps tools — they design and operate the 
 
 The **MLOps maturity model** describes five levels of increasing automation and reproducibility. At level 0, data scientists train models manually in notebooks and deploy by hand. At level 1, training is scripted and reproducible but still triggered manually. At level 2, a continuous training pipeline runs automatically on new data. At level 3, the entire pipeline including data ingestion, training, evaluation, and deployment is automated and version-controlled as code. At level 4 (the most mature), the system automatically monitors models in production, detects degradation, triggers retraining, evaluates the new model, and promotes it to production — all without human intervention except for policy-level decisions.
 
+### MLOps Lifecycle
+
+\`\`\`mermaid
+flowchart TB
+    Ingest[Data Ingestion] --> Validate[Data Validation]
+    Validate --> FE[Feature Engineering]
+    FE --> Train[Model Training]
+    Train --> Eval[Evaluation Gate]
+    Eval -->|Pass| Register[Model Registry]
+    Eval -->|Fail| FE
+    Register --> Stage[Staging / Shadow]
+    Stage --> Canary[Canary Deployment]
+    Canary --> Prod[Production 100%]
+    Prod --> Monitor[Monitoring]
+    Monitor -->|Drift| Ingest
+\`\`\`
+
 **End-to-end ML pipelines** connect data ingestion, preprocessing, feature engineering, training, evaluation, registration, deployment, and monitoring as a single directed acyclic graph (DAG) of steps. Azure ML Pipelines and Apache Airflow are common orchestration tools. Representing pipelines as code — with each step containerised and its inputs/outputs explicitly declared — ensures reproducibility, enables parallel execution where steps are independent, and makes failures debuggable.
 
 **Model deployment patterns** include: batch inference (running the model on a large dataset periodically, writing results to storage — appropriate when latency is not a constraint), online inference (serving real-time predictions via a REST API endpoint — requires low-latency infrastructure and horizontal scaling), and edge deployment (running the model on device rather than in the cloud — requires model quantisation or distillation to meet memory and latency constraints).
@@ -772,6 +848,25 @@ The Hugging Face \`transformers\` and \`peft\` libraries provide the standard im
 ---
 
 ## Distributed Training and GPU Management
+
+### Distributed Training Pattern
+
+\`\`\`mermaid
+flowchart LR
+    Data[Training Data] --> Shard1[Shard 1]
+    Data --> Shard2[Shard 2]
+    Data --> ShardN[Shard N]
+    Shard1 --> GPU1[GPU 1: Forward + Backward]
+    Shard2 --> GPU2[GPU 2: Forward + Backward]
+    ShardN --> GPUN[GPU N: Forward + Backward]
+    GPU1 --> AR[All-Reduce: Sync Gradients]
+    GPU2 --> AR
+    GPUN --> AR
+    AR --> Update[Weight Update]
+    Update --> GPU1
+    Update --> GPU2
+    Update --> GPUN
+\`\`\`
 
 **Data parallelism** (DDP) replicates the model on each GPU, processes different batches, and synchronises gradients via all-reduce. It scales near-linearly. **Model parallelism** (DeepSpeed ZeRO, FSDP) partitions optimizer states, gradients, and parameters across GPUs for memory efficiency. ZeRO Stage 2 saves ~8x memory; Stage 3 saves ~Nx for N GPUs.
 

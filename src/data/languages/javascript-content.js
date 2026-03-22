@@ -45,6 +45,34 @@ JavaScript has three ways to declare variables: \`var\`, \`let\`, and \`const\`.
 
 TDZ = Temporal Dead Zone. Accessing a \`const\` or \`let\` before its declaration throws a \`ReferenceError\`.
 
+### Variable Scope Chain
+
+\`\`\`mermaid
+flowchart TB
+    G[Global Scope] --> F[Function Scope]
+    F --> B[Block Scope]
+    B --> V{Variable Lookup}
+    V -->|Not found in block| F
+    V -->|Not found in function| G
+    V -->|Not found in global| E[ReferenceError]
+    G --- G1["var lives here"]
+    F --- F1["var and let/const"]
+    B --- B1["let and const only"]
+\`\`\`
+
+### Type Coercion Decision Tree
+
+\`\`\`mermaid
+flowchart LR
+    A[Operator Used] --> B{Which operator?}
+    B -->|"+"| C{Either operand a string?}
+    C -->|Yes| D[String concatenation]
+    C -->|No| E[Numeric addition]
+    B -->|"- * / %"| F[Convert both to numbers]
+    B -->|"=="| G[Type coercion then compare]
+    B -->|"==="| H[No coercion - strict compare]
+\`\`\`
+
 \`\`\`javascript
 // var — function-scoped, hoisted, avoid in modern code
 var name = "Alice";
@@ -663,6 +691,20 @@ ES6 classes are syntactic sugar over JavaScript's prototype-based inheritance �
 
 Every JavaScript object has a hidden \`[[Prototype]]\` slot pointing to another object. When you access a property, the engine walks this chain until it finds the property or reaches \`null\`.
 
+\`\`\`mermaid
+flowchart TB
+    A["myArray instance"] --> B["Array.prototype"]
+    B --> C["Object.prototype"]
+    C --> D["null"]
+    A --- A1["Custom properties"]
+    B --- B1["map, filter, reduce, forEach"]
+    C --- C1["toString, hasOwnProperty, valueOf"]
+\`\`\`
+
+\`\`\`interactive-flow
+eventLoop
+\`\`\`
+
 \`\`\`javascript
 // The prototype chain in plain sight
 const arr = [1, 2, 3];
@@ -1172,9 +1214,35 @@ async function processWithScheduler(items) {
 
 ---
 
+### Module Bundling Pipeline
+
+\`\`\`mermaid
+flowchart LR
+    A[Entry Point] --> B[Resolve Imports]
+    B --> C[Build Dependency Graph]
+    C --> D[Transform / Transpile]
+    D --> E[Tree Shaking]
+    E --> F[Code Splitting]
+    F --> G[Minify]
+    G --> H[Output Bundles]
+\`\`\`
+
 ## 2. Memory Management
 
 JavaScript has automatic garbage collection, but memory leaks in long-running single-page applications are a real production problem.
+
+### Memory Lifecycle
+
+\`\`\`mermaid
+flowchart TB
+    A[Allocate Memory] --> B[Use Memory]
+    B --> C{Still Reachable?}
+    C -->|Yes| B
+    C -->|No| D[Mark as Garbage]
+    D --> E[GC Sweep]
+    E --> F[Free Memory]
+    F --> A
+\`\`\`
 
 \`\`\`javascript
 // Memory leak — event listener keeps the component alive forever

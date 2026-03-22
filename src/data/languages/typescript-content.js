@@ -25,6 +25,39 @@ let count = 42;      // TypeScript infers: number
 
 **Why it matters:** Type annotations catch bugs at compile time rather than at runtime. A misspelled property or a wrong argument type is caught instantly in your editor, saving hours of debugging.
 
+### TypeScript vs JavaScript Relationship
+
+\`\`\`mermaid
+flowchart LR
+    A[TypeScript Source] --> B[TS Compiler - tsc]
+    B --> C[Type Checking]
+    C -->|Errors| D[Fix Types]
+    D --> B
+    C -->|Pass| E[Emit JavaScript]
+    E --> F[Valid JS - runs anywhere]
+    A --- N1["Superset of JS"]
+    F --- N2["Types erased at runtime"]
+\`\`\`
+
+### Type Hierarchy
+
+\`\`\`mermaid
+flowchart TB
+    U[unknown - top type] --> A[any]
+    U --> S[string]
+    U --> N[number]
+    U --> B[boolean]
+    U --> O[object]
+    S --> SL["string literals"]
+    N --> NL["numeric literals"]
+    B --> T[true]
+    B --> F[false]
+    SL --> NV[never - bottom type]
+    NL --> NV
+    T --> NV
+    F --> NV
+\`\`\`
+
 **Key things to understand:**
 - TypeScript **erases** all type annotations at compile time — they produce zero runtime overhead
 - Type inference means you do not need to annotate everything; TypeScript is smart enough to figure out most types from context
@@ -1313,6 +1346,36 @@ const themeLabels = {
 
 ---
 
+### Type Narrowing Flow
+
+\`\`\`mermaid
+flowchart TB
+    A["value: string | number | null"] --> B{typeof check}
+    B -->|"typeof === string"| C["value: string"]
+    B -->|"typeof === number"| D["value: number"]
+    A --> E{null check}
+    E -->|"value === null"| F["value: null"]
+    E -->|"value !== null"| G["value: string | number"]
+    A --> H{instanceof check}
+    H -->|"value instanceof Date"| I["value: Date"]
+    A --> J{"in operator"}
+    J -->|"'name' in value"| K["value has name property"]
+\`\`\`
+
+### Generic Constraints Flow
+
+\`\`\`mermaid
+flowchart LR
+    A["T"] --> B{"extends constraint?"}
+    B -->|"T extends string"| C["T accepts string and subtypes"]
+    B -->|"T extends object"| D["T accepts any object type"]
+    B -->|"K extends keyof T"| E["K limited to keys of T"]
+    C --> F["Compiler enforces constraint"]
+    D --> F
+    E --> F
+    F --> G["Type-safe generic usage"]
+\`\`\`
+
 ## 4. Mapped Types and Conditional Types
 
 Mapped types and conditional types are the programmable layer of TypeScript's type system. They let you transform types algorithmically.
@@ -1943,6 +2006,39 @@ createRoute("/users/:userId/posts/:postId", (params) => {
 > **Role connection:** Full-Stack Developers use template literal types in route definitions (Hono, Express). Backend Developers use them for type-safe query builders. Library authors use them to build string-aware APIs.
 
 ---
+
+### TypeScript Compiler Pipeline
+
+\`\`\`mermaid
+flowchart LR
+    A[Source Code] --> B[Scanner]
+    B --> C[Parser]
+    C --> D[Binder]
+    D --> E[Checker]
+    E --> F[Emitter]
+    F --> G[JavaScript Output]
+    B --- B1["Tokenize source text"]
+    C --- C1["Build AST"]
+    D --- D1["Create symbol table"]
+    E --- E1["Type check all nodes"]
+    F --- F1["Generate .js and .d.ts"]
+\`\`\`
+
+### Conditional Type Resolution
+
+\`\`\`mermaid
+flowchart TB
+    A["T extends U ? X : Y"] --> B{Is T a union?}
+    B -->|Yes| C[Distribute over union members]
+    C --> D["Apply condition to each member"]
+    D --> E[Collect results into union]
+    B -->|No| F{Does T extend U?}
+    F -->|Yes| G[Resolve to X]
+    F -->|No| H[Resolve to Y]
+    G --> I[Final type]
+    H --> I
+    E --> I
+\`\`\`
 
 ## 2. Type-Level Programming
 

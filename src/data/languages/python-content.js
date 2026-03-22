@@ -112,6 +112,27 @@ print("All falsy values confirmed!")
 # 5. Experiment: what happens when you call int(3.9)? Is it 3 or 4?
 \`\`\`
 
+### Python Data Type Hierarchy
+
+\`\`\`mermaid
+flowchart TB
+    A[Python Objects] --> B[Numeric]
+    A --> C[Sequences]
+    A --> D[Mappings]
+    A --> E[Sets]
+    A --> F[Boolean]
+    A --> G[NoneType]
+    B --> B1[int]
+    B --> B2[float]
+    B --> B3[complex]
+    C --> C1[str - immutable]
+    C --> C2[list - mutable]
+    C --> C3[tuple - immutable]
+    D --> D1[dict - mutable]
+    E --> E1[set - mutable]
+    E --> E2[frozenset - immutable]
+\`\`\`
+
 **Why it matters:** Every value in Python has a type, and understanding types prevents subtle bugs. Knowing that \`0.1 + 0.2 != 0.3\` in floating-point arithmetic, or that \`None\` should be compared with \`is\` rather than \`==\`, saves hours of debugging.
 
 > **Role connection:** Data Engineers and Data Scientists work with numeric types daily when processing datasets. AI Engineers must understand type coercion when handling model inputs and outputs.
@@ -121,6 +142,27 @@ print("All falsy values confirmed!")
 ## 2. Control Flow
 
 Control flow determines the order in which statements execute. Python uses indentation (not braces) to define blocks, which enforces readable code by design.
+
+### Control Flow Patterns
+
+\`\`\`mermaid
+flowchart LR
+    A[Start] --> B{Condition?}
+    B -->|True| C[if block]
+    B -->|False| D{elif?}
+    D -->|True| E[elif block]
+    D -->|False| F[else block]
+    C --> G[Continue]
+    E --> G
+    F --> G
+    G --> H{Loop?}
+    H -->|for| I[Iterate over sequence]
+    H -->|while| J[Check condition each pass]
+    I --> K{break?}
+    J --> K
+    K -->|Yes| L[Exit loop]
+    K -->|No| H
+\`\`\`
 
 ### Conditional Statements
 
@@ -789,6 +831,23 @@ if data_dir.exists():
 
 Python's module system lets you organize code into reusable files and packages. Understanding imports, packages, and virtual environments is essential for building real projects.
 
+### Module Resolution Flow
+
+\`\`\`mermaid
+flowchart LR
+    A["import X"] --> B{In sys.modules cache?}
+    B -->|Yes| C[Return cached module]
+    B -->|No| D[Search sys.path]
+    D --> E{Built-in module?}
+    E -->|Yes| F[Load built-in]
+    E -->|No| G{Found in directory?}
+    G -->|Yes| H[Load .py file or package]
+    G -->|No| I[ModuleNotFoundError]
+    H --> J[Compile to bytecode]
+    J --> K[Execute module]
+    K --> L[Cache in sys.modules]
+\`\`\`
+
 ### Virtual Environments
 
 Virtual environments isolate project dependencies. Each project gets its own set of installed packages, avoiding version conflicts between projects.
@@ -1367,6 +1426,23 @@ Decorators are functions that modify the behavior of other functions or classes.
 ### How Decorators Work
 
 A decorator is simply a function that takes a function as input and returns a new function. The \`@decorator\` syntax is syntactic sugar for \`func = decorator(func)\`.
+
+### Decorator Chain Execution
+
+\`\`\`mermaid
+flowchart TB
+    A["@log_calls"] --> B["@timer"]
+    B --> C["@validate"]
+    C --> D["def my_function"]
+    D --> E["Call my_function"]
+    E --> F["log_calls wrapper runs first"]
+    F --> G["timer wrapper runs second"]
+    G --> H["validate wrapper runs third"]
+    H --> I["Original function executes"]
+    I --> J["validate returns"]
+    J --> K["timer records duration"]
+    K --> L["log_calls logs result"]
+\`\`\`
 
 \`\`\`python
 # =============================================================
@@ -2588,6 +2664,10 @@ Asynchronous programming lets you write concurrent code that efficiently handles
 ### How Async Works
 
 When a coroutine hits an \`await\`, it suspends execution and returns control to the event loop. The event loop can then run other coroutines while waiting for the I/O operation to complete. This is cooperative multitasking -- coroutines must explicitly yield control.
+
+\`\`\`interactive-flow
+pythonAsyncio
+\`\`\`
 
 \`\`\`mermaid
 sequenceDiagram
@@ -4000,6 +4080,23 @@ Python offers multiple concurrency models: threading (for I/O-bound tasks), mult
 ### The GIL (Global Interpreter Lock)
 
 The GIL ensures only one thread executes Python bytecode at a time. This means threads do NOT provide true parallelism for CPU-bound work. However, threads DO release the GIL during I/O operations, making them useful for I/O-bound tasks.
+
+### GIL Concurrency Model
+
+\`\`\`mermaid
+flowchart TB
+    T1[Thread 1 - CPU work] --> GIL{GIL}
+    T2[Thread 2 - waiting] --> GIL
+    T3[Thread 3 - waiting] --> GIL
+    GIL -->|Holds lock| E1[Execute bytecode]
+    E1 --> IO{I/O operation?}
+    IO -->|Yes| R[Release GIL]
+    R --> T2
+    IO -->|No| TICK{Interval check?}
+    TICK -->|Yes| SW[Release and re-acquire GIL]
+    SW --> GIL
+    TICK -->|No| E1
+\`\`\`
 
 **Emerging: PEP 703 (Free-threaded Python).** Python 3.13+ includes an experimental build with the GIL disabled (\`--disable-gil\` / \`-X gil=0\`). This "free-threaded" mode allows true multi-threaded parallelism for CPU-bound work. As of 2026, it is experimental and opt-in, but it signals the long-term direction for Python concurrency. Keep an eye on adoption by key libraries (NumPy, etc.) before using it in production.
 

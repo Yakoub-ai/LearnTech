@@ -142,6 +142,18 @@ The "Every DevOps Tool Explained" video captures this landscape concisely: it de
 
 ## 2. Continuous Integration and Continuous Delivery (CI/CD)
 
+### CI/CD Pipeline Overview
+
+\`\`\`mermaid
+flowchart LR
+    A[Code] --> B[Build]
+    B --> C[Test]
+    C --> D[Stage]
+    D --> E[Deploy]
+    E --> F[Monitor]
+    F -->|Feedback| A
+\`\`\`
+
 Continuous Integration (CI) is the practice of merging code changes into a shared branch frequently – typically multiple times per day – and validating each merge with automated builds and tests. The goal is to surface integration problems as early and cheaply as possible.
 
 Continuous Delivery (CD) extends CI by ensuring that the validated code is always in a deployable state, ready to be released to production at any time. A human still decides when to trigger the release. Continuous Deployment goes one step further: every validated change is released to production automatically, without manual approval. The distinction matters because Continuous Deployment requires a much higher level of automated test coverage and organisational confidence.
@@ -166,6 +178,20 @@ Continuous Delivery (CD) extends CI by ensuring that the validated code is alway
 ---
 
 ## 3. Docker – Containers, Images, Dockerfile and Compose
+
+### Container Lifecycle
+
+\`\`\`mermaid
+flowchart TB
+    A[Dockerfile] --> B[docker build]
+    B --> C[Image]
+    C --> D[docker run]
+    D --> E[Container Running]
+    E --> F[docker stop]
+    F --> G[Container Stopped]
+    G --> D
+    C --> H[Registry Push/Pull]
+\`\`\`
 
 Docker is a platform for packaging, distributing, and running applications inside containers. A container is an isolated process running on the host operating system: it shares the host kernel but has its own isolated file system, network stack, and process namespace. Containers are not virtual machines – there is no hypervisor and no guest OS; they are lightweight and start in milliseconds. An image is the read-only blueprint from which containers are created. A Dockerfile is a text file containing the instructions to build an image layer by layer. Docker Compose is a tool for defining and running multi-container applications using a single YAML file.
 
@@ -517,6 +543,19 @@ Azure Key Vault is the managed service for storing and accessing secrets, certif
 
 ## 4. Infrastructure as Code – Principles and Why It Matters
 
+### IaC Workflow
+
+\`\`\`mermaid
+flowchart TB
+    A[Write IaC Code] --> B[Plan / Preview]
+    B --> C{Changes OK?}
+    C -->|Yes| D[Apply]
+    C -->|No| A
+    D --> E[State Updated]
+    E --> F[Infrastructure Live]
+    F -->|New Change| A
+\`\`\`
+
 Infrastructure as Code (IaC) is the practice of defining and managing infrastructure resources – servers, networks, databases, and more – using machine-readable definition files rather than manual configuration or interactive tools. The definition files are stored in version control, reviewed like application code, and applied by automated tools that reconcile the desired state with the actual state of the infrastructure.
 
 The key property that distinguishes good IaC from a bag of scripts is idempotency: applying the same definition multiple times must produce the same result. This is what makes IaC safe to run in automated pipelines without human supervision.
@@ -675,6 +714,10 @@ PowerShell is a cross-platform scripting language and shell built on .NET. It is
 
 ## 8. Kubernetes – Pods, Deployments, Services and Ingress
 
+\`\`\`interactive-flow
+k8sPodLifecycle
+\`\`\`
+
 Kubernetes is an open-source container orchestration platform that automates the deployment, scaling, and management of containerised applications. It introduces a set of resource types with distinct roles: the Pod is the smallest deployable unit; a Deployment manages a fleet of identical Pods; a Service provides a stable network address for reaching those Pods; an Ingress exposes HTTP/HTTPS routes from outside the cluster to Services.
 
 Understanding the difference between these four resource types is the foundation of working with Kubernetes:
@@ -802,6 +845,21 @@ This document provides in-depth explanations of the core concepts covered at the
 ---
 
 ## 1. Platform Engineering – Internal Developer Platforms and Golden Paths
+
+### Platform Engineering Layers
+
+\`\`\`mermaid
+flowchart TB
+    A[Developer Self-Service Portal] --> B[Golden Path Templates]
+    B --> C[CI/CD Pipelines]
+    C --> D[Infrastructure as Code]
+    D --> E[Cloud Provider APIs]
+    F[Observability] --> C
+    F --> D
+    G[Security & Policy] --> B
+    G --> C
+    G --> D
+\`\`\`
 
 Platform engineering is the discipline of building and operating internal developer platforms (IDPs) that reduce cognitive load for application teams. An IDP abstracts away the complexity of infrastructure, pipelines, and operational tooling behind self-service interfaces. A golden path is an opinionated, pre-approved, well-supported route for accomplishing a common task – creating a new service, deploying to a specific environment, or setting up observability – that teams can follow without needing deep platform expertise.
 
@@ -961,6 +1019,18 @@ The "AI, ML, Deep Learning and GenAI Explained" video provides the conceptual gr
 ---
 
 ## 7. GitOps – Git as the Source of Truth for Infrastructure
+
+### GitOps Flow
+
+\`\`\`mermaid
+flowchart LR
+    A[Developer] --> B[Git Commit]
+    B --> C[Config Repo]
+    C --> D[ArgoCD / Flux]
+    D --> E[K8s Cluster]
+    E --> F[Reconciliation Loop]
+    F -->|Drift Detected| D
+\`\`\`
 
 GitOps is an operational model where the desired state of infrastructure and applications is declared in Git, and automated tooling continuously reconciles the actual state of the environment with the declared state. Instead of making changes by running imperative commands (kubectl apply, az deployment create), you make changes by committing to a Git repository. An agent running in the cluster detects the change and applies it automatically.
 

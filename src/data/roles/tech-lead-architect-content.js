@@ -117,6 +117,32 @@ System design always involves trade-offs. There is no universally correct archit
 
 **Why it matters:** As a tech lead, every significant technical conversation eventually becomes a conversation about trade-offs. You need a shared vocabulary for these discussions — one that lets you articulate why a design choice has costs, not just benefits. The moment you can walk a team through a whiteboard diagram explaining what each component does and why it is there, you stop being a senior developer and start being an architect.
 
+### SDLC Phases Overview
+
+\`\`\`mermaid
+flowchart LR
+    A[Requirements] --> B[Design]
+    B --> C[Implementation]
+    C --> D[Testing]
+    D --> E[Deployment]
+    E --> F[Monitoring]
+    F -->|Feedback| A
+\`\`\`
+
+### Team Topology
+
+\`\`\`mermaid
+flowchart TB
+    TL[Tech Lead / Architect] --> ST[Stream-Aligned Team]
+    TL --> PT[Platform Team]
+    TL --> ET[Enabling Team]
+    ST --> F1[Feature Delivery]
+    PT --> F2[Internal Tooling]
+    ET --> F3[Coaching and Support]
+    ST ---|"Collaboration"| PT
+    ET ---|"Facilitating"| ST
+\`\`\`
+
 **Key things to understand:**
 - The purpose of each major component type and when to use each
 - How DNS resolves a domain name and why this matters for system design
@@ -442,6 +468,34 @@ Domain events represent something that happened in the domain that other parts o
 
 ---
 
+### ADR Decision Flow
+
+\`\`\`mermaid
+flowchart TB
+    A[Problem Identified] --> B[Gather Context]
+    B --> C[List Options]
+    C --> D[Evaluate Trade-offs]
+    D --> E{Decision Made?}
+    E -->|Yes| F[Write ADR]
+    F --> G[Implement]
+    G --> H[Review Outcome]
+    H -->|Revisit| A
+    E -->|No| C
+\`\`\`
+
+### System Design Layers
+
+\`\`\`mermaid
+flowchart LR
+    Client --> CDN
+    CDN --> LB[Load Balancer]
+    LB --> API[API Server]
+    API --> Cache[Cache Layer]
+    Cache --> DB[Database]
+    API --> MQ[Message Queue]
+    MQ --> Worker[Background Worker]
+\`\`\`
+
 ## Architecture Patterns – Monolith, Microservices, Hexagonal, Event-Driven and CQRS
 
 Architecture patterns are proven solutions to recurring structural problems in software systems. A tech lead needs to understand at least a handful of these patterns deeply enough to recommend them, explain their trade-offs and — critically — know when each one is and is not appropriate.
@@ -686,6 +740,35 @@ A senior architect chooses geohashing for a new system because it is simple, cor
 - Designing distributed systems without a locking strategy for shared, mutable state
 
 ---
+
+### Architecture Decision Matrix
+
+\`\`\`mermaid
+flowchart TB
+    A[New System Requirement] --> B{Domain Complexity?}
+    B -->|Simple CRUD| C[Modular Monolith]
+    B -->|Complex Domain| D{Team Size?}
+    D -->|Small Team| E[Hexagonal Monolith]
+    D -->|Multiple Teams| F{Independent Deployments Needed?}
+    F -->|Yes| G[Microservices]
+    F -->|No| H[Modular Monolith with Clear Boundaries]
+    G --> I{Read/Write Asymmetry?}
+    I -->|Yes| J[CQRS + Event Sourcing]
+    I -->|No| K[Standard Service Architecture]
+\`\`\`
+
+### Team Scaling Model
+
+\`\`\`mermaid
+flowchart LR
+    S1["1-5 Engineers"] --> S2["6-15 Engineers"]
+    S2 --> S3["16-40 Engineers"]
+    S3 --> S4["40+ Engineers"]
+    S1 --- M1[Single Team + Tech Lead]
+    S2 --- M2[2-3 Squads + Architect]
+    S3 --- M3[Platform Team + Stream Teams]
+    S4 --- M4[Domain Architects + Engineering Manager Layer]
+\`\`\`
 
 ## Enterprise GenAI Strategy – Build vs Buy, ROI and Governance
 

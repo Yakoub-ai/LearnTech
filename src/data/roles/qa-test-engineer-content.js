@@ -139,6 +139,19 @@ Understanding the full landscape also helps you communicate effectively with dev
 
 The ISTQB (International Software Testing Qualifications Board) Foundation Level syllabus (v4.0, released 2023) is the industry standard body of knowledge for software testing. It defines the vocabulary, principles, and techniques that form the common language of the profession. Even if you never take the certification exam, the syllabus provides a structured foundation that most testing literature and job descriptions assume you know.
 
+### The Test Pyramid
+
+\`\`\`mermaid
+flowchart TB
+    Manual[Manual / Exploratory Tests - Fewest] --> E2E[E2E Tests - Few]
+    E2E --> Integration[Integration Tests - Some]
+    Integration --> Unit[Unit Tests - Many]
+    style Unit fill:#4CAF50
+    style Integration fill:#FFC107
+    style E2E fill:#FF9800
+    style Manual fill:#F44336
+\`\`\`
+
 The test pyramid is a model that describes the ideal distribution of test types in a software project. At the base are unit tests -- fast, isolated, and numerous. In the middle are integration tests (sometimes called service tests) that verify the interaction between components. At the top are end-to-end (E2E) tests that exercise the full system through its user interface. The pyramid shape reflects the principle that you should have many fast, cheap tests at the bottom and fewer slow, expensive tests at the top.
 
 The Fireship "Software Testing Explained in 100 Seconds" video captures this clearly: software is dynamic with evolving requirements, and no one fully understands every layer of the stack. The goal is not perfect understanding -- it is to ensure the code matches the product requirements. At the most granular level, unit tests check individual functions ("does this function return the proper value when given arguments A and B?"). Integration tests check how components work together ("can this component use the database service to fetch data?"). End-to-end tests simulate actual user behaviour in a browser or device -- like having a robot perform all your manual testing. Test runners like Jest or Karma can execute all tests automatically in the background or on a CI server before deployment.
@@ -228,6 +241,21 @@ Writing effective bug reports is a skill that distinguishes a strong QA engineer
 **Why it matters:** A defect that cannot be reproduced from the bug report is a defect that will not be fixed. Clear, consistent bug reporting directly impacts how quickly defects are resolved and how effectively the QA team collaborates with development.
 
 **Key things to understand:**
+
+### Bug Lifecycle
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> New
+    New --> Assigned: Triaged
+    Assigned --> InProgress: Developer starts work
+    InProgress --> Fixed: Code change submitted
+    Fixed --> Verified: QA confirms fix
+    Verified --> Closed: Fix confirmed
+    Fixed --> Reopened: Fix incomplete
+    Reopened --> InProgress: Rework
+    Closed --> [*]
+\`\`\`
 
 - Severity describes the impact of the defect on the system (critical, major, minor, trivial). Priority describes how urgently it should be fixed. A cosmetic typo on the login page might be low severity but high priority if it is the first thing customers see.
 - Minimal reproduction steps are essential. Remove any steps that are not necessary to trigger the defect. The fewer the steps, the easier it is for the developer to isolate the root cause.
@@ -478,6 +506,19 @@ Cucumber is the most widely used tool for executing Gherkin scenarios. It maps e
 
 Continuous Integration (CI) is the practice of merging code changes frequently and running automated checks on every merge. Continuous Delivery (CD) extends this by automatically deploying changes that pass all checks to staging or production environments. Integrating tests into the CI/CD pipeline is what transforms testing from a manual gate into an automated quality checkpoint.
 
+### CI Test Integration Pipeline
+
+\`\`\`mermaid
+flowchart LR
+    Push[Git Push] --> Lint[Lint / Static Analysis]
+    Lint --> Unit[Unit Tests]
+    Unit --> Integration[Integration Tests]
+    Integration --> E2E[E2E Tests]
+    E2E --> Deploy[Deploy to Staging]
+    Deploy --> Smoke[Smoke Tests]
+    Smoke --> Prod[Promote to Production]
+\`\`\`
+
 In a typical pipeline, tests run at multiple stages. Unit tests run first because they are fastest and catch the most common defects. If they pass, integration tests and API tests run. Finally, end-to-end tests run against a deployed environment. This staged approach provides fast feedback: a broken unit test is caught in seconds, while slower E2E tests only run if the faster tests have already passed.
 
 Most modern CI/CD platforms support pipeline steps that execute test commands, collect results in standard formats (JUnit XML, TRX), and publish them in the build or workflow UI. This makes it easy to see which tests failed and why.
@@ -510,6 +551,22 @@ This approach is fundamentally different from traditional integration testing, w
 **Why it matters:** In a microservices architecture, integration failures between services are one of the most common and costly types of defects. Contract testing catches these failures early, in the individual service's build pipeline, rather than in a shared integration environment where failures are harder to diagnose and attribute.
 
 **Key things to understand:**
+
+### Test Automation Architecture
+
+\`\`\`mermaid
+flowchart TB
+    Framework[Test Framework: Playwright / Cypress]
+    Framework --> POM[Page Object Model]
+    Framework --> API[API Test Layer]
+    Framework --> Data[Test Data Manager]
+    POM --> Runner[Test Runner]
+    API --> Runner
+    Data --> Runner
+    Runner --> Reporter[Results Reporter]
+    Reporter --> CI[CI/CD Dashboard]
+    Reporter --> Alerts[Slack / Email Alerts]
+\`\`\`
 
 - Consumer-driven means the consumer defines the contract based on the interactions it actually needs. This avoids over-specification and keeps the contract focused on real usage.
 - Pact Broker is a central server that stores pact files and verification results, enabling consumer and provider teams to work independently while sharing contracts.
@@ -572,6 +629,36 @@ At the senior level, you are expected to design test strategies that balance ris
 **Why it matters:** Without a deliberate test strategy, teams end up with ad-hoc test suites that are slow, fragile, expensive to maintain, and provide uneven coverage. A well-designed strategy ensures that testing effort is invested where it provides the most value.
 
 **Key things to understand:**
+
+### Performance Test Flow
+
+\`\`\`mermaid
+flowchart LR
+    Plan[Define SLAs] --> Script[Write k6 Scripts]
+    Script --> Baseline[Run Baseline]
+    Baseline --> Load[Load Test]
+    Load --> Stress[Stress Test]
+    Stress --> Analyze[Analyze p95/p99]
+    Analyze -->|Pass| Report[Report Results]
+    Analyze -->|Fail| Optimize[Optimize & Retest]
+    Optimize --> Load
+\`\`\`
+
+### Chaos Engineering Process
+
+\`\`\`mermaid
+flowchart TB
+    Steady[Define Steady State]
+    Steady --> Hypo[Hypothesize Failure Impact]
+    Hypo --> Inject[Inject Failure]
+    Inject --> Observe[Observe System Behaviour]
+    Observe --> Compare{Steady State Maintained?}
+    Compare -->|Yes| Confidence[Increase Confidence]
+    Compare -->|No| Fix[Fix Weakness]
+    Fix --> Steady
+    Confidence --> Expand[Expand Blast Radius]
+    Expand --> Hypo
+\`\`\`
 
 - Risk-based testing allocates more testing effort to the areas of the system that are most critical, most complex, or most likely to contain defects.
 - The testing quadrants (Brian Marick's model) categorise tests along two axes: business-facing vs. technology-facing, and supporting the team vs. critiquing the product. This framework helps identify gaps in the testing approach.

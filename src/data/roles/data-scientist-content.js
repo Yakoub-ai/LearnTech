@@ -337,6 +337,20 @@ Machine learning is the practice of writing algorithms that improve their perfor
 
 There are three broad categories of machine learning. Supervised learning uses labelled data to learn a mapping from inputs to outputs (e.g., predicting house prices, classifying email as spam). Unsupervised learning finds structure in unlabelled data (e.g., customer segmentation, anomaly detection). Reinforcement learning trains an agent to take actions that maximise a reward signal over time, which is less common in typical business data science.
 
+### ML Pipeline Overview
+
+The following diagram shows the typical end-to-end machine learning pipeline, from raw data to a deployed model:
+
+\`\`\`mermaid
+flowchart LR
+    A[Data Collection] --> B[Data Cleaning]
+    B --> C[Feature Engineering]
+    C --> D[Model Training]
+    D --> E[Evaluation]
+    E -->|Metrics OK| F[Deployment]
+    E -->|Iterate| C
+\`\`\`
+
 **Why it matters:**
 Machine learning is the engine behind predictive analytics, personalisation, automation, and a growing share of business intelligence. Understanding what it is — and crucially, when it is and is not the right tool — is what lets you apply it appropriately rather than reaching for it by default.
 
@@ -458,6 +472,22 @@ Selecting an appropriate algorithm — and being able to justify that choice —
 
 A model that performs perfectly on training data but fails on unseen data has learned to memorise rather than generalise. Rigorous evaluation is what separates a model that will work in production from one that only appears to work. The choice of evaluation metric and the evaluation strategy are both critical decisions.
 
+### Model Evaluation Flow
+
+\`\`\`mermaid
+flowchart TB
+    A[Raw Data] --> B[Train/Test Split]
+    B --> C[Training Set]
+    B --> D[Test Set]
+    C --> E[K-Fold Cross-Validation]
+    E --> F{Metrics Acceptable?}
+    F -->|No| G[Tune Hyperparameters]
+    G --> E
+    F -->|Yes| H[Evaluate on Test Set]
+    D --> H
+    H --> I[Final Performance Report]
+\`\`\`
+
 For classification, common metrics include accuracy, precision, recall, F1-score, and the area under the ROC curve (AUC-ROC). Accuracy is misleading when classes are imbalanced. Precision measures how many predicted positives are actually positive; recall measures how many actual positives were correctly identified. The choice between them depends on the cost of false positives versus false negatives in your specific context.
 
 For regression, common metrics include mean absolute error (MAE), mean squared error (MSE), root mean squared error (RMSE), and R-squared. MSE penalises large errors more heavily than MAE because of the squaring; choose the metric that matches how much you care about extreme errors.
@@ -574,6 +604,20 @@ Ensemble methods are consistently among the best-performing approaches on struct
 ## A/B Testing and Experiment Design
 
 A/B testing is a controlled experiment where you split a population into a control group (which experiences no change) and a treatment group (which experiences the change you want to evaluate). By comparing the outcome metric between the two groups, you can determine whether the change had a statistically significant effect. Experiment design is the discipline of setting up these tests so that the results are valid and actionable.
+
+### Experiment Lifecycle
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Hypothesis
+    Hypothesis --> Design: Define metrics and sample size
+    Design --> Run: Launch experiment
+    Run --> Analyse: Collect sufficient data
+    Analyse --> Report: Summarise findings
+    Report --> Decision: Stakeholder review
+    Decision --> [*]: Ship or discard
+    Decision --> Hypothesis: New question
+\`\`\`
 
 **Why it matters:**
 Data scientists in insurance are frequently asked to evaluate changes — a new pricing model, a revised policy wording, a marketing campaign — and determine whether they actually work. A/B testing provides the rigorous framework for answering "did this change make a difference?" without being misled by noise, trends, or confirmation bias.
@@ -693,6 +737,22 @@ Several themes in the video connect directly to senior-level work:
 
 MLOps (Machine Learning Operations) is the set of practices and tools that bridge the gap between experimental model development and reliable production operation. A model that performs well in a notebook is not a finished product; it needs to be packaged, versioned, deployed, monitored, and eventually retrained. Without MLOps discipline, models silently degrade in production and failures are hard to diagnose.
 
+### MLOps Lifecycle
+
+\`\`\`mermaid
+flowchart TB
+    A[Data Pipeline] --> B[Feature Store]
+    B --> C[Model Training]
+    C --> D[Experiment Tracking]
+    D --> E[Model Registry]
+    E --> F[CI/CD Deploy]
+    F --> G[Serving Endpoint]
+    G --> H[Monitoring]
+    H -->|Drift Detected| I[Retrain Trigger]
+    I --> C
+    H -->|Healthy| G
+\`\`\`
+
 The core concerns of MLOps are reproducibility (can you recreate the exact model from a given point in time?), deployment (how does the model serve predictions to consumers?), monitoring (is the model still performing as expected?), and retraining (when and how does the model get updated?). These concerns map to a set of tools and practices: experiment tracking (MLflow, Azure ML), model registries, CI/CD pipelines for model retraining, and data and model drift monitoring.
 
 **Why it matters:**
@@ -709,6 +769,24 @@ A model that works in a notebook is only a prototype. The actual product is the 
 - Retraining on new data without checking whether the new data is of acceptable quality, potentially making performance worse.
 - Versioning the model weights but not the training code, preprocessing logic, or feature definitions, making it impossible to reproduce earlier versions.
 - Treating model deployment as a one-time event rather than an ongoing operational responsibility.
+
+---
+
+### A/B Test Statistical Flow
+
+\`\`\`mermaid
+flowchart LR
+    A[Define Hypothesis] --> B[Power Analysis]
+    B --> C[Randomise Groups]
+    C --> D[Collect Data]
+    D --> E[Statistical Test]
+    E --> F{p < alpha?}
+    F -->|Yes| G[Significant Result]
+    F -->|No| H[No Evidence of Effect]
+    G --> I[Check Practical Significance]
+    H --> I
+    I --> J[Business Decision]
+\`\`\`
 
 ---
 

@@ -104,6 +104,17 @@ Think of the AI landscape as a set of nested circles, like Russian dolls. The ou
 
 A chess engine that follows hand-coded rules is AI but not ML. A spam filter trained on labelled emails is ML. An image classifier built on a convolutional neural network is deep learning. A system that writes a cover letter or generates an image from a text description is generative AI.
 
+\`\`\`mermaid
+flowchart LR
+    AI["Artificial Intelligence"] --> ML["Machine Learning"]
+    ML --> DL["Deep Learning"]
+    DL --> GenAI["Generative AI"]
+    AI -.- ex1["Chess engine"]
+    ML -.- ex2["Spam filter"]
+    DL -.- ex3["Image classifier"]
+    GenAI -.- ex4["LLMs, image generators"]
+\`\`\`
+
 The key insight for AI Engineers: **LLMs do not retrieve answers from a database.** They generate text by predicting the most statistically likely next token (a small chunk of text) given everything that came before. Think of the phone's autocomplete feature — but instead of predicting the next word, an LLM predicts the next sentence, the next paragraph, or the entire document. This is why LLMs can confidently produce text that sounds correct but is factually wrong — a phenomenon called hallucination.
 
 > **What you'll learn watching this:** This video unpacks the relationship between AI, ML, deep learning, and generative AI, then explains foundation models and LLMs using an analogy that compares generating new content to composing new music from existing notes.
@@ -273,6 +284,18 @@ AI Engineers interact with multiple LLM providers, each with distinct capabiliti
 **Model selection principles.** Not every task needs the most powerful (and expensive) model. A simple classification task may work with a smaller, cheaper model. A complex reasoning task may require a frontier model. Start with the smallest model that could work, evaluate quality, and scale up only if needed.
 
 **Streaming responses.** For user-facing applications, streaming returns tokens as they are generated rather than waiting for the full response. This dramatically reduces perceived latency — the user sees output immediately rather than waiting seconds for the complete response.
+
+\`\`\`mermaid
+sequenceDiagram
+    participant U as User
+    participant App as Application
+    participant LLM as LLM API
+    U->>App: Send question
+    App->>LLM: POST /chat (prompt + system msg)
+    LLM-->>App: Stream tokens
+    App-->>U: Display response
+    Note over App,LLM: Each call is stateless
+\`\`\`
 
 **Multi-turn conversations.** LLM APIs are stateless — each call is independent. To maintain a conversation, you must send the full conversation history with each request.
 
@@ -467,6 +490,10 @@ RAG is an architecture pattern that combines a retrieval system with a language 
 
 **How RAG works.** At indexing time, documents are split into chunks, each chunk is embedded with an embedding model, and the resulting vectors are stored in a vector database alongside the original text. At query time, the user's question is embedded with the same model, the vector database finds the most similar chunks, and those chunks are injected into the LLM's context window as grounding material before the model generates a response. The model is instructed to answer based on the retrieved context, not its parametric memory.
 
+\`\`\`interactive-flow
+ragPipeline
+\`\`\`
+
 **The pipeline has five failure points.** Chunking (splitting documents at the wrong boundaries can separate the information needed to answer the query). Embedding (using the wrong model, or a model mismatched to the domain, degrades retrieval). Retrieval (pure vector search misses exact-match queries that keyword search handles well — hybrid search combines both). Context injection (injecting too many chunks fills the window with noise). Generation (even with good context, the model may ignore it in favour of its training data if the prompt is not designed to prioritise retrieval).
 
 **Why it matters:** RAG is the default starting point for most enterprise knowledge retrieval applications. It enables LLMs to answer questions about proprietary or recently updated information without retraining. It is faster and cheaper to iterate than fine-tuning, and it provides a natural audit trail (you can inspect what was retrieved).
@@ -492,6 +519,18 @@ In LangGraph, a workflow is a graph where nodes are processing steps (LLM calls,
 State is the central concept. LangGraph maintains a typed state object that persists across all nodes. Each node reads from and writes to this state. Because state is explicit and inspectable, debugging is far more tractable than in agent systems where state is implicit.
 
 Tool use is implemented by registering Python functions as tools the LLM can call. The LLM generates a structured tool call with arguments; LangGraph routes execution to the corresponding function, captures the result, and routes it back to the LLM for the next step.
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Planning: User input received
+    Planning --> Executing: Plan ready
+    Executing --> Reflecting: Tool result returned
+    Reflecting --> Planning: Needs more steps
+    Reflecting --> Done: Task complete
+    Done --> [*]
+    Executing --> Executing: Retry on failure
+\`\`\`
 
 **Why it matters:** Most real agent workflows are not linear — they require loops, conditional logic, retries, and parallel steps. LangGraph provides the explicit graph structure needed to build these reliably, with inspectable state that makes debugging practical.
 
@@ -565,6 +604,20 @@ Memory has several forms. In-context memory is the information held in the curre
 Tools are the interfaces through which the agent acts on the world — calling APIs, querying databases, running code, reading files. Each tool is a potential attack surface and failure point. Tools must have clear input validation, enforced scope limits, and safe error handling.
 
 Orchestration governs how the planning-execution loop runs, how state is passed between steps, and how errors trigger retries or escalations. Frameworks such as LangGraph provide the graph-based structure needed for complex orchestration with explicit state. Multi-agent systems extend this further by having multiple specialised agents collaborate — one agent may plan while another executes, or a supervisor agent may delegate subtasks to worker agents. Multi-agent architectures increase capability at the cost of significantly increased debugging complexity and communication overhead between agents.
+
+\`\`\`mermaid
+flowchart TB
+    User["User Request"] --> Supervisor["Supervisor Agent"]
+    Supervisor --> Planner["Planner Agent"]
+    Supervisor --> Researcher["Research Agent"]
+    Supervisor --> Writer["Writer Agent"]
+    Planner --> Supervisor
+    Researcher --> Tools["Tools & APIs"]
+    Tools --> Researcher
+    Researcher --> Supervisor
+    Writer --> Supervisor
+    Supervisor --> Response["Final Response"]
+\`\`\`
 
 **Why it matters:** Agent systems are the most powerful — and the most failure-prone — pattern in LLM application design. A poorly designed agent can loop indefinitely, take irreversible actions, exhaust API budgets, or be hijacked through prompt injection. Senior engineers must be able to design these systems defensively, not just functionally.
 
@@ -732,6 +785,19 @@ Staff using AI tools and systems must understand the limitations of AI technolog
 LLM evaluation is the practice of systematically measuring the quality of outputs from large language model applications, particularly RAG (Retrieval-Augmented Generation) systems. Unlike traditional ML where metrics like accuracy and F1 are well-defined, evaluating LLM outputs requires assessing qualities like faithfulness, relevance, coherence, and completeness — properties that are inherently subjective and context-dependent.
 
 RAGAS (Retrieval Augmented Generation Assessment) is one of the most widely adopted evaluation frameworks. It provides automated metrics that assess RAG pipeline quality across two dimensions: retrieval quality (are the right documents being retrieved?) and generation quality (is the model using the retrieved context correctly?).
+
+\`\`\`mermaid
+flowchart LR
+    Q["Test Questions"] --> RAG["RAG Pipeline"]
+    RAG --> Out["Generated Answers"]
+    Out --> Eval["Evaluation Framework"]
+    GT["Ground Truth"] --> Eval
+    Ctx["Retrieved Context"] --> Eval
+    Eval --> F["Faithfulness"]
+    Eval --> R["Answer Relevancy"]
+    Eval --> CP["Context Precision"]
+    Eval --> CR["Context Recall"]
+\`\`\`
 
 **Why it matters:** Without systematic evaluation, LLM applications are deployed based on vibes — "it seems to work well." In production, especially in insurance where outputs may inform customer-facing decisions or regulatory processes, you need quantifiable measures of quality. Evaluation frameworks make it possible to compare prompt strategies, detect regressions, and set quality thresholds for deployment.
 

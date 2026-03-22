@@ -148,6 +148,22 @@ The DOM is a programming interface created by the browser when it parses an HTML
 
 A web page starts with an \`<html>\` tag at the root and has exactly two children — a \`<head>\` and a \`<body>\`. JavaScript then interacts with this tree to make the page dynamic — changing text, showing or hiding elements, updating styles, and responding to user actions.
 
+### DOM Tree Structure
+
+\`\`\`mermaid
+flowchart TB
+    A[document] --> B[html]
+    B --> C[head]
+    B --> D[body]
+    C --> E[meta]
+    C --> F[title]
+    D --> G[header]
+    D --> H[main]
+    D --> I[footer]
+    H --> J[section]
+    H --> K[article]
+\`\`\`
+
 **Why it matters:** Understanding the DOM explains how JavaScript controls a web page. Without this mental model, DOM manipulation feels like magic rather than a predictable system.
 
 **Key things to understand:**
@@ -172,6 +188,15 @@ CSS (Cascading Style Sheets) controls the visual presentation of HTML elements. 
 **Selectors** are patterns that target HTML elements. Type selectors target element names (e.g. \`p\`), class selectors target elements with a given class (e.g. \`.card\`), and ID selectors target a single element with a specific ID (e.g. \`#header\`). Combinators such as descendant (\` \`), child (\`>\`), and adjacent sibling (\`+\`) let you target elements based on their position in the DOM.
 
 **Specificity** is the algorithm the browser uses to decide which CSS rule wins when multiple rules target the same element. Inline styles beat ID selectors, which beat class selectors, which beat type selectors. Understanding this hierarchy prevents the common trap of adding !important everywhere.
+
+### CSS Box Model Layers
+
+\`\`\`mermaid
+flowchart LR
+    A[Margin] --> B[Border]
+    B --> C[Padding]
+    C --> D[Content]
+\`\`\`
 
 **The box model** defines how the browser calculates the space an element occupies. Every element is a rectangular box made of four layers: content, padding, border, and margin. By default (\`box-sizing: content-box\`), width and height apply only to the content area. Setting \`box-sizing: border-box\` makes width and height include padding and border, which is almost always easier to reason about.
 
@@ -353,6 +378,22 @@ React is a JavaScript library for building user interfaces through a component-b
 
 ---
 
+### React Component Lifecycle
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Mounting
+    Mounting --> Rendered: Initial render
+    Rendered --> Updating: State or props change
+    Updating --> Rendered: Re-render
+    Rendered --> Unmounting: Component removed
+    Unmounting --> [*]
+    Rendered --> EffectRuns: useEffect triggered
+    EffectRuns --> Rendered: Cleanup and re-run
+\`\`\`
+
+---
+
 ## React – Hooks (useState, useEffect, useContext, custom hooks)
 
 Hooks are functions that let you use React features — state, side effects, context — inside functional components. They were introduced to replace class components and have become the standard way to write React code.
@@ -408,6 +449,16 @@ TypeScript is a superset of JavaScript that adds a static type system. TypeScrip
 ---
 
 ## Front-End Libraries (Redux for state management, component libraries)
+
+### State Management Data Flow
+
+\`\`\`mermaid
+flowchart LR
+    A[Component] -->|Dispatches| B[Action]
+    B --> C[Reducer]
+    C --> D[Store]
+    D -->|Subscribes| A
+\`\`\`
 
 As React applications grow, managing state that must be shared across many parts of the application becomes difficult with component state and context alone. State management libraries and component libraries are the two most common categories of third-party tools that address this.
 
@@ -654,6 +705,12 @@ The three Core Web Vitals are:
 
 ---
 
+\`\`\`interactive-flow
+reactRendering
+\`\`\`
+
+---
+
 ## Web Performance – Optimisation Techniques (lazy loading, code splitting, caching)
 
 Once you have measured performance and identified bottlenecks, you apply targeted techniques to improve it. The most impactful techniques address initial load time, resource efficiency, and repeat-visit performance.
@@ -791,6 +848,21 @@ The core idea is that code organisation should reflect the business concepts and
 ---
 
 ## Architecture Patterns (micro-frontends, monorepo, feature-based structure)
+
+### Micro-Frontend Architecture
+
+\`\`\`mermaid
+flowchart TB
+    A[Shell Application] --> B[Team A: Auth Module]
+    A --> C[Team B: Dashboard Module]
+    A --> D[Team C: Settings Module]
+    B --> E[Independent Build & Deploy]
+    C --> F[Independent Build & Deploy]
+    D --> G[Independent Build & Deploy]
+    E --> H[Shared Design System]
+    F --> H
+    G --> H
+\`\`\`
 
 As frontend applications and teams grow, the architecture of the codebase must be intentionally designed to support multiple contributors, fast iteration, and maintainability. Several architectural patterns address these concerns at different scales.
 
