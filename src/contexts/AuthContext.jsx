@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
-import { syncAllProgressToSupabase } from '../utils/progressStorage'
+import { syncAllProgressToSupabase, pullAndMergeFromSupabase } from '../utils/progressStorage'
 
 const AuthContext = createContext(null)
 
@@ -27,8 +27,9 @@ export function AuthProvider({ children }) {
 
       if (adminFlag) {
         setApprovalStatus('approved')
-        // Backfill any localStorage progress to Supabase (fire-and-forget)
-        syncAllProgressToSupabase(supabase, currentUser.id)
+        // Pull remote progress first, then push merged state (fire-and-forget)
+        pullAndMergeFromSupabase(supabase, currentUser.id)
+          .then(() => syncAllProgressToSupabase(supabase, currentUser.id))
         // Fetch pending count for admin badge
         const { count } = await supabase
           .from('user_approvals')
@@ -50,8 +51,9 @@ export function AuthProvider({ children }) {
       } else {
         setApprovalStatus(data.status)
         if (data.status === 'approved') {
-          // Backfill any localStorage progress to Supabase (fire-and-forget)
-          syncAllProgressToSupabase(supabase, currentUser.id)
+          // Pull remote progress first, then push merged state (fire-and-forget)
+          pullAndMergeFromSupabase(supabase, currentUser.id)
+            .then(() => syncAllProgressToSupabase(supabase, currentUser.id))
         }
       }
     } catch {

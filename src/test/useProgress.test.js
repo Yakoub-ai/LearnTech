@@ -8,14 +8,6 @@ vi.mock('../contexts/AuthContext', () => ({
   useAuth: () => ({ user: null }),
 }))
 
-// Mock useSupabaseProgress so no real Supabase calls are made
-vi.mock('../hooks/useSupabaseProgress', () => ({
-  useSupabaseProgress: () => ({
-    debouncedUpsert: vi.fn(),
-    saveQuizScoreToCloud: vi.fn(),
-  }),
-}))
-
 beforeEach(() => {
   localStorage.clear()
 })

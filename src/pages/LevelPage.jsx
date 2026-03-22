@@ -14,9 +14,6 @@ import ObjectiveChecklist from '../components/roadmap/ObjectiveChecklist'
 import QuizBlock from '../components/interactive/QuizBlock'
 import LevelExamBlock from '../components/interactive/LevelExamBlock'
 import ReportQuestionModal from '../components/interactive/ReportQuestionModal'
-import { useAuth } from '../contexts/AuthContext'
-import { supabase } from '../lib/supabase'
-import { syncProgressItemToSupabase } from '../utils/progressStorage'
 
 function TableOfContents({ content }) {
   const headings = []
@@ -54,7 +51,7 @@ function TableOfContents({ content }) {
 
 export default function LevelPage() {
   const { roleId, level } = useParams()
-  const { user } = useAuth()
+
   const role = getRoleById(roleId)
   const { isObjectiveComplete, toggleObjective, roleProgress, completeTopicQuiz, saveLevelExamScore, getTopicQuizScore, getLevelExamScore } = useProgress(roleId)
   const [markdownContent, setMarkdownContent] = useState({})
@@ -199,7 +196,6 @@ export default function LevelPage() {
                           savedScore={savedScore}
                           onComplete={(score) => {
                             completeTopicQuiz(level, topicQuiz.topicId, topicQuiz.objectiveIndex, score)
-                            syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'topicQuiz', topicQuiz.topicId, { score, scoredAt: new Date().toISOString() })
                           }}
                           onReport={(questionIndex, questionText) =>
                             openReportModal(topicQuiz.topicId, questionIndex, questionText)
@@ -238,7 +234,6 @@ export default function LevelPage() {
             savedScore={examScore}
             onComplete={(score) => {
               saveLevelExamScore(level, score)
-              syncProgressItemToSupabase(supabase, user?.id, roleId, level, 'levelExam', 'score', { score, scoredAt: new Date().toISOString() })
             }}
             onReport={(questionIndex, questionText) =>
               openReportModal('level-exam', questionIndex, questionText)

@@ -1,7 +1,14 @@
 /**
  * Progress Storage Utilities
  * localStorage-based tracking for learning progress, objectives, resources, and quizzes
+ *
+ * @typedef {'objective' | 'resource' | 'quiz' | 'topic_quiz' | 'level_exam'} ProgressType
+ * @typedef {'beginner' | 'mid' | 'senior'} Level
+ * @typedef {{ completed: boolean, completedAt: string | null }} ObjectiveValue
+ * @typedef {{ score: number, scoredAt: string }} ScoreValue
  */
+
+import { getLanguageById } from '../data/languages.js'
 
 const STORAGE_KEY = 'tech-hubben-learning-progress';
 const LEGACY_STORAGE_KEY = 'tech-hub-learning-progress';
@@ -764,5 +771,96 @@ export async function syncAllProgressToSupabase(supabase, userId) {
     }
   } catch {
     // fire and forget
+  }
+}
+
+/**
+ * Pull progress from Supabase and merge it into localStorage.
+ * Called once on login BEFORE pushing, so Device B never overwrites Device A's data.
+ * Uses timestamp comparison: the newer value always wins.
+ * Never throws — wrapped in try/catch so a Supabase outage can't block login.
+ *
+ * @param {object} supabase - Supabase client
+ * @param {string} userId - Auth user UUID
+ */
+export async function pullAndMergeFromSupabase(supabase, userId) {
+  if (!supabase || !userId) return
+  try {
+    const { data: rows, error } = await supabase
+      .from('user_progress')
+      .select('role_id, level, type, item_key, value, updated_at')
+      .eq('user_id', userId)
+
+    if (error || !rows || rows.length === 0) return
+
+    const progress = getProgress()
+    if (!progress.roles) progress.roles = {}
+    if (!progress.languages) progress.languages = {}
+
+    for (const row of rows) {
+      const { role_id, level, type, item_key, value, updated_at } = row
+
+      // Classify the row: language IDs are known; everything else is a role
+      const section = getLanguageById(role_id) ? 'languages' : 'roles'
+
+      if (!progress[section][role_id]) {
+        progress[section][role_id] = getInitialRoleProgress()
+      }
+      if (!progress[section][role_id][level]) {
+        progress[section][role_id][level] = {
+          objectives: [], resources: [], quizScore: null,
+          completed: false, startedAt: null, completedAt: null
+        }
+      }
+
+      const levelData = progress[section][role_id][level]
+
+      if (type === 'objective') {
+        if (!levelData.objectives) levelData.objectives = []
+        const idx = parseInt(item_key, 10)
+        while (levelData.objectives.length <= idx) {
+          levelData.objectives.push({ completed: false, completedAt: null })
+        }
+        const local = levelData.objectives[idx]
+        const remoteNewer = !local.completedAt || (updated_at && updated_at > local.completedAt)
+        if (remoteNewer || (!local.completed && value.completed)) {
+          levelData.objectives[idx] = value
+        }
+      } else if (type === 'resource') {
+        if (!levelData.resources) levelData.resources = []
+        const idx = parseInt(item_key, 10)
+        while (levelData.resources.length <= idx) {
+          levelData.resources.push({ completed: false, completedAt: null })
+        }
+        const local = levelData.resources[idx]
+        const remoteNewer = !local.completedAt || (updated_at && updated_at > local.completedAt)
+        if (remoteNewer || (!local.completed && value.completed)) {
+          levelData.resources[idx] = value
+        }
+      } else if (type === 'quiz') {
+        const local = levelData.quizScore
+        const remoteNewer = !local || !local.scoredAt || (updated_at && updated_at > local.scoredAt)
+        if (remoteNewer) {
+          levelData.quizScore = value
+        }
+      } else if (type === 'topic_quiz') {
+        if (!levelData.topicQuizzes) levelData.topicQuizzes = {}
+        const local = levelData.topicQuizzes[item_key]
+        const remoteNewer = !local || !local.scoredAt || (updated_at && updated_at > local.scoredAt)
+        if (remoteNewer) {
+          levelData.topicQuizzes[item_key] = value
+        }
+      } else if (type === 'level_exam') {
+        const local = levelData.levelExam
+        const remoteNewer = !local || !local.scoredAt || (updated_at && updated_at > local.scoredAt)
+        if (remoteNewer) {
+          levelData.levelExam = value
+        }
+      }
+    }
+
+    saveProgress(progress)
+  } catch {
+    // never block login on a sync failure
   }
 }

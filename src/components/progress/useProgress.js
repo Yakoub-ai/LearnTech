@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import {
   getProgress,
   setObjectiveComplete,
@@ -27,12 +27,30 @@ export default function useProgress(roleId) {
   const debouncedSync = useCallback((level, type, itemId, data) => {
     if (!user?.id) return
     const key = `${roleId}:${level}:${type}:${itemId}`
-    clearTimeout(pendingSyncs.current[key])
-    pendingSyncs.current[key] = setTimeout(() => {
-      delete pendingSyncs.current[key]
-      syncProgressItemToSupabase(supabase, user.id, roleId, level, type, itemId, data)
-    }, SYNC_DEBOUNCE_MS)
+    clearTimeout(pendingSyncs.current[key]?.timeoutId)
+    const fn = () => syncProgressItemToSupabase(supabase, user.id, roleId, level, type, itemId, data)
+    pendingSyncs.current[key] = {
+      timeoutId: setTimeout(() => {
+        delete pendingSyncs.current[key]
+        fn()
+      }, SYNC_DEBOUNCE_MS),
+      fn,
+    }
   }, [roleId, user])
+
+  // Flush all pending debounced syncs immediately when the tab is closing,
+  // so progress isn't lost during the 400ms debounce window.
+  useEffect(() => {
+    const flush = () => {
+      for (const [key, entry] of Object.entries(pendingSyncs.current)) {
+        clearTimeout(entry.timeoutId)
+        entry.fn()
+        delete pendingSyncs.current[key]
+      }
+    }
+    window.addEventListener('beforeunload', flush)
+    return () => window.removeEventListener('beforeunload', flush)
+  }, [])
 
   const toggleObjective = useCallback((level, index) => {
     const progress = getProgress()

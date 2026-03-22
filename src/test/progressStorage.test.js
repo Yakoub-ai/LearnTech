@@ -13,6 +13,7 @@ import {
   getAllLabProgress,
   resetProgress,
   resetAllProgress,
+  pullAndMergeFromSupabase,
 } from '../utils/progressStorage'
 
 const STORAGE_KEY = 'tech-hubben-learning-progress'
@@ -290,5 +291,148 @@ describe('resetAllProgress', () => {
     resetAllProgress()
     const progress = getProgress()
     expect(progress.roles).toEqual({})
+  })
+})
+
+// ─── pullAndMergeFromSupabase ──────────────────────────────────────────────────
+
+function makeSupabase(rows) {
+  return {
+    from: () => ({
+      select: () => ({
+        eq: () => Promise.resolve({ data: rows, error: null }),
+      }),
+    }),
+  }
+}
+
+const FUTURE = '2099-01-01T00:00:00.000Z'
+const PAST = '2000-01-01T00:00:00.000Z'
+
+describe('pullAndMergeFromSupabase', () => {
+  it('does nothing when supabase is null', async () => {
+    await expect(pullAndMergeFromSupabase(null, 'user-1')).resolves.toBeUndefined()
+  })
+
+  it('does nothing when userId is null', async () => {
+    await expect(pullAndMergeFromSupabase(makeSupabase([]), null)).resolves.toBeUndefined()
+  })
+
+  it('does nothing when Supabase returns no rows', async () => {
+    await pullAndMergeFromSupabase(makeSupabase([]), 'user-1')
+    expect(getProgress().roles).toEqual({})
+  })
+
+  it('populates empty localStorage with Supabase data', async () => {
+    const rows = [
+      { role_id: 'engineer', level: 'beginner', type: 'objective', item_key: '0',
+        value: { completed: true, completedAt: FUTURE }, updated_at: FUTURE },
+    ]
+    await pullAndMergeFromSupabase(makeSupabase(rows), 'user-1')
+    const progress = getProgress()
+    expect(progress.roles.engineer.beginner.objectives[0].completed).toBe(true)
+  })
+
+  it('remote-newer wins: overwrites older local objective', async () => {
+    setObjectiveComplete('engineer', 'beginner', 0, true)
+    // Force an old completedAt onto the local entry
+    const progress = getProgress()
+    progress.roles.engineer.beginner.objectives[0].completedAt = PAST
+    progress.roles.engineer.beginner.objectives[0].completed = false
+    localStorage.setItem('tech-hubben-learning-progress', JSON.stringify(progress))
+
+    const rows = [
+      { role_id: 'engineer', level: 'beginner', type: 'objective', item_key: '0',
+        value: { completed: true, completedAt: FUTURE }, updated_at: FUTURE },
+    ]
+    await pullAndMergeFromSupabase(makeSupabase(rows), 'user-1')
+    expect(getProgress().roles.engineer.beginner.objectives[0].completed).toBe(true)
+  })
+
+  it('local-newer wins: does not overwrite newer local objective', async () => {
+    setObjectiveComplete('engineer', 'beginner', 0, true)
+    const progress = getProgress()
+    progress.roles.engineer.beginner.objectives[0].completedAt = FUTURE
+    localStorage.setItem('tech-hubben-learning-progress', JSON.stringify(progress))
+
+    const rows = [
+      { role_id: 'engineer', level: 'beginner', type: 'objective', item_key: '0',
+        value: { completed: false, completedAt: PAST }, updated_at: PAST },
+    ]
+    await pullAndMergeFromSupabase(makeSupabase(rows), 'user-1')
+    expect(getProgress().roles.engineer.beginner.objectives[0].completed).toBe(true)
+  })
+
+  it('adds Supabase items that are not present in localStorage', async () => {
+    // Local has objective 0, Supabase has objective 1
+    setObjectiveComplete('engineer', 'beginner', 0, true)
+    const rows = [
+      { role_id: 'engineer', level: 'beginner', type: 'objective', item_key: '1',
+        value: { completed: true, completedAt: FUTURE }, updated_at: FUTURE },
+    ]
+    await pullAndMergeFromSupabase(makeSupabase(rows), 'user-1')
+    const objs = getProgress().roles.engineer.beginner.objectives
+    expect(objs[0].completed).toBe(true)
+    expect(objs[1].completed).toBe(true)
+  })
+
+  it('merges quiz score from Supabase when none exists locally', async () => {
+    const rows = [
+      { role_id: 'engineer', level: 'mid', type: 'quiz', item_key: 'score',
+        value: { score: 90, scoredAt: FUTURE }, updated_at: FUTURE },
+    ]
+    await pullAndMergeFromSupabase(makeSupabase(rows), 'user-1')
+    expect(getProgress().roles.engineer.mid.quizScore.score).toBe(90)
+  })
+
+  it('merges topic_quiz score from Supabase', async () => {
+    const rows = [
+      { role_id: 'engineer', level: 'beginner', type: 'topic_quiz', item_key: 'arrays',
+        value: { score: 80, scoredAt: FUTURE }, updated_at: FUTURE },
+    ]
+    await pullAndMergeFromSupabase(makeSupabase(rows), 'user-1')
+    expect(getProgress().roles.engineer.beginner.topicQuizzes.arrays.score).toBe(80)
+  })
+
+  it('merges level_exam score from Supabase', async () => {
+    const rows = [
+      { role_id: 'engineer', level: 'senior', type: 'level_exam', item_key: 'score',
+        value: { score: 95, scoredAt: FUTURE }, updated_at: FUTURE },
+    ]
+    await pullAndMergeFromSupabase(makeSupabase(rows), 'user-1')
+    expect(getProgress().roles.engineer.senior.levelExam.score).toBe(95)
+  })
+
+  it('classifies language IDs under languages section', async () => {
+    const rows = [
+      { role_id: 'python', level: 'beginner', type: 'objective', item_key: '0',
+        value: { completed: true, completedAt: FUTURE }, updated_at: FUTURE },
+    ]
+    await pullAndMergeFromSupabase(makeSupabase(rows), 'user-1')
+    const progress = getProgress()
+    expect(progress.languages.python.beginner.objectives[0].completed).toBe(true)
+    expect(progress.roles.python).toBeUndefined()
+  })
+
+  it('does not throw when Supabase rejects', async () => {
+    const broken = {
+      from: () => ({
+        select: () => ({
+          eq: () => Promise.reject(new Error('network error')),
+        }),
+      }),
+    }
+    await expect(pullAndMergeFromSupabase(broken, 'user-1')).resolves.toBeUndefined()
+  })
+
+  it('does not throw when Supabase returns an error object', async () => {
+    const errClient = {
+      from: () => ({
+        select: () => ({
+          eq: () => Promise.resolve({ data: null, error: { message: 'DB error' } }),
+        }),
+      }),
+    }
+    await expect(pullAndMergeFromSupabase(errClient, 'user-1')).resolves.toBeUndefined()
   })
 })
