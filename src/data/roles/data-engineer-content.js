@@ -18,6 +18,7 @@ Data Engineers design, build, and maintain the infrastructure and pipelines that
 | Data Engineering Overview | [Data Engineering Roadmap](https://roadmap.sh/dataengineering) | Interactive |
 | Relational Databases | [freeCodeCamp – Relational Databases](https://www.freecodecamp.org/learn/relational-databases-v9/) | Interactive |
 | Data Pipelines Overview | [What is a Data Pipeline?](https://www.youtube.com/watch?v=VtzvF17ysbc) | Video |
+| File Formats | [Apache Parquet – Overview](https://parquet.apache.org/docs/overview/) | Docs |
 | Linux & CLI Basics | [roadmap.sh – Linux](https://roadmap.sh/linux) | Interactive |
 
 ### After completing Beginner you should be able to:
@@ -27,6 +28,7 @@ Data Engineers design, build, and maintain the infrastructure and pipelines that
 - Explain the difference between relational and non-relational databases and identify when each is appropriate
 - Describe what a data pipeline is and identify the stages of extract, transform, and load (ETL)
 - Navigate the Linux file system and use the command line for basic file operations
+- Compare common data file formats (CSV, JSON, Parquet) and explain when each is appropriate
 - Explain what data modelling means and why a well-structured schema matters for downstream consumers
 - Describe the role of a Data Engineer within a data team and how it differs from Data Scientist and Data Analyst
 
@@ -268,6 +270,32 @@ For a Data Engineer at the beginner level, the most important distinction is bet
 
 ---
 
+## File Formats – CSV, JSON and Parquet
+
+Data engineers work with data stored in files as frequently as they work with databases. Understanding the trade-offs between common file formats is a fundamental skill. The three formats every beginner must know are CSV (row-oriented text), JSON (nested text), and Parquet (columnar binary).
+
+**CSV** is the simplest tabular format — human-readable, universally supported, but with no built-in schema, no compression, and requires reading the entire file for any query. **JSON/JSONL** supports nested and semi-structured data, making it the default for REST APIs and event logs, but is verbose and has no columnar access. **Parquet** is a columnar, binary, compressed format designed for analytical workloads — it stores data column by column, supports schema metadata, and is the default output format for Spark, dbt, and most cloud data platforms.
+
+**Key things to understand:**
+
+- CSV: simple, universal, no schema, no compression, row-oriented — suitable for data exchange, not for production pipeline storage
+- JSON/JSONL: supports nested data, verbose, no columnar access — ideal for APIs and event logs
+- Parquet: columnar, compressed, schema-embedded, binary — the standard for analytical data in modern pipelines
+- Apache Avro: row-oriented binary format with embedded schema, commonly used for streaming data in Kafka
+- Compression trade-offs: Snappy (fast, moderate compression) vs Zstandard/gzip (slower, higher compression)
+- Schema-on-read (CSV/JSON) vs schema-on-write (Parquet/Avro)
+
+**Common pitfalls:**
+
+- Using CSV for intermediate pipeline storage — no schema, no compression, and forces full file reads.
+- Storing nested JSON in warehouse columns — flatten it during ingestion instead.
+- Not specifying compression when writing Parquet — verify Snappy or Zstandard is applied.
+- Assuming all Parquet files have the same schema without enforcement.
+
+**Why it matters:** Choosing the wrong file format creates compounding problems — slow reads, bloated storage, silent type errors, and compatibility issues. Understanding these trade-offs helps choose the right format for each pipeline stage.
+
+---
+
 With the foundations covered, you are ready to move on to the Mid level where these concepts are applied at scale using professional tools: dimensional modelling, dbt, Spark, Airflow, and cloud data services.
 `,
   mid: `# Data Engineer – Mid Concept Reference
@@ -360,7 +388,7 @@ Spark distributes data across the cluster as partitions and executes transformat
 
 ## Apache Airflow – Workflow Orchestration
 
-Apache Airflow is an open-source platform for authoring, scheduling, and monitoring workflows. In data engineering, Airflow is the most widely used tool for orchestrating data pipelines — defining the order in which tasks run, handling dependencies between tasks, retrying failed tasks, and providing visibility into pipeline execution.
+Apache Airflow is an open-source platform for authoring, scheduling, and monitoring workflows. In data engineering, Airflow is the most widely used tool for orchestrating data pipelines — defining the order in which tasks run, handling dependencies between tasks, retrying failed tasks, and providing visibility into pipeline execution. Alternative orchestrators like **Dagster** (asset-centric, with built-in data lineage) and **Prefect** (Python-native, dynamic workflows) are gaining adoption, but Airflow remains the industry standard.
 
 An Airflow workflow is defined as a DAG (Directed Acyclic Graph): a collection of tasks with defined dependencies that determines execution order. Each task is an instance of an operator — a predefined template for a specific type of work (run a Python function, execute a SQL query, trigger a Spark job, call an API). DAGs are written in Python, which gives full flexibility to dynamically generate tasks, parameterise workflows, and integrate with any system that has a Python client.
 
@@ -542,7 +570,7 @@ Before the lakehouse, organisations maintained two separate systems: a data lake
 **Key things to understand:**
 
 - Open file formats: Parquet (columnar, compressed, the standard for analytical data), ORC (similar to Parquet, common in Hadoop ecosystems)
-- Table formats: Delta Lake, Apache Iceberg, and Apache Hudi add ACID transactions, time travel, schema enforcement, and efficient upserts on top of Parquet files
+- Table formats: Delta Lake, Apache Iceberg, and Apache Hudi add ACID transactions, time travel, schema enforcement, and efficient upserts on top of Parquet files. As of 2025, **Apache Iceberg** has emerged as the leading open table format for cloud-agnostic deployments, with native support in Snowflake, BigQuery, AWS Athena, and Databricks (via UniForm)
 - Separation of storage and compute: data lives in cloud object storage; compute engines (Spark, SQL engines) are provisioned independently and scaled as needed
 - Medallion architecture: a common lakehouse pattern with Bronze (raw ingested data), Silver (cleaned and conformed data), and Gold (aggregated, business-ready data) layers
 - Schema enforcement and schema evolution: Delta Lake can enforce that writes conform to a defined schema and evolve the schema safely without breaking readers

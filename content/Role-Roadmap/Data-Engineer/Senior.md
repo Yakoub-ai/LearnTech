@@ -101,7 +101,7 @@ Before the lakehouse, organisations maintained two separate systems: a data lake
 **Key things to understand:**
 
 - Open file formats: Parquet (columnar, compressed, the standard for analytical data), ORC (similar to Parquet, common in Hadoop ecosystems)
-- Table formats: Delta Lake, Apache Iceberg, and Apache Hudi add ACID transactions, time travel, schema enforcement, and efficient upserts on top of Parquet files
+- Table formats: Delta Lake, Apache Iceberg, and Apache Hudi add ACID transactions, time travel, schema enforcement, and efficient upserts on top of Parquet files. As of 2025, **Apache Iceberg** has emerged as the leading open table format across cloud-agnostic deployments, with native support in Snowflake, BigQuery, AWS Athena, and Databricks (via UniForm). Iceberg's hidden partitioning, partition evolution, and multi-engine compatibility make it particularly strong for organisations that do not want to commit to a single compute vendor
 - Separation of storage and compute: data lives in cloud object storage; compute engines (Spark, SQL engines) are provisioned independently and scaled as needed
 - Medallion architecture: a common lakehouse pattern with Bronze (raw ingested data), Silver (cleaned and conformed data), and Gold (aggregated, business-ready data) layers
 - Schema enforcement and schema evolution: Delta Lake can enforce that writes conform to a defined schema and evolve the schema safely without breaking readers

@@ -17,6 +17,7 @@ Data Engineers design, build, and maintain the infrastructure and pipelines that
 | Data Engineering Overview | [Data Engineering Roadmap](https://roadmap.sh/dataengineering) | Interactive |
 | Relational Databases | [freeCodeCamp – Relational Databases](https://www.freecodecamp.org/learn/relational-databases-v9/) | Interactive |
 | Data Pipelines Overview | [What is a Data Pipeline?](https://www.youtube.com/watch?v=VtzvF17ysbc) | Video |
+| File Formats | [Apache Parquet – Overview](https://parquet.apache.org/docs/overview/) | Docs |
 | Linux & CLI Basics | [roadmap.sh – Linux](https://roadmap.sh/linux) | Interactive |
 
 ### After completing Beginner you should be able to:
@@ -26,6 +27,7 @@ Data Engineers design, build, and maintain the infrastructure and pipelines that
 - Explain the difference between relational and non-relational databases and identify when each is appropriate
 - Describe what a data pipeline is and identify the stages of extract, transform, and load (ETL)
 - Navigate the Linux file system and use the command line for basic file operations
+- Compare common data file formats (CSV, JSON, Parquet) and explain when each is appropriate
 - Explain what data modelling means and why a well-structured schema matters for downstream consumers
 - Describe the role of a Data Engineer within a data team and how it differs from Data Scientist and Data Analyst
 

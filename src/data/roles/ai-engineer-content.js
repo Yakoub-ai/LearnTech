@@ -211,6 +211,30 @@ https://www.youtube.com/watch?v=4vLxWqE94l4
 
 ---
 
+## Python for AI Engineers
+
+Python is the dominant language for AI engineering. Not because it is the fastest or most elegant language, but because the entire ecosystem — LLM SDKs, ML frameworks, data processing tools, vector database clients — is built around it. As an AI Engineer, Python is your primary tool for interacting with LLMs, processing data, and building applications.
+
+You do not need to be a Python expert at this level. You need to be comfortable with the fundamentals: variables, functions, data structures (lists, dictionaries, sets), control flow, file I/O, and working with external packages.
+
+**Key libraries for AI Engineers.** The \`requests\` library handles HTTP calls. The \`anthropic\` and \`openai\` packages are the official SDKs for the two most widely used LLM APIs. \`json\` handles structured data. \`os\` and \`dotenv\` manage environment variables (including API keys). \`tiktoken\` estimates token counts.
+
+**Why it matters:** Python is not optional for AI Engineers — it is the primary tool. Every LLM API call, every data processing step, every integration you build will be in Python. Investing in solid Python fundamentals pays dividends at every subsequent level.
+
+**Key things to understand:**
+- Use virtual environments for every project — dependency isolation prevents painful debugging later
+- Never hardcode API keys — use environment variables loaded from \`.env\` files
+- JSON is the universal data format for LLM APIs — be fluent in serialisation and parsing
+- Wrap LLM calls in functions with clear inputs and outputs — this makes code testable and reusable
+- Error handling is not optional — API calls fail under normal conditions and your code must handle it
+
+**Common pitfalls:**
+- Installing packages globally instead of in a virtual environment, causing version conflicts across projects
+- Hardcoding API keys in source files and accidentally committing them to version control
+- Not handling API errors, causing applications to crash on the first rate limit or timeout
+
+---
+
 ## Introduction to Prompt Engineering
 
 Prompt engineering is the practice of designing input text that elicits the desired output from a language model. Think of it like giving instructions to an extremely capable but very literal intern: the quality of what you get back depends almost entirely on how clearly you explain what you want.
@@ -221,6 +245,8 @@ Prompt engineering is the practice of designing input text that elicits the desi
 
 **Role prompting** frames the model as a particular persona: "You are a senior claims analyst with 10 years of experience." This influences the model's vocabulary, level of technical detail, and perspective — a useful way to target a specific audience or domain without writing long style instructions.
 
+**System prompts** are a special message type in LLM APIs that sets the model's overall behaviour, persona, and constraints for an entire conversation. Unlike user messages, system prompts persist across all turns and establish the ground rules. They are where you place role definitions, output format requirements, and safety instructions.
+
 **Structured output.** Asking the model to respond in a specific format — JSON, a numbered list, a markdown table — reduces ambiguity and makes output easier to parse programmatically. Being explicit about the desired format ("Respond with a JSON object containing the keys: summary, confidence, sources") produces more consistent results than leaving the format open.
 
 **Why it matters:** The prompt is your primary control surface for LLM behaviour. Mastering these basic techniques gives you the tools to solve a wide range of problems before reaching for more complex approaches like RAG or fine-tuning.
@@ -228,6 +254,7 @@ Prompt engineering is the practice of designing input text that elicits the desi
 **Key things to understand:**
 - Start simple (zero-shot) and add complexity (few-shot, structured output) only when needed
 - Few-shot examples influence the model's output format and tone more strongly than explicit instructions in many cases
+- System prompts set the overall behaviour for a conversation — use them for persona, constraints, and format rules
 - Positive instructions ("respond only with...") are more reliable than negative ones ("do not include...")
 - Prompts are not deterministic — the same prompt can produce different output across runs
 
@@ -235,6 +262,32 @@ Prompt engineering is the practice of designing input text that elicits the desi
 - Over-engineering prompts for simple tasks where a direct instruction would suffice
 - Not testing prompts across a range of inputs — a prompt that works for one example may fail on edge cases
 - Treating prompt engineering as a one-time task rather than an iterative process
+- Mixing instructions and data in a prompt without clear delimiters — the model may confuse data for instructions
+
+---
+
+## Understanding Modern LLM APIs
+
+AI Engineers interact with multiple LLM providers, each with distinct capabilities, pricing, and API designs. Anthropic's Claude models, OpenAI's GPT models, and Google's Gemini models are the three major providers as of 2025-2026. Each offers models at different capability and price points — choosing the right model for each task is an engineering decision, not a default.
+
+**Model selection principles.** Not every task needs the most powerful (and expensive) model. A simple classification task may work with a smaller, cheaper model. A complex reasoning task may require a frontier model. Start with the smallest model that could work, evaluate quality, and scale up only if needed.
+
+**Streaming responses.** For user-facing applications, streaming returns tokens as they are generated rather than waiting for the full response. This dramatically reduces perceived latency — the user sees output immediately rather than waiting seconds for the complete response.
+
+**Multi-turn conversations.** LLM APIs are stateless — each call is independent. To maintain a conversation, you must send the full conversation history with each request.
+
+**Why it matters:** Choosing the right LLM provider and model for each task is a core AI Engineering skill. Understanding how different APIs work, how to manage conversations, and how to use streaming allows you to build responsive, cost-effective applications.
+
+**Key things to understand:**
+- Different providers offer models at different capability/cost trade-offs — evaluate before committing
+- LLM APIs are stateless — multi-turn conversations require sending full history with each request
+- Streaming reduces perceived latency for user-facing applications and should be used by default in UIs
+- Token usage grows with each conversation turn — monitor and manage conversation length
+
+**Common pitfalls:**
+- Defaulting to the most expensive model without testing whether a smaller model would suffice
+- Not implementing streaming in user-facing applications, creating poor user experience
+- Forgetting that conversation history grows with each turn, eventually consuming the entire context window
 
 ---
 
@@ -242,9 +295,12 @@ Prompt engineering is the practice of designing input text that elicits the desi
 
 - Explain the difference between AI, ML, deep learning, and generative AI without referring to notes — including why LLMs hallucinate
 - Write a Python script that calls an LLM API, sends a prompt with a system message and user message, and prints the response
+- Set up a Python virtual environment, install LLM SDK packages, and manage API keys securely with environment variables
 - Describe what REST, GraphQL, gRPC, WebSocket, and Webhook are and give a real-world use case for each
 - Write a zero-shot and a few-shot prompt for the same task and explain why the few-shot version produces more consistent output
 - Explain what a token is and why token count matters for cost and context window management
+- Build a simple multi-turn chatbot that maintains conversation history across API calls
+- Compare the Anthropic and OpenAI SDK patterns and explain when to choose each
 `,
   mid: `# AI Engineer – Mid Concept Reference
 
