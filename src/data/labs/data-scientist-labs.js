@@ -11,9 +11,22 @@ export const labs = [
     estimatedMinutes: 25,
     steps: [
       {
-        title: 'Step 1: Load and Inspect Data',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before performing exploratory data analysis, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Python 3.12+ and a virtual environment. This lab uses only the Python standard library (including the math module) — no external packages are required.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `python --version` to confirm Python 3.12+',
+          'Create a venv: `python -m venv .venv && source .venv/bin/activate`'
+        ],
+        expectedOutput: 'Python 3.12.x\nVirtual environment activated: (.venv)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Load and Inspect Data',
         instruction: 'Create functions to load a dataset and compute basic descriptive statistics.',
-        starterCode: `# EDA — Step 1: Load and Inspect
+        starterCode: `# EDA — Step 2: Load and Inspect
 # Working with a sample employee dataset
 
 dataset = [
@@ -66,9 +79,9 @@ for col in ['salary', 'years', 'rating']:
     print(f"\\n{col}: {stats}")`
       },
       {
-        title: 'Step 2: Group and Aggregate',
+        title: 'Step 3: Group and Aggregate',
         instruction: 'Group data by department and compute aggregate statistics to find patterns.',
-        starterCode: `# EDA — Step 2: Group and Aggregate
+        starterCode: `# EDA — Step 3: Group and Aggregate
 
 def group_by(data, key):
     """Group records by a key field.
@@ -128,9 +141,9 @@ for dept, stats in dept_salary.items():
     print(f"{dept}: avg=\${stats['mean']:,.0f}, range=\${stats['min']:,}-\${stats['max']:,}")`
       },
       {
-        title: 'Step 3: Find Correlations',
+        title: 'Step 4: Find Correlations',
         instruction: 'Calculate the correlation between years of experience and salary to determine if there is a relationship.',
-        starterCode: `# EDA — Step 3: Correlation Analysis
+        starterCode: `# EDA — Step 4: Correlation Analysis
 
 def correlation(data, col_x, col_y):
     """Calculate Pearson correlation coefficient between two columns.
@@ -194,9 +207,9 @@ for col_x, col_y in pairs:
     print(f"{col_x} vs {col_y}: r={r:.3f} ({strength})")`
       },
       {
-        title: 'Step 4: Generate an EDA Report',
+        title: 'Step 5: Generate an EDA Report',
         instruction: 'Tie everything together into a comprehensive EDA report function that summarizes the dataset.',
-        starterCode: `# EDA — Step 4: Full Report
+        starterCode: `# EDA — Step 5: Full Report
 
 def eda_report(data, numeric_cols, group_col=None):
     """Generate a complete EDA report.
@@ -303,14 +316,14 @@ eda_report(dataset, numeric_cols=['salary', 'years', 'rating'], group_col='dept'
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running data science experiments, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.12+, Jupyter Notebook or JupyterLab, pandas, numpy, scikit-learn, matplotlib, and any ML-specific libraries. Set up a virtual environment and install all dependencies before continuing.',
+        instruction: 'Before running Pandas EDA, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.12+, a virtual environment, and pandas and numpy installed (`pip install pandas numpy`).',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `jupyter --version` to verify Jupyter is installed',
-          'Test: `import pandas as pd; print(pd.__version__)`'
+          'Run `python --version` to confirm Python 3.12+',
+          'Run `pip install pandas numpy` then verify: `python -c "import pandas as pd, numpy as np; print(pd.__version__, np.__version__)"`'
         ],
-        expectedOutput: 'Python 3.12.x\nJupyter 7.x.x\npandas 2.x.x, numpy 1.x.x, scikit-learn 1.x.x all installed',
+        expectedOutput: 'Python 3.12.x\npandas 2.x.x\nnumpy 1.x.x',
         solution: null
       },
       {
@@ -401,7 +414,7 @@ print("Before imputation:")
 print(df[df['revenue'].isna() | df['units_sold'].isna()])
 `,
         hints: [
-          'df["revenue"].fillna(df["revenue"].median(), inplace=True)',
+          'df["revenue"] = df["revenue"].fillna(df["revenue"].median())',
           'Cast units_sold to int after filling: df["units_sold"] = df["units_sold"].fillna(...).astype(int)',
           'After filling, assert df["revenue"].isnull().sum() == 0'
         ],
@@ -411,7 +424,7 @@ print(df[df['revenue'].isna() | df['units_sold'].isna()])
 8     1009  North  Widget B  1100.0         NaN        C008  2024-01-23
 
 After imputation: no nulls remaining in revenue or units_sold.
-revenue filled with median: 1650.0
+revenue filled with median: 1500.0
 units_sold filled with median: 30`,
         solution: `print("Before imputation:")
 print(df[df['revenue'].isna() | df['units_sold'].isna()])
@@ -419,7 +432,7 @@ print(df[df['revenue'].isna() | df['units_sold'].isna()])
 rev_median = df['revenue'].median()
 units_median = df['units_sold'].median()
 
-df['revenue'].fillna(rev_median, inplace=True)
+df['revenue'] = df['revenue'].fillna(rev_median)
 df['units_sold'] = df['units_sold'].fillna(units_median).astype(int)
 
 print(f"\\nrevenue filled with median: {rev_median}")
@@ -764,14 +777,14 @@ for _, row in importance_df.head(5).iterrows():
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running data science experiments, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.12+, Jupyter Notebook or JupyterLab, pandas, numpy, scikit-learn, matplotlib, and any ML-specific libraries. Set up a virtual environment and install all dependencies before continuing.',
+        instruction: 'Before building data visualisations, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.12+, a virtual environment, and matplotlib, seaborn, and scipy installed (`pip install matplotlib seaborn pandas numpy scipy`).',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `jupyter --version` to verify Jupyter is installed',
-          'Test: `import pandas as pd; print(pd.__version__)`'
+          'Run `pip install matplotlib seaborn pandas numpy scipy`',
+          'Verify: `python -c "import matplotlib, seaborn, scipy; print(matplotlib.__version__, seaborn.__version__, scipy.__version__)"`'
         ],
-        expectedOutput: 'Python 3.12.x\nJupyter 7.x.x\npandas 2.x.x, numpy 1.x.x, scikit-learn 1.x.x all installed',
+        expectedOutput: 'Python 3.12.x\nmatplotlib 3.x.x\nseaborn 0.x.x\nscipy 1.x.x installed',
         solution: null
       },
       {
@@ -945,8 +958,8 @@ median_val = df['income'].median()
 std_val    = df['income'].std()
 skew_val   = df['income'].skew()
 
-ax.axvline(mean_val,   color='red',   linestyle='--', linewidth=2, label=f'Mean')
-ax.axvline(median_val, color='green', linestyle='--', linewidth=2, label=f'Median')
+ax.axvline(mean_val,   color='red',   linestyle='--', linewidth=2, label='Mean')
+ax.axvline(median_val, color='green', linestyle='--', linewidth=2, label='Median')
 
 kde = stats.gaussian_kde(df['income'])
 x_range = np.linspace(df['income'].min(), df['income'].max(), 300)
@@ -1430,13 +1443,13 @@ class FeatureEngineer:
     def impute_missing(self, strategy: dict):
         for col, method in strategy.items():
             if method == 'mean':
-                self.df[col].fillna(self.df[col].mean(), inplace=True)
+                self.df[col] = self.df[col].fillna(self.df[col].mean())
             elif method == 'median':
-                self.df[col].fillna(self.df[col].median(), inplace=True)
+                self.df[col] = self.df[col].fillna(self.df[col].median())
             elif method == 'mode':
-                self.df[col].fillna(self.df[col].mode()[0], inplace=True)
+                self.df[col] = self.df[col].fillna(self.df[col].mode()[0])
             elif method == 'zero':
-                self.df[col].fillna(0, inplace=True)
+                self.df[col] = self.df[col].fillna(0)
         print(f"  [impute] Imputed {len(strategy)} columns")
         return self
 

@@ -11,9 +11,22 @@ export const labs = [
     estimatedMinutes: 30,
     steps: [
       {
-        title: 'Step 1: Prepare Training Data',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before training a machine learning model, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Python 3.12+ and a virtual environment. This lab uses only the Python standard library (random, math, collections) — no external packages are required.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `python --version` to confirm Python 3.12+',
+          'Create a venv: `python -m venv .venv && source .venv/bin/activate`'
+        ],
+        expectedOutput: 'Python 3.12.x\nVirtual environment activated: (.venv)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Prepare Training Data',
         instruction: 'Create a function that splits a dataset into training and test sets with stratified sampling.',
-        starterCode: `# ML Pipeline — Step 1: Data Preparation
+        starterCode: `# ML Pipeline — Step 2: Data Preparation
 import random
 
 def train_test_split(data, labels, test_ratio=0.2, seed=42):
@@ -70,9 +83,9 @@ print(f"Training: {len(train_X)} samples")
 print(f"Testing: {len(test_X)} samples")`
       },
       {
-        title: 'Step 2: Implement K-Nearest Neighbors',
+        title: 'Step 3: Implement K-Nearest Neighbors',
         instruction: 'Build a simple KNN classifier that predicts labels based on the k closest training examples.',
-        starterCode: `# ML Pipeline — Step 2: KNN Classifier
+        starterCode: `# ML Pipeline — Step 3: KNN Classifier
 import math
 
 def euclidean_distance(a, b):
@@ -279,7 +292,7 @@ if runs:
       },
       {
         title: 'Step 5: Register a Model in the Model Registry',
-        instruction: `WHAT: Promote your best run's model artifact to the MLflow Model Registry and transition it to the "Staging" stage.\nWHY: The Model Registry is the gateway between experimentation and deployment. It provides versioning, stage transitions (Staging to Production to Archived), and a single source of truth for production models. Every production deployment should pull from the registry, not directly from a run artifact.\nHOW: Use mlflow.register_model() with the run artifact URI, then use MlflowClient().transition_model_version_stage() to move it to Staging. In production, you would gate this transition on passing an automated check suite.`,
+        instruction: `WHAT: Promote your best run's model artifact to the MLflow Model Registry and assign it a "staging" alias.\nWHY: The Model Registry is the gateway between experimentation and deployment. It provides versioning, aliases (e.g. staging, production), and a single source of truth for production models. Every production deployment should pull from the registry, not directly from a run artifact.\nHOW: Use mlflow.register_model() with the run artifact URI, then use MlflowClient().set_registered_model_alias() to assign the "staging" alias. In production, you would gate this on passing an automated check suite.`,
         starterCode: `import mlflow
 from mlflow.tracking import MlflowClient
 
@@ -291,15 +304,15 @@ model_uri = f"runs:/{best_run_id}/model"
 
 # TODO: Register the model as "iris-classifier"
 # TODO: Print the registered model version number
-# TODO: Transition version 1 to "Staging"
-# TODO: Print the new stage`,
+# TODO: Assign the "staging" alias to the registered version
+# TODO: Print the alias assignment`,
         hints: [
           'Register: result = mlflow.register_model(model_uri, "iris-classifier")',
           'The result has .version attribute',
-          'Transition: client.transition_model_version_stage(name="iris-classifier", version=result.version, stage="Staging")',
-          'Retrieve after transition: client.get_model_version(name, version).current_stage'
+          'Assign alias: client.set_registered_model_alias(name="iris-classifier", alias="staging", version=result.version)',
+          'Retrieve by alias: client.get_model_version_by_alias("iris-classifier", "staging").version'
         ],
-        expectedOutput: `Registered model version: 1\nModel iris-classifier v1 is now in stage: Staging`,
+        expectedOutput: `Registered model version: 1\nAlias 'staging' assigned to iris-classifier v1`,
         solution: `import mlflow
 from mlflow.tracking import MlflowClient
 
@@ -311,14 +324,13 @@ model_uri = f"runs:/{best_run_id}/model"
 result = mlflow.register_model(model_uri, "iris-classifier")
 print(f"Registered model version: {result.version}")
 
-client.transition_model_version_stage(
+client.set_registered_model_alias(
     name="iris-classifier",
-    version=result.version,
-    stage="Staging"
+    alias="staging",
+    version=result.version
 )
 
-version_info = client.get_model_version("iris-classifier", result.version)
-print(f"Model iris-classifier v{result.version} is now in stage: {version_info.current_stage}")`
+print(f"Alias 'staging' assigned to iris-classifier v{result.version}")`
       }
     ]
   },
@@ -653,7 +665,7 @@ print(f"Parameters: {sum(p.numel() for p in model.parameters()):,}")`,
           'Extend with layers.extend([...]) or build a flat list and pass to nn.Sequential(*layers)',
           'Output shape should be (batch_size, output_size) — e.g. (8, 3)'
         ],
-        expectedOutput: `Input shape: torch.Size([8, 10])\nOutput shape: torch.Size([8, 3])\nParameters: 10,627`,
+        expectedOutput: `Input shape: torch.Size([8, 10])\nOutput shape: torch.Size([8, 3])\nParameters: 10,243`,
         solution: `import torch
 import torch.nn as nn
 
@@ -855,7 +867,7 @@ with torch.no_grad():
 # Export to TorchScript
 # TODO`,
         hints: [
-          'Load: model.load_state_dict(torch.load("best_model.pt", map_location=device))',
+          'Load: model.load_state_dict(torch.load("best_model.pt", map_location=device, weights_only=True))',
           'Export: scripted = torch.jit.script(model)',
           'Save: scripted.save("model_scripted.pt")',
           'Reload: reloaded = torch.jit.load("model_scripted.pt")',
@@ -864,7 +876,7 @@ with torch.no_grad():
         expectedOutput: `Predicted class: 1\nTorchScript model saved to model_scripted.pt\nOutputs match: True`,
         solution: `import torch
 
-model.load_state_dict(torch.load("best_model.pt", map_location=device))
+model.load_state_dict(torch.load("best_model.pt", map_location=device, weights_only=True))
 model.eval()
 
 test_input = torch.randn(1, 10)
@@ -1023,22 +1035,22 @@ scorer.print_report()`,
           'Print confusion matrix rows with zip(self.class_names, cm) for labeled output'
         ],
         expectedOutput: `============================================================\nMODEL EVALUATION REPORT\n============================================================\n  Accuracy:   1.0000\n  Precision:  1.0000\n  Recall:     1.0000\n  F1 Score:   1.0000\n  AUC:        1.0000\n------------------------------------------------------------\nConfusion Matrix:\n[[10  0  0]\n [ 0  9  0]\n [ 0  0 11]]\n------------------------------------------------------------\nPer-Class Report:\n              precision    recall  f1-score   support\n\n      setosa       1.00      1.00      1.00        10\n  versicolor       1.00      1.00      1.00         9\n   virginica       1.00      1.00      1.00        11\n\n    accuracy                           1.00        30`,
-        solution: `def print_report(self):
-    print("=" * 60)
-    print("MODEL EVALUATION REPORT")
-    print("=" * 60)
-    print(f"  Accuracy:   {self.results['accuracy']:.4f}")
-    print(f"  Precision:  {self.results['precision']:.4f}")
-    print(f"  Recall:     {self.results['recall']:.4f}")
-    print(f"  F1 Score:   {self.results['f1']:.4f}")
-    if "auc" in self.results:
-        print(f"  AUC:        {self.results['auc']:.4f}")
-    print("-" * 60)
-    print("Confusion Matrix:")
-    print(self.results["confusion_matrix"])
-    print("-" * 60)
-    print("Per-Class Report:")
-    print(self.results["classification_report"])`
+        solution: `    def print_report(self):
+        print("=" * 60)
+        print("MODEL EVALUATION REPORT")
+        print("=" * 60)
+        print(f"  Accuracy:   {self.results['accuracy']:.4f}")
+        print(f"  Precision:  {self.results['precision']:.4f}")
+        print(f"  Recall:     {self.results['recall']:.4f}")
+        print(f"  F1 Score:   {self.results['f1']:.4f}")
+        if "auc" in self.results:
+            print(f"  AUC:        {self.results['auc']:.4f}")
+        print("-" * 60)
+        print("Confusion Matrix:")
+        print(self.results["confusion_matrix"])
+        print("-" * 60)
+        print("Per-Class Report:")
+        print(self.results["classification_report"])`
       },
       {
         title: 'Step 4: Implement Model Comparison',
@@ -1073,19 +1085,19 @@ scorer.compare(scorer_lr, model_a_name="RandomForest", model_b_name="LogisticReg
           'Use f-string column widths: f"{metric:<15} {a:<15.4f} {b:<15.4f} {arrow}{delta:.4f}"'
         ],
         expectedOutput: `Metric          RandomForest    LogisticRegression Delta\n-------------------------------------------------------\naccuracy        1.0000          1.0000          +0.0000\nprecision       1.0000          1.0000          +0.0000\nrecall          1.0000          1.0000          +0.0000\nf1              1.0000          1.0000          +0.0000\nauc             1.0000          1.0000          +0.0000`,
-        solution: `def compare(self, other_scorer, model_a_name="Model A", model_b_name="Model B"):
-    metrics = ["accuracy", "precision", "recall", "f1"]
-    if "auc" in self.results and "auc" in other_scorer.results:
-        metrics.append("auc")
+        solution: `    def compare(self, other_scorer, model_a_name="Model A", model_b_name="Model B"):
+        metrics = ["accuracy", "precision", "recall", "f1"]
+        if "auc" in self.results and "auc" in other_scorer.results:
+            metrics.append("auc")
 
-    print(f"{'Metric':<15} {model_a_name:<15} {model_b_name:<15} {'Delta':<10}")
-    print("-" * 55)
-    for metric in metrics:
-        a = self.results.get(metric, 0)
-        b = other_scorer.results.get(metric, 0)
-        delta = a - b
-        arrow = "+" if delta >= 0 else ""
-        print(f"{metric:<15} {a:<15.4f} {b:<15.4f} {arrow}{delta:.4f}")`
+        print(f"{'Metric':<15} {model_a_name:<15} {model_b_name:<15} {'Delta':<10}")
+        print("-" * 55)
+        for metric in metrics:
+            a = self.results.get(metric, 0)
+            b = other_scorer.results.get(metric, 0)
+            delta = a - b
+            arrow = "+" if delta >= 0 else ""
+            print(f"{metric:<15} {a:<15.4f} {b:<15.4f} {arrow}{delta:.4f}")`
       },
       {
         title: 'Step 5: Integrate with MLflow for Automated Metric Logging',
@@ -1124,17 +1136,17 @@ with mlflow.start_run(run_name="rf-scoring"):
 import json
 import numpy as np
 
-def log_to_mlflow(self, prefix: str = "test"):
-    skip_keys = {"confusion_matrix", "classification_report"}
-    for key, value in self.results.items():
-        if key in skip_keys:
-            continue
-        if isinstance(value, (int, float, np.floating)):
-            mlflow.log_metric(f"{prefix}/{key}", float(value))
+    def log_to_mlflow(self, prefix: str = "test"):
+        skip_keys = {"confusion_matrix", "classification_report"}
+        for key, value in self.results.items():
+            if key in skip_keys:
+                continue
+            if isinstance(value, (int, float, np.floating)):
+                mlflow.log_metric(f"{prefix}/{key}", float(value))
 
-    if "confusion_matrix" in self.results:
-        cm_json = json.dumps(self.results["confusion_matrix"].tolist())
-        mlflow.log_text(cm_json, "confusion_matrix.json")
+        if "confusion_matrix" in self.results:
+            cm_json = json.dumps(self.results["confusion_matrix"].tolist())
+            mlflow.log_text(cm_json, "confusion_matrix.json")
 
 mlflow.set_experiment("iris-scoring")
 with mlflow.start_run(run_name="rf-scoring"):
@@ -1174,7 +1186,7 @@ with mlflow.start_run(run_name="rf-scoring"):
         instruction: `WHAT: Initialize a SQLite-backed feature store with tables for feature set metadata and feature values.\nWHY: A feature store decouples feature engineering from model training. By persisting features independently of training code, you can reuse the same features across multiple models and experiments without re-running expensive pipelines. The schema must support versioning and point-in-time lookups — the two properties that prevent training/serving skew and data leakage.\nHOW: Create two tables: feature_sets (metadata: name, version, schema, description) and feature_values (actual data: entity_id, features JSON, event_time). The (feature_set_name, entity_id, event_time) index is critical for efficient point-in-time queries.`,
         starterCode: `import sqlite3
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 class FeatureStore:
     """A minimal feature store for storing and retrieving ML features."""
@@ -1212,7 +1224,7 @@ print(f"Tables created: {[t[0] for t in tables]}")`,
         expectedOutput: `Tables created: ['feature_sets', 'feature_values']`,
         solution: `import sqlite3
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 class FeatureStore:
     def __init__(self, db_path: str = ":memory:"):
@@ -1271,7 +1283,7 @@ def ingest(self, feature_set_name: str, entity_id: str, features: dict, event_ti
     event_time: ISO 8601 string, e.g. "2025-01-15" — when the feature was valid
     """
     # TODO: Insert a row into feature_values
-    # TODO: Serialize features as JSON; set ingested_at to datetime.utcnow().isoformat()
+    # TODO: Serialize features as JSON; set ingested_at to datetime.now(timezone.utc).isoformat()
     pass
 
 # Test
@@ -1292,30 +1304,30 @@ print(f"Versions registered: v{v1}, v{v2}")`,
         hints: [
           'Max version query: self.conn.execute("SELECT MAX(version) FROM feature_sets WHERE name = ?", (name,)).fetchone()[0]',
           'Handle None: version = (row[0] or 0) + 1',
-          'Insert: self.conn.execute("INSERT INTO feature_sets (name, version, schema_json, description, created_at) VALUES (?, ?, ?, ?, ?)", (name, version, json.dumps(schema), description, datetime.utcnow().isoformat()))',
+          'Insert: self.conn.execute("INSERT INTO feature_sets (name, version, schema_json, description, created_at) VALUES (?, ?, ?, ?, ?)", (name, version, json.dumps(schema), description, datetime.now(timezone.utc).isoformat()))',
           'Always call self.conn.commit() after writes'
         ],
         expectedOutput: `Registered user_features v1\nRegistered user_features v2\nVersions registered: v1, v2`,
-        solution: `def register_feature_set(self, name: str, schema: dict, description: str = "") -> int:
-    row = self.conn.execute(
-        "SELECT MAX(version) FROM feature_sets WHERE name = ?", (name,)
-    ).fetchone()
-    version = (row[0] or 0) + 1
+        solution: `    def register_feature_set(self, name: str, schema: dict, description: str = "") -> int:
+        row = self.conn.execute(
+            "SELECT MAX(version) FROM feature_sets WHERE name = ?", (name,)
+        ).fetchone()
+        version = (row[0] or 0) + 1
 
-    self.conn.execute(
-        "INSERT INTO feature_sets (name, version, schema_json, description, created_at) VALUES (?, ?, ?, ?, ?)",
-        (name, version, json.dumps(schema), description, datetime.utcnow().isoformat())
-    )
-    self.conn.commit()
-    print(f"Registered {name} v{version}")
-    return version
+        self.conn.execute(
+            "INSERT INTO feature_sets (name, version, schema_json, description, created_at) VALUES (?, ?, ?, ?, ?)",
+            (name, version, json.dumps(schema), description, datetime.now(timezone.utc).isoformat())
+        )
+        self.conn.commit()
+        print(f"Registered {name} v{version}")
+        return version
 
-def ingest(self, feature_set_name: str, entity_id: str, features: dict, event_time: str):
-    self.conn.execute(
-        "INSERT INTO feature_values (feature_set_name, entity_id, features_json, event_time, ingested_at) VALUES (?, ?, ?, ?, ?)",
-        (feature_set_name, entity_id, json.dumps(features), event_time, datetime.utcnow().isoformat())
-    )
-    self.conn.commit()`
+    def ingest(self, feature_set_name: str, entity_id: str, features: dict, event_time: str):
+        self.conn.execute(
+            "INSERT INTO feature_values (feature_set_name, entity_id, features_json, event_time, ingested_at) VALUES (?, ?, ?, ?, ?)",
+            (feature_set_name, entity_id, json.dumps(features), event_time, datetime.now(timezone.utc).isoformat())
+        )
+        self.conn.commit()`
       },
       {
         title: 'Step 4: Implement Point-in-Time Feature Retrieval',
@@ -1358,18 +1370,18 @@ print(f"Unknown entity: {features_missing}")`,
         expectedOutput: `Features as of Feb 2025: {'avg_purchase': 45.5, 'visit_count': 12, 'churn_risk': 0.2}\nLatest features: {'avg_purchase': 52.0, 'visit_count': 18, 'churn_risk': 0.1}\nUnknown entity: {}`,
         solution: `from typing import Optional
 
-def get_features(self, feature_set_name: str, entity_id: str, as_of: Optional[str] = None) -> dict:
-    if as_of:
-        row = self.conn.execute(
-            "SELECT features_json FROM feature_values WHERE feature_set_name = ? AND entity_id = ? AND event_time <= ? ORDER BY event_time DESC LIMIT 1",
-            (feature_set_name, entity_id, as_of)
-        ).fetchone()
-    else:
-        row = self.conn.execute(
-            "SELECT features_json FROM feature_values WHERE feature_set_name = ? AND entity_id = ? ORDER BY event_time DESC LIMIT 1",
-            (feature_set_name, entity_id)
-        ).fetchone()
-    return json.loads(row[0]) if row else {}`
+    def get_features(self, feature_set_name: str, entity_id: str, as_of: Optional[str] = None) -> dict:
+        if as_of:
+            row = self.conn.execute(
+                "SELECT features_json FROM feature_values WHERE feature_set_name = ? AND entity_id = ? AND event_time <= ? ORDER BY event_time DESC LIMIT 1",
+                (feature_set_name, entity_id, as_of)
+            ).fetchone()
+        else:
+            row = self.conn.execute(
+                "SELECT features_json FROM feature_values WHERE feature_set_name = ? AND entity_id = ? ORDER BY event_time DESC LIMIT 1",
+                (feature_set_name, entity_id)
+            ).fetchone()
+        return json.loads(row[0]) if row else {}`
       },
       {
         title: 'Step 5: Build Training Set Generation and Feature Lineage',
@@ -1416,24 +1428,24 @@ for entry in lineage:
           'Only append rows where the features dict is non-empty'
         ],
         expectedOutput: `Built training set: 1 rows as of 2025-02-01\nTraining rows: [{'entity_id': 'user_001', 'avg_purchase': 45.5, 'visit_count': 12, 'churn_risk': 0.2}]\nLineage entries: 2\n  [2025-01-15] {'event_time': '2025-01-15', 'ingested_at': '...', 'avg_purchase': 45.5, 'visit_count': 12, 'churn_risk': 0.2}\n  [2025-03-01] {'event_time': '2025-03-01', 'ingested_at': '...', 'avg_purchase': 52.0, 'visit_count': 18, 'churn_risk': 0.1}`,
-        solution: `def get_training_set(self, feature_set_name: str, entity_ids: list[str], as_of: str) -> list[dict]:
-    rows = []
-    for eid in entity_ids:
-        features = self.get_features(feature_set_name, eid, as_of=as_of)
-        if features:
-            rows.append({"entity_id": eid, **features})
-    print(f"Built training set: {len(rows)} rows as of {as_of}")
-    return rows
+        solution: `    def get_training_set(self, feature_set_name: str, entity_ids: list[str], as_of: str) -> list[dict]:
+        rows = []
+        for eid in entity_ids:
+            features = self.get_features(feature_set_name, eid, as_of=as_of)
+            if features:
+                rows.append({"entity_id": eid, **features})
+        print(f"Built training set: {len(rows)} rows as of {as_of}")
+        return rows
 
-def get_feature_lineage(self, feature_set_name: str, entity_id: str) -> list[dict]:
-    rows = self.conn.execute(
-        "SELECT features_json, event_time, ingested_at FROM feature_values WHERE feature_set_name = ? AND entity_id = ? ORDER BY event_time ASC",
-        (feature_set_name, entity_id)
-    ).fetchall()
-    return [
-        {"event_time": row[1], "ingested_at": row[2], **json.loads(row[0])}
-        for row in rows
-    ]`
+    def get_feature_lineage(self, feature_set_name: str, entity_id: str) -> list[dict]:
+        rows = self.conn.execute(
+            "SELECT features_json, event_time, ingested_at FROM feature_values WHERE feature_set_name = ? AND entity_id = ? ORDER BY event_time ASC",
+            (feature_set_name, entity_id)
+        ).fetchall()
+        return [
+            {"event_time": row[1], "ingested_at": row[2], **json.loads(row[0])}
+            for row in rows
+        ]`
       }
     ]
   }

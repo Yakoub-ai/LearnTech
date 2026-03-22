@@ -182,14 +182,14 @@ WHERE rk = 1;`
       {
         title: 'Step 1: Set Up Your SQL Environment',
         setupReference: true,
-        instruction: 'Before writing SQL queries, ensure your database environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: PostgreSQL 16+ (or SQLite via sqliteonline.com for zero install), a database client (DBeaver, pgAdmin, or psql CLI), and a sample database to practice with. Complete all setup steps and verify your database connection before continuing.',
+        instruction: 'Before writing SQL queries, ensure your PostgreSQL environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: PostgreSQL 16+ and a database client (DBeaver, pgAdmin, or psql CLI). This lab uses PostgreSQL-specific syntax (SERIAL PRIMARY KEY) — SQLite is not compatible.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Beginners: visit https://sqliteonline.com/ — no install required',
-          'Advanced: run `psql -U postgres -c "SELECT version();"` to test your PostgreSQL connection'
+          'Run `psql -U postgres -c "SELECT version();"` to verify PostgreSQL 16+',
+          'Create a practice database: `psql -U postgres -c "CREATE DATABASE practice;"`'
         ],
-        expectedOutput: 'PostgreSQL 16.x installed (or SQLite Online open in browser)\nConnection test successful\nReady to write SQL queries',
+        expectedOutput: 'PostgreSQL 16.x\nDatabase connection verified\nReady to write SQL queries',
         solution: null
       },
       {
@@ -310,8 +310,7 @@ ORDER BY department, salary DESC;`
           'HAVING COUNT(*) > 1 filters after aggregation'
         ],
         expectedOutput: `department       | headcount | avg_salary | max_salary
-Engineering      |     3     |  96000.00  |  115500.00
-Design           |     1     |  82000.00  |   82000.00
+Engineering      |     2     |  91500.00  |   95000.00
 (only departments with >1 active employee shown)`,
         solution: `SELECT
     department,
@@ -341,14 +340,14 @@ ORDER BY avg_salary DESC;`
       {
         title: 'Step 1: Set Up Your SQL Environment',
         setupReference: true,
-        instruction: 'Before writing SQL queries, ensure your database environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: PostgreSQL 16+ (or SQLite via sqliteonline.com for zero install), a database client (DBeaver, pgAdmin, or psql CLI), and a sample database to practice with. Complete all setup steps and verify your database connection before continuing.',
+        instruction: 'Before writing SQL queries, ensure your PostgreSQL environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: PostgreSQL 16+ and a database client (DBeaver, pgAdmin, or psql CLI). This lab uses PostgreSQL-specific syntax (SERIAL PRIMARY KEY) — SQLite is not compatible.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Beginners: visit https://sqliteonline.com/ — no install required',
-          'Advanced: run `psql -U postgres -c "SELECT version();"` to test your PostgreSQL connection'
+          'Run `psql -U postgres -c "SELECT version();"` to verify PostgreSQL 16+',
+          'Create a practice database: `psql -U postgres -c "CREATE DATABASE practice;"`'
         ],
-        expectedOutput: 'PostgreSQL 16.x installed (or SQLite Online open in browser)\nConnection test successful\nReady to write SQL queries',
+        expectedOutput: 'PostgreSQL 16.x\nDatabase connection verified\nReady to write SQL queries',
         solution: null
       },
       {
@@ -519,14 +518,14 @@ ORDER BY d.name, e.name;`
       {
         title: 'Step 1: Set Up Your SQL Environment',
         setupReference: true,
-        instruction: 'Before writing SQL queries, ensure your database environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: PostgreSQL 16+ (or SQLite via sqliteonline.com for zero install), a database client (DBeaver, pgAdmin, or psql CLI), and a sample database to practice with. Complete all setup steps and verify your database connection before continuing.',
+        instruction: 'Before writing SQL queries, ensure your PostgreSQL environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: PostgreSQL 16+ and a database client (DBeaver, pgAdmin, or psql CLI). This lab uses PostgreSQL-specific syntax (SERIAL PRIMARY KEY) — SQLite is not compatible.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Beginners: visit https://sqliteonline.com/ — no install required',
-          'Advanced: run `psql -U postgres -c "SELECT version();"` to test your PostgreSQL connection'
+          'Run `psql -U postgres -c "SELECT version();"` to verify PostgreSQL 16+',
+          'Create a practice database: `psql -U postgres -c "CREATE DATABASE practice;"`'
         ],
-        expectedOutput: 'PostgreSQL 16.x installed (or SQLite Online open in browser)\nConnection test successful\nReady to write SQL queries',
+        expectedOutput: 'PostgreSQL 16.x\nDatabase connection verified\nReady to write SQL queries',
         solution: null
       },
       {
@@ -696,14 +695,14 @@ ORDER BY sale_date;`
       {
         title: 'Step 1: Set Up Your SQL Environment',
         setupReference: true,
-        instruction: 'Before writing SQL queries, ensure your database environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: PostgreSQL 16+ (or SQLite via sqliteonline.com for zero install), a database client (DBeaver, pgAdmin, or psql CLI), and a sample database to practice with. Complete all setup steps and verify your database connection before continuing.',
+        instruction: 'Before writing SQL queries, ensure your PostgreSQL environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: PostgreSQL 16+ and a database client (DBeaver, pgAdmin, or psql CLI). This lab uses PostgreSQL-specific syntax (SERIAL PRIMARY KEY) — SQLite is not compatible.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Beginners: visit https://sqliteonline.com/ — no install required',
-          'Advanced: run `psql -U postgres -c "SELECT version();"` to test your PostgreSQL connection'
+          'Run `psql -U postgres -c "SELECT version();"` to verify PostgreSQL 16+',
+          'Create a practice database: `psql -U postgres -c "CREATE DATABASE practice;"`'
         ],
-        expectedOutput: 'PostgreSQL 16.x installed (or SQLite Online open in browser)\nConnection test successful\nReady to write SQL queries',
+        expectedOutput: 'PostgreSQL 16.x\nDatabase connection verified\nReady to write SQL queries',
         solution: null
       },
       {
@@ -830,42 +829,47 @@ ORDER BY title;`
       },
       {
         title: 'Step 5: Count Total Reports Per Manager',
-        instruction: 'Compute the total number of direct and indirect reports for every manager in the tree. This requires a more advanced recursive pattern where each recursion carries the root manager identity forward. The final aggregation groups by root manager and counts distinct descendant IDs — the result reveals the true span of control for each leader.',
-        starterCode: `-- TODO: Write a recursive CTE that, for each non-root employee,
--- walks UP the tree tracking the root_manager.
--- Then JOIN back to org_chart and GROUP BY manager to count total reports.
--- Show: name, title, total_reports — ordered by total_reports DESC`,
+        instruction: 'Compute the total number of direct and indirect reports for every person in the tree. Use a downward recursive CTE: the base case seeds one row per employee (root_id = their own id, current_id = their own id), and the recursive arm extends each subtree by finding direct reports of the current node. The final GROUP BY root_id counts all descendants — subtract 1 to exclude the root itself. This reveals the true span of control: CEO Alice manages 7 people through 4 levels; VP Carol has none.',
+        starterCode: `-- TODO: Write a recursive CTE named "subordinates" where:
+-- Base case: SELECT manager_id, id AS subordinate_id FROM org_chart WHERE manager_id IS NOT NULL
+-- Recursive case: JOIN org_chart oc ON oc.manager_id = s.subordinate_id
+-- Final: LEFT JOIN back to org_chart, COUNT(subordinate_id) per manager
+-- Show: name AS manager, title, total_reports — ordered by total_reports DESC, name`,
         hints: [
-          'Base case: all employees with manager_id IS NOT NULL, store id as root_manager',
-          'Recursive case: JOIN org_chart to walk upward via manager_id',
-          'Final: LEFT JOIN org_chart oc ON ar.root_manager = oc.id, GROUP BY oc.id'
+          'Base case: all direct reporting pairs — SELECT manager_id, id AS subordinate_id FROM org_chart WHERE manager_id IS NOT NULL',
+          'Recursive arm: find each subordinate\'s own direct reports — JOIN org_chart oc ON oc.manager_id = s.subordinate_id',
+          'Final: LEFT JOIN subordinates s ON s.manager_id = oc.id, then COUNT(s.subordinate_id) to get total reports per manager'
         ],
-        expectedOutput: `name       | title          | total_reports
-CEO Alice  | CEO            |     7
-VP Bob     | VP Engineering |     5
-Dir Dave   | Dir Backend    |     3
-Lead Frank | Tech Lead      |     2
-VP Carol   | VP Marketing   |     0`,
-        solution: `WITH RECURSIVE all_reports AS (
-    SELECT id, manager_id, id AS root_manager
+        expectedOutput: `manager     | title          | total_reports
+CEO Alice   | CEO            |     7
+VP Bob      | VP Engineering |     5
+Dir Dave    | Dir Backend    |     3
+Lead Frank  | Tech Lead      |     2
+Dev Grace   | Senior Dev     |     0
+Dev Heidi   | Junior Dev     |     0
+Dir Eve     | Dir Frontend   |     0
+VP Carol    | VP Marketing   |     0`,
+        solution: `WITH RECURSIVE subordinates AS (
+    -- Base: each employee who is a manager (has at least one direct report)
+    SELECT manager_id AS manager_id, id AS subordinate_id
     FROM org_chart
     WHERE manager_id IS NOT NULL
 
     UNION ALL
 
-    SELECT ar.id, e.manager_id, ar.root_manager
-    FROM all_reports ar
-    JOIN org_chart e ON ar.manager_id = e.id
-    WHERE e.manager_id IS NOT NULL
+    -- Recursive: walk down to their reports' reports
+    SELECT s.manager_id, oc.id
+    FROM subordinates s
+    JOIN org_chart oc ON oc.manager_id = s.subordinate_id
 )
 SELECT
-    oc.name,
+    oc.name AS manager,
     oc.title,
-    COUNT(DISTINCT ar.id) AS total_reports
+    COUNT(s.subordinate_id) AS total_reports
 FROM org_chart oc
-LEFT JOIN all_reports ar ON ar.root_manager = oc.id
+LEFT JOIN subordinates s ON s.manager_id = oc.id
 GROUP BY oc.id, oc.name, oc.title
-ORDER BY total_reports DESC;`
+ORDER BY total_reports DESC, oc.name;`
       }
     ]
   },

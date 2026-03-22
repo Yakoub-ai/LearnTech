@@ -11,9 +11,22 @@ export const labs = [
     estimatedMinutes: 25,
     steps: [
       {
-        title: 'Step 1: Define a Tracking Plan',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before building an analytics dashboard, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Python 3.12+ and a virtual environment. This lab uses only the Python standard library (including time and collections) — no external packages are required.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `python --version` to confirm Python 3.12+',
+          'Create a venv: `python -m venv .venv && source .venv/bin/activate`'
+        ],
+        expectedOutput: 'Python 3.12.x\nVirtual environment activated: (.venv)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Define a Tracking Plan',
         instruction: 'Create a tracking plan schema that validates analytics events before they are collected.',
-        starterCode: `# Marketing Analytics — Step 1: Tracking Plan
+        starterCode: `# Marketing Analytics — Step 2: Tracking Plan
 
 tracking_plan = {
     "page_view": {
@@ -85,9 +98,9 @@ for name, props in events:
     print(f"  {status} {name}: {errors if errors else 'OK'}")`
       },
       {
-        title: 'Step 2: Collect and Aggregate Events',
+        title: 'Step 3: Collect and Aggregate Events',
         instruction: 'Build an event collector that stores events and computes basic metrics.',
-        starterCode: `# Marketing Analytics — Step 2: Event Collector
+        starterCode: `# Marketing Analytics — Step 3: Event Collector
 
 class EventCollector:
     def __init__(self, tracking_plan):
@@ -187,14 +200,14 @@ print(f"Top pages: {metrics['top_pages']}")`
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before building MarTech integrations, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+, npm, API credentials for relevant platforms (Google Analytics, Segment, HubSpot, etc.), and environment variable management (.env). Complete all setup steps before continuing.',
+        instruction: 'Before implementing GA4 event tracking, ensure your browser environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: a modern browser (Chrome recommended) with DevTools open, a GA4 property with a Measurement ID, and the GA4 Global Site Tag (gtag.js) loaded on your page. Complete all setup steps before continuing.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Store API keys in .env files, never hardcode them',
-          'Test API authentication before building integrations'
+          'Open Chrome DevTools (F12) → Network tab to verify gtag.js loads',
+          'In DevTools Console, run `window.dataLayer` to confirm it is initialised as an array'
         ],
-        expectedOutput: 'Node.js v20.x.x\nAPI credentials loaded from .env\nTest API call successful: 200 OK',
+        expectedOutput: 'Chrome DevTools open\nwindow.dataLayer initialized: []\ngtag.js loaded from Google servers',
         solution: null
       },
       {
@@ -426,14 +439,14 @@ console.log('Consent updated — analytics enabled, marketing denied');`
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before building MarTech integrations, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+, npm, API credentials for relevant platforms (Google Analytics, Segment, HubSpot, etc.), and environment variable management (.env). Complete all setup steps before continuing.',
+        instruction: 'Before building a statistical A/B testing framework, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.12+, a virtual environment, and the scipy and numpy packages installed (`pip install scipy numpy`).',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Store API keys in .env files, never hardcode them',
-          'Test API authentication before building integrations'
+          'Run `python --version` to confirm Python 3.12+',
+          'Run `pip install scipy numpy` then verify: `python -c "import scipy, numpy; print(scipy.__version__, numpy.__version__)"`'
         ],
-        expectedOutput: 'Node.js v20.x.x\nAPI credentials loaded from .env\nTest API call successful: 200 OK',
+        expectedOutput: 'Python 3.12.x\nscipy 1.x.x\nnumpy 1.x.x',
         solution: null
       },
       {
@@ -479,13 +492,13 @@ for baseline, mde, label in scenarios:
           'Round up with math.ceil() because sample sizes must be whole numbers'
         ],
         expectedOutput: `Homepage CTA — detect 10% lift over 5% baseline
-  → Need 14,751 users per variant (29,502 total)
+  → Need 31,199 users per variant (62,398 total)
 
 Email signup — detect 20% lift over 2% baseline
-  → Need 19,532 users per variant (39,064 total)
+  → Need 21,085 users per variant (42,170 total)
 
 Checkout page — detect 5% lift over 15% baseline
-  → Need 22,104 users per variant (44,208 total)`,
+  → Need 36,268 users per variant (72,536 total)`,
         solution: `import math
 
 def calculate_sample_size(baseline_rate, minimum_detectable_effect, alpha=0.05, power=0.8):
@@ -799,14 +812,14 @@ def check_test_validity(test_metadata):
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before building MarTech integrations, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+, npm, API credentials for relevant platforms (Google Analytics, Segment, HubSpot, etc.), and environment variable management (.env). Complete all setup steps before continuing.',
+        instruction: 'Before building an ML-powered segmentation model, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.12+, a virtual environment, and the pandas, numpy, and scikit-learn packages installed (`pip install pandas numpy scikit-learn`).',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Store API keys in .env files, never hardcode them',
-          'Test API authentication before building integrations'
+          'Run `python --version` to confirm Python 3.12+',
+          'Run `pip install pandas numpy scikit-learn` then verify: `python -c "import pandas, numpy, sklearn; print(pandas.__version__)"`'
         ],
-        expectedOutput: 'Node.js v20.x.x\nAPI credentials loaded from .env\nTest API call successful: 200 OK',
+        expectedOutput: 'Python 3.12.x\npandas 2.x.x\nnumpy 1.x.x\nscikit-learn 1.x.x',
         solution: null
       },
       {
@@ -1074,14 +1087,14 @@ for persona, brief in CAMPAIGN_BRIEFS.items():
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before building MarTech integrations, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+, npm, API credentials for relevant platforms (Google Analytics, Segment, HubSpot, etc.), and environment variable management (.env). Complete all setup steps before continuing.',
+        instruction: 'Before building a UTM attribution system, ensure your browser environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: a modern browser (Chrome recommended) with DevTools open. This lab uses the built-in URL API, document.cookie, and localStorage — no Node.js or npm packages required.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Store API keys in .env files, never hardcode them',
-          'Test API authentication before building integrations'
+          'Open Chrome DevTools (F12) → Application tab to inspect cookies and localStorage',
+          'In DevTools Console, run `new URL("https://example.com?utm_source=test").searchParams.get("utm_source")` to verify the URL API'
         ],
-        expectedOutput: 'Node.js v20.x.x\nAPI credentials loaded from .env\nTest API call successful: 200 OK',
+        expectedOutput: 'Chrome DevTools open\nURL API available: "test"\nlocalStorage and document.cookie accessible',
         solution: null
       },
       {
@@ -1224,7 +1237,7 @@ function storeUTM(utmData, model) {
 
   // Always append to all-touches history (deduplicate by captured_at)
   const allTouches = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL) || '[]');
-  if (!allTouches.find(t => t.captured_at === utmData.captured_at)) {
+  if (!allTouches.find(t => t.captured_at === utmData.captured_at && t.utm_source === utmData.utm_source && t.utm_medium === utmData.utm_medium)) {
     allTouches.push(utmData);
     localStorage.setItem(STORAGE_KEY_ALL, JSON.stringify(allTouches));
   }
@@ -1364,14 +1377,14 @@ function clearAttribution() {
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before building MarTech integrations, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+, npm, API credentials for relevant platforms (Google Analytics, Segment, HubSpot, etc.), and environment variable management (.env). Complete all setup steps before continuing.',
+        instruction: 'Before building a GDPR consent management system, ensure your browser environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: a modern browser (Chrome recommended) with DevTools open. This lab uses the built-in DOM API and document.cookie — no Node.js or npm packages required.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Store API keys in .env files, never hardcode them',
-          'Test API authentication before building integrations'
+          'Open Chrome DevTools (F12) → Application tab → Cookies to inspect consent cookies',
+          'In DevTools Console, run `document.cookie` to verify cookie access is available'
         ],
-        expectedOutput: 'Node.js v20.x.x\nAPI credentials loaded from .env\nTest API call successful: 200 OK',
+        expectedOutput: 'Chrome DevTools open\nCookies panel accessible in DevTools Application tab\ndocument.cookie API available',
         solution: null
       },
       {
@@ -1670,7 +1683,7 @@ console.log('  analytics:', updated.analytics);  // true
 console.log('  marketing:', updated.marketing);  // false
 
 // Test renderBanner — only show if the user has not yet consented
-if (!cm2.hasConsented()) {
+if (!hasConsented()) {
   cm2.renderBanner();
   console.log('Banner rendered — awaiting user choice');
 } else {

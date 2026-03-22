@@ -13,7 +13,20 @@ export const labs = [
     estimatedMinutes: 30,
     steps: [
       {
-        title: 'Step 1: Load and Prepare Documents',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before building a RAG pipeline, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Python 3.12+ and a virtual environment. This lab uses only the Python standard library — no external packages are required.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `python --version` to confirm Python 3.12+',
+          'Create a venv: `python -m venv .venv && source .venv/bin/activate`'
+        ],
+        expectedOutput: 'Python 3.12.x\nVirtual environment activated: (.venv)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Load and Prepare Documents',
         instruction: 'Create a function that loads text documents and splits them into chunks. Chunking is essential for RAG because embedding models have token limits and smaller chunks produce more precise retrievals.',
         starterCode: `# Document loader and chunker for RAG pipeline
 # Goal: Load text and split into overlapping chunks
@@ -90,7 +103,7 @@ for i, chunk in enumerate(chunks):
     print(f"Chunk {i}: {chunk[:50]}...")`
       },
       {
-        title: 'Step 2: Create Embeddings',
+        title: 'Step 3: Create Embeddings',
         instruction: 'Build a simple embedding function that converts text chunks into numerical vectors. In production you would use a model like OpenAI text-embedding-ada-002, but here we will create a TF-IDF-like bag-of-words approach to understand the concept.',
         starterCode: `# Simple embedding function using bag-of-words
 import math
@@ -177,7 +190,7 @@ sim = cosine_similarity(embeddings[0], embeddings[1])
 print(f"Similarity between chunk 0 and 1: {sim:.3f}")`
       },
       {
-        title: 'Step 3: Build the Retriever',
+        title: 'Step 4: Build the Retriever',
         instruction: 'Create a retrieval function that takes a query, embeds it, and finds the most relevant chunks using cosine similarity. This is the "R" in RAG.',
         starterCode: `# Build a retriever that finds the most relevant chunks for a query
 
@@ -257,7 +270,7 @@ for chunk, score in results:
     print(f"  [{score:.3f}] {chunk}")`
       },
       {
-        title: 'Step 4: Generate the Answer',
+        title: 'Step 5: Generate the Answer',
         instruction: 'Complete the RAG pipeline by combining retrieved context with the query into a prompt template. In production this would go to an LLM, but here we will build the prompt construction and see how context affects the answer.',
         starterCode: `# Complete RAG pipeline: Retrieve + Augment + Generate
 
@@ -570,7 +583,7 @@ print(f"Estimated cost: \${cost:.6f}")`
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" to see all installation steps',
-          'Run: pip install openai langchain langchain-community langchain-openai faiss-cpu python-dotenv',
+          'Run: pip install openai langchain langchain-community langchain-openai langchain-text-splitters faiss-cpu python-dotenv',
           'Verify with: python -c "from langchain_openai import OpenAIEmbeddings; print(\'OK\')"'
         ],
         expectedOutput: `Python 3.12.x
@@ -585,7 +598,7 @@ OK`,
         title: 'Step 2: Load Documents and Split into Chunks',
         instruction: "LangChain's RecursiveCharacterTextSplitter is the industry default for RAG chunking because it tries to split on semantic boundaries (paragraphs, sentences, words) before falling back to character splits. The chunk_overlap parameter ensures context is not lost at boundaries — a critical correctness concern. For this lab we will create an in-memory document rather than reading from disk, so the code runs without external files.",
         starterCode: `# rag_pipeline.py  Step 2: Document loading and chunking
-from langchain.schema import Document
+from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # Sample knowledge base — in production this comes from TextLoader, PDFLoader, etc.
@@ -622,7 +635,7 @@ FAISS is optimized for in-memory search and can handle millions of vectors quick
 Chunk 0 preview:
   Content: LangChain is an open-source framework for building applications...
   Metadata: {'source': 'knowledge_base'}`,
-        solution: `from langchain.schema import Document
+        solution: `from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 raw_text = """
@@ -706,10 +719,12 @@ for i, result in enumerate(results, 1):
     print(f"Result {i}: {result.page_content[:80]}...")`
       },
       {
-        title: 'Step 4: Wire Up the RetrievalQA Chain',
-        instruction: "LangChain's RetrievalQA chain is the glue that connects retrieval and generation: it embeds the user's query, fetches the top-k chunks from the vector store, injects them into a prompt template, and calls the LLM. The chain_type='stuff' means all retrieved chunks are stuffed into a single prompt — suitable for small contexts. For larger documents you would use 'map_reduce' or 'refine' chain types.",
-        starterCode: `# rag_pipeline.py  Step 4: Full RetrievalQA chain
-from langchain.chains import RetrievalQA
+        title: 'Step 4: Wire Up the Retrieval Chain',
+        instruction: "LangChain's create_retrieval_chain is the modern LCEL-based way to connect retrieval and generation: it embeds the user's query, fetches the top-k chunks from the vector store, injects them into a prompt template via create_stuff_documents_chain, and calls the LLM. This approach replaces the deprecated RetrievalQA chain from LangChain v0.2+.",
+        starterCode: `# rag_pipeline.py  Step 4: Full retrieval chain (LCEL)
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 # (vector_store from Step 3 should be in scope)
@@ -721,20 +736,21 @@ from langchain_openai import ChatOpenAI
 #       retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 #       k=3 means fetch 3 most relevant chunks per query
 
-# TODO: Create a RetrievalQA chain with:
-#       llm=llm
-#       chain_type="stuff"
-#       retriever=retriever
-#       return_source_documents=True   (so we can show provenance)
+# TODO: Create a ChatPromptTemplate with a system message that uses {context} and {input}
+#       prompt = ChatPromptTemplate.from_template("Answer based on context:\\n{context}\\n\\nQuestion: {input}")
 
-# TODO: Invoke the chain with a question dict: {"query": "..."}
+# TODO: Create a combine_docs_chain using create_stuff_documents_chain(llm, prompt)
+
+# TODO: Create qa_chain using create_retrieval_chain(retriever, combine_docs_chain)
+
+# TODO: Invoke the chain: result = qa_chain.invoke({"input": question})
 #       question = "How does RAG reduce hallucinations?"
 
-# TODO: Print the result["result"] (the answer)
-# TODO: Print the source documents so the user can verify provenance`,
+# TODO: Print result["answer"] (the answer)
+# TODO: Print result["context"] (the source documents) so the user can verify provenance`,
         hints: [
-          'Use qa_chain.invoke({"query": question}) in LangChain v0.2+ (the old .run() is deprecated)',
-          'result["source_documents"] is a list of Document objects — print their page_content',
+          'create_retrieval_chain expects {input} (not {query}) — invoke with qa_chain.invoke({"input": question})',
+          'The answer is in result["answer"] and the retrieved docs are in result["context"]',
           'temperature=0 for Q&A chains because you want factual, deterministic answers, not creative ones'
         ],
         expectedOutput: `Question: How does RAG reduce hallucinations?
@@ -744,27 +760,26 @@ Answer: RAG reduces hallucinations by fetching relevant documents at query time 
 Sources used:
   [1] Retrieval-Augmented Generation (RAG) combines retrieval systems with generative models. Instead of relying on the model's training data alone, RAG fetches relevant documents at query time...
   [2] LangChain is an open-source framework for building applications with large language models...`,
-        solution: `from langchain.chains import RetrievalQA
+        solution: `from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 
-qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    chain_type="stuff",
-    retriever=retriever,
-    return_source_documents=True
-)
+prompt = ChatPromptTemplate.from_template("Answer based on context:\\n{context}\\n\\nQuestion: {input}")
+combine_docs_chain = create_stuff_documents_chain(llm, prompt)
+qa_chain = create_retrieval_chain(retriever, combine_docs_chain)
 
 question = "How does RAG reduce hallucinations?"
-result = qa_chain.invoke({"query": question})
+result = qa_chain.invoke({"input": question})
 
 print(f"Question: {question}\\n")
-print(f"Answer: {result['result']}\\n")
+print(f"Answer: {result['answer']}\\n")
 print("Sources used:")
-for i, doc in enumerate(result["source_documents"], 1):
+for i, doc in enumerate(result["context"], 1):
     print(f"  [{i}] {doc.page_content[:120]}...")`
       }
     ]
@@ -968,7 +983,7 @@ test_inputs = [
 
 for text in test_inputs:
     label = classify_sentiment(text)
-    print(f"'{text[:40]}' -> {label}")`
+    print(f"'{text[:40]}...' -> {label}")`
       },
       {
         title: 'Step 4: Evaluate Classifier Accuracy',
@@ -1738,6 +1753,7 @@ def run_agent(user_prompt, verbose=True):
     ]
 
     iteration = 0
+    tool_call_count = 0
     max_iterations = 10
 
     while iteration < max_iterations:
@@ -1756,10 +1772,11 @@ def run_agent(user_prompt, verbose=True):
             for tool_call in msg.tool_calls:
                 fn_name = tool_call.function.name
                 fn_args = json.loads(tool_call.function.arguments)
+                tool_call_count += 1
 
                 if verbose:
                     args_str = ", ".join(f"{k}={repr(v)}" for k, v in fn_args.items())
-                    print(f"[Tool call {iteration}] {fn_name}({args_str})")
+                    print(f"[Tool call {tool_call_count}] {fn_name}({args_str})")
 
                 result = TOOL_DISPATCH[fn_name](**fn_args)
 

@@ -11,9 +11,22 @@ export const labs = [
     estimatedMinutes: 25,
     steps: [
       {
-        title: 'Step 1: Dependency Vulnerability Scanner',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before building security audit tools, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Python 3.12+ and a virtual environment. This lab uses only the Python standard library (including the re module) — no external packages are required.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `python --version` to confirm Python 3.12+',
+          'Create a venv: `python -m venv .venv && source .venv/bin/activate`'
+        ],
+        expectedOutput: 'Python 3.12.x\nVirtual environment activated: (.venv)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Dependency Vulnerability Scanner',
         instruction: 'Create a function that checks a list of dependencies against a known vulnerability database.',
-        starterCode: `# Security Audit — Step 1: Dependency Scanner
+        starterCode: `# Security Audit — Step 2: Dependency Scanner
 
 # Simulated vulnerability database
 VULN_DB = {
@@ -93,9 +106,9 @@ for pkg, version in dependencies.items():
         print(f"  ✓ {pkg}@{version}: OK")`
       },
       {
-        title: 'Step 2: Secret Scanner',
+        title: 'Step 3: Secret Scanner',
         instruction: 'Build a scanner that detects hardcoded secrets in source code using regex patterns.',
-        starterCode: `# Security Audit — Step 2: Secret Scanner
+        starterCode: `# Security Audit — Step 3: Secret Scanner
 import re
 
 # TODO: Define regex patterns for common secrets
@@ -132,10 +145,10 @@ for f in findings:
           "Password in URL: r'://\\w+:([^@]+)@'"
         ],
         expectedOutput: `=== Secret Scan: 4 findings ===
-  Line 4: [api_key] sk-proj-abc123...
-  Line 5: [password_in_url] supersecret
-  Line 6: [aws_access_key] AKIAIOSFODNN7EXAMPLE
-  Line 7: [private_key] -----BEGIN RSA PRIVATE KEY-----`,
+  Line 3: [api_key] sk-proj-abc123...
+  Line 4: [password_in_url] supersecret
+  Line 5: [aws_access_key] AKIAIOSFODNN7EXAMPLE
+  Line 6: [private_key] -----BEGIN RSA PRIVATE KEY-----`,
         solution: `import re
 
 SECRET_PATTERNS = {
@@ -181,14 +194,14 @@ for f in findings:
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running security tools, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+, security scanning tools (Bandit, Safety, OWASP ZAP), a containerized test environment, and proper network isolation. Complete all setup steps before continuing — never run security tests against production systems.',
+        instruction: 'Before building input validation middleware, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+, a virtual environment, FastAPI, and pydantic with email validation support. Install with `pip install fastapi "pydantic[email]"`.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Only scan systems you own or have explicit permission to test',
-          'Use Docker containers to isolate test environments safely'
+          'Run `python --version` to confirm Python 3.10+',
+          'Run `pip install fastapi "pydantic[email]"` then verify: `python -c "from pydantic import EmailStr; print(\'Pydantic email ready\')"`'
         ],
-        expectedOutput: 'Python 3.10.x\nBandit 1.x.x installed\nDocker available for isolated testing',
+        expectedOutput: 'Python 3.10.x\nfastapi installed\npydantic[email] installed\nPydantic email ready',
         solution: null
       },
       {
@@ -197,7 +210,7 @@ for f in findings:
 
 WHY: Unvalidated input is the root cause of OWASP A03 (Injection) and A07 (Identification & Authentication Failures). Enforcing schema at the boundary means malformed or oversized payloads are rejected before your business logic ever runs.
 
-HOW: Define a BaseModel with typed fields and validators. Use constr() for length/pattern constraints and EmailStr for format enforcement. Pydantic will raise a 422 Unprocessable Entity automatically for violations.`,
+HOW: Define a BaseModel with typed fields and validators. Use Field(..., min_length=..., max_length=..., pattern=...) for length/pattern constraints and EmailStr for format enforcement. Pydantic will raise a 422 Unprocessable Entity automatically for violations.`,
         starterCode: `# Input Validation Lab — Step 2: Schema Enforcement
 from pydantic import BaseModel, EmailStr, constr, validator
 from typing import Optional
@@ -226,24 +239,25 @@ for case in test_cases:
     except Exception as e:
         print(f"  FAIL: {e.errors()[0]['msg']}")`,
         hints: [
-          'Use constr(min_length=3, max_length=50, regex=r"^[a-zA-Z0-9_]+$") for username',
+          'Use Field(..., min_length=3, max_length=50, pattern=r"^[a-zA-Z0-9_]+$") for username',
           'Import EmailStr from pydantic[email] — it validates RFC 5321 format',
-          'Add @validator("age") and raise ValueError if age is outside 13–120'
+          'Add @field_validator("age") with @classmethod and raise ValueError if age is outside 13–120'
         ],
         expectedOutput: `  PASS: alice_42 <alice@example.com>
-  FAIL: ensure this value has at least 3 characters
+  FAIL: String should have at least 3 characters
   FAIL: value is not a valid email address
   FAIL: age must be between 13 and 120`,
-        solution: `from pydantic import BaseModel, EmailStr, constr, validator
+        solution: `from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import Optional
 
 class UserInput(BaseModel):
-    username: constr(min_length=3, max_length=50, regex=r"^[a-zA-Z0-9_]+$")
+    username: str = Field(..., min_length=3, max_length=50, pattern=r"^[a-zA-Z0-9_]+$")
     email: EmailStr
-    bio: Optional[constr(max_length=500)] = None
+    bio: Optional[str] = Field(default=None, max_length=500)
     age: Optional[int] = None
 
-    @validator("age")
+    @field_validator("age")
+    @classmethod
     def age_must_be_valid(cls, v):
         if v is not None and not (13 <= v <= 120):
             raise ValueError("age must be between 13 and 120")
@@ -409,14 +423,14 @@ print(json.dumps(result))`
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running security tools, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+, security scanning tools (Bandit, Safety, OWASP ZAP), a containerized test environment, and proper network isolation. Complete all setup steps before continuing — never run security tests against production systems.',
+        instruction: 'Before building JWT authentication, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+, a virtual environment, FastAPI, and PyJWT. Install with `pip install fastapi pyjwt`.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Only scan systems you own or have explicit permission to test',
-          'Use Docker containers to isolate test environments safely'
+          'Run `python --version` to confirm Python 3.10+',
+          'Run `pip install fastapi pyjwt` then verify: `python -c "import jwt; print(jwt.__version__)"`'
         ],
-        expectedOutput: 'Python 3.10.x\nBandit 1.x.x installed\nDocker available for isolated testing',
+        expectedOutput: 'Python 3.10.x\nfastapi installed\nPyJWT 2.x.x',
         solution: null
       },
       {
@@ -704,14 +718,14 @@ print('GET  /me (no token) → 403 Forbidden')`
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running security tools, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+, security scanning tools (Bandit, Safety, OWASP ZAP), a containerized test environment, and proper network isolation. Complete all setup steps before continuing — never run security tests against production systems.',
+        instruction: 'Before implementing security headers middleware, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+, a virtual environment, and FastAPI. Install with `pip install fastapi`.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Only scan systems you own or have explicit permission to test',
-          'Use Docker containers to isolate test environments safely'
+          'Run `python --version` to confirm Python 3.10+',
+          'Run `pip install fastapi` then verify: `python -c "import fastapi; print(fastapi.__version__)"`'
         ],
-        expectedOutput: 'Python 3.10.x\nBandit 1.x.x installed\nDocker available for isolated testing',
+        expectedOutput: 'Python 3.10.x\nfastapi 0.x.x installed',
         solution: null
       },
       {
@@ -1028,14 +1042,14 @@ for label, hdrs in [("Good", good_headers), ("Bad", bad_headers)]:
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running security tools, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+, security scanning tools (Bandit, Safety, OWASP ZAP), a containerized test environment, and proper network isolation. Complete all setup steps before continuing — never run security tests against production systems.',
+        instruction: 'Before implementing CSRF protection, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+, a virtual environment, and FastAPI. Install with `pip install fastapi`. The CSRF token logic uses only Python stdlib (secrets, hashlib, hmac).',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Only scan systems you own or have explicit permission to test',
-          'Use Docker containers to isolate test environments safely'
+          'Run `python --version` to confirm Python 3.10+',
+          'Verify stdlib modules: `python -c "import secrets, hashlib, hmac; print(\'CSRF stdlib ready\')"`'
         ],
-        expectedOutput: 'Python 3.10.x\nBandit 1.x.x installed\nDocker available for isolated testing',
+        expectedOutput: 'Python 3.10.x\nfastapi installed\nCSRF stdlib ready',
         solution: null
       },
       {
@@ -1452,14 +1466,14 @@ print(f"Transfer (no CSRF): {r2.status_code}")`
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running security tools, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+, security scanning tools (Bandit, Safety, OWASP ZAP), a containerized test environment, and proper network isolation. Complete all setup steps before continuing — never run security tests against production systems.',
+        instruction: 'Before building a secret scanner, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.10+ and a virtual environment. This lab uses only the Python standard library (re, os, json) — no external packages are required.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Only scan systems you own or have explicit permission to test',
-          'Use Docker containers to isolate test environments safely'
+          'Run `python --version` to confirm Python 3.10+',
+          'Create a venv: `python -m venv .venv && source .venv/bin/activate`'
         ],
-        expectedOutput: 'Python 3.10.x\nBandit 1.x.x installed\nDocker available for isolated testing',
+        expectedOutput: 'Python 3.10.x\nVirtual environment activated: (.venv)',
         solution: null
       },
       {
@@ -1514,13 +1528,13 @@ for line_num, line in test_lines:
             print(f"  Line {line_num} [{config['severity'].upper()}] {name}: {masked}")`,
         hints: [
           'AWS Access Key: r"AKIA[0-9A-Z]{16}"',
-          'GitHub Token: r"gh[pousr]_[A-Za-z0-9_]{36,}"',
-          'Database URL: r"(?i)(postgres|mysql|mongodb)://[^\\s:]+:[^@\\s]+@"'
+          'GitHub Token: r"gh[pousr]_[A-Za-z0-9_]{20,}"',
+          'Database URL: r"(?i)(?:postgres|mysql|mongodb)://[^\\s:]+:[^@\\s]+@[^\\s\'\\"]+"`'
         ],
         expectedOutput: `  Line 1 [CRITICAL] AWS Access Key: AKIAIO***MPLE
-  Line 2 [CRITICAL] GitHub Token: ghp_ab***5"
+  Line 2 [CRITICAL] GitHub Token: ghp_ab***0345
   Line 3 [HIGH] Generic API Key: sk-pro***cdef
-  Line 5 [HIGH] Database Connection String: postgre***m/my`,
+  Line 5 [HIGH] Database Connection String: postgr***mydb`,
         solution: `import re
 from dataclasses import dataclass
 
@@ -1537,19 +1551,20 @@ SECRET_PATTERNS = {
         "severity": "critical"
     },
     "GitHub Token": {
-        "regex": r"gh[pousr]_[A-Za-z0-9_]{36,}",
+        "regex": r"gh[pousr]_[A-Za-z0-9_]{20,}",
         "severity": "critical"
     },
     "Generic API Key": {
-        "regex": r"(?i)(api[_-]?key|apikey)\\s*[=:]\\s*['\\"]([ A-Za-z0-9\\-_]{20,})['\\"\\s]",
-        "severity": "high"
+        "regex": r"(?i)(?:api[_-]?key|apikey)\\s*[=:]\\s*['\\""]([A-Za-z0-9\\-_]{20,})['\\""]",
+        "severity": "high",
+        "group": 1
     },
     "Private Key Header": {
         "regex": r"-----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----",
         "severity": "critical"
     },
     "Database Connection String": {
-        "regex": r"(?i)(postgres|mysql|mongodb)://[^\\s:]+:[^@\\s]+@",
+        "regex": r"(?i)(?:postgres|mysql|mongodb)://[^\\s:]+:[^@\\s]+@[^\\s'\\"]+",
         "severity": "high"
     },
 }
@@ -1571,7 +1586,7 @@ for line_num, line in test_lines:
     for name, config in SECRET_PATTERNS.items():
         m = re.search(config["regex"], line)
         if m:
-            masked = mask_secret(m.group())
+            masked = mask_secret(m.group(config.get("group", 0)))
             print(f"  Line {line_num} [{config['severity'].upper()}] {name}: {masked}")`
       },
       {

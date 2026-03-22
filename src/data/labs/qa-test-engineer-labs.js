@@ -11,7 +11,20 @@ export const labs = [
     estimatedMinutes: 25,
     steps: [
       {
-        title: 'Step 1: Write Unit Tests',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before writing test suites, ensure your JavaScript testing environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Node.js 22 LTS, npm, and Jest installed as a dev dependency. Initialize a project with `npm init -y` and install Jest with `npm install --save-dev jest`.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `node --version` to confirm Node.js 22 LTS',
+          'Run `npx jest --version` to verify Jest is installed and working'
+        ],
+        expectedOutput: 'node v22.x.x\nnpm 10.x.x\njest 29.x.x installed',
+        solution: null
+      },
+      {
+        title: 'Step 2: Write Unit Tests',
         instruction: 'Write unit tests for a simple calculator module using assertion patterns.',
         starterCode: `// calculator.js — module under test
 function add(a, b) { return a + b; }
@@ -94,7 +107,7 @@ describe('Calculator', () => {
 });`
       },
       {
-        title: 'Step 2: Mock Dependencies',
+        title: 'Step 3: Mock Dependencies',
         instruction: 'Write tests for a user service that depends on a database. Use mocks to isolate the unit under test.',
         starterCode: `// userService.js
 class UserService {
@@ -260,7 +273,7 @@ describe('slugify', () => {
         hints: [
           'For floating point use expect(result).toBeCloseTo(0.3) not toBe(0.3)',
           'Group related assertions: test valid emails in one test, invalid in another',
-          'Implement slugify: text.toLowerCase().replace(/\\s+/g, "-").replace(/[^a-z0-9-]/g, "")'
+          'Implement slugify: text.trim().toLowerCase().replace(/\\s+/g, "-").replace(/[^a-z0-9-]/g, "")'
         ],
         expectedOutput: `PASS utils.test.js
   Math functions
@@ -277,7 +290,7 @@ describe('slugify', () => {
 Test Suites: 1 passed, 1 total
 Tests:       7 passed, 7 total`,
         solution: `function slugify(text) {
-  return text.toLowerCase().replace(/\\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  return text.trim().toLowerCase().replace(/\\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
 describe('Math functions', () => {
@@ -377,7 +390,7 @@ describe('slugify — parametrized', () => {
     ['already-slugged', 'already-slugged'],
     ['  spaces  ', 'spaces'],
   ])('slugify(%s) === %s', (input, expected) => {
-    expect(slugify(input.trim())).toBe(expected);
+    expect(slugify(input)).toBe(expected);
   });
 });`
       },
@@ -704,15 +717,15 @@ jobs:
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running load tests, ensure your QA environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22 LTS, k6 installed (npm install --save-dev k6 or via Homebrew), and a target API or test server to load. Complete all setup steps and verify k6 before continuing.',
+        instruction: 'Before running load tests, ensure your QA environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22 LTS, k6 installed (see https://k6.io/docs/get-started/installation/ — available via brew, apt, or direct download; k6 is a Go binary, not an npm package), and a target API or test server to load. Complete all setup steps and verify k6 before continuing.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `npx k6 --version` to verify k6 is installed',
+          'Run `k6 --version` to verify k6 is installed',
           'Use https://httpbin.org/get as a safe public target for practice runs'
         ],
-        expectedOutput: `npx k6 --version  →  k6 v0.x.x (go1.xx.x)
-k6 can also be installed globally: brew install k6`,
+        expectedOutput: `k6 --version  →  k6 v0.x.x (go1.xx.x)
+Install k6 via: brew install k6  |  sudo apt-get install k6  |  https://k6.io/docs/get-started/installation/`,
         solution: null
       },
       {
@@ -1005,14 +1018,14 @@ jobs:
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running API contract tests, ensure your QA environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22 LTS, axios and ajv installed as dev dependencies, and a target REST API (local or staging). Complete all setup steps and verify your API is reachable before continuing.',
+        instruction: 'Before running API contract tests, ensure your QA environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22 LTS, axios, ajv, and ajv-formats installed as dev dependencies, and a target REST API (local or staging). Complete all setup steps and verify your API is reachable before continuing.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `npm install --save-dev axios ajv` to install dependencies',
+          'Run `npm install --save-dev axios ajv ajv-formats` to install dependencies',
           'Test connectivity: curl http://localhost:8000/api/users'
         ],
-        expectedOutput: `npm install --save-dev axios ajv  →  added 2 packages
+        expectedOutput: `npm install --save-dev axios ajv ajv-formats  →  added 3 packages
 curl http://localhost:8000/api/users  →  {"data":[],"pagination":{...}}`,
         solution: null
       },

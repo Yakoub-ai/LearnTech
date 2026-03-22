@@ -11,7 +11,20 @@ export const labs = [
     estimatedMinutes: 35,
     steps: [
       {
-        title: 'Step 1: Create a Basic Server',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before building a REST API, ensure your Node.js environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Node.js 22 LTS, npm, and Express installed in a new project. Initialize a project with `npm init -y` and install Express with `npm install express`.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `node --version` to confirm Node.js 22 LTS',
+          'Run `npm init -y && npm install express` then verify with `node -e "console.log(require(\'express\').version)"`'
+        ],
+        expectedOutput: 'node v22.x.x\nnpm 10.x.x\nexpress 4.x.x installed',
+        solution: null
+      },
+      {
+        title: 'Step 2: Create a Basic Server',
         instruction: 'Set up a minimal Express.js server that listens on port 3000 and responds to a health check endpoint.',
         starterCode: `// Basic Express server setup
 const express = require('express');
@@ -44,7 +57,7 @@ app.listen(3000, () => {
 });`
       },
       {
-        title: 'Step 2: Add GET Endpoints',
+        title: 'Step 3: Add GET Endpoints',
         instruction: 'Create an in-memory data store and add GET endpoints to list all users and get a single user by ID.',
         starterCode: `// In-memory data store
 let users = [
@@ -79,7 +92,7 @@ app.get('/api/users/:id', (req, res) => {
 });`
       },
       {
-        title: 'Step 3: Add POST Endpoint',
+        title: 'Step 4: Add POST Endpoint',
         instruction: 'Create a POST endpoint to add new users. Validate that name and email are provided in the request body.',
         starterCode: `// TODO: POST /api/users — create a new user
 // Request body: { name: string, email: string }
@@ -114,7 +127,7 @@ app.post('/api/users', (req, res) => {
 });`
       },
       {
-        title: 'Step 4: Add PUT and DELETE',
+        title: 'Step 5: Add PUT and DELETE',
         instruction: 'Add endpoints to update and delete users. PUT should replace the user data, DELETE should remove the user from the array.',
         starterCode: `// TODO: PUT /api/users/:id — update a user
 // Find user by ID, update name and email from body
@@ -159,7 +172,7 @@ app.delete('/api/users/:id', (req, res) => {
 });`
       },
       {
-        title: 'Step 5: Add Error Handling Middleware',
+        title: 'Step 6: Add Error Handling Middleware',
         instruction: 'Add a global error handler and a 404 catch-all route. Wrap async routes safely and add request logging.',
         starterCode: `// TODO: Add request logging middleware
 // Log: METHOD PATH — e.g., "GET /api/users"
@@ -448,7 +461,7 @@ SQLite: built-in`,
         title: 'Step 2: Configure the Engine and Session Factory',
         instruction: 'WHY: The SQLAlchemy engine manages the connection pool to your database. The session factory creates sessions — the unit-of-work objects through which you stage changes before committing them. Separating engine configuration from session creation makes it easy to swap databases (SQLite → PostgreSQL) by changing one URL string. HOW: Create the engine, session factory, and declarative base.',
         starterCode: `from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 # TODO: Set DATABASE_URL to "sqlite:///./test.db"
 DATABASE_URL = "..."
@@ -462,17 +475,19 @@ engine = ...
 SessionLocal = ...
 
 # TODO: Create the Base class for all ORM models
-Base = ...
+# In SQLAlchemy 2.x, define a class that inherits from DeclarativeBase
+class Base(DeclarativeBase):
+    pass
 
 print("Engine and session factory configured")`,
         hints: [
           'Use `create_engine(DATABASE_URL, connect_args={"check_same_thread": False})`',
           '`sessionmaker(autocommit=False, autoflush=False, bind=engine)` is the standard pattern',
-          '`declarative_base()` returns the class your models will inherit from'
+          'SQLAlchemy 2.x: define `class Base(DeclarativeBase): pass` — the old `declarative_base()` function is deprecated'
         ],
         expectedOutput: `Engine and session factory configured`,
         solution: `from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 DATABASE_URL = "sqlite:///./test.db"
 
@@ -480,7 +495,8 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 print("Engine and session factory configured")`
       },
@@ -911,7 +927,7 @@ SQLite 3.x.x (built-in)`,
         title: 'Step 2: Create the Migration Tracking Table',
         instruction: 'WHY: Every migration system needs a way to remember which migrations have already been applied. Without a tracking table you cannot know whether to run or skip a migration on a given environment — leading to "table already exists" errors in production. HOW: Build the `MigrationRunner.__init__` and `_ensure_migration_table` methods.',
         starterCode: `import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 
 class MigrationRunner:
     """A lightweight migration runner for SQLite."""
@@ -944,7 +960,7 @@ runner.close()`,
         ],
         expectedOutput: `Tables: ['schema_migrations']`,
         solution: `import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 
 class MigrationRunner:
     def __init__(self, db_path: str):
@@ -972,7 +988,7 @@ runner.close()`
       },
       {
         title: 'Step 3: Implement is_applied and apply',
-        instruction: 'WHY: Idempotent migrations — migrations that are safe to attempt multiple times — are essential for CI/CD pipelines where deployments may be re-run. The `is_applied` guard makes every migration idempotent. Wrapping the SQL execution in a transaction means a half-applied migration either fully succeeds or fully rolls back, never leaving the schema in a corrupt intermediate state. HOW: Add the `is_applied` and `apply` methods to `MigrationRunner`.',
+        instruction: 'WHY: Idempotent migrations — migrations that are safe to attempt multiple times — are essential for CI/CD pipelines where deployments may be re-run. The `is_applied` guard makes every migration idempotent. HOW: Add the `is_applied` and `apply` methods to `MigrationRunner`. Note: SQLite\'s `executescript()` issues an implicit COMMIT before running, so DDL statements (CREATE TABLE, ALTER TABLE) cannot be rolled back on failure. For DML-only migrations, use `execute()` instead of `executescript()` to get true transaction rollback support.',
         starterCode: `    def is_applied(self, name: str) -> bool:
         """Return True if the migration has already been applied."""
         # TODO: Query schema_migrations WHERE name = ?
@@ -997,8 +1013,8 @@ runner.close()`
             raise`,
         hints: [
           '`self.cursor.execute("SELECT 1 FROM schema_migrations WHERE name = ?", (name,))` then `.fetchone() is not None`',
-          '`executescript` runs multiple SQL statements separated by semicolons — use it for DDL like CREATE TABLE',
-          'Record the timestamp with `datetime.utcnow().isoformat()` so the history is human-readable'
+          '`executescript` runs multiple SQL statements separated by semicolons — use it for DDL like CREATE TABLE. Note: it issues an implicit COMMIT first, so DDL cannot be rolled back on failure',
+          'Record the timestamp with `datetime.now(timezone.utc).isoformat()` so the history is human-readable'
         ],
         expectedOutput: `  UP    001_create_users
   SKIP  001_create_users  (second run)`,
@@ -1016,7 +1032,7 @@ runner.close()`
             self.cursor.executescript(up_sql)
             self.cursor.execute(
                 "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
-                (name, datetime.utcnow().isoformat())
+                (name, datetime.now(timezone.utc).isoformat())
             )
             self.conn.commit()
             print(f"  UP    {name}")
@@ -1140,7 +1156,7 @@ runner.close()`,
   SKIP  003_create_posts`,
         solution: `import sqlite3
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 class MigrationRunner:
     def __init__(self, db_path):
@@ -1170,7 +1186,7 @@ class MigrationRunner:
             self.cursor.executescript(up_sql)
             self.cursor.execute(
                 "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
-                (name, datetime.utcnow().isoformat())
+                (name, datetime.now(timezone.utc).isoformat())
             )
             self.conn.commit()
             print(f"  UP    {name}")

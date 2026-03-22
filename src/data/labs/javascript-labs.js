@@ -505,7 +505,7 @@ console.log('Largest order:', largestOrder.id, '(' + largestOrder.items.length +
         expectedOutput: `Delivered revenue: $212.50
 Unique items ordered: 8
 Spend by customer: { Alice: 69.49, Bob: 1488, Charlie: 14.99, Diana: 19.99 }
-Largest order: 5 (2 items)`,
+Largest order: 3 (3 items)`,
         solution: `const orders = [
   { id: 1, customer: 'Alice', items: ['book', 'pen'], total: 45.99, status: 'shipped' },
   { id: 2, customer: 'Bob', items: ['laptop'], total: 1299.00, status: 'pending' },
@@ -1304,14 +1304,14 @@ console.log('No listeners fired after cleanup');`
       {
         title: 'Step 1: Set Up Your JavaScript Environment',
         setupReference: true,
-        instruction: 'Before writing JavaScript, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ (with npm), a code editor with JavaScript extensions (ESLint, Prettier), and browser DevTools. For Node.js projects, create a package.json. Complete all setup steps before continuing.',
+        instruction: 'Before exploring modern JavaScript ES2022-2024 features, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22+ (required for ES2024 Set methods and Object.groupBy) and a modern browser (Chrome 122+ or Firefox 127+).',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `node --version` to verify Node.js 20+',
-          'Test: `node -e "console.log(\'Hello, World!\')"` in your terminal'
+          'Run `node --version` to confirm Node.js 22+ (required for Set.prototype.union and Object.groupBy)',
+          'Test: `node -e "const s = new Set([1,2]); console.log([...s.union(new Set([3]))])"` should print [ 1, 2, 3 ]'
         ],
-        expectedOutput: 'Node.js v20.x.x\nnpm 10.x.x\nHello, World!',
+        expectedOutput: 'Node.js v22.x.x\n[ 1, 2, 3 ] (ES2024 Set.union works)\nObject.groupBy available',
         solution: null
       },
       {

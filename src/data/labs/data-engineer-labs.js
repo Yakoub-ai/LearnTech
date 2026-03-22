@@ -11,9 +11,22 @@ export const labs = [
     estimatedMinutes: 25,
     steps: [
       {
-        title: 'Step 1: Extract — Read Raw Data',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before building an ETL pipeline, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Python 3.12+ and a virtual environment. This lab uses only the Python standard library — no external packages are required.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `python --version` to confirm Python 3.12+',
+          'Create a venv: `python -m venv .venv && source .venv/bin/activate`'
+        ],
+        expectedOutput: 'Python 3.12.x\nVirtual environment activated: (.venv)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Extract — Read Raw Data',
         instruction: 'Create a function that parses CSV-formatted text into a list of dictionaries. Each row becomes a dictionary with column headers as keys.',
-        starterCode: `# ETL Pipeline — Step 1: Extract
+        starterCode: `# ETL Pipeline — Step 2: Extract
 # Parse CSV text into structured data
 
 def extract_csv(csv_text):
@@ -70,9 +83,9 @@ for r in records:
     print(r)`
       },
       {
-        title: 'Step 2: Transform — Clean and Enrich',
+        title: 'Step 3: Transform — Clean and Enrich',
         instruction: 'Add transformation logic: convert types, handle missing values, and add computed fields.',
-        starterCode: `# ETL Pipeline — Step 2: Transform
+        starterCode: `# ETL Pipeline — Step 3: Transform
 
 def transform(records):
     """Clean and enrich records.
@@ -136,9 +149,9 @@ for r in cleaned:
     print(f"  {r['name']}: age={r['age']}, band={r['salary_band']}")`
       },
       {
-        title: 'Step 3: Load — Write to Structured Output',
+        title: 'Step 4: Load — Write to Structured Output',
         instruction: 'Create a load function that writes the transformed data to a JSON-like structure grouped by city, simulating a data warehouse load.',
-        starterCode: `# ETL Pipeline — Step 3: Load
+        starterCode: `# ETL Pipeline — Step 4: Load
 
 def load_grouped(records, group_by='city'):
     """Group records by a key and return structured output.
@@ -193,9 +206,9 @@ for city, people in grouped.items():
         print(f"  - {p['name']}: {p['salary_band']}")`
       },
       {
-        title: 'Step 4: Orchestrate the Full Pipeline',
+        title: 'Step 5: Orchestrate the Full Pipeline',
         instruction: 'Tie everything together into a reusable pipeline function with logging, error handling, and a summary report.',
-        starterCode: `# ETL Pipeline — Step 4: Orchestrate
+        starterCode: `# ETL Pipeline — Step 5: Orchestrate
 
 import time
 
@@ -284,16 +297,14 @@ print(f"Groups: {result['groups']}")`
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before writing analytical SQL, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.12+, PostgreSQL or MySQL running locally, a SQL client (psql, DBeaver, or TablePlus), and the pandas + sqlalchemy packages installed. Complete all setup steps and verify your database connection before continuing.',
+        instruction: 'Before writing analytical SQL, ensure your database environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: PostgreSQL 16+ (or SQLite via sqliteonline.com for zero install) and a database client (psql, DBeaver, or TablePlus). Load your sample data and verify your connection before continuing.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Test database connectivity with: psql -U postgres -c "SELECT version();"',
-          'Verify Python can connect: python -c "import sqlalchemy; print(\'SQLAlchemy ready\')"'
+          'Beginners: visit https://sqliteonline.com/ — no install required',
+          'Advanced: run `psql -U postgres -c "SELECT version();"` to test your PostgreSQL connection'
         ],
-        expectedOutput: `Python 3.12.x verified
-PostgreSQL connection: OK
-SQLAlchemy version: 2.x.x`,
+        expectedOutput: 'PostgreSQL 16.x installed (or SQLite Online open in browser)\nDatabase connection verified\nReady to write analytical SQL',
         solution: null
       },
       {
@@ -302,7 +313,7 @@ SQLAlchemy version: 2.x.x`,
 
 WHY: Aggregated JOIN queries are the foundation of business intelligence. They combine relational data (customers + orders) into actionable summaries that power dashboards and reports.
 
-HOW: Use LEFT JOIN to keep all customers even with no orders, filter by date with WHERE, aggregate with GROUP BY, post-aggregate filter with HAVING, and sort with ORDER BY.`,
+HOW: Use LEFT JOIN to keep all customers even with no orders, aggregate with GROUP BY, post-aggregate filter with HAVING, and sort with ORDER BY. Important: put the date range filter in the JOIN's ON clause (not in WHERE) so that customers with no recent orders still appear as rows with NULL values rather than being eliminated entirely.`,
         starterCode: `-- SQL Analytics — Step 2: Aggregation with JOIN
 -- Tables available:
 --   customers(customer_id, customer_name, email, signup_date)
@@ -316,15 +327,15 @@ HOW: Use LEFT JOIN to keep all customers even with no orders, filter by date wit
 SELECT
     -- your columns here
 FROM customers c
--- your JOIN here
-WHERE -- date filter
+-- your LEFT JOIN here, with date filter in ON clause
+-- e.g.: LEFT JOIN orders o ON c.customer_id = o.customer_id AND o.order_date >= ...
 GROUP BY -- your grouping
 HAVING -- your post-aggregate filter
 ORDER BY -- your sort
 LIMIT 10;`,
         hints: [
-          'JOIN orders on customer_id: LEFT JOIN orders o ON c.customer_id = o.customer_id',
-          'Date filter: WHERE o.order_date >= DATE_SUB(NOW(), INTERVAL 1 YEAR) (MySQL) or NOW() - INTERVAL \'1 year\' (PostgreSQL)',
+          'JOIN orders on customer_id with date filter in ON clause: LEFT JOIN orders o ON c.customer_id = o.customer_id AND o.order_date >= NOW() - INTERVAL \'1 year\'',
+          'Putting the date filter in ON (not WHERE) preserves LEFT JOIN semantics — customers with no recent orders still appear with NULL aggregates instead of being eliminated',
           'Aggregate functions: COUNT(o.order_id) as total_orders, SUM(o.amount) as total_spent, AVG(o.amount) as avg_order_value'
         ],
         expectedOutput: `customer_id | customer_name | total_orders | total_spent | avg_order_value
@@ -341,7 +352,7 @@ LIMIT 10;`,
     AVG(o.amount) AS avg_order_value
 FROM customers c
 LEFT JOIN orders o ON c.customer_id = o.customer_id
-WHERE o.order_date >= NOW() - INTERVAL '1 year'
+  AND o.order_date >= NOW() - INTERVAL '1 year'
 GROUP BY c.customer_id, c.customer_name
 HAVING COUNT(o.order_id) > 5
 ORDER BY total_spent DESC
@@ -1014,7 +1025,7 @@ def on_failure_callback(context):
 with DAG(
     dag_id='daily_etl_pipeline',
     default_args=default_args,
-    schedule_interval='0 2 * * *',
+    schedule='0 2 * * *',
     start_date=datetime(2025, 1, 1),
     catchup=False,
     on_failure_callback=on_failure_callback,
@@ -1101,7 +1112,7 @@ def load_data(**context):
     print(f"Pipeline complete. Drop rate: {drop_rate:.2%}")
 
 with DAG(dag_id='daily_etl_pipeline', default_args=default_args,
-         schedule_interval='0 2 * * *', start_date=datetime(2025, 1, 1),
+         schedule='0 2 * * *', start_date=datetime(2025, 1, 1),
          catchup=False, tags=['etl', 'daily']) as dag:
 
     extract = PythonOperator(task_id='extract', python_callable=extract_data)
@@ -1136,7 +1147,7 @@ def check_row_count(**context):
         return 'notify_low_count'
 
 with DAG(dag_id='daily_etl_pipeline', default_args=default_args,
-         schedule_interval='0 2 * * *', start_date=datetime(2025, 1, 1),
+         schedule='0 2 * * *', start_date=datetime(2025, 1, 1),
          catchup=False, tags=['etl', 'daily']) as dag:
 
     # TODO: Add a FileSensor that waits for today's source file
@@ -1183,7 +1194,7 @@ def check_row_count(**context):
     return 'notify_low_count'
 
 with DAG(dag_id='daily_etl_pipeline', default_args=default_args,
-         schedule_interval='0 2 * * *', start_date=datetime(2025, 1, 1),
+         schedule='0 2 * * *', start_date=datetime(2025, 1, 1),
          catchup=False, on_failure_callback=on_failure_callback,
          tags=['etl', 'daily']) as dag:
 
@@ -1624,7 +1635,7 @@ WHY: Full table refreshes are simple but do not scale — loading 1 billion rows
 HOW: Store the last-seen watermark value (usually an updated_at timestamp or auto-increment ID) in a metadata table. On each run, extract only rows where the watermark column exceeds the stored value, ordered ascending so the new watermark is always the last row's value.`,
         starterCode: `# Incremental Load — Step 2: Foundation
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 
 class IncrementalLoader:
     """Load only new or updated rows from source to target using a watermark."""
@@ -1649,7 +1660,7 @@ class IncrementalLoader:
     def set_watermark(self, table_name: str, value: str):
         """Update the watermark after a successful load."""
         # TODO: INSERT OR REPLACE (upsert) into _watermarks
-        # Set updated_at to datetime.utcnow().isoformat()
+        # Set updated_at to datetime.now(timezone.utc).isoformat()
         pass
 
     def extract_delta(self, table_name: str, watermark_col: str):
@@ -1681,7 +1692,7 @@ print(f"After set: {loader.get_watermark('orders')}")`,
 Default watermark: 1970-01-01T00:00:00
 After set: 2024-06-01T00:00:00`,
         solution: `import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 
 class IncrementalLoader:
     def __init__(self, source_db: str, target_db: str):
@@ -1713,7 +1724,7 @@ class IncrementalLoader:
             ON CONFLICT(table_name) DO UPDATE SET
                 last_value = excluded.last_value,
                 updated_at = excluded.updated_at
-        """, (table_name, value, datetime.utcnow().isoformat()))
+        """, (table_name, value, datetime.now(timezone.utc).isoformat()))
         self.target.commit()
 
     def extract_delta(self, table_name: str, watermark_col: str):
@@ -1848,7 +1859,7 @@ WHY: Late-arriving data is a common issue — records can arrive hours or days a
 
 HOW: Subtract the lookback_hours from the stored watermark before querying. In dry-run mode, extract and log the delta but skip upsert and watermark update.`,
         starterCode: `# Incremental Load — Step 4: Late Data and Dry Run
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 def extract_delta_with_lookback(self, table_name: str, watermark_col: str,
                                  lookback_hours: int = 0):
@@ -1919,7 +1930,7 @@ loader2.close()`,
         ],
         expectedOutput: `=== Dry run ===
 [DRY RUN] Loading orders...
-  Extracted 3 rows (lookback=0h, effective_wm=1970-01-01T00:00:00)
+  Extracted 3 new rows from orders (watermark > 1970-01-01T00:00:00)
   [DRY RUN] Would upsert 3 rows — no changes made
 Watermark after dry run: 1970-01-01T00:00:00
 
@@ -1928,7 +1939,7 @@ Loading orders...
   Extracted 3 rows (lookback=24h, effective_wm=1970-01-01T00:00:00)
   Upserted 3 rows into target.orders
   New watermark: 2024-01-12T09:00:00`,
-        solution: `from datetime import datetime, timedelta
+        solution: `from datetime import datetime, timedelta, timezone
 
 def extract_delta_with_lookback(self, table_name: str, watermark_col: str,
                                  lookback_hours: int = 0):
@@ -2003,7 +2014,7 @@ def run_audited(self, table_name: str, watermark_col: str, key_col: str,
                 dry_run: bool = False, lookback_hours: int = 0):
     """Run incremental load with full audit logging."""
     self._ensure_audit_log()
-    started_at = datetime.utcnow().isoformat()
+    started_at = datetime.now(timezone.utc).isoformat()
     wm_before = self.get_watermark(table_name)
 
     # TODO: Insert initial audit row with status='running'
@@ -2029,6 +2040,8 @@ IncrementalLoader._ensure_audit_log = _ensure_audit_log
 IncrementalLoader.run_audited = run_audited
 
 # Test
+# Re-create loader (closed at end of Step 3) against the same databases
+loader = IncrementalLoader('test_source.db', 'test_target.db')
 loader.target.execute("DROP TABLE IF EXISTS _audit_log")
 loader.target.commit()
 loader.set_watermark('orders', '1970-01-01T00:00:00')  # reset watermark for demo
@@ -2038,7 +2051,7 @@ loader.run_audited('orders', 'updated_at', 'order_id')  # second run: 0 new rows
         hints: [
           'Insert initial row: cursor = self.target.execute("INSERT INTO _audit_log (table_name, started_at, status, watermark_before) VALUES (?, ?, \'running\', ?)", (table_name, started_at, wm_before)); run_id = cursor.lastrowid; self.target.commit()',
           'Update on success: self.target.execute("UPDATE _audit_log SET status=\'success\', completed_at=?, rows_extracted=?, rows_upserted=?, watermark_after=? WHERE run_id=?", (completed_at, len(rows), len(rows), new_wm, run_id))',
-          'Update on failure: self.target.execute("UPDATE _audit_log SET status=\'failure\', completed_at=?, error_message=? WHERE run_id=?", (datetime.utcnow().isoformat(), str(e), run_id))'
+          'Update on failure: self.target.execute("UPDATE _audit_log SET status=\'failure\', completed_at=?, error_message=? WHERE run_id=?", (datetime.now(timezone.utc).isoformat(), str(e), run_id))'
         ],
         expectedOutput: `Loading orders...
   Extracted 3 new rows from orders (watermark > 1970-01-01T00:00:00)
@@ -2053,6 +2066,7 @@ Loading orders...
 
 Audit log entry: (2, 'orders', '2025-01-15T02:00:01', '2025-01-15T02:00:01', 'success', 0, 0, '2024-01-12T09:00:00', '2024-01-12T09:00:00', None)`,
         solution: `import time
+from datetime import datetime, timezone
 
 def _ensure_audit_log(self):
     self.target.execute("""
@@ -2074,7 +2088,7 @@ def _ensure_audit_log(self):
 def run_audited(self, table_name: str, watermark_col: str, key_col: str,
                 dry_run: bool = False, lookback_hours: int = 0):
     self._ensure_audit_log()
-    started_at = datetime.utcnow().isoformat()
+    started_at = datetime.now(timezone.utc).isoformat()
     wm_before = self.get_watermark(table_name)
 
     cursor = self.target.execute(
@@ -2102,7 +2116,7 @@ def run_audited(self, table_name: str, watermark_col: str, key_col: str,
         else:
             print(f"  [DRY RUN] Would upsert {len(rows)} rows — no changes made")
 
-        completed_at = datetime.utcnow().isoformat()
+        completed_at = datetime.now(timezone.utc).isoformat()
         self.target.execute(
             "UPDATE _audit_log SET status='success', completed_at=?, rows_extracted=?, rows_upserted=?, watermark_after=? WHERE run_id=?",
             (completed_at, len(rows), rows_upserted, new_wm, run_id)
@@ -2112,7 +2126,7 @@ def run_audited(self, table_name: str, watermark_col: str, key_col: str,
     except Exception as e:
         self.target.execute(
             "UPDATE _audit_log SET status='failure', completed_at=?, error_message=? WHERE run_id=?",
-            (datetime.utcnow().isoformat(), str(e), run_id)
+            (datetime.now(timezone.utc).isoformat(), str(e), run_id)
         )
         self.target.commit()
         raise

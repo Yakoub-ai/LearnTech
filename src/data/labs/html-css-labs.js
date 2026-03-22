@@ -92,7 +92,7 @@ export const labs = [
   </main>
 
   <footer>
-    <p>&copy; 2025 My Blog. All rights reserved.</p>
+    <p>&copy; 2026 My Blog. All rights reserved.</p>
   </footer>
 </body>
 </html>`

@@ -14,7 +14,20 @@ export const labs = [
     estimatedMinutes: 30,
     steps: [
       {
-        title: 'Step 1: Variables and String Manipulation',
+        title: 'Step 1: Set Up Your Python Environment',
+        setupReference: true,
+        instruction: 'Before writing Python code, ensure your environment is properly configured. Click "Go to Dev Setup" below for complete setup instructions. You will need: Python 3.12+, pip or uv package manager, a virtual environment (venv or conda), and your IDE configured with a Python extension. Complete all setup steps and activate your virtual environment before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `python --version` to verify Python 3.12+',
+          'Create a venv: `python -m venv .venv && source .venv/bin/activate`'
+        ],
+        expectedOutput: 'Python 3.12.x\npip 24.x.x\nVirtual environment activated: (.venv)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Variables and String Manipulation',
         instruction: 'Practice Python string methods and f-string formatting. Build a function that formats user profile data.',
         starterCode: `# Python Fundamentals — Variables & Strings
 
@@ -65,7 +78,7 @@ print(format_profile("bob", "jones", 16, "gothenburg"))
 print(count_words("the cat sat on the mat the cat"))`
       },
       {
-        title: 'Step 2: Lists and Dictionaries',
+        title: 'Step 3: Lists and Dictionaries',
         instruction: 'Work with Python collections: filter, transform, and aggregate data in lists and dicts.',
         starterCode: `# Python Fundamentals — Collections
 
@@ -128,7 +141,7 @@ print("By Subject:", average_by_subject(students))
 print("Distribution:", grade_distribution(students))`
       },
       {
-        title: 'Step 3: Functions and Error Handling',
+        title: 'Step 4: Functions and Error Handling',
         instruction: 'Build a mini calculator that handles errors gracefully and supports operation chaining.',
         starterCode: `# Python Fundamentals — Functions & Error Handling
 
@@ -504,10 +517,10 @@ for key, value in result.items():
           'top_student = max(parsed, key=lambda r: r["score"])["name"]'
         ],
         expectedOutput: `total: 6
-passing: 5
+passing: 4
 average_score: 61.67
 top_student: Alice
-grade_counts: {'A': 1, 'B': 2, 'C': 2, 'F': 1}`,
+grade_counts: {'A': 1, 'B': 1, 'C': 2, 'F': 2}`,
         solution: `def safe_float(value: object, default: float = 0.0) -> float:
     try:
         return float(value)
@@ -800,7 +813,7 @@ print(f"Has score 99: {has_99}")`,
           'any() and all() accept generator expressions and short-circuit — they never materialise the full list'
         ],
         expectedOutput: `List size: 87,624 bytes
-List passing count: 4,000
+List passing count: 4000
 Generator passing count: 4000
 Generator average: 79.50
 Has score 99: True`,

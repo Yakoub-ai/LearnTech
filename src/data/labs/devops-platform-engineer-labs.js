@@ -11,7 +11,20 @@ export const labs = [
     estimatedMinutes: 25,
     steps: [
       {
-        title: 'Step 1: Write a Dockerfile',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before containerizing an application, ensure your DevOps environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Docker Desktop (with Docker Compose included), Node.js 22 LTS, and a terminal. Verify Docker is running and you can pull images before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `docker --version` and `docker compose version` to verify Docker',
+          'Run `node --version` to confirm Node.js 22 LTS is available'
+        ],
+        expectedOutput: 'Docker version 25.x.x\nDocker Compose version v2.x.x\nnode v22.x.x',
+        solution: null
+      },
+      {
+        title: 'Step 2: Write a Dockerfile',
         instruction: 'Create a Dockerfile for a simple Node.js application. Use multi-stage concepts: choose a base image, copy files, install dependencies, and set the startup command.',
         starterCode: `# Dockerfile for a Node.js application
 # TODO: Choose a base image (node:20-alpine is recommended)
@@ -59,7 +72,7 @@ EXPOSE 3000
 CMD ["node", "server.js"]`
       },
       {
-        title: 'Step 2: Build and Run the Container',
+        title: 'Step 3: Build and Run the Container',
         instruction: 'Write the Docker commands to build the image, run the container, and verify it is working.',
         starterCode: `# Docker CLI commands — fill in the blanks
 
@@ -108,7 +121,7 @@ docker logs myapp-container
 docker stop myapp-container && docker rm myapp-container`
       },
       {
-        title: 'Step 3: Create a Docker Compose File',
+        title: 'Step 4: Create a Docker Compose File',
         instruction: 'Write a docker-compose.yml that runs the app with a PostgreSQL database. Use environment variables, volumes, and a health check.',
         starterCode: `# docker-compose.yml
 # TODO: Define two services: app and db
@@ -167,7 +180,7 @@ volumes:
   pgdata:`
       },
       {
-        title: 'Step 4: Add a Health Check Endpoint',
+        title: 'Step 5: Add a Health Check Endpoint',
         instruction: 'Add a health check to the Dockerfile and create a simple health endpoint in the application that checks database connectivity.',
         starterCode: `# Add to Dockerfile — health check instruction
 # TODO: Add a HEALTHCHECK that curls the /health endpoint every 30s
@@ -224,14 +237,14 @@ app.get('/health', async (req, res) => {
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running DevOps workflows, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Docker Desktop, kubectl, a cloud CLI (AWS/GCP/Azure), Terraform or Pulumi, and Git configured. Complete all setup steps and verify your tools before continuing.',
+        instruction: 'Before building a production Docker image for a Python app, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Docker Desktop installed and running. The Python runtime (3.11+) is used inside the Docker image — you do not need Python installed locally.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `docker --version` and `kubectl version --client` to verify',
-          'Test cloud CLI: `aws sts get-caller-identity` or equivalent'
+          'Run `docker --version` to verify Docker Desktop is installed',
+          'Run `docker pull python:3.11-slim` to pre-pull the base image'
         ],
-        expectedOutput: 'Docker version 25.x.x\nkubectl v1.x.x\nCloud CLI authenticated and connected',
+        expectedOutput: 'Docker version 25.x.x\npython:3.11-slim image pulled successfully',
         solution: null
       },
       {
@@ -293,14 +306,14 @@ WHY: Container orchestrators (Docker Compose, Kubernetes, ECS) rely on health st
 #   --retries=3          (failures before marking unhealthy)
 #
 # The check command should use Python to GET http://localhost:8000/health
-# Hint: python -c "import requests; requests.get('http://localhost:8000/health')"`,
+# Hint: python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"`,
         hints: [
           'HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \\',
-          '    CMD python -c "import requests; requests.get(\'http://localhost:8000/health\')"',
+          '    CMD python -c "import urllib.request; urllib.request.urlopen(\'http://localhost:8000/health\')"',
           'You can also use curl if it is installed: CMD curl -f http://localhost:8000/health || exit 1'
         ],
         expectedOutput: `HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \\
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
 
 # After docker build and docker run:
 $ docker ps
@@ -318,7 +331,7 @@ COPY . .
 ENV PYTHONUNBUFFERED=1
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \\
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`
       },
@@ -365,7 +378,7 @@ RUN useradd --system --no-create-home --shell /bin/false appuser
 RUN chown -R appuser:appuser /app
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \\
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
 
 USER appuser
 
@@ -437,14 +450,14 @@ docker push registry.example.com/team/myapp:latest`
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running DevOps workflows, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Docker Desktop, kubectl, a cloud CLI (AWS/GCP/Azure), Terraform or Pulumi, and Git configured. Complete all setup steps and verify your tools before continuing.',
+        instruction: 'Before building a Docker Compose stack, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Docker Desktop (which includes Docker Compose). Verify that both `docker` and `docker compose` commands are available in your terminal.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `docker --version` and `kubectl version --client` to verify',
-          'Test cloud CLI: `aws sts get-caller-identity` or equivalent'
+          'Run `docker --version` to verify Docker Desktop',
+          'Run `docker compose version` to verify Docker Compose is included'
         ],
-        expectedOutput: 'Docker version 25.x.x\nkubectl v1.x.x\nCloud CLI authenticated and connected',
+        expectedOutput: 'Docker version 25.x.x\nDocker Compose version v2.x.x',
         solution: null
       },
       {
@@ -719,14 +732,14 @@ services:
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running DevOps workflows, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Docker Desktop, kubectl, a cloud CLI (AWS/GCP/Azure), Terraform or Pulumi, and Git configured. Complete all setup steps and verify your tools before continuing.',
+        instruction: 'Before building a GitHub Actions pipeline, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Git installed, a GitHub account with a repository, and Python 3.12+ with pytest for the test workflow. The pipeline runs on GitHub\'s servers — no local CI runner needed.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `docker --version` and `kubectl version --client` to verify',
-          'Test cloud CLI: `aws sts get-caller-identity` or equivalent'
+          'Run `git --version` to confirm Git is installed',
+          'Run `pip install pytest` and verify with `pytest --version`'
         ],
-        expectedOutput: 'Docker version 25.x.x\nkubectl v1.x.x\nCloud CLI authenticated and connected',
+        expectedOutput: 'git version 2.x.x\npytest 8.x.x\nGitHub account and repository ready',
         solution: null
       },
       {
@@ -1053,14 +1066,14 @@ WHY: Observability of the pipeline itself is as important as observability of th
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running DevOps workflows, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Docker Desktop, kubectl, a cloud CLI (AWS/GCP/Azure), Terraform or Pulumi, and Git configured. Complete all setup steps and verify your tools before continuing.',
+        instruction: 'Before writing Terraform infrastructure code, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Terraform CLI and a cloud provider CLI (AWS CLI, gcloud, or Azure CLI) configured with valid credentials. Run `terraform init` to initialise your working directory.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `docker --version` and `kubectl version --client` to verify',
-          'Test cloud CLI: `aws sts get-caller-identity` or equivalent'
+          'Run `terraform --version` to verify Terraform CLI',
+          'Run `aws sts get-caller-identity` (or equivalent for GCP/Azure) to verify cloud credentials'
         ],
-        expectedOutput: 'Docker version 25.x.x\nkubectl v1.x.x\nCloud CLI authenticated and connected',
+        expectedOutput: 'Terraform v1.x.x\nCloud provider CLI authenticated\nterraform init: Initializing provider plugins...',
         solution: null
       },
       {
@@ -1463,14 +1476,14 @@ terraform apply prod.tfplan`
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before running DevOps workflows, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Docker Desktop, kubectl, a cloud CLI (AWS/GCP/Azure), Terraform or Pulumi, and Git configured. Complete all setup steps and verify your tools before continuing.',
+        instruction: 'Before writing Kubernetes manifests, ensure your environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Docker Desktop, kubectl, and a local Kubernetes cluster (minikube or kind). Start your cluster and verify kubectl can connect before continuing.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Run `docker --version` and `kubectl version --client` to verify',
-          'Test cloud CLI: `aws sts get-caller-identity` or equivalent'
+          'Run `kubectl version --client` to verify kubectl is installed',
+          'Run `kubectl cluster-info` to confirm your cluster is running and reachable'
         ],
-        expectedOutput: 'Docker version 25.x.x\nkubectl v1.x.x\nCloud CLI authenticated and connected',
+        expectedOutput: 'kubectl version: v1.x.x\nKubernetes cluster running\nkubectl cluster-info: control plane at https://...',
         solution: null
       },
       {

@@ -11,9 +11,22 @@ export const labs = [
     estimatedMinutes: 20,
     steps: [
       {
-        title: 'Step 1: Gather Requirements',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before conducting a system design review, ensure your Python environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Python 3.12+ and a virtual environment. This lab uses only the Python standard library — no external packages are required.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `python --version` to confirm Python 3.12+',
+          'Create a venv: `python -m venv .venv && source .venv/bin/activate`'
+        ],
+        expectedOutput: 'Python 3.12.x\nVirtual environment activated: (.venv)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Gather Requirements',
         instruction: 'Create a structured requirements document for a URL shortener service. Separate functional and non-functional requirements.',
-        starterCode: `# System Design — Step 1: Requirements Template
+        starterCode: `# System Design — Step 2: Requirements Template
 
 def gather_requirements(system_name):
     """Create a structured requirements document.
@@ -105,9 +118,9 @@ for section, items in reqs.items():
             print(f"  - {item}")`
       },
       {
-        title: 'Step 2: Design Components',
+        title: 'Step 3: Design Components',
         instruction: 'Define the high-level system components, their responsibilities, and how they communicate.',
-        starterCode: `# System Design — Step 2: Component Design
+        starterCode: `# System Design — Step 3: Component Design
 
 def design_components():
     """Define system components for the URL shortener.
@@ -225,14 +238,14 @@ for comm in design["communications"]:
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before implementing architecture patterns, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ or Python 3.10+, Docker for containerized services, a diagramming tool (draw.io or Mermaid), and access to cloud SDKs if needed. Complete all setup steps before continuing.',
+        instruction: 'Before building a system design document generator, ensure your JavaScript environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ and npm. This lab uses only JavaScript built-in features — no external packages are required.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Install Docker Desktop to run multi-service examples',
-          'Use VS Code with architecture diagram extensions'
+          'Run `node --version` to confirm Node.js 20+',
+          'Test: `node -e "console.log(\'Node.js ready\')"` in your terminal'
         ],
-        expectedOutput: 'Node.js v20.x.x\nDocker 25.x.x\nAll services can communicate in local docker-compose network',
+        expectedOutput: 'Node.js v20.x.x\nnpm 10.x.x\nNode.js ready',
         solution: null
       },
       {
@@ -682,14 +695,14 @@ console.log('\\n' + design.generateMermaidDiagram());
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before implementing architecture patterns, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ or Python 3.10+, Docker for containerized services, a diagramming tool (draw.io or Mermaid), and access to cloud SDKs if needed. Complete all setup steps before continuing.',
+        instruction: 'Before building an ADR generator, ensure your JavaScript environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ and npm. This lab uses only JavaScript built-in features — no external packages are required.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Install Docker Desktop to run multi-service examples',
-          'Use VS Code with architecture diagram extensions'
+          'Run `node --version` to confirm Node.js 20+',
+          'Test: `node -e "console.log(\'Node.js ready\')"` in your terminal'
         ],
-        expectedOutput: 'Node.js v20.x.x\nDocker 25.x.x\nAll services can communicate in local docker-compose network',
+        expectedOutput: 'Node.js v20.x.x\nnpm 10.x.x\nNode.js ready',
         solution: null
       },
       {
@@ -1118,14 +1131,14 @@ deprecate(id, reason) {
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before implementing architecture patterns, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ or Python 3.10+, Docker for containerized services, a diagramming tool (draw.io or Mermaid), and access to cloud SDKs if needed. Complete all setup steps before continuing.',
+        instruction: 'Before building an automated code review system, ensure your JavaScript environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ and npm. This lab uses only JavaScript built-in features — no external packages are required.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Install Docker Desktop to run multi-service examples',
-          'Use VS Code with architecture diagram extensions'
+          'Run `node --version` to confirm Node.js 20+',
+          'Test: `node -e "console.log(\'Node.js ready\')"` in your terminal'
         ],
-        expectedOutput: 'Node.js v20.x.x\nDocker 25.x.x\nAll services can communicate in local docker-compose network',
+        expectedOutput: 'Node.js v20.x.x\nnpm 10.x.x\nNode.js ready',
         solution: null
       },
       {
@@ -1559,14 +1572,14 @@ Action required: 1 PR needs changes before merge`,
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before implementing architecture patterns, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ or Python 3.10+, Docker for containerized services, a diagramming tool (draw.io or Mermaid), and access to cloud SDKs if needed. Complete all setup steps before continuing.',
+        instruction: 'Before implementing architecture fitness functions, ensure your JavaScript environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ and npm. This lab uses only JavaScript built-in features — no external packages are required.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Install Docker Desktop to run multi-service examples',
-          'Use VS Code with architecture diagram extensions'
+          'Run `node --version` to confirm Node.js 20+',
+          'Test: `node -e "console.log(\'Node.js ready\')"` in your terminal'
         ],
-        expectedOutput: 'Node.js v20.x.x\nDocker 25.x.x\nAll services can communicate in local docker-compose network',
+        expectedOutput: 'Node.js v20.x.x\nnpm 10.x.x\nNode.js ready',
         solution: null
       },
       {
@@ -1922,7 +1935,7 @@ Snapshots tracked: 4
 Latest: 2025-W04
 
   [PASS] ↑ Test Coverage: 82 (+14.0)
-  [FAIL] → Cyclic Dependencies: 1 (+1.0)
+  [FAIL] → Cyclic Dependencies: 1 (-1.0)
   [PASS] → Dependency Freshness: 80 (+0.0)
   [FAIL] → Service Coupling: 6 (+0.0)
   [FAIL] → API Versioning: 67 (+0.0)
@@ -1961,14 +1974,14 @@ Latest: 2025-W04
       {
         title: 'Step 1: Set Up Your Environment',
         setupReference: true,
-        instruction: 'Before implementing architecture patterns, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ or Python 3.10+, Docker for containerized services, a diagramming tool (draw.io or Mermaid), and access to cloud SDKs if needed. Complete all setup steps before continuing.',
+        instruction: 'Before building a technical debt tracker, ensure your JavaScript environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 20+ and npm. This lab uses only JavaScript built-in features — no external packages are required.',
         starterCode: null,
         hints: [
           'Click "Go to Dev Setup" for step-by-step instructions',
-          'Install Docker Desktop to run multi-service examples',
-          'Use VS Code with architecture diagram extensions'
+          'Run `node --version` to confirm Node.js 20+',
+          'Test: `node -e "console.log(\'Node.js ready\')"` in your terminal'
         ],
-        expectedOutput: 'Node.js v20.x.x\nDocker 25.x.x\nAll services can communicate in local docker-compose network',
+        expectedOutput: 'Node.js v20.x.x\nnpm 10.x.x\nNode.js ready',
         solution: null
       },
       {
@@ -2274,7 +2287,7 @@ SPRINT SUGGESTION (budget: 8 effort points):
   [TD-005] Document API rate limiting strategy (effort: 1)
   Effort used: 7/8
 
-Debt Trend: INCREASING (delta: 3)
+Debt Trend: STABLE (delta: 3)
 Debt is growing slowly. Consider allocating 20% sprint capacity to debt reduction.`,
         solution: `printReport() {
   console.log('='.repeat(65));

@@ -11,7 +11,20 @@ export const labs = [
     estimatedMinutes: 25,
     steps: [
       {
-        title: 'Step 1: Add Basic Type Annotations',
+        title: 'Step 1: Set Up Your TypeScript Environment',
+        setupReference: true,
+        instruction: 'Before writing TypeScript, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22 LTS (via nvm), TypeScript 5.x installed globally, ts-node or tsx for running .ts files directly, and VS Code with built-in TypeScript IntelliSense. Complete all setup steps and verify compilation works before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `tsc --version` to verify TypeScript installation',
+          'Test: `echo "console.log(\'TS works\')" > test.ts && npx ts-node test.ts`'
+        ],
+        expectedOutput: 'TypeScript 5.x.x\nts-node v10.x.x\nTS works (compilation and execution successful)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Add Basic Type Annotations',
         instruction: 'Convert plain JavaScript functions to TypeScript by adding type annotations for parameters and return values.',
         starterCode: `// TODO: Add TypeScript types to these JavaScript functions
 
@@ -70,7 +83,7 @@ function formatValue(value: string | number): string {
 }`
       },
       {
-        title: 'Step 2: Define Interfaces',
+        title: 'Step 3: Define Interfaces',
         instruction: 'Create TypeScript interfaces for a blog system: Post, Author, and Comment.',
         starterCode: `// TODO: Define interfaces for a blog system
 
@@ -145,7 +158,7 @@ function filterByTag(posts: Post[], tag: string): Post[] {
 }`
       },
       {
-        title: 'Step 3: Use Generics',
+        title: 'Step 4: Use Generics',
         instruction: 'Create generic utility functions that work with any type while maintaining type safety.',
         starterCode: `// TODO: Implement generic utility functions
 

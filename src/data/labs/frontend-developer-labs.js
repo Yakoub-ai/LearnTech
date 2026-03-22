@@ -11,7 +11,20 @@ export const labs = [
     estimatedMinutes: 30,
     steps: [
       {
-        title: 'Step 1: Create a Button Component',
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before building React components, ensure your frontend environment is ready. Click "Go to Dev Setup" below for complete installation instructions. You will need: Node.js 22 LTS, npm, and a React project scaffolded with Vite. Run `npm create vite@latest my-components -- --template react` to bootstrap your project.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `node --version` and `npm --version` to verify your environment',
+          'Bootstrap with `npm create vite@latest my-components -- --template react` then `cd my-components && npm install`'
+        ],
+        expectedOutput: 'Node.js v22.x.x\nnpm 10.x.x\nVite + React project created and running at localhost:5173',
+        solution: null
+      },
+      {
+        title: 'Step 2: Create a Button Component',
         instruction: 'Build a reusable Button component with variant support (primary, secondary, danger) and size options (sm, md, lg).',
         starterCode: `// Button.jsx — Reusable button component
 // Props: variant ('primary'|'secondary'|'danger'), size ('sm'|'md'|'lg'), children, onClick, disabled
@@ -72,7 +85,7 @@ function Button({ variant = 'primary', size = 'md', children, onClick, disabled 
 }`
       },
       {
-        title: 'Step 2: Create an Input Component',
+        title: 'Step 3: Create an Input Component',
         instruction: 'Build a reusable Input component with label, error state, and helper text support.',
         starterCode: `// Input.jsx — Reusable input with label and validation
 // Props: label, type, value, onChange, error, helperText, placeholder, required
@@ -123,7 +136,7 @@ Helper text shown in gray when no error`,
 }`
       },
       {
-        title: 'Step 3: Create a Card Component',
+        title: 'Step 4: Create a Card Component',
         instruction: 'Build a Card component with header, body, and footer sections. Add hover effects and optional image support.',
         starterCode: `// Card.jsx — Composable card component
 // Props: title, subtitle, children (body), footer, image, onClick
@@ -178,7 +191,7 @@ Footer is at the bottom with a top border`,
 }`
       },
       {
-        title: 'Step 4: Add Theme Support',
+        title: 'Step 5: Add Theme Support',
         instruction: 'Create a ThemeProvider that uses React Context to provide color theme values to all components. Update Button to use theme colors.',
         starterCode: `// ThemeProvider.jsx — Context-based theming
 import { createContext, useContext, useState } from 'react';
@@ -664,7 +677,7 @@ export function PostList() {
       },
       {
         title: 'Step 4: Add a Retry Button',
-        instruction: 'WHAT: Extract the fetch logic so it can be triggered both on mount and by a "Retry" button click.\n\nWHY: Network errors are transient. Giving users a retry action instead of forcing a full page reload is a UX standard for data-heavy applications. It also demonstrates the pattern of "imperative triggers" for effects that need to run on demand.\n\nHOW: Move fetchPosts outside of useEffect (but still inside the component so it can close over setState). Call it inside useEffect for the initial load and wire it to a Retry button in the error UI.',
+        instruction: 'WHAT: Extract the fetch logic so it can be triggered both on mount and by a "Retry" button click, using AbortController to cancel in-flight requests.\n\nWHY: Network errors are transient. Giving users a retry action instead of forcing a full page reload is a UX standard for data-heavy applications. AbortController is the correct modern pattern for cancelling fetch requests — it signals the browser to abandon the in-flight request and lets you ignore the resulting AbortError in your catch block.\n\nHOW: Wrap the fetch logic in useCallback with an empty dep array. Inside, create an AbortController and pass its signal to fetch(). Catch and ignore AbortError. Return a cleanup function that calls controller.abort() so React can cancel any in-flight request when the component unmounts.',
         starterCode: `import { useEffect, useState, useCallback } from 'react';
 
 export function PostList() {
@@ -696,7 +709,7 @@ export function PostList() {
 }`,
         hints: [
           'useCallback(() => { ... }, []) memoises fetchPosts — stable reference prevents the useEffect dependency from firing in a loop',
-          'Adding fetchPosts to the useEffect dep array is correct ESLint practice when using useCallback',
+          'Create an AbortController inside fetchPosts, pass its signal to fetch(), and return () => controller.abort() as the cleanup',
           'The Retry button simply calls fetchPosts() — no extra state needed'
         ],
         expectedOutput: `// On error: "Error: Network response failed" + [Retry] button
@@ -710,18 +723,24 @@ export function PostList() {
   const [error, setError] = useState(null);
 
   const fetchPosts = useCallback(async () => {
-    let isMounted = true;
+    const controller = new AbortController();
     setLoading(true);
+    setError(null);
     try {
-      const response = await fetch('/api/posts');
-      if (!response.ok) throw new Error('Network response failed');
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10', {
+        signal: controller.signal
+      });
+      if (!response.ok) throw new Error(\`HTTP error! status: \${response.status}\`);
       const data = await response.json();
-      if (isMounted) { setPosts(data); setError(null); }
+      setPosts(data);
     } catch (err) {
-      if (isMounted) { setError(err.message); setPosts([]); }
+      if (err.name !== 'AbortError') {
+        setError(err instanceof Error ? err.message : 'Unknown error');
+      }
     } finally {
-      if (isMounted) setLoading(false);
+      setLoading(false);
     }
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
