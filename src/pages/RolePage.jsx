@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
-import PageHelmet, { SITE_URL } from '../components/seo/PageHelmet'
+import PageHelmet from '../components/seo/PageHelmet'
+
+const SITE_URL = import.meta.env.VITE_APP_URL || 'https://techhubb.se'
 import { parseResourceTable, parseObjectives } from '../utils/markdownLoader'
 import {
   loadRoleMarkdownContent,
