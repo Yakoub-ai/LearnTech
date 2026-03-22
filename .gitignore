@@ -10,3 +10,14 @@ coverage/
 .env*.local
 .env.development
 .env.staging
+
+# Claude Code local config
+.claude/
+
+# Temp/draft files
+*.tmp
+tmp_*.py
+
+# Supabase local state
+supabase/.branches/
+supabase/config.toml
