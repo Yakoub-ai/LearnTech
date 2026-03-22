@@ -287,6 +287,130 @@ export const topicQuizzes = {
         },
       ],
     },
+    {
+      topicId: 'authentication-fundamentals-proving-identity-securely',
+      topicTitle: 'Authentication Fundamentals – Proving Identity Securely',
+      objectiveIndex: 6,
+      questions: [
+        {
+          question: 'What is the fundamental difference between authentication and authorisation?',
+          options: [
+            'Authentication verifies identity (who you are); authorisation determines permissions (what you can do)',
+            'Authentication determines permissions; authorisation verifies identity',
+            'Authentication uses passwords; authorisation uses biometrics',
+            'They are interchangeable terms for the same process',
+          ],
+          correctIndex: 0,
+          explanation: 'Authentication proves identity. Authorisation determines access rights. A system must authenticate first, then authorise. Confusing the two leads to broken access control vulnerabilities.',
+        },
+        {
+          question: 'Why are passkeys (FIDO2/WebAuthn) considered phishing-resistant?',
+          options: [
+            'The credential is bound to the origin (domain), so it cannot be used on a fake website even if the user is tricked into visiting one',
+            'Passkeys require biometric verification that cannot be replicated remotely',
+            'Passkeys encrypt the user\'s password before sending it to the server',
+            'Passkeys use SMS-based verification that blocks phishing domains',
+          ],
+          correctIndex: 0,
+          explanation: 'Passkeys use public-key cryptography bound to the domain. A phishing site on a different domain cannot trigger the credential — the browser enforces origin matching at the protocol level.',
+        },
+        {
+          question: 'Which property must a session token have to prevent an attacker from guessing valid tokens?',
+          options: [
+            'Cryptographically random with sufficient entropy (at least 128 bits)',
+            'Sequential numeric IDs for efficient database lookup',
+            'Base64-encoded username and timestamp for traceability',
+            'Derived from a hash of the user\'s password for consistency',
+          ],
+          correctIndex: 0,
+          explanation: 'Session tokens must be generated using a CSPRNG (cryptographically secure pseudorandom number generator). Predictable tokens allow session hijacking. Python\'s secrets.token_urlsafe() is appropriate.',
+        },
+        {
+          question: 'Credential stuffing attacks exploit which user behaviour?',
+          options: [
+            'Reusing the same password across multiple services — breached credentials from one site are tested against others',
+            'Choosing passwords that are too short for brute-force protection',
+            'Sharing passwords via unencrypted email',
+            'Using password managers that synchronise across devices',
+          ],
+          correctIndex: 0,
+          explanation: 'Credential stuffing uses breached username/password pairs from one service to log in to others. MFA, rate limiting, and checking against breached password lists (Have I Been Pwned) are the primary defences.',
+        },
+        {
+          question: 'Why is SMS-based MFA weaker than TOTP (authenticator app) or FIDO2 hardware keys?',
+          options: [
+            'SMS codes can be intercepted via SIM-swapping attacks where an attacker convinces the carrier to transfer the victim\'s phone number',
+            'SMS codes expire too quickly for users to enter them',
+            'TOTP apps require an internet connection that SMS does not need',
+            'SMS MFA is incompatible with modern OAuth 2.0 flows',
+          ],
+          correctIndex: 0,
+          explanation: 'SIM-swapping (social engineering the mobile carrier) and SS7 protocol vulnerabilities allow attackers to intercept SMS codes. TOTP and hardware keys do not depend on the phone network.',
+        },
+      ],
+    },
+    {
+      topicId: 'secure-coding-fundamentals-writing-code-that-resists-attack',
+      topicTitle: 'Secure Coding Fundamentals – Writing Code That Resists Attack',
+      objectiveIndex: 7,
+      questions: [
+        {
+          question: 'An application builds a shell command by concatenating user input: `os.system(f"ping {user_input}")`. What vulnerability does this create?',
+          options: [
+            'Command injection — an attacker can append "; rm -rf /" or other commands that the shell will execute',
+            'SQL injection — the database interprets the input as a query',
+            'XSS — the input is rendered in the browser without encoding',
+            'Path traversal — the input navigates the file system',
+          ],
+          correctIndex: 0,
+          explanation: 'Concatenating user input into shell commands allows command injection. The fix is to use subprocess with a list of arguments (shell=False) and validate input format with an allowlist.',
+        },
+        {
+          question: 'What is the secure approach to prevent path traversal when a user provides a filename?',
+          options: [
+            'Resolve the full path and verify it stays within the intended directory using is_relative_to() or equivalent',
+            'Strip all "/" characters from the filename',
+            'Check that the filename does not start with ".."',
+            'URL-encode the filename before using it in the file path',
+          ],
+          correctIndex: 0,
+          explanation: 'Path.resolve() normalises the path (collapsing ".." sequences), then is_relative_to() confirms it stays within the allowed directory. Simple string filtering misses encoded or double-encoded traversal sequences.',
+        },
+        {
+          question: 'A web application returns stack traces in HTTP 500 error responses. Why is this a security risk?',
+          options: [
+            'Stack traces reveal internal implementation details (framework versions, file paths, database schema) that help attackers identify exploitable weaknesses',
+            'Stack traces slow down the HTTP response time, creating a denial-of-service risk',
+            'Stack traces are logged twice, consuming excessive disk space',
+            'Stack traces contain encrypted data that attackers can decrypt',
+          ],
+          correctIndex: 0,
+          explanation: 'Verbose error messages are information disclosure. They reveal framework versions (enabling CVE targeting), file structures, and database details. Log errors server-side; return generic messages to clients.',
+        },
+        {
+          question: 'Why should input validation use an allowlist approach rather than a denylist?',
+          options: [
+            'Denylists can be bypassed with encoding, Unicode normalisation, or new attack patterns; allowlists define exactly what is permitted and reject everything else',
+            'Allowlists are faster to evaluate than denylists at runtime',
+            'Denylists require regular expression syntax that is difficult to maintain',
+            'Allowlists are required by OWASP SAMM Level 1 compliance',
+          ],
+          correctIndex: 0,
+          explanation: 'Denylists try to enumerate all bad inputs — an impossible task as attackers constantly discover new bypass techniques. Allowlists define the narrow set of valid inputs and reject everything else by default.',
+        },
+        {
+          question: 'An API key is committed to a Git repository. Even after removing it in a subsequent commit, why is the key still compromised?',
+          options: [
+            'Git retains the full history — the key remains accessible in previous commits and can be found by scanning the repository history',
+            'Git caches deleted files in a temporary directory that is publicly accessible',
+            'The key is indexed by search engines when pushed to a public repository',
+            'Git encrypts commit history, but the encryption key is derived from the repository URL',
+          ],
+          correctIndex: 0,
+          explanation: 'Git stores complete history. A secret committed and then deleted is still in the repo history. Tools like truffleHog and git-secrets scan for this. The key must be rotated immediately after exposure.',
+        },
+      ],
+    },
   ],
   mid: [
     {
@@ -1467,6 +1591,61 @@ export const topicQuizzes = {
         ],
         correctIndex: 0,
         explanation: 'Base64 encodes binary data as ASCII text for transport. It is trivially reversible without any key. Treating Base64-encoded data as protected is a dangerous misconception.',
+      },
+      {
+        question: 'Multi-factor authentication (MFA) requires factors from at least two of which categories?',
+        options: [
+          'Something you know, something you have, something you are',
+          'A password, a PIN, and a security question',
+          'Email verification, SMS code, and CAPTCHA',
+          'Biometrics, encryption key, and IP address',
+        ],
+        correctIndex: 0,
+        explanation: 'MFA factors must come from different categories: knowledge (password), possession (phone, hardware key), and inherence (biometric). Two passwords is not MFA — they are both "something you know."',
+      },
+      {
+        question: 'An attacker sends `; cat /etc/passwd` as input to a web form that passes user input to a shell command. This is an example of:',
+        options: [
+          'Command injection',
+          'SQL injection',
+          'Cross-site scripting',
+          'Path traversal',
+        ],
+        correctIndex: 0,
+        explanation: 'Command injection occurs when user input is concatenated into shell commands. The semicolon terminates the intended command and starts a new one controlled by the attacker.',
+      },
+      {
+        question: 'A developer stores an API key directly in the application source code. Why is this a security risk?',
+        options: [
+          'The key is visible to anyone with access to the source repository (including Git history) and cannot be rotated without a code change',
+          'Hardcoded keys are automatically encrypted by the compiler',
+          'API keys in source code are too long to be practical for automation',
+          'Source code repositories automatically delete detected API keys',
+        ],
+        correctIndex: 0,
+        explanation: 'Secrets in source code persist in version control history. If the repo is public or compromised, the key is exposed. Secrets must be stored in environment variables or secret managers.',
+      },
+      {
+        question: 'What makes passkeys (FIDO2/WebAuthn) fundamentally more resistant to phishing than passwords?',
+        options: [
+          'The credential is cryptographically bound to the website origin — it cannot be used on a different domain, even a convincing fake',
+          'Passkeys use longer character strings than passwords',
+          'Passkeys are stored in the cloud and require a second password to access',
+          'Passkeys expire after 24 hours, limiting the attack window',
+        ],
+        correctIndex: 0,
+        explanation: 'Passkeys are origin-bound: the browser checks the domain before using the credential. A phishing site on a lookalike domain cannot trigger the credential, making phishing structurally impossible.',
+      },
+      {
+        question: 'Nmap is primarily used for:',
+        options: [
+          'Network reconnaissance — discovering hosts, open ports, and running services on a network',
+          'Intercepting and modifying HTTP requests between a browser and server',
+          'Scanning application source code for security vulnerabilities',
+          'Cracking password hashes using rainbow tables',
+        ],
+        correctIndex: 0,
+        explanation: 'Nmap is the standard network scanning tool. It discovers which hosts are alive, which ports are open, and what services/versions are running — essential information for security assessments.',
       },
     ],
     mid: [
