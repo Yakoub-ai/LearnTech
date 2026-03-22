@@ -104,6 +104,17 @@ Think of the AI landscape as a set of nested circles, like Russian dolls. The ou
 
 A chess engine that follows hand-coded rules is AI but not ML. A spam filter trained on labelled emails is ML. An image classifier built on a convolutional neural network is deep learning. A system that writes a cover letter or generates an image from a text description is generative AI.
 
+\`\`\`mermaid
+flowchart LR
+    AI["Artificial Intelligence"] --> ML["Machine Learning"]
+    ML --> DL["Deep Learning"]
+    DL --> GenAI["Generative AI"]
+    AI -.- ex1["Chess engine"]
+    ML -.- ex2["Spam filter"]
+    DL -.- ex3["Image classifier"]
+    GenAI -.- ex4["LLMs, image generators"]
+\`\`\`
+
 The key insight for AI Engineers: **LLMs do not retrieve answers from a database.** They generate text by predicting the most statistically likely next token (a small chunk of text) given everything that came before. Think of the phone's autocomplete feature — but instead of predicting the next word, an LLM predicts the next sentence, the next paragraph, or the entire document. This is why LLMs can confidently produce text that sounds correct but is factually wrong — a phenomenon called hallucination.
 
 > **What you'll learn watching this:** This video unpacks the relationship between AI, ML, deep learning, and generative AI, then explains foundation models and LLMs using an analogy that compares generating new content to composing new music from existing notes.
@@ -211,6 +222,30 @@ https://www.youtube.com/watch?v=4vLxWqE94l4
 
 ---
 
+## Python for AI Engineers
+
+Python is the dominant language for AI engineering. Not because it is the fastest or most elegant language, but because the entire ecosystem — LLM SDKs, ML frameworks, data processing tools, vector database clients — is built around it. As an AI Engineer, Python is your primary tool for interacting with LLMs, processing data, and building applications.
+
+You do not need to be a Python expert at this level. You need to be comfortable with the fundamentals: variables, functions, data structures (lists, dictionaries, sets), control flow, file I/O, and working with external packages.
+
+**Key libraries for AI Engineers.** The \`requests\` library handles HTTP calls. The \`anthropic\` and \`openai\` packages are the official SDKs for the two most widely used LLM APIs. \`json\` handles structured data. \`os\` and \`dotenv\` manage environment variables (including API keys). \`tiktoken\` estimates token counts.
+
+**Why it matters:** Python is not optional for AI Engineers — it is the primary tool. Every LLM API call, every data processing step, every integration you build will be in Python. Investing in solid Python fundamentals pays dividends at every subsequent level.
+
+**Key things to understand:**
+- Use virtual environments for every project — dependency isolation prevents painful debugging later
+- Never hardcode API keys — use environment variables loaded from \`.env\` files
+- JSON is the universal data format for LLM APIs — be fluent in serialisation and parsing
+- Wrap LLM calls in functions with clear inputs and outputs — this makes code testable and reusable
+- Error handling is not optional — API calls fail under normal conditions and your code must handle it
+
+**Common pitfalls:**
+- Installing packages globally instead of in a virtual environment, causing version conflicts across projects
+- Hardcoding API keys in source files and accidentally committing them to version control
+- Not handling API errors, causing applications to crash on the first rate limit or timeout
+
+---
+
 ## Introduction to Prompt Engineering
 
 Prompt engineering is the practice of designing input text that elicits the desired output from a language model. Think of it like giving instructions to an extremely capable but very literal intern: the quality of what you get back depends almost entirely on how clearly you explain what you want.
@@ -221,6 +256,8 @@ Prompt engineering is the practice of designing input text that elicits the desi
 
 **Role prompting** frames the model as a particular persona: "You are a senior claims analyst with 10 years of experience." This influences the model's vocabulary, level of technical detail, and perspective — a useful way to target a specific audience or domain without writing long style instructions.
 
+**System prompts** are a special message type in LLM APIs that sets the model's overall behaviour, persona, and constraints for an entire conversation. Unlike user messages, system prompts persist across all turns and establish the ground rules. They are where you place role definitions, output format requirements, and safety instructions.
+
 **Structured output.** Asking the model to respond in a specific format — JSON, a numbered list, a markdown table — reduces ambiguity and makes output easier to parse programmatically. Being explicit about the desired format ("Respond with a JSON object containing the keys: summary, confidence, sources") produces more consistent results than leaving the format open.
 
 **Why it matters:** The prompt is your primary control surface for LLM behaviour. Mastering these basic techniques gives you the tools to solve a wide range of problems before reaching for more complex approaches like RAG or fine-tuning.
@@ -228,6 +265,7 @@ Prompt engineering is the practice of designing input text that elicits the desi
 **Key things to understand:**
 - Start simple (zero-shot) and add complexity (few-shot, structured output) only when needed
 - Few-shot examples influence the model's output format and tone more strongly than explicit instructions in many cases
+- System prompts set the overall behaviour for a conversation — use them for persona, constraints, and format rules
 - Positive instructions ("respond only with...") are more reliable than negative ones ("do not include...")
 - Prompts are not deterministic — the same prompt can produce different output across runs
 
@@ -235,6 +273,44 @@ Prompt engineering is the practice of designing input text that elicits the desi
 - Over-engineering prompts for simple tasks where a direct instruction would suffice
 - Not testing prompts across a range of inputs — a prompt that works for one example may fail on edge cases
 - Treating prompt engineering as a one-time task rather than an iterative process
+- Mixing instructions and data in a prompt without clear delimiters — the model may confuse data for instructions
+
+---
+
+## Understanding Modern LLM APIs
+
+AI Engineers interact with multiple LLM providers, each with distinct capabilities, pricing, and API designs. Anthropic's Claude models, OpenAI's GPT models, and Google's Gemini models are the three major providers as of 2025-2026. Each offers models at different capability and price points — choosing the right model for each task is an engineering decision, not a default.
+
+**Model selection principles.** Not every task needs the most powerful (and expensive) model. A simple classification task may work with a smaller, cheaper model. A complex reasoning task may require a frontier model. Start with the smallest model that could work, evaluate quality, and scale up only if needed.
+
+**Streaming responses.** For user-facing applications, streaming returns tokens as they are generated rather than waiting for the full response. This dramatically reduces perceived latency — the user sees output immediately rather than waiting seconds for the complete response.
+
+\`\`\`mermaid
+sequenceDiagram
+    participant U as User
+    participant App as Application
+    participant LLM as LLM API
+    U->>App: Send question
+    App->>LLM: POST /chat (prompt + system msg)
+    LLM-->>App: Stream tokens
+    App-->>U: Display response
+    Note over App,LLM: Each call is stateless
+\`\`\`
+
+**Multi-turn conversations.** LLM APIs are stateless — each call is independent. To maintain a conversation, you must send the full conversation history with each request.
+
+**Why it matters:** Choosing the right LLM provider and model for each task is a core AI Engineering skill. Understanding how different APIs work, how to manage conversations, and how to use streaming allows you to build responsive, cost-effective applications.
+
+**Key things to understand:**
+- Different providers offer models at different capability/cost trade-offs — evaluate before committing
+- LLM APIs are stateless — multi-turn conversations require sending full history with each request
+- Streaming reduces perceived latency for user-facing applications and should be used by default in UIs
+- Token usage grows with each conversation turn — monitor and manage conversation length
+
+**Common pitfalls:**
+- Defaulting to the most expensive model without testing whether a smaller model would suffice
+- Not implementing streaming in user-facing applications, creating poor user experience
+- Forgetting that conversation history grows with each turn, eventually consuming the entire context window
 
 ---
 
@@ -242,9 +318,12 @@ Prompt engineering is the practice of designing input text that elicits the desi
 
 - Explain the difference between AI, ML, deep learning, and generative AI without referring to notes — including why LLMs hallucinate
 - Write a Python script that calls an LLM API, sends a prompt with a system message and user message, and prints the response
+- Set up a Python virtual environment, install LLM SDK packages, and manage API keys securely with environment variables
 - Describe what REST, GraphQL, gRPC, WebSocket, and Webhook are and give a real-world use case for each
 - Write a zero-shot and a few-shot prompt for the same task and explain why the few-shot version produces more consistent output
 - Explain what a token is and why token count matters for cost and context window management
+- Build a simple multi-turn chatbot that maintains conversation history across API calls
+- Compare the Anthropic and OpenAI SDK patterns and explain when to choose each
 `,
   mid: `# AI Engineer – Mid Concept Reference
 
@@ -411,6 +490,10 @@ RAG is an architecture pattern that combines a retrieval system with a language 
 
 **How RAG works.** At indexing time, documents are split into chunks, each chunk is embedded with an embedding model, and the resulting vectors are stored in a vector database alongside the original text. At query time, the user's question is embedded with the same model, the vector database finds the most similar chunks, and those chunks are injected into the LLM's context window as grounding material before the model generates a response. The model is instructed to answer based on the retrieved context, not its parametric memory.
 
+\`\`\`interactive-flow
+ragPipeline
+\`\`\`
+
 **The pipeline has five failure points.** Chunking (splitting documents at the wrong boundaries can separate the information needed to answer the query). Embedding (using the wrong model, or a model mismatched to the domain, degrades retrieval). Retrieval (pure vector search misses exact-match queries that keyword search handles well — hybrid search combines both). Context injection (injecting too many chunks fills the window with noise). Generation (even with good context, the model may ignore it in favour of its training data if the prompt is not designed to prioritise retrieval).
 
 **Why it matters:** RAG is the default starting point for most enterprise knowledge retrieval applications. It enables LLMs to answer questions about proprietary or recently updated information without retraining. It is faster and cheaper to iterate than fine-tuning, and it provides a natural audit trail (you can inspect what was retrieved).
@@ -436,6 +519,18 @@ In LangGraph, a workflow is a graph where nodes are processing steps (LLM calls,
 State is the central concept. LangGraph maintains a typed state object that persists across all nodes. Each node reads from and writes to this state. Because state is explicit and inspectable, debugging is far more tractable than in agent systems where state is implicit.
 
 Tool use is implemented by registering Python functions as tools the LLM can call. The LLM generates a structured tool call with arguments; LangGraph routes execution to the corresponding function, captures the result, and routes it back to the LLM for the next step.
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Planning: User input received
+    Planning --> Executing: Plan ready
+    Executing --> Reflecting: Tool result returned
+    Reflecting --> Planning: Needs more steps
+    Reflecting --> Done: Task complete
+    Done --> [*]
+    Executing --> Executing: Retry on failure
+\`\`\`
 
 **Why it matters:** Most real agent workflows are not linear — they require loops, conditional logic, retries, and parallel steps. LangGraph provides the explicit graph structure needed to build these reliably, with inspectable state that makes debugging practical.
 
@@ -509,6 +604,20 @@ Memory has several forms. In-context memory is the information held in the curre
 Tools are the interfaces through which the agent acts on the world — calling APIs, querying databases, running code, reading files. Each tool is a potential attack surface and failure point. Tools must have clear input validation, enforced scope limits, and safe error handling.
 
 Orchestration governs how the planning-execution loop runs, how state is passed between steps, and how errors trigger retries or escalations. Frameworks such as LangGraph provide the graph-based structure needed for complex orchestration with explicit state. Multi-agent systems extend this further by having multiple specialised agents collaborate — one agent may plan while another executes, or a supervisor agent may delegate subtasks to worker agents. Multi-agent architectures increase capability at the cost of significantly increased debugging complexity and communication overhead between agents.
+
+\`\`\`mermaid
+flowchart TB
+    User["User Request"] --> Supervisor["Supervisor Agent"]
+    Supervisor --> Planner["Planner Agent"]
+    Supervisor --> Researcher["Research Agent"]
+    Supervisor --> Writer["Writer Agent"]
+    Planner --> Supervisor
+    Researcher --> Tools["Tools & APIs"]
+    Tools --> Researcher
+    Researcher --> Supervisor
+    Writer --> Supervisor
+    Supervisor --> Response["Final Response"]
+\`\`\`
 
 **Why it matters:** Agent systems are the most powerful — and the most failure-prone — pattern in LLM application design. A poorly designed agent can loop indefinitely, take irreversible actions, exhaust API budgets, or be hijacked through prompt injection. Senior engineers must be able to design these systems defensively, not just functionally.
 
@@ -676,6 +785,19 @@ Staff using AI tools and systems must understand the limitations of AI technolog
 LLM evaluation is the practice of systematically measuring the quality of outputs from large language model applications, particularly RAG (Retrieval-Augmented Generation) systems. Unlike traditional ML where metrics like accuracy and F1 are well-defined, evaluating LLM outputs requires assessing qualities like faithfulness, relevance, coherence, and completeness — properties that are inherently subjective and context-dependent.
 
 RAGAS (Retrieval Augmented Generation Assessment) is one of the most widely adopted evaluation frameworks. It provides automated metrics that assess RAG pipeline quality across two dimensions: retrieval quality (are the right documents being retrieved?) and generation quality (is the model using the retrieved context correctly?).
+
+\`\`\`mermaid
+flowchart LR
+    Q["Test Questions"] --> RAG["RAG Pipeline"]
+    RAG --> Out["Generated Answers"]
+    Out --> Eval["Evaluation Framework"]
+    GT["Ground Truth"] --> Eval
+    Ctx["Retrieved Context"] --> Eval
+    Eval --> F["Faithfulness"]
+    Eval --> R["Answer Relevancy"]
+    Eval --> CP["Context Precision"]
+    Eval --> CR["Context Recall"]
+\`\`\`
 
 **Why it matters:** Without systematic evaluation, LLM applications are deployed based on vibes — "it seems to work well." In production, especially in insurance where outputs may inform customer-facing decisions or regulatory processes, you need quantifiable measures of quality. Evaluation frameworks make it possible to compare prompt strategies, detect regressions, and set quality thresholds for deployment.
 

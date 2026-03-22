@@ -242,6 +242,21 @@ Understanding APIs — not just REST but the full landscape of communication sty
 - **gRPC** uses Protocol Buffers (a compact binary format) instead of text-based JSON, making it significantly faster and more efficient than REST. Services and methods are defined in a \`.proto\` file, and client and server code is generated automatically, enabling strongly-typed communication across services written in different programming languages. gRPC is the choice for high-throughput internal microservice communication — not typically used for public-facing APIs.
 - **Webhooks** invert the traditional API model: instead of your system polling an API repeatedly asking "has anything changed?", the external platform calls your endpoint when an event occurs. When a payment is processed, a user signs up, or a form is submitted, the source system fires an HTTP POST to a URL you have registered. Webhooks are used extensively in marketing — Stripe payment webhooks, Segment event webhooks, email platform delivery notifications. Your endpoint must be publicly reachable, respond quickly, and handle duplicates gracefully.
 - **WebSockets** open a persistent two-way connection between client and server, enabling real-time bidirectional communication without repeated request–response cycles. They power live chat, real-time dashboards, and collaborative editing tools. Less common in batch marketing data work but relevant for real-time personalisation engines and live analytics dashboards.
+### Tag Fire Sequence
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Page as Page Load
+    participant GTM as Google Tag Manager
+    participant Tags as Marketing Tags
+    participant Analytics as Analytics Platform
+    Page->>GTM: DOM Ready event
+    GTM->>GTM: Evaluate triggers
+    GTM->>Tags: Fire matched tags
+    Tags->>Analytics: Send tracking data
+    Analytics-->>Tags: Acknowledge
+\`\`\`
+
 - Authentication is typically handled with API keys, OAuth tokens, or service accounts; credentials must never be stored in code repositories.
 - Rate limits control how many requests you can make in a given time window; exceeding them returns a 429 status code and requires retry logic with exponential back-off.
 - Pagination is used when an endpoint returns large datasets in chunks; you must iterate through pages to retrieve all records.
@@ -268,6 +283,19 @@ A marketing technology developer does not need to be a research scientist, but m
 
 - Supervised learning uses labelled historical data to train a model that predicts an outcome — for example, predicting purchase probability from browsing behaviour.
 - Unsupervised learning finds structure in data without predefined labels — customer segmentation via clustering is a common marketing application.
+
+### Marketing Funnel
+
+\`\`\`mermaid
+flowchart TB
+    A[Awareness] --> B[Interest]
+    B --> C[Consideration]
+    C --> D[Purchase]
+    D --> E[Retention]
+    E --> F[Advocacy]
+    F -.->|Referrals| A
+\`\`\`
+
 - Key marketing use cases include: **churn prediction** (classification — identifying customers likely to stop buying), **customer segmentation** (clustering — grouping customers by behaviour or value), **recommendation systems** (collaborative filtering or content-based filtering — suggesting relevant products), **lookalike audiences** (finding prospects who resemble your best customers), **propensity models** (scoring how likely a customer is to take a specific action), and **price optimisation** (using demand signals to inform pricing decisions).
 - Model performance is measured differently depending on the task; accuracy alone is misleading when one class is rare (for example, churned customers are typically a small fraction of total customers).
 - Features — the input variables fed to a model — must be carefully selected and cleaned; the quality of inputs directly determines prediction quality.
@@ -390,6 +418,22 @@ Marketing technology developers are frequently responsible for setting up, monit
 
 **Common pitfalls:**
 
+### A/B Test Lifecycle
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Hypothesis
+    Hypothesis --> Design: Define metric and sample size
+    Design --> Running: Launch experiment
+    Running --> Running: Collect data
+    Running --> Analysis: Sample size reached
+    Analysis --> Winner: Significant result
+    Analysis --> Inconclusive: No significant difference
+    Winner --> Rollout
+    Inconclusive --> Hypothesis: Iterate
+    Rollout --> [*]
+\`\`\`
+
 - Peeking — stopping a test early because it "looks significant" — dramatically increases the false positive rate and is one of the most common mistakes in experimentation.
 - Changing the test design or the primary metric after the experiment has started.
 - Failing to check that the randomisation process actually produced balanced groups.
@@ -410,6 +454,21 @@ Marketing datasets are rich but messy: they contain timestamps, categorical iden
 **Key things to understand:**
 
 - **RFM (Recency, Frequency, Monetary)** is a classic framework that summarises customer purchase behaviour into three features: how recently a customer bought, how often they buy, and how much they spend. These three features alone can power effective segmentation and propensity models, and they are widely used because they are simple to calculate, interpretable, and predictive.
+### Attribution Modeling
+
+\`\`\`mermaid
+flowchart LR
+    T1[Touchpoint 1: Display Ad] --> T2[Touchpoint 2: Email]
+    T2 --> T3[Touchpoint 3: Search Ad]
+    T3 --> T4[Touchpoint 4: Direct Visit]
+    T4 --> Conv[Conversion]
+    Conv --> Model{Attribution Model}
+    Model --> FT[First Touch: 100% to T1]
+    Model --> LT[Last Touch: 100% to T4]
+    Model --> Lin[Linear: 25% each]
+    Model --> DD[Data-Driven: ML-weighted]
+\`\`\`
+
 - **Attribution features** encode how credit for a conversion is distributed across marketing touchpoints. Common attribution models include: first-touch (100% credit to the first touchpoint), last-touch (100% credit to the last touchpoint before conversion), linear (equal credit to all touchpoints), time-decay (more credit to touchpoints closer in time to the conversion), and data-driven or multi-touch (uses ML to assign credit based on actual contribution). Attribution model choice significantly affects which channels appear effective. Note that Google removed first-touch, linear, time-decay, and position-based attribution models from Google Analytics 4 and Google Ads during 2023-2024, making data-driven attribution the default. This industry shift means that understanding how data-driven attribution works is now more important than memorising the mechanics of the legacy rule-based models.
 - **Conversion metrics** such as conversion rate, customer acquisition cost (CAC), and customer lifetime value (CLV) are frequently engineered as features or targets in marketing models. Churn rate — the proportion of customers who stop purchasing over a given period — is another key derived metric used as both a feature and a model target.
 - Temporal features derived from timestamps — day of week, time since last event, number of events in the last 30 days — capture behavioural patterns that raw timestamps cannot convey to a model.
@@ -543,6 +602,21 @@ Tag management systems (Google Tag Manager, Adobe Launch) sit between the websit
 
 **Key things to understand:**
 
+### CDP Data Flow
+
+\`\`\`mermaid
+flowchart LR
+    Web[Web Events] --> IR[Identity Resolution]
+    App[App Events] --> IR
+    CRM[CRM Records] --> IR
+    Offline[Offline Data] --> IR
+    IR --> UP[Unified Profile]
+    UP --> Email[Email Platform]
+    UP --> Ads[Ad Networks]
+    UP --> Pers[Personalisation Engine]
+    UP --> Analytics[Analytics]
+\`\`\`
+
 - CDP architecture: data collection (SDKs, APIs, event streams), identity resolution (matching anonymous and known user profiles across devices and channels), profile unification (merging data into a single customer view), activation (sending unified profiles to downstream tools like email platforms, ad networks, personalisation engines)
 - GA4 event model: everything is an event. Automatically collected events (page_view, session_start), enhanced measurement events (scroll, outbound_click, file_download), recommended events (purchase, sign_up), and custom events. Each event can have custom parameters for additional context
 - Consent management: GDPR requires explicit consent before collecting personal data for analytics. Consent Management Platforms (CMPs) must be integrated with analytics and CDP tools to respect user choices — no consent means no tracking
@@ -597,6 +671,24 @@ A senior marketing technology developer should understand how to model a busines
 **Why it matters:** Real marketing automation workflows are not linear sequences of prompts. They involve decisions — route this content for human approval, retry this API call, escalate this edge case — and they need to interact with external systems such as databases, content management tools, and advertising platforms. LangGraph provides the structure to build these workflows reliably, with explicit state management and the ability to pause for human review at critical points.
 
 **Key things to understand:**
+
+### Marketing Automation Pipeline
+
+\`\`\`mermaid
+flowchart TB
+    Events[Customer Events] --> CDP[CDP / Data Layer]
+    CDP --> Segment[Audience Segmentation]
+    Segment --> Rules[Business Rules Engine]
+    Rules --> Content[Content Selection]
+    Content --> Channel{Channel Router}
+    Channel --> Email[Email]
+    Channel --> Push[Push Notification]
+    Channel --> Ad[Ad Platform]
+    Email --> Track[Response Tracking]
+    Push --> Track
+    Ad --> Track
+    Track --> CDP
+\`\`\`
 
 - Nodes in a LangGraph graph represent discrete steps — a model call, a tool invocation, a data lookup — and edges define the conditions under which execution moves from one node to the next.
 - State is a typed schema that is passed through the graph and updated at each node; defining the state schema carefully at the outset prevents ambiguity about what data is available at each step.

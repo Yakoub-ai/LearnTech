@@ -246,7 +246,7 @@ monthly_summary.show(5)
 
 ## Apache Airflow – Workflow Orchestration
 
-Apache Airflow is an open-source platform for authoring, scheduling, and monitoring workflows. In data engineering, Airflow is the most widely used tool for orchestrating data pipelines — defining the order in which tasks run, handling dependencies between tasks, retrying failed tasks, and providing visibility into pipeline execution.
+Apache Airflow is an open-source platform for authoring, scheduling, and monitoring workflows. In data engineering, Airflow is the most widely used tool for orchestrating data pipelines — defining the order in which tasks run, handling dependencies between tasks, retrying failed tasks, and providing visibility into pipeline execution. Other orchestration tools gaining adoption include **Dagster** (which treats data assets as first-class citizens rather than tasks, making it easier to reason about data lineage and testing) and **Prefect** (which offers a lightweight, Python-native orchestration experience with dynamic workflows). While Airflow remains the industry standard and the focus of this section, awareness of alternatives is important because they address Airflow's known limitations around local development, testability, and asset-centric thinking.
 
 An Airflow workflow is defined as a DAG (Directed Acyclic Graph): a collection of tasks with defined dependencies that determines execution order. Each task is an instance of an operator — a predefined template for a specific type of work (run a Python function, execute a SQL query, trigger a Spark job, call an API). DAGs are written in Python, which gives full flexibility to dynamically generate tasks, parameterise workflows, and integrate with any system that has a Python client.
 

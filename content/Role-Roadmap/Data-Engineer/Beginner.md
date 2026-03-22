@@ -429,3 +429,68 @@ for issue in issues:
 - Using the same model for both operational and analytical workloads, resulting in a design that is suboptimal for both.
 - Neglecting to document the data model; a model that exists only in someone's head is a single point of failure.
 - Assuming data modelling is a one-time activity; models evolve as business requirements change.
+
+---
+
+## File Formats – CSV, JSON and Parquet
+
+Data engineers work with data stored in files as frequently as they work with databases. Understanding the trade-offs between common file formats is a fundamental skill that affects pipeline performance, storage costs, and compatibility with downstream tools. The three formats every beginner must know are CSV (row-oriented text), JSON (nested text), and Parquet (columnar binary).
+
+**CSV (Comma-Separated Values)** is the simplest tabular format — human-readable, universally supported, and easy to produce from spreadsheets and legacy systems. However, CSV has no built-in schema (column types are ambiguous), no compression, and requires reading the entire file even when only a few columns are needed. CSV is fine for small datasets and data exchange with non-technical stakeholders, but it is a poor choice for production analytical pipelines.
+
+**JSON (JavaScript Object Notation)** supports nested and semi-structured data — objects within objects, arrays of varying length. This makes it the default format for REST API responses and event logs. JSON is human-readable but verbose (field names repeat on every record), and like CSV it has no columnar access — every record must be parsed to extract a single field. JSONL (JSON Lines, one JSON object per line) is the preferred variant for data pipelines because it supports line-by-line streaming without loading the entire file.
+
+**Parquet** is a columnar, binary, compressed file format designed for analytical workloads. It stores data column by column rather than row by row, which means a query that needs only three columns out of fifty reads only those three columns from disk. Parquet supports schema metadata (column names and types are embedded in the file), efficient encoding (run-length encoding, dictionary encoding), and compression (Snappy, Zstandard). Parquet is the default output format for Spark, dbt, and most cloud data platforms.
+
+**Why it matters:** Choosing the wrong file format in a pipeline creates compounding problems — slow reads, bloated storage, silent type errors, and compatibility issues. Data engineers who understand the trade-offs choose the right format for each stage: CSV or JSON for ingestion from external sources, Parquet for internal storage and analytical processing.
+
+**Key things to understand:**
+
+- CSV: simple, universal, no schema, no compression, row-oriented — read the entire file for any query
+- JSON/JSONL: supports nested data, verbose, no columnar access — ideal for APIs and event logs
+- Parquet: columnar, compressed, schema-embedded, binary — the standard for analytical data in modern pipelines
+- Apache Avro: a row-oriented binary format with embedded schema, commonly used for streaming data in Kafka due to compact serialisation and schema evolution support
+- Compression trade-offs: Snappy (fast, moderate compression) vs Zstandard/gzip (slower, higher compression) — choose based on whether the workload is CPU-bound or I/O-bound
+- Schema-on-read (CSV/JSON — schema is inferred at read time) vs schema-on-write (Parquet/Avro — schema is enforced when data is written)
+
+**Code walkthrough:**
+
+```python
+# Step 1: Compare file formats — write the same data in CSV, JSON, and Parquet
+# Why: understanding the practical differences helps choose the right format
+import pandas as pd
+from pathlib import Path
+
+df = pd.DataFrame({
+    "customer_id": range(1, 10001),
+    "name": [f"Customer {i}" for i in range(1, 10001)],
+    "revenue": [round(i * 1.5, 2) for i in range(1, 10001)],
+})
+
+# CSV — human-readable but no schema, no compression
+df.to_csv("customers.csv", index=False)
+
+# JSON Lines — one record per line, supports streaming
+df.to_json("customers.jsonl", orient="records", lines=True)
+
+# Parquet — columnar, compressed, schema embedded
+df.to_parquet("customers.parquet", index=False)
+
+# Step 2: Compare file sizes
+for fmt in ["customers.csv", "customers.jsonl", "customers.parquet"]:
+    size_kb = Path(fmt).stat().st_size / 1024
+    print(f"{fmt:>25s}: {size_kb:.1f} KB")
+# Typical output:  CSV ~250 KB, JSONL ~350 KB, Parquet ~50 KB
+
+# Step 3: Columnar read — Parquet reads only requested columns
+# Why: reading 1 column from a 50-column Parquet file skips 98% of I/O
+df_parquet = pd.read_parquet("customers.parquet", columns=["revenue"])
+print(f"Read {len(df_parquet)} rows, {list(df_parquet.columns)} columns only")
+```
+
+**Common pitfalls:**
+
+- Using CSV for intermediate pipeline storage — it has no schema, no compression, and forces full file reads on every downstream step.
+- Storing nested JSON in a data warehouse column and attempting to query it with SQL — flatten it during ingestion instead.
+- Not specifying compression when writing Parquet — the default in most libraries is Snappy, which is a good starting point, but verify it is applied.
+- Assuming all Parquet files have the same schema — different batches may have different columns if schema enforcement is not configured.

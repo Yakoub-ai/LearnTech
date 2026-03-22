@@ -240,6 +240,20 @@ Imagine sending a formal letter: the envelope has a destination address (the URL
 
 An HTTP request consists of a method (what action to perform), a URL (which resource to act on), headers (metadata such as content type or authentication tokens) and optionally a body (data sent to the server). The server processes the request and returns a response containing a status code, response headers and optionally a body.
 
+\`\`\`mermaid
+sequenceDiagram
+    participant C as Client (Browser)
+    participant DNS as DNS Server
+    participant S as Backend Server
+    participant DB as Database
+    C->>DNS: Resolve domain
+    DNS-->>C: IP address
+    C->>S: GET /api/users (Headers + Auth)
+    S->>DB: SELECT * FROM users
+    DB-->>S: Result rows
+    S-->>C: 200 OK + JSON body
+\`\`\`
+
 **Why it matters:**
 - HTTP is fundamental for any backend developer because every API, web framework and network service operates on top of it
 - Misunderstanding status codes leads to poorly designed APIs — returning 200 for an error is a common mistake that breaks every client consuming your API
@@ -285,6 +299,17 @@ REST defines a set of architectural constraints — statelessness, a uniform int
 - REST is stateless: all information needed to process a request must be contained within the request itself
 - How to read API documentation and understand endpoint definitions, expected inputs and response shapes
 - How to make HTTP requests in Python using the \`requests\` library
+
+\`\`\`mermaid
+flowchart TB
+    API["/api"] --> Users["/users"]
+    API --> Orders["/orders"]
+    API --> Products["/products"]
+    Users --> UserID["/users/:id"]
+    Orders --> OrderID["/orders/:id"]
+    OrderID --> Items["/orders/:id/items"]
+    Products --> ProductID["/products/:id"]
+\`\`\`
 
 **Common pitfalls:**
 
@@ -485,6 +510,23 @@ Authentication is the process of verifying who a user is. Authorisation is the p
 
 **Key things to understand:**
 
+\`\`\`mermaid
+sequenceDiagram
+    participant U as User
+    participant App as Application
+    participant Auth as Auth Server
+    participant API as Resource API
+    U->>App: Click "Login"
+    App->>Auth: Redirect to /authorize
+    Auth->>U: Show login form
+    U->>Auth: Enter credentials
+    Auth->>App: Authorization code
+    App->>Auth: Exchange code for tokens
+    Auth-->>App: Access token + Refresh token
+    App->>API: Request + Access token
+    API-->>App: Protected resource
+\`\`\`
+
 - JWT structure: header (specifies the signing algorithm), payload (claims such as \`sub\`, \`exp\`, \`iat\`, \`roles\`), signature (verified with a secret or public key); a JWT can be read by anyone — do not put sensitive data in the payload
 - The difference between access tokens (short-lived, used to access protected resources) and refresh tokens (longer-lived, used to obtain new access tokens without re-authenticating)
 - Why you should not store JWTs in \`localStorage\` on a web client; prefer \`HttpOnly\` cookies to reduce XSS exposure
@@ -656,6 +698,18 @@ At the Mid level, understanding three fundamental building blocks — load balan
 - Load balancing algorithms: round-robin, least connections, IP hash (for session stickiness)
 - Common caching strategies: cache-aside (the application checks the cache and populates it on a miss), write-through (writes go to both cache and database), TTL-based expiry
 - The difference between a cache hit and a cache miss, and why cache hit rate matters for latency
+
+\`\`\`mermaid
+flowchart LR
+    Client["Client"] --> BCache["Browser Cache"]
+    BCache --> CDN["CDN"]
+    CDN --> AppCache["App Cache (Redis)"]
+    AppCache --> DB["Database"]
+    style BCache fill:#e8f5e9
+    style CDN fill:#e3f2fd
+    style AppCache fill:#fff3e0
+    style DB fill:#fce4ec
+\`\`\`
 - Message queue vs pub/sub event bus: a queue delivers each message to exactly one consumer; a pub/sub bus delivers each message to all subscribers
 - Idempotency in message consumers: a message may be delivered more than once; the consumer must handle duplicates safely without producing duplicate side effects
 
@@ -816,6 +870,18 @@ The CAP theorem, formulated by Eric Brewer, states that a distributed data store
 
 **Key things to understand:**
 
+\`\`\`mermaid
+flowchart TB
+    Cmd["Command (Write)"] --> CmdHandler["Command Handler"]
+    CmdHandler --> ES["Event Store"]
+    ES --> Proj["Projection / Read Model"]
+    Query["Query (Read)"] --> ReadDB["Read Database"]
+    Proj --> ReadDB
+    ES --> EvBus["Event Bus"]
+    EvBus --> Sub1["Subscriber A"]
+    EvBus --> Sub2["Subscriber B"]
+\`\`\`
+
 - CP systems (e.g., traditional relational databases with synchronous replication, ZooKeeper) will refuse to serve requests if they cannot guarantee they have the latest data; they prefer consistency over uptime during a partition
 - AP systems (e.g., DynamoDB, Cassandra, CouchDB) will serve potentially stale data rather than return an error; this is acceptable for many use cases where eventual correctness is sufficient
 - Eventual consistency means all replicas will converge to the same state given enough time with no new writes; this is a weaker guarantee than strong consistency but allows higher availability and lower latency
@@ -846,6 +912,10 @@ A monolith is a single deployable unit that contains all application logic. This
 **Key things to understand:**
 
 - Service boundaries should align with business capabilities (Domain-Driven Design bounded contexts), not technical layers; splitting by "database layer" and "API layer" creates a distributed monolith, not microservices
+\`\`\`interactive-flow
+microservices
+\`\`\`
+
 - Inter-service communication patterns: synchronous (REST, gRPC) vs asynchronous (events, message queues); prefer asynchronous for operations that do not require an immediate response to reduce coupling and improve resilience
 - The distributed systems problems introduced by microservices: network latency, partial failure, eventual consistency and the need for distributed tracing to follow a request across service boundaries
 - The Strangler Fig pattern for gradually migrating a monolith to microservices without a risky big-bang rewrite; new functionality is built as services while the monolith handles legacy paths

@@ -28,6 +28,8 @@ Tech Leads and Architects guide technical direction, system design, and engineer
 - Compare REST, GraphQL, gRPC and event-driven API styles
 - Explain what large language models are and where they fit in a system architecture
 - Apply the branching strategy and conduct a code review
+- Explain the SOLID principles and identify violations in a code review
+- Recognise common design patterns (Factory, Adapter, Observer, Strategy) and when to apply them
 
 For deep explanations of each concept, see the [Beginner Concept Reference](Tech-Lead-Architect/Beginner.md).
 
@@ -85,6 +87,8 @@ For deep explanations of each concept, see the [Mid Concept Reference](Tech-Lead
 - Design an LLM agent architecture with appropriate guardrails
 - Apply context engineering to production AI systems
 - Lead an incident response process and facilitate blameless post-mortems
+- Apply cost optimisation strategies and build performance budgets for cloud workloads
+- Design internal developer platforms that reduce cognitive load and improve engineering productivity
 
 For deep explanations of each concept, see the [Senior Concept Reference](Tech-Lead-Architect/Senior.md).
 
@@ -112,6 +116,32 @@ A request's journey through a typical web system begins when a client types a do
 System design always involves trade-offs. There is no universally correct architecture. Choosing a relational database gives you strong consistency and mature tooling but may limit horizontal scalability. Choosing an eventually consistent NoSQL store gives you write throughput but complicates application logic. Understanding the CAP theorem — which states that a distributed system can guarantee at most two of consistency (all nodes see the same data at the same time), availability (every request receives a response) and partition tolerance (the system continues operating despite network partitions between nodes) — gives you a framework for reasoning about these trade-offs honestly. In practice, network partitions are an unavoidable reality in any distributed system, so partition tolerance is not negotiable. The genuine trade-off is between consistency and availability: during a partition, do you refuse requests to protect data integrity, or do you serve potentially stale data to remain available?
 
 **Why it matters:** As a tech lead, every significant technical conversation eventually becomes a conversation about trade-offs. You need a shared vocabulary for these discussions — one that lets you articulate why a design choice has costs, not just benefits. The moment you can walk a team through a whiteboard diagram explaining what each component does and why it is there, you stop being a senior developer and start being an architect.
+
+### SDLC Phases Overview
+
+\`\`\`mermaid
+flowchart LR
+    A[Requirements] --> B[Design]
+    B --> C[Implementation]
+    C --> D[Testing]
+    D --> E[Deployment]
+    E --> F[Monitoring]
+    F -->|Feedback| A
+\`\`\`
+
+### Team Topology
+
+\`\`\`mermaid
+flowchart TB
+    TL[Tech Lead / Architect] --> ST[Stream-Aligned Team]
+    TL --> PT[Platform Team]
+    TL --> ET[Enabling Team]
+    ST --> F1[Feature Delivery]
+    PT --> F2[Internal Tooling]
+    ET --> F3[Coaching and Support]
+    ST ---|"Collaboration"| PT
+    ET ---|"Facilitating"| ST
+\`\`\`
 
 **Key things to understand:**
 - The purpose of each major component type and when to use each
@@ -275,6 +305,64 @@ Code review is not primarily about finding bugs — automated tests do that bett
 - Using code review as a gatekeeping ritual rather than a learning opportunity
 - Allowing large pull requests that are impossible to review meaningfully — set a norm for small, focused changes
 - Letting the branching strategy drift — inconsistency creates confusion and integration pain
+
+---
+
+## Software Design Principles – SOLID, DRY, KISS and Clean Code
+
+Before an aspiring tech lead can design systems, they must master the principles that govern the quality of individual components. These principles are the vocabulary of code-level design discussions and the foundation on which architecture is built.
+
+**SOLID** is an acronym for five object-oriented design principles that guide class and module design:
+
+- **Single Responsibility Principle (SRP):** A class should have one, and only one, reason to change. When a class handles both business logic and database access, a change to either concern forces a change to the class — increasing the risk of unintended side effects.
+- **Open/Closed Principle (OCP):** Software entities should be open for extension but closed for modification. New behaviour should be added by writing new code (e.g. a new implementation of an interface), not by modifying existing code that is already tested and deployed.
+- **Liskov Substitution Principle (LSP):** Subtypes must be substitutable for their base types without altering the correctness of the programme. If a method accepts a base class, it must work correctly with any derived class — no surprises.
+- **Interface Segregation Principle (ISP):** Clients should not be forced to depend on interfaces they do not use. Prefer many small, focused interfaces over one large general-purpose interface.
+- **Dependency Inversion Principle (DIP):** High-level modules should not depend on low-level modules; both should depend on abstractions. This is the principle that makes hexagonal architecture possible — the domain depends on interfaces, not on specific database or HTTP implementations.
+
+**DRY (Don't Repeat Yourself)** states that every piece of knowledge must have a single, unambiguous, authoritative representation within a system. Duplication is not just wasted effort — it is a bug waiting to happen, because two copies of the same logic will inevitably diverge.
+
+**KISS (Keep It Simple, Stupid)** reminds us that the simplest solution that meets the requirements is almost always the best. Complexity has a maintenance cost that compounds over time.
+
+**YAGNI (You Aren't Gonna Need It)** is the agile counterpart: do not build features or abstractions until they are actually needed. Speculative generalisation wastes effort and creates unnecessary complexity.
+
+**Why it matters:** Every architecture decision eventually manifests as code. If the code-level design is poor — classes with tangled responsibilities, duplicated logic, unnecessary abstractions — the architecture above it will be undermined regardless of how elegant the system diagram looks. A tech lead who can identify SRP violations in a code review and explain why they matter is more effective than one who only thinks at the whiteboard level.
+
+**Key things to understand:**
+- How each SOLID principle prevents a specific category of design problem
+- Why DIP is the bridge between code-level design and system-level architecture
+- How DRY applies not just to code but to configuration, infrastructure and documentation
+- When KISS and YAGNI should override the desire for elegant abstraction
+- How to recognise violations of these principles during code review
+
+**Common pitfalls:**
+- Applying DRY too aggressively — extracting shared code between two unrelated features creates coupling worse than the duplication it removed
+- Over-abstracting in the name of OCP — not every piece of code needs to be extensible; apply the principle where change is likely
+- Treating SOLID as a checklist rather than a set of guidelines — the principles sometimes conflict and require judgement
+
+---
+
+## Design Patterns – Foundational Patterns Every Tech Lead Should Recognise
+
+Design patterns are reusable solutions to commonly occurring problems in software design. They provide a shared vocabulary for design discussions and reduce the time needed to understand a codebase.
+
+**Creational patterns** control how objects are created: Factory Method (lets subclasses decide which class to instantiate), Builder (separates complex construction from representation), Singleton (single instance — use sparingly).
+
+**Structural patterns** describe how objects are composed: Adapter (converts interfaces — the pattern behind anti-corruption layers in DDD), Decorator (adds behaviour dynamically — middleware pipelines are decorators), Facade (simplified interface to a complex subsystem — API gateways are facades).
+
+**Behavioural patterns** manage communication: Observer (one-to-many notification — event-driven architectures at system scale), Strategy (interchangeable algorithms — load balancing strategies), Repository (collection-like interface mediating domain and data layers — central to DDD).
+
+**Why it matters:** When a tech lead says "we should use an adapter here" or "this is a classic observer pattern," the team immediately understands the intent without lengthy explanation. Patterns are a shared design language that accelerates code reviews and design discussions.
+
+**Key things to understand:**
+- The purpose and trade-offs of each pattern listed above
+- How design patterns map to architecture patterns at a larger scale (observer to event-driven, adapter to anti-corruption layer, facade to API gateway)
+- That patterns are tools, not goals — do not force a pattern where a simpler solution exists
+
+**Common pitfalls:**
+- Pattern obsession — applying patterns for their own sake rather than to solve a concrete problem
+- Using Singleton as a convenience for global state rather than addressing the underlying design issue
+- Choosing inheritance-based patterns when composition would be simpler and more flexible
 `,
   mid: `# Tech Lead / Architect – Mid Concept Reference
 
@@ -379,6 +467,34 @@ Domain events represent something that happened in the domain that other parts o
 - Leaking persistence details (ORM annotations, SQL queries) into the domain model itself
 
 ---
+
+### ADR Decision Flow
+
+\`\`\`mermaid
+flowchart TB
+    A[Problem Identified] --> B[Gather Context]
+    B --> C[List Options]
+    C --> D[Evaluate Trade-offs]
+    D --> E{Decision Made?}
+    E -->|Yes| F[Write ADR]
+    F --> G[Implement]
+    G --> H[Review Outcome]
+    H -->|Revisit| A
+    E -->|No| C
+\`\`\`
+
+### System Design Layers
+
+\`\`\`mermaid
+flowchart LR
+    Client --> CDN
+    CDN --> LB[Load Balancer]
+    LB --> API[API Server]
+    API --> Cache[Cache Layer]
+    Cache --> DB[Database]
+    API --> MQ[Message Queue]
+    MQ --> Worker[Background Worker]
+\`\`\`
 
 ## Architecture Patterns – Monolith, Microservices, Hexagonal, Event-Driven and CQRS
 
@@ -625,6 +741,35 @@ A senior architect chooses geohashing for a new system because it is simple, cor
 
 ---
 
+### Architecture Decision Matrix
+
+\`\`\`mermaid
+flowchart TB
+    A[New System Requirement] --> B{Domain Complexity?}
+    B -->|Simple CRUD| C[Modular Monolith]
+    B -->|Complex Domain| D{Team Size?}
+    D -->|Small Team| E[Hexagonal Monolith]
+    D -->|Multiple Teams| F{Independent Deployments Needed?}
+    F -->|Yes| G[Microservices]
+    F -->|No| H[Modular Monolith with Clear Boundaries]
+    G --> I{Read/Write Asymmetry?}
+    I -->|Yes| J[CQRS + Event Sourcing]
+    I -->|No| K[Standard Service Architecture]
+\`\`\`
+
+### Team Scaling Model
+
+\`\`\`mermaid
+flowchart LR
+    S1["1-5 Engineers"] --> S2["6-15 Engineers"]
+    S2 --> S3["16-40 Engineers"]
+    S3 --> S4["40+ Engineers"]
+    S1 --- M1[Single Team + Tech Lead]
+    S2 --- M2[2-3 Squads + Architect]
+    S3 --- M3[Platform Team + Stream Teams]
+    S4 --- M4[Domain Architects + Engineering Manager Layer]
+\`\`\`
+
 ## Enterprise GenAI Strategy – Build vs Buy, ROI and Governance
 
 Deploying generative AI at enterprise scale is not primarily a technology problem — it is a governance, organisational and change management challenge. A senior architect or tech lead is expected to contribute to (and often to drive) the definition of how their organisation adopts AI responsibly, consistently and in a way that creates durable value rather than isolated experiments.
@@ -734,6 +879,54 @@ Multi-agent systems, where multiple LLMs collaborate on a task, amplify context 
 - Treating context construction as a one-time configuration rather than an evolving, tested code path
 - Including all available context on the assumption that more information is always better — irrelevant context degrades output quality
 - Failing to instrument context pipelines, making it impossible to diagnose why output quality changed after a deployment
+
+---
+
+## Incident Management – Leading Through Failure
+
+Incidents are inevitable in production systems. A senior architect's value during an incident is not in writing code faster — it is in structuring the response so the team can diagnose the problem efficiently, communicate status clearly and prevent the same failure from recurring.
+
+A structured incident response process has four phases: detection (automated alerting based on SLOs), triage (classify severity, assemble the team, establish a communication channel), mitigation (restore service as quickly as possible — rollback, failover, feature toggle — even if the root cause is unknown) and resolution (fix the underlying issue and verify in production).
+
+Severity levels determine response urgency: SEV-1 (complete outage — all-hands response), SEV-2 (major feature degraded — on-call plus tech lead), SEV-3 (minor degradation — team priority) and SEV-4 (low-impact — normal backlog).
+
+Blameless post-mortems focus on systemic causes: what was the chain of events? What detection gaps existed? What process or tooling changes would prevent recurrence? A good post-mortem produces concrete action items with owners and deadlines.
+
+**Why it matters:** An organisation's reliability culture is defined by how it responds to failure. A senior architect who leads structured incident responses and facilitates blameless post-mortems builds a team that improves with every failure.
+
+**Key things to understand:**
+- The four phases of incident response: detection, triage, mitigation, resolution
+- How severity classification drives response urgency and communication
+- The principles of blameless post-mortems
+- How DORA metrics (change failure rate, time to restore) measure incident management effectiveness
+
+**Common pitfalls:**
+- Skipping mitigation to pursue root cause — restore service first, investigate second
+- Post-mortems that identify a person rather than a systemic cause
+- Action items with no owners or deadlines
+
+---
+
+## Cost Optimisation and Platform Engineering
+
+At the senior level, architecture is inseparable from economics. Cost optimisation is about spending deliberately with visibility into what drives costs.
+
+Cloud cost management begins with visibility through resource tagging by team, service and environment. Right-sizing is the most impactful cost lever — most workloads are over-provisioned. Auto-scaling, reserved instances and spot instances offer 30-90% savings for appropriate workloads.
+
+Platform engineering builds internal developer platforms (IDPs) that provide golden paths — opinionated, pre-approved patterns — reducing cognitive load on product teams. Developer experience (DevEx) metrics measure onboarding time, build time, deployment frequency and cognitive load. DORA metrics (deployment frequency, lead time, change failure rate, time to restore) provide engineering productivity indicators.
+
+**Why it matters:** Cloud costs grow with usage, and platform engineering multiplies architectural decisions across the organisation. A senior architect who can articulate cost trade-offs and build enabling platforms operates at enterprise scale.
+
+**Key things to understand:**
+- Resource tagging and cost attribution for informed cost decisions
+- Trade-offs between on-demand, reserved, savings plans and spot pricing
+- What an internal developer platform provides and how it reduces cognitive load
+- DORA metrics as engineering productivity indicators
+
+**Common pitfalls:**
+- Treating cost optimisation as a one-time exercise
+- Building platforms too opinionated for teams to adopt
+- Ignoring developer experience until productivity problems are severe
 
 ---
 

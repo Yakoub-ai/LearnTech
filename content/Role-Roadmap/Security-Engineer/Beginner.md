@@ -405,3 +405,282 @@ public_key.verify(signature, message, ec.ECDSA(hashes.SHA256()))  # no error = v
 - Storing passwords with a fast hash (SHA-256) instead of a slow, salted password hash (bcrypt, Argon2); fast hashes can be brute-forced.
 - Confusing encoding (Base64) with encryption; encoding is trivially reversible and provides zero security.
 - Implementing custom cryptography instead of using well-tested libraries; cryptography is extraordinarily easy to get wrong and the consequences of getting it wrong are catastrophic.
+
+---
+
+## Authentication Fundamentals – Proving Identity Securely
+
+Authentication is the process of proving that a user, device, or service is who it claims to be. Authorisation — a separate but related concept — determines what an authenticated entity is allowed to do. Confusing the two is one of the most common mistakes in application security.
+
+Modern authentication relies on one or more factors: something you know (password, PIN), something you have (phone, hardware key), or something you are (fingerprint, face). Multi-factor authentication (MFA) requires at least two of these categories and is now the minimum standard for any system that handles sensitive data or provides administrative access.
+
+Passwords remain the most common authentication factor despite decades of known weaknesses. Users reuse passwords, choose predictable ones, and are vulnerable to phishing. Passkeys (FIDO2/WebAuthn) represent the industry shift away from passwords entirely — they use public-key cryptography bound to a specific device, making phishing and credential-stuffing attacks structurally impossible.
+
+**Why it matters:** Broken authentication is one of the top two most exploited vulnerability classes (OWASP A07). A Security Engineer must understand how authentication works at a protocol level to evaluate implementations, identify weaknesses, and recommend appropriate controls. As the industry moves from passwords to passkeys and OAuth 2.1, understanding both legacy and modern authentication mechanisms is essential.
+
+**Key things to understand:**
+
+- Multi-factor authentication (MFA): combines two or more factor categories; SMS-based MFA is better than nothing but vulnerable to SIM-swapping — TOTP (authenticator apps) or FIDO2 hardware keys are preferred
+- Session management: after authentication, the server creates a session token (typically a cookie) that identifies the user on subsequent requests; session tokens must be random, sufficiently long, HttpOnly, Secure, and have appropriate expiry
+- Password policies: length is more important than complexity; minimum 12 characters, check against breached password lists (Have I Been Pwned API), never store in plaintext
+- Passkeys and FIDO2/WebAuthn: public-key authentication where the private key never leaves the user's device; phishing-resistant because the credential is bound to the origin (domain)
+- OAuth 2.1 and OpenID Connect: the modern standard for delegated authorisation and authentication in web applications; replaces direct password handling with token-based flows (covered in depth at the Mid level)
+- Credential stuffing: attackers use lists of breached username/password pairs to attempt login on other services; rate limiting, account lockout, and MFA are the primary defences
+- Brute-force protection: rate limiting login attempts, implementing exponential backoff, CAPTCHA after repeated failures, and account lockout policies
+
+**Code walkthrough:**
+
+```python
+# Step 1: Secure session management fundamentals
+# Why: after authentication, the session token IS the user's identity;
+#      a leaked or predictable session token is equivalent to a stolen password
+import secrets
+from datetime import datetime, timezone, timedelta
+
+class SessionManager:
+    """Minimal secure session manager demonstrating key principles."""
+
+    def __init__(self):
+        self.sessions: dict[str, dict] = {}
+
+    def create_session(self, user_id: str) -> str:
+        # Step 2: Generate a cryptographically random session token
+        # Why: predictable tokens can be guessed; secrets.token_urlsafe
+        # uses the OS CSPRNG (cryptographically secure PRNG)
+        token = secrets.token_urlsafe(32)  # 256 bits of entropy
+        self.sessions[token] = {
+            "user_id": user_id,
+            "created_at": datetime.now(timezone.utc),
+            "expires_at": datetime.now(timezone.utc) + timedelta(hours=1),
+        }
+        return token
+
+    def validate_session(self, token: str) -> dict | None:
+        session = self.sessions.get(token)
+        if not session:
+            return None
+        # Step 3: Check expiry — expired sessions must be rejected
+        # Why: long-lived sessions increase the window for token theft
+        if datetime.now(timezone.utc) > session["expires_at"]:
+            del self.sessions[token]
+            return None
+        return session
+
+    def destroy_session(self, token: str) -> None:
+        # Step 4: Logout must destroy the session server-side
+        # Why: deleting the client cookie alone is insufficient;
+        #      the token could still be used if stolen before logout
+        self.sessions.pop(token, None)
+
+
+# Step 5: Brute-force protection with rate limiting
+from collections import defaultdict
+
+class LoginRateLimiter:
+    """Prevent brute-force attacks by limiting failed login attempts."""
+
+    def __init__(self, max_attempts: int = 5, lockout_minutes: int = 15):
+        self.max_attempts = max_attempts
+        self.lockout_minutes = lockout_minutes
+        self.attempts: dict[str, list[datetime]] = defaultdict(list)
+
+    def is_locked(self, username: str) -> bool:
+        now = datetime.now(timezone.utc)
+        cutoff = now - timedelta(minutes=self.lockout_minutes)
+        # Remove old attempts outside the window
+        self.attempts[username] = [
+            t for t in self.attempts[username] if t > cutoff
+        ]
+        return len(self.attempts[username]) >= self.max_attempts
+
+    def record_failure(self, username: str) -> None:
+        self.attempts[username].append(datetime.now(timezone.utc))
+
+    def reset(self, username: str) -> None:
+        # Why: reset on successful login so legitimate users are not penalised
+        self.attempts.pop(username, None)
+```
+
+**Common pitfalls:**
+
+- Implementing "remember me" by storing passwords in cookies or localStorage; use long-lived refresh tokens with proper rotation instead.
+- Relying on client-side session expiry only (e.g., deleting the cookie); the server must also invalidate the session to prevent token reuse.
+- Not implementing rate limiting on login endpoints; without it, attackers can try millions of password combinations.
+- Using SMS-based MFA as the only second factor; SIM-swapping attacks can intercept SMS codes. TOTP or FIDO2 hardware keys are more resistant.
+- Allowing users to set passwords without checking against known breached password lists; the password "P@ssw0rd123!" satisfies most complexity rules but has been leaked in millions of breaches.
+
+---
+
+## Secure Coding Fundamentals – Writing Code That Resists Attack
+
+Secure coding is the practice of writing software that continues to behave correctly even when an attacker provides unexpected, malicious, or crafted input. It is not a separate activity from development — it is a quality attribute of well-written code, just like performance and readability.
+
+The core principle is simple: never trust input. Any data that originates outside the system boundary — user input, API responses, file uploads, database records, environment variables — must be validated, sanitised, or escaped before it is used. The specific technique depends on the context: parameterised queries for SQL, output encoding for HTML, allowlist validation for file paths, and schema validation for structured data.
+
+**Why it matters:** The majority of exploitable vulnerabilities stem from code that handles input incorrectly. SQL injection, XSS, command injection, path traversal, and deserialisation attacks all exploit the same fundamental error: treating untrusted input as trusted code or data. A Security Engineer must be able to identify insecure code patterns in reviews and recommend secure alternatives.
+
+**Key things to understand:**
+
+- Input validation: check that input conforms to expected format, length, type, and range before processing; use allowlists (define what is permitted) rather than denylists (try to block what is dangerous)
+- Output encoding: transform data for the output context — HTML encoding for web pages, URL encoding for query parameters, JSON encoding for API responses; prevents injection in the output channel
+- Parameterised queries: the definitive fix for SQL injection; separate data from commands at the database driver level
+- Secure defaults: systems should be secure out of the box; features that weaken security (debug mode, verbose errors, open CORS) must be opt-in, not opt-out
+- Error handling: never expose internal details (stack traces, database schema, file paths) in error messages; log detailed errors server-side and return generic messages to users
+- Dependency management: keep third-party libraries updated; use `pip-audit`, `npm audit`, or Snyk to scan for known vulnerabilities in dependencies
+- Secrets management: never hardcode secrets (API keys, database passwords, encryption keys) in source code; use environment variables, secret managers (Azure Key Vault, HashiCorp Vault), or `.env` files excluded from version control
+
+**Code walkthrough:**
+
+```python
+# Step 1: Secure vs insecure error handling
+# Why: detailed error messages help attackers understand your system's internals
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+import logging
+
+app = FastAPI()
+logger = logging.getLogger("security")
+
+# INSECURE — leaks internal details to the attacker
+@app.get("/user-unsafe/{user_id}")
+async def get_user_unsafe(user_id: int):
+    try:
+        user = db.query(f"SELECT * FROM users WHERE id = {user_id}")
+        return user
+    except Exception as e:
+        # BAD: returns the full exception to the client
+        return {"error": str(e)}  # "OperationalError: no such table: users"
+
+# SECURE — generic error to client, detailed log server-side
+@app.get("/user-safe/{user_id}")
+async def get_user_safe(user_id: int):
+    try:
+        user = db.execute(
+            "SELECT id, name, email FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        return {"id": user[0], "name": user[1], "email": user[2]}
+    except HTTPException:
+        raise  # Re-raise known HTTP errors
+    except Exception as e:
+        # Log the real error for debugging
+        logger.error(f"Database error fetching user {user_id}: {e}")
+        # Return a generic error to the client
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+# Step 2: Path traversal prevention
+# Why: if user input controls a file path, attackers can read
+#      arbitrary files like ../../etc/passwd
+from pathlib import Path
+
+UPLOAD_DIR = Path("/app/uploads")
+
+def safe_file_read(filename: str) -> bytes:
+    """Read a file from the uploads directory, preventing path traversal."""
+    # Step 3: Resolve the full path and verify it stays within UPLOAD_DIR
+    requested_path = (UPLOAD_DIR / filename).resolve()
+    # Why: .resolve() normalises the path, collapsing ".." sequences
+    if not requested_path.is_relative_to(UPLOAD_DIR):
+        raise PermissionError("Access denied: path traversal detected")
+    if not requested_path.is_file():
+        raise FileNotFoundError("File not found")
+    return requested_path.read_bytes()
+
+# Step 4: Command injection prevention
+# Why: never pass user input to shell commands via string concatenation
+import subprocess
+
+def ping_host_UNSAFE(host: str):
+    """VULNERABLE — shell injection via user input."""
+    # An attacker sends: host = "8.8.8.8; cat /etc/passwd"
+    import os
+    os.system(f"ping -c 1 {host}")  # BAD — executes arbitrary commands
+
+def ping_host_safe(host: str):
+    """SAFE — pass arguments as a list, shell=False (the default)."""
+    import re
+    # Step 5: Validate input format before use
+    if not re.match(r"^[\d.]+$", host):
+        raise ValueError("Invalid host format")
+    # Why: subprocess with a list separates the command from arguments
+    result = subprocess.run(
+        ["ping", "-c", "1", host],
+        capture_output=True, text=True, timeout=5
+    )
+    return result.stdout
+```
+
+**Common pitfalls:**
+
+- Validating input on the client side only (JavaScript in the browser) without server-side validation; client-side checks can be bypassed trivially.
+- Using denylists (blocking known bad patterns) instead of allowlists (permitting only known good patterns); attackers constantly find new ways to bypass denylists.
+- Concatenating user input into shell commands, SQL queries, or HTML output; always use the language's safe API (parameterised queries, subprocess lists, output encoding).
+- Logging sensitive data (passwords, credit card numbers, session tokens) in application logs; logs are often stored with weaker access controls than the application itself.
+- Disabling security features in production that were only intended to be disabled in development (debug mode, CORS wildcard, verbose error pages).
+
+---
+
+## Security Tools and Reconnaissance – Building Your Toolkit
+
+A Security Engineer's effectiveness depends on understanding the tools available for both offensive testing and defensive monitoring. At the beginner level, the focus is on understanding what each tool does, when to use it, and how to interpret its output — rather than mastering every feature.
+
+The essential categories of security tools are: network scanning and reconnaissance (discovering what is exposed), traffic analysis (understanding what is happening on the network), web application testing (finding application-level vulnerabilities), and vulnerability scanning (identifying known weaknesses in systems and software).
+
+**Why it matters:** Security is a practical discipline. Reading about vulnerabilities is necessary but insufficient — you must be able to discover them using real tools. Hands-on labs (TryHackMe, Hack The Box, PortSwigger Web Security Academy) provide safe environments to practice. Understanding these tools also helps when interpreting findings from automated scanners and penetration test reports.
+
+**Key things to understand:**
+
+- **Nmap**: the standard network scanner; discovers hosts, open ports, running services, and OS versions; `nmap -sV -sC target` runs version detection and default scripts; understanding Nmap output is prerequisite for network security assessment
+- **Wireshark/tcpdump**: packet capture and analysis; inspect individual packets to understand protocols, detect anomalies, and investigate incidents; Wireshark provides a GUI, tcpdump works on the command line
+- **Burp Suite**: the industry-standard web application testing proxy; intercepts HTTP requests between your browser and the server, allowing you to modify and replay them; essential for testing web vulnerabilities
+- **OWASP ZAP**: an open-source alternative to Burp Suite for automated web scanning; good for CI/CD integration
+- **CyberChef**: a web-based tool for encoding, decoding, encryption, hashing, and data transformation; useful for analysing suspicious data during investigations
+- **Vulnerability scanners**: tools like Nessus, OpenVAS, and Qualys scan systems for known CVEs and misconfigurations; they complement manual testing by covering breadth
+
+**Code walkthrough:**
+
+```bash
+#!/bin/bash
+# Step 1: Basic network reconnaissance with Nmap
+# Why: before testing security, you must know what is exposed
+# -sV: detect service versions (what software is running on each port)
+# -sC: run default NSE scripts (basic vulnerability checks)
+# -oN: save output to a file for documentation
+nmap -sV -sC -oN scan_results.txt 192.168.1.0/24
+
+# Step 2: Quick port scan of a specific host
+# Why: identify which services are listening before deep testing
+nmap -p 1-1000 -T4 192.168.1.100
+
+# Step 3: Capture network traffic with tcpdump
+# Why: traffic analysis reveals unencrypted credentials, unusual
+#      connections, and attack patterns
+# -i eth0: capture on the eth0 interface
+# -w: write to a pcap file for later analysis in Wireshark
+sudo tcpdump -i eth0 -w capture.pcap -c 1000
+
+# Step 4: Filter for HTTP traffic (unencrypted)
+# Why: any HTTP (not HTTPS) traffic may contain credentials in cleartext
+sudo tcpdump -i eth0 port 80 -A | grep -i "password\|cookie\|session"
+
+# Step 5: Check SSL/TLS configuration of a web server
+# Why: weak TLS configurations allow downgrade attacks and eavesdropping
+openssl s_client -connect example.com:443 -tls1_2 </dev/null 2>/dev/null | \
+    openssl x509 -noout -subject -dates -issuer
+
+# Step 6: Generate file hashes for integrity verification
+# Why: compare hashes before and after to detect file tampering
+sha256sum /usr/bin/sshd > baseline_hashes.txt
+# Later: verify nothing has changed
+sha256sum -c baseline_hashes.txt
+```
+
+**Common pitfalls:**
+
+- Running Nmap or vulnerability scanners against systems you do not own or have written authorisation to test; unauthorised scanning is illegal in most jurisdictions.
+- Relying entirely on automated vulnerability scanners and treating the absence of findings as proof of security; scanners find known patterns but miss custom vulnerabilities and business logic flaws.
+- Ignoring Wireshark and packet analysis skills; understanding network traffic at the packet level is essential for incident investigation and understanding how attacks work.
+- Not documenting scan results; security assessments must be reproducible and auditable, especially when reporting findings to development teams or management.
+- Using security tools without understanding the underlying protocols; tools are more effective when you understand what they are testing and why.

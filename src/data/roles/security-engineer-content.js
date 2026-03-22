@@ -21,6 +21,9 @@ Security Engineers protect systems, applications, and data by identifying vulner
 | Hands-on Security Labs | [TryHackMe – Introduction to Cyber Security](https://tryhackme.com/path/outline/introtocyber) | Interactive |
 | Cryptography Basics | [Khan Academy – Cryptography](https://www.khanacademy.org/computing/computer-science/cryptography) | Interactive |
 | Public Key Cryptography | [Public Key Cryptography – Art of the Problem](https://www.youtube.com/watch?v=YEBfamv-_do) | Video |
+| Authentication Patterns | [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) | Docs |
+| Passkeys / FIDO2 | [Passkeys.dev – Getting Started](https://passkeys.dev/) | Docs |
+| Secure Coding | [OWASP Secure Coding Practices Quick Reference](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/) | Docs |
 
 > **What you'll learn watching this:** How Diffie-Hellman key exchange allows two parties to agree on a shared secret over a public channel using modular arithmetic, without ever transmitting the secret itself — illustrated first with colours, then with the discrete logarithm problem.
 
@@ -39,6 +42,8 @@ Security Engineers protect systems, applications, and data by identifying vulner
 - Describe the fundamentals of TCP/IP, DNS, HTTP/HTTPS, and how network traffic flows between client and server
 - Navigate a Linux system, manage file permissions, and explain the principle of least privilege
 - Explain the difference between symmetric and asymmetric encryption and describe when each is used
+- Describe how multi-factor authentication works and why passkeys (FIDO2/WebAuthn) are phishing-resistant
+- Identify insecure code patterns (command injection, path traversal, hardcoded secrets) and explain the secure alternative
 - Use a hands-on security lab environment to complete basic security challenges
 
 For deep explanations of each concept, see the [Beginner Concept Reference](Security-Engineer/Beginner.md).
@@ -143,6 +148,24 @@ These three properties are often in tension. Encrypting all data at rest and in 
 
 **Key things to understand:**
 
+### CIA Triad
+
+\`\`\`mermaid
+flowchart TB
+    CIA[Information Security] --> C[Confidentiality]
+    CIA --> I[Integrity]
+    CIA --> A[Availability]
+    C --> C1[Encryption]
+    C --> C2[Access Controls]
+    C --> C3[Data Classification]
+    I --> I1[Hashing]
+    I --> I2[Digital Signatures]
+    I --> I3[Audit Logs]
+    A --> A1[Redundancy]
+    A --> A2[Backups]
+    A --> A3[DDoS Protection]
+\`\`\`
+
 - Confidentiality: encryption, access controls, data classification, need-to-know principle
 - Integrity: hashing, digital signatures, checksums, audit logs, input validation
 - Availability: redundancy, backups, DDoS protection, capacity planning, disaster recovery
@@ -196,6 +219,23 @@ The three most fundamental web attacks every Security Engineer must understand a
 **Why it matters:** You cannot defend against attacks you do not understand. A Security Engineer must be able to recognise, demonstrate, and explain these attacks before they can effectively test for them, design mitigations, or review code for vulnerabilities. Hands-on practice in lab environments like PortSwigger Web Security Academy makes these concepts concrete.
 
 **Key things to understand:**
+
+### Basic Attack Surface Map
+
+\`\`\`mermaid
+flowchart LR
+    Attacker[Attacker] --> Web[Web Application]
+    Attacker --> API[API Endpoints]
+    Attacker --> Mail[Email / Phishing]
+    Web --> Auth[Authentication Layer]
+    Web --> Input[User Input Fields]
+    API --> AuthAPI[API Auth Tokens]
+    API --> Data[Data Endpoints]
+    Mail --> Users[Employee Accounts]
+    Auth --> DB[(Database)]
+    Input --> DB
+    Data --> DB
+\`\`\`
 
 - SQL Injection: attacker supplies input like \`' OR 1=1 --\` that is concatenated into a SQL query, allowing data extraction or manipulation; prevented by parameterised queries
 - Cross-Site Scripting (XSS): attacker injects JavaScript that executes in other users' browsers; Stored XSS persists in the database, Reflected XSS is in the URL; prevented by output encoding and Content Security Policy
@@ -302,6 +342,79 @@ The colour-mixing analogy used in teaching Diffie-Hellman captures this well: co
 - Confusing encoding (Base64) with encryption; encoding is trivially reversible and provides zero security.
 - Implementing custom cryptography instead of using well-tested libraries; cryptography is extraordinarily easy to get wrong and the consequences of getting it wrong are catastrophic.
 - Using Diffie-Hellman with parameters that are too small; DH with \`n\` shorter than 2048 bits is vulnerable to the Logjam attack and should not be used.
+
+---
+
+## Authentication Fundamentals – Proving Identity Securely
+
+Authentication is the process of proving that a user, device, or service is who it claims to be. Authorisation — a separate but related concept — determines what an authenticated entity is allowed to do. Confusing the two is one of the most common mistakes in application security.
+
+Modern authentication relies on one or more factors: something you know (password, PIN), something you have (phone, hardware key), or something you are (fingerprint, face). Multi-factor authentication (MFA) requires at least two of these categories and is now the minimum standard for any system that handles sensitive data or provides administrative access.
+
+Passwords remain the most common authentication factor despite decades of known weaknesses. Users reuse passwords, choose predictable ones, and are vulnerable to phishing. Passkeys (FIDO2/WebAuthn) represent the industry shift away from passwords entirely — they use public-key cryptography bound to a specific device, making phishing and credential-stuffing attacks structurally impossible.
+
+**Why it matters:** Broken authentication is one of the top two most exploited vulnerability classes (OWASP A07). A Security Engineer must understand how authentication works at a protocol level to evaluate implementations, identify weaknesses, and recommend appropriate controls. As the industry moves from passwords to passkeys and OAuth 2.1, understanding both legacy and modern authentication mechanisms is essential.
+
+**Key things to understand:**
+
+- Multi-factor authentication (MFA): combines two or more factor categories; SMS-based MFA is better than nothing but vulnerable to SIM-swapping — TOTP (authenticator apps) or FIDO2 hardware keys are preferred
+- Session management: after authentication, the server creates a session token (typically a cookie) that identifies the user on subsequent requests; session tokens must be random, sufficiently long, HttpOnly, Secure, and have appropriate expiry
+- Password policies: length is more important than complexity; minimum 12 characters, check against breached password lists (Have I Been Pwned API), never store in plaintext
+- Passkeys and FIDO2/WebAuthn: public-key authentication where the private key never leaves the user's device; phishing-resistant because the credential is bound to the origin (domain)
+- Credential stuffing: attackers use lists of breached username/password pairs to attempt login on other services; rate limiting, account lockout, and MFA are the primary defences
+
+**Common pitfalls:**
+
+- Implementing "remember me" by storing passwords in cookies or localStorage; use long-lived refresh tokens with proper rotation instead.
+- Relying on client-side session expiry only; the server must also invalidate the session to prevent token reuse.
+- Not implementing rate limiting on login endpoints; without it, attackers can try millions of password combinations.
+- Using SMS-based MFA as the only second factor; SIM-swapping attacks can intercept SMS codes. TOTP or FIDO2 hardware keys are more resistant.
+
+---
+
+## Secure Coding Fundamentals – Writing Code That Resists Attack
+
+Secure coding is the practice of writing software that continues to behave correctly even when an attacker provides unexpected, malicious, or crafted input. The core principle is simple: never trust input. Any data that originates outside the system boundary must be validated, sanitised, or escaped before it is used.
+
+**Why it matters:** The majority of exploitable vulnerabilities stem from code that handles input incorrectly. SQL injection, XSS, command injection, path traversal, and deserialisation attacks all exploit the same fundamental error: treating untrusted input as trusted code or data.
+
+**Key things to understand:**
+
+- Input validation: use allowlists (define what is permitted) rather than denylists (try to block what is dangerous)
+- Output encoding: transform data for the output context — HTML encoding for web pages, URL encoding for query parameters
+- Secure defaults: systems should be secure out of the box; features that weaken security must be opt-in, not opt-out
+- Error handling: never expose internal details (stack traces, database schema) in error messages; log details server-side, return generic messages to users
+- Dependency management: keep third-party libraries updated; use \`pip-audit\`, \`npm audit\`, or Snyk to scan for known vulnerabilities
+- Secrets management: never hardcode secrets in source code; use environment variables or secret managers
+
+**Common pitfalls:**
+
+- Validating input on the client side only without server-side validation; client-side checks can be bypassed trivially.
+- Using denylists instead of allowlists; attackers constantly find new ways to bypass denylists.
+- Concatenating user input into shell commands, SQL queries, or HTML output; always use the language's safe API.
+- Logging sensitive data (passwords, session tokens) in application logs.
+
+---
+
+## Security Tools and Reconnaissance – Building Your Toolkit
+
+A Security Engineer's effectiveness depends on understanding the tools available for both offensive testing and defensive monitoring. The essential categories are: network scanning (Nmap), traffic analysis (Wireshark, tcpdump), web application testing (Burp Suite, OWASP ZAP), and vulnerability scanning (Nessus, Trivy).
+
+**Why it matters:** Security is a practical discipline. Hands-on labs (TryHackMe, Hack The Box, PortSwigger Web Security Academy) provide safe environments to practice. Understanding tools also helps when interpreting findings from automated scanners and penetration test reports.
+
+**Key things to understand:**
+
+- **Nmap**: discovers hosts, open ports, running services, and OS versions; \`nmap -sV -sC target\` runs version detection and default scripts
+- **Wireshark/tcpdump**: packet capture and analysis; inspect individual packets to understand protocols and detect anomalies
+- **Burp Suite**: intercepts HTTP requests between browser and server, allowing modification and replay; essential for web testing
+- **OWASP ZAP**: open-source alternative to Burp Suite for automated web scanning
+- **CyberChef**: web-based tool for encoding, decoding, encryption, hashing, and data transformation
+
+**Common pitfalls:**
+
+- Running Nmap or vulnerability scanners against systems you do not own or have authorisation to test; unauthorised scanning is illegal.
+- Relying entirely on automated scanners and treating the absence of findings as proof of security.
+- Ignoring packet analysis skills; understanding network traffic at the packet level is essential for incident investigation.
 `,
   mid: `# Security Engineer – Mid Concept Reference
 
@@ -319,6 +432,21 @@ A penetration test follows a methodology: reconnaissance (gathering information 
 **Why it matters:** Automated tools find known vulnerability patterns, but real attackers combine findings, think creatively, and exploit business logic flaws that scanners miss. Penetration testing bridges the gap between "we ran a scanner and it came back clean" and "we are confident a skilled attacker cannot compromise this system."
 
 **Key things to understand:**
+
+### Zero-Trust Architecture
+
+\`\`\`mermaid
+flowchart LR
+    User[User / Device] --> IdP[Identity Provider]
+    IdP --> CA[Conditional Access]
+    CA --> MFA{MFA Required?}
+    MFA -->|Yes| Verify[MFA Verification]
+    MFA -->|No| Deny[Deny Access]
+    Verify --> Policy[Policy Engine]
+    Policy --> Micro[Micro-segmented Resource]
+    Policy --> Monitor[Continuous Monitoring]
+    Monitor -->|Anomaly| Revoke[Revoke Session]
+\`\`\`
 
 - Methodology: reconnaissance → enumeration → vulnerability analysis → exploitation → post-exploitation → reporting
 - Burp Suite: the industry-standard web application testing proxy; intercept and modify requests, scan for vulnerabilities, test authentication flows
@@ -502,6 +630,24 @@ SAST and DAST are complementary. SAST finds issues in the code before it is depl
 
 **Key things to understand:**
 
+### SAST/DAST Pipeline Integration
+
+\`\`\`mermaid
+flowchart TB
+    Code[Code Commit] --> PR[Pull Request]
+    PR --> SAST[SAST Scan: Source Code]
+    PR --> SCA[SCA Scan: Dependencies]
+    SAST --> Triage[Triage Findings]
+    SCA --> Triage
+    Triage -->|High/Critical| Block[Block Merge]
+    Triage -->|Low/Medium| Track[Track in Backlog]
+    Block --> Fix[Developer Fix]
+    Fix --> PR
+    Track --> Build["Build & Deploy to Staging"]
+    Build --> DAST[DAST Scan: Running App]
+    DAST --> Review[Security Review]
+\`\`\`
+
 - SAST: analyses source code or bytecode; produces results mapped to specific code lines; examples include SonarQube, Semgrep, CodeQL, and Checkmarx
 - DAST: tests the running application over HTTP; does not require access to source code; examples include OWASP ZAP, Burp Suite (automated scan mode), and Nuclei
 - SCA (Software Composition Analysis): scans dependencies for known vulnerabilities (CVEs); examples include Snyk, Dependabot, and \`pip-audit\`
@@ -586,6 +732,35 @@ A security incident is any event that compromises the confidentiality, integrity
 **Why it matters:** Every organisation will experience security incidents. The difference between a minor disruption and a catastrophic breach often comes down to how quickly and effectively the incident is detected and contained. A senior Security Engineer must be able to lead incident response, coordinate across teams, and make time-critical decisions under pressure.
 
 **Key things to understand:**
+
+### Threat Modeling Flow
+
+\`\`\`mermaid
+flowchart TB
+    Assets[Identify Assets] --> DFD[Create Data Flow Diagram]
+    DFD --> Threats[Enumerate Threats: STRIDE]
+    Threats --> Risk[Analyze Risk: Likelihood x Impact]
+    Risk --> Prioritize[Prioritize Threats]
+    Prioritize --> Mitigate[Design Mitigations]
+    Mitigate --> Validate[Validate Controls]
+    Validate --> Update[Update on Architecture Change]
+    Update --> Assets
+\`\`\`
+
+### Incident Response Lifecycle
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Preparation
+    Preparation --> Detection: Alert triggered
+    Detection --> Analysis: Triage confirms incident
+    Analysis --> Containment: Scope determined
+    Containment --> Eradication: Threat isolated
+    Eradication --> Recovery: Root cause removed
+    Recovery --> PostIncident: Systems restored
+    PostIncident --> Preparation: Lessons learned applied
+    PostIncident --> [*]
+\`\`\`
 
 - Preparation: incident response plan, contact lists, communication templates, forensic toolkits, log collection and retention policies, tabletop exercises
 - Detection and Analysis: monitoring (SIEM, EDR, network analysis), alert triage (true positive vs false positive), severity classification, initial scoping (what systems are affected?)

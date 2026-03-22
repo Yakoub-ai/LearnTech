@@ -2,7 +2,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
-import { useMemo } from 'react'
+import { useMemo, lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import KeyTakeaway from './KeyTakeaway'
 import PitfallAlert from './PitfallAlert'
@@ -12,12 +12,32 @@ import CopyButton from '../common/CopyButton'
 import { extractYouTubeId } from '../../utils/youtubeUtils'
 import YouTubeEmbed from '../roadmap/YouTubeEmbed'
 
+const InteractiveFlow = lazy(() => import('./InteractiveFlow'))
+
+function InteractiveFlowBlock({ flowName }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="my-6 p-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-center text-sm text-[var(--color-text-secondary)]">
+          Loading interactive diagram…
+        </div>
+      }
+    >
+      <InteractiveFlow flowName={flowName.trim()} />
+    </Suspense>
+  )
+}
+
 function CodeBlock({ className, children }) {
   const code = String(children).replace(/\n$/, '')
   const language = className?.replace('language-', '') || ''
 
   if (language === 'mermaid') {
     return <DiagramBlock diagram={code} />
+  }
+
+  if (language === 'interactive-flow') {
+    return <InteractiveFlowBlock flowName={code} />
   }
 
   return (

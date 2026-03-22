@@ -434,6 +434,79 @@ export const topicQuizzes = {
         },
       ],
     },
+    {
+      topicId: 'testing-mindset-and-30-days-of-testing',
+      topicTitle: 'Testing Mindset – Building Quality Thinking',
+      objectiveIndex: 1,
+      questions: [
+        {
+          question: 'What is the "pesticide paradox" in software testing?',
+          options: [
+            'Running the same set of tests repeatedly will eventually stop finding new defects; tests must be regularly reviewed and updated',
+            'Using automated testing tools kills off manual testing skills in the team',
+            'Bug reports become less effective over time as developers become immune to them',
+            'Test environments degrade in quality the longer they are used without rebuilding',
+          ],
+          correctIndex: 0,
+          explanation: 'The pesticide paradox (ISTQB principle) means repeating identical tests stops revealing new bugs — you must evolve test cases, add new ones, and vary approaches.',
+        },
+        {
+          question: 'Why is "exhaustive testing" considered impossible according to ISTQB principles?',
+          options: [
+            'The number of possible input combinations, paths, and states is virtually infinite for any non-trivial system',
+            'Modern test frameworks cannot run more than 10,000 test cases in a single suite',
+            'Exhaustive testing is possible but prohibited by industry standards due to cost',
+            'Only compiled languages allow exhaustive testing; interpreted languages do not',
+          ],
+          correctIndex: 0,
+          explanation: 'Even a simple form with a few fields produces billions of input combinations. Risk-based testing and test design techniques prioritise the most valuable test cases.',
+        },
+        {
+          question: 'What does the ISTQB principle "defects cluster together" mean for a QA engineer?',
+          options: [
+            'A small number of modules typically contain the majority of defects, so testing effort should focus on these areas',
+            'All defects in a project are caused by the same root cause',
+            'Defects only appear in clusters during regression testing, not during feature testing',
+            'Bug reports should be grouped into clusters before being submitted to developers',
+          ],
+          correctIndex: 0,
+          explanation: 'Defect clustering (Pareto principle) means roughly 80% of defects come from 20% of modules — experienced testers target these high-risk areas.',
+        },
+        {
+          question: 'Which approach best describes the "testing mindset" that distinguishes a good QA engineer?',
+          options: [
+            'Curiosity, critical thinking, and a systematic focus on finding ways the software could fail — not just confirming it works',
+            'Following test scripts exactly as written without deviation or independent investigation',
+            'Assuming the software is correct until a developer reports a problem',
+            'Focusing exclusively on automated testing and avoiding any manual interaction with the software',
+          ],
+          correctIndex: 0,
+          explanation: 'A testing mindset is about asking "what could go wrong?" rather than "does it work?" — combining scepticism with systematic investigation to uncover hidden issues.',
+        },
+        {
+          question: 'What is "state transition testing" and when is it most useful?',
+          options: [
+            'A technique that tests how a system transitions between different states (e.g., order: pending → paid → shipped → delivered) and verifies valid and invalid transitions',
+            'Testing the application during server state changes such as deployments or restarts',
+            'Testing that the application state is saved to local storage between browser sessions',
+            'Verifying that React component state updates trigger the correct re-renders',
+          ],
+          correctIndex: 0,
+          explanation: 'State transition testing models the system as a finite state machine and verifies both valid transitions and that invalid transitions are rejected.',
+        },
+        {
+          question: 'Why does the ISTQB principle "early testing saves time and money" apply to modern agile teams?',
+          options: [
+            'Defects found during requirements or design cost far less to fix than defects found in production; early involvement catches issues before code is written',
+            'Running tests earlier in the day gives faster results due to less server load',
+            'Early testing means testing only the first few features of a release and skipping the rest',
+            'Agile teams skip early testing because sprints are too short for planning',
+          ],
+          correctIndex: 0,
+          explanation: 'The cost of fixing a defect grows exponentially the later it is found — a requirement misunderstanding caught in review costs almost nothing compared to a production incident.',
+        },
+      ],
+    },
   ],
   mid: [
     {

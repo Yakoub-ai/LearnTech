@@ -18,6 +18,7 @@ Data Engineers design, build, and maintain the infrastructure and pipelines that
 | Data Engineering Overview | [Data Engineering Roadmap](https://roadmap.sh/dataengineering) | Interactive |
 | Relational Databases | [freeCodeCamp – Relational Databases](https://www.freecodecamp.org/learn/relational-databases-v9/) | Interactive |
 | Data Pipelines Overview | [What is a Data Pipeline?](https://www.youtube.com/watch?v=VtzvF17ysbc) | Video |
+| File Formats | [Apache Parquet – Overview](https://parquet.apache.org/docs/overview/) | Docs |
 | Linux & CLI Basics | [roadmap.sh – Linux](https://roadmap.sh/linux) | Interactive |
 
 ### After completing Beginner you should be able to:
@@ -27,6 +28,7 @@ Data Engineers design, build, and maintain the infrastructure and pipelines that
 - Explain the difference between relational and non-relational databases and identify when each is appropriate
 - Describe what a data pipeline is and identify the stages of extract, transform, and load (ETL)
 - Navigate the Linux file system and use the command line for basic file operations
+- Compare common data file formats (CSV, JSON, Parquet) and explain when each is appropriate
 - Explain what data modelling means and why a well-structured schema matters for downstream consumers
 - Describe the role of a Data Engineer within a data team and how it differs from Data Scientist and Data Analyst
 
@@ -190,6 +192,18 @@ A data pipeline is a series of automated steps that move data from one or more s
 
 The alternative pattern is ELT: Extract and Load the raw data first into a powerful analytical system, then Transform it inside that system using SQL. ELT has become increasingly popular because modern cloud data warehouses (Snowflake, BigQuery, Synapse) have enough compute power to handle transformations at scale, and storing raw data first preserves the original source of truth.
 
+\`\`\`mermaid
+flowchart LR
+    subgraph ETL
+        direction LR
+        E1["Extract"] --> T1["Transform"] --> L1["Load"]
+    end
+    subgraph ELT
+        direction LR
+        E2["Extract"] --> L2["Load"] --> T2["Transform"]
+    end
+\`\`\`
+
 The video resource for this topic introduces data pipelines from first principles — covering what a pipeline is, why organisations need them, and how the ETL pattern maps to real-world data flows. Watch it before reading further documentation to build a concrete mental model.
 
 > ⚠️ No auto-transcript available for this video. Watch it for supplementary context.
@@ -197,6 +211,16 @@ The video resource for this topic introduces data pipelines from first principle
 [What is a Data Pipeline?](https://www.youtube.com/watch?v=VtzvF17ysbc)
 
 **Key things to understand:**
+
+\`\`\`mermaid
+flowchart TB
+    S1["Source DB"] --> Extract["Extract"]
+    S2["REST API"] --> Extract
+    S3["CSV Files"] --> Extract
+    Extract --> Transform["Transform (clean, reshape)"]
+    Transform --> Load["Load"]
+    Load --> WH["Data Warehouse"]
+\`\`\`
 
 - The difference between ETL (transform before loading) and ELT (load first, transform in the warehouse)
 - Batch processing (run on a schedule — hourly, daily) versus real-time/streaming processing (process data continuously as it arrives)
@@ -268,6 +292,32 @@ For a Data Engineer at the beginner level, the most important distinction is bet
 
 ---
 
+## File Formats – CSV, JSON and Parquet
+
+Data engineers work with data stored in files as frequently as they work with databases. Understanding the trade-offs between common file formats is a fundamental skill. The three formats every beginner must know are CSV (row-oriented text), JSON (nested text), and Parquet (columnar binary).
+
+**CSV** is the simplest tabular format — human-readable, universally supported, but with no built-in schema, no compression, and requires reading the entire file for any query. **JSON/JSONL** supports nested and semi-structured data, making it the default for REST APIs and event logs, but is verbose and has no columnar access. **Parquet** is a columnar, binary, compressed format designed for analytical workloads — it stores data column by column, supports schema metadata, and is the default output format for Spark, dbt, and most cloud data platforms.
+
+**Key things to understand:**
+
+- CSV: simple, universal, no schema, no compression, row-oriented — suitable for data exchange, not for production pipeline storage
+- JSON/JSONL: supports nested data, verbose, no columnar access — ideal for APIs and event logs
+- Parquet: columnar, compressed, schema-embedded, binary — the standard for analytical data in modern pipelines
+- Apache Avro: row-oriented binary format with embedded schema, commonly used for streaming data in Kafka
+- Compression trade-offs: Snappy (fast, moderate compression) vs Zstandard/gzip (slower, higher compression)
+- Schema-on-read (CSV/JSON) vs schema-on-write (Parquet/Avro)
+
+**Common pitfalls:**
+
+- Using CSV for intermediate pipeline storage — no schema, no compression, and forces full file reads.
+- Storing nested JSON in warehouse columns — flatten it during ingestion instead.
+- Not specifying compression when writing Parquet — verify Snappy or Zstandard is applied.
+- Assuming all Parquet files have the same schema without enforcement.
+
+**Why it matters:** Choosing the wrong file format creates compounding problems — slow reads, bloated storage, silent type errors, and compatibility issues. Understanding these trade-offs helps choose the right format for each pipeline stage.
+
+---
+
 With the foundations covered, you are ready to move on to the Mid level where these concepts are applied at scale using professional tools: dimensional modelling, dbt, Spark, Airflow, and cloud data services.
 `,
   mid: `# Data Engineer – Mid Concept Reference
@@ -292,6 +342,44 @@ The video below walks through the Data Warehouse Toolkit concepts, covering fact
 - Dimension tables contain descriptive attributes (customer name, product category, date, geography) and are typically denormalised for query performance
 - Star schema: fact table at the centre, dimension tables radiating out; queries join the fact table to one or more dimensions
 - Snowflake schema: dimensions are normalised into sub-tables; more storage-efficient but slower to query — star schema is preferred in most modern warehouses
+
+\`\`\`mermaid
+erDiagram
+    fact_orders ||--o{ dim_customer : "customer_key"
+    fact_orders ||--o{ dim_product : "product_key"
+    fact_orders ||--o{ dim_date : "date_key"
+    fact_orders ||--o{ dim_geography : "geo_key"
+    fact_orders {
+        int order_key PK
+        int customer_key FK
+        int product_key FK
+        int date_key FK
+        int geo_key FK
+        decimal amount
+        int quantity
+    }
+    dim_customer {
+        int customer_key PK
+        string name
+        string segment
+    }
+    dim_product {
+        int product_key PK
+        string name
+        string category
+    }
+    dim_date {
+        int date_key PK
+        date full_date
+        int year
+        int month
+    }
+    dim_geography {
+        int geo_key PK
+        string city
+        string region
+    }
+\`\`\`
 - Slowly Changing Dimensions (SCD): strategies for handling changes to dimension attributes over time — Type 1 (overwrite), Type 2 (add new row with versioning), Type 3 (add column for previous value)
 - Grain: the level of detail in a fact table (one row per transaction, per day, per customer-product combination); defining the grain is the single most important design decision
 
@@ -360,11 +448,15 @@ Spark distributes data across the cluster as partitions and executes transformat
 
 ## Apache Airflow – Workflow Orchestration
 
-Apache Airflow is an open-source platform for authoring, scheduling, and monitoring workflows. In data engineering, Airflow is the most widely used tool for orchestrating data pipelines — defining the order in which tasks run, handling dependencies between tasks, retrying failed tasks, and providing visibility into pipeline execution.
+Apache Airflow is an open-source platform for authoring, scheduling, and monitoring workflows. In data engineering, Airflow is the most widely used tool for orchestrating data pipelines — defining the order in which tasks run, handling dependencies between tasks, retrying failed tasks, and providing visibility into pipeline execution. Alternative orchestrators like **Dagster** (asset-centric, with built-in data lineage) and **Prefect** (Python-native, dynamic workflows) are gaining adoption, but Airflow remains the industry standard.
 
 An Airflow workflow is defined as a DAG (Directed Acyclic Graph): a collection of tasks with defined dependencies that determines execution order. Each task is an instance of an operator — a predefined template for a specific type of work (run a Python function, execute a SQL query, trigger a Spark job, call an API). DAGs are written in Python, which gives full flexibility to dynamically generate tasks, parameterise workflows, and integrate with any system that has a Python client.
 
 **Key things to understand:**
+
+\`\`\`interactive-flow
+dataPipeline
+\`\`\`
 
 - DAGs: Python files that define a workflow as a graph of tasks and their dependencies; DAGs are not the data processing logic themselves — they orchestrate it
 - Operators: \`PythonOperator\` (run a Python function), \`BashOperator\` (run a shell command), \`SQLOperator\` (execute SQL), \`SparkSubmitOperator\`, and provider-specific operators for cloud services
@@ -542,9 +634,26 @@ Before the lakehouse, organisations maintained two separate systems: a data lake
 **Key things to understand:**
 
 - Open file formats: Parquet (columnar, compressed, the standard for analytical data), ORC (similar to Parquet, common in Hadoop ecosystems)
-- Table formats: Delta Lake, Apache Iceberg, and Apache Hudi add ACID transactions, time travel, schema enforcement, and efficient upserts on top of Parquet files
+- Table formats: Delta Lake, Apache Iceberg, and Apache Hudi add ACID transactions, time travel, schema enforcement, and efficient upserts on top of Parquet files. As of 2025, **Apache Iceberg** has emerged as the leading open table format for cloud-agnostic deployments, with native support in Snowflake, BigQuery, AWS Athena, and Databricks (via UniForm)
 - Separation of storage and compute: data lives in cloud object storage; compute engines (Spark, SQL engines) are provisioned independently and scaled as needed
 - Medallion architecture: a common lakehouse pattern with Bronze (raw ingested data), Silver (cleaned and conformed data), and Gold (aggregated, business-ready data) layers
+
+\`\`\`mermaid
+flowchart TB
+    Sources["Data Sources"] --> Ingest["Ingestion Layer"]
+    Ingest --> Bronze["Bronze (Raw)"]
+    Bronze --> Silver["Silver (Cleaned)"]
+    Silver --> Gold["Gold (Business-Ready)"]
+    Gold --> SQL["SQL Analytics"]
+    Gold --> ML["ML / AI"]
+    Gold --> BI["BI Dashboards"]
+    subgraph Lakehouse["Lakehouse (Cloud Object Storage + Delta/Iceberg)"]
+        Bronze
+        Silver
+        Gold
+    end
+\`\`\`
+
 - Schema enforcement and schema evolution: Delta Lake can enforce that writes conform to a defined schema and evolve the schema safely without breaking readers
 - Time travel: query historical versions of a table by timestamp or version number; essential for debugging, auditing, and reproducibility
 
@@ -698,6 +807,16 @@ Change Data Capture (CDC) is a pattern for identifying and capturing changes mad
 Debezium is the leading open-source CDC platform. It works by reading the database's transaction log (Write-Ahead Log in PostgreSQL, binlog in MySQL, change feed in CosmosDB) and streaming change events to Apache Kafka or other message systems. This approach is non-invasive — it does not require changes to the source application or queries against the source database.
 
 **Key things to understand:**
+
+\`\`\`mermaid
+flowchart LR
+    DB["Source DB"] --> WAL["Write-Ahead Log"]
+    WAL --> Deb["Debezium"]
+    Deb --> Kafka["Kafka Topic"]
+    Kafka --> C1["Lake Ingestion"]
+    Kafka --> C2["Search Index"]
+    Kafka --> C3["Stream Processing"]
+\`\`\`
 
 - CDC vs batch ETL: batch ETL extracts full snapshots at intervals (hourly, daily). CDC captures changes continuously. CDC reduces load on the source database (no full table scans), reduces latency (seconds to minutes vs hours), and reduces downstream processing (only changes need to be processed)
 - Log-based CDC (Debezium's approach) reads the database transaction log, which records every change. This is the most reliable CDC method because it captures all changes without modifying the source application and handles deletes correctly

@@ -502,6 +502,103 @@ payment is confirmed. UI must handle the "payment pending" state.
 
 ---
 
+## Incident Management – Leading Through Failure
+
+Incidents are inevitable in production systems. A senior architect's value during an incident is not in writing code faster — it is in structuring the response so the team can diagnose the problem efficiently, communicate status clearly and prevent the same failure from recurring.
+
+A structured incident response process has four phases: detection (automated alerting based on SLOs identifies the problem), triage (classify severity, assemble the right people, establish a communication channel), mitigation (restore service as quickly as possible — rollback, failover, feature toggle — even if the root cause is not yet understood) and resolution (fix the underlying issue and verify the fix in production).
+
+Severity levels determine the response urgency and communication requirements. A typical model uses four levels: SEV-1 (complete outage or data loss affecting all users — all-hands response, executive communication), SEV-2 (major feature degraded — on-call engineer plus tech lead), SEV-3 (minor feature degraded — engineering team priority) and SEV-4 (cosmetic or low-impact issue — normal backlog prioritisation).
+
+Blameless post-mortems are the mechanism by which teams learn from incidents without creating a culture of fear. The post-mortem focuses on systemic causes rather than individual mistakes: what was the chain of events? What detection gaps allowed it to progress? What process or tooling changes would prevent recurrence? A good post-mortem produces concrete action items with owners and deadlines — not just a narrative of what happened.
+
+The tech lead's role during an incident is to facilitate, not to be the sole debugger. This means keeping the team focused on mitigation before root cause analysis, ensuring clear ownership of each investigation thread, managing communication to stakeholders and protecting the team from external pressure that would slow the response.
+
+**Code walkthrough:**
+
+```text
+# Step 1: Incident response runbook structure
+# Why: runbooks remove the need to think from first principles under pressure
+
+INCIDENT RUNBOOK: Order Service Degraded
+
+DETECTION:
+  Alert: "order-api error rate > 5% for 5 minutes"
+  Dashboard: https://grafana.internal/d/order-api
+
+TRIAGE (first 5 minutes):
+  1. Check deployment history — was anything deployed in the last 2 hours?
+  2. Check dependent services — are database, cache, message bus healthy?
+  3. Check infrastructure — are pods running? Are resource limits hit?
+  4. Classify severity based on user impact
+
+MITIGATION (prioritise restore over diagnosis):
+  - If recent deployment: ROLLBACK immediately, investigate after restore
+  - If database: failover to read replica, page DBA
+  - If message bus: enable circuit breaker, queue will drain when restored
+
+COMMUNICATION:
+  SEV-1/2: Post to #incidents Slack channel every 15 minutes
+  Template: "Status: [investigating/mitigating/resolved]
+             Impact: [what users experience]
+             Next update: [time]"
+
+POST-INCIDENT:
+  - Blameless post-mortem within 48 hours
+  - Required sections: timeline, root cause, detection gaps, action items
+  - Each action item has an owner and a deadline
+  - Post-mortem shared with engineering org for cross-team learning
+```
+
+**Why it matters:** An organisation's reliability culture is defined not by whether incidents happen, but by how it responds when they do. A senior architect who can lead a structured, calm incident response — and who facilitates blameless post-mortems that produce real improvements — builds a team that gets better with every failure rather than one that hides problems to avoid blame.
+
+**Key things to understand:**
+- The four phases of incident response: detection, triage, mitigation, resolution
+- How severity classification drives response urgency and communication expectations
+- The principles of blameless post-mortems and why they produce better outcomes than blame-oriented reviews
+- How to facilitate an incident without becoming the single point of failure in the response
+- How DORA metrics (change failure rate, time to restore) measure incident management effectiveness
+
+**Common pitfalls:**
+- Skipping the mitigation phase to pursue root cause analysis — restore service first, investigate second
+- Holding post-mortems that identify a person rather than a systemic cause
+- Producing post-mortem action items with no owners or deadlines — they become wish lists
+- Not sharing post-mortems beyond the immediate team — the same failure pattern repeats elsewhere
+
+---
+
+## Cost Optimisation and Platform Engineering
+
+At the senior level, architecture is inseparable from economics. A design that is technically elegant but financially unsustainable is a bad design. Cost optimisation is not about spending less — it is about spending deliberately, with visibility into what drives costs and why.
+
+Cloud cost management begins with visibility. Tagging resources by team, service and environment allows cost attribution — knowing that 40% of your cloud bill comes from the data platform team's staging environment is the prerequisite for any cost conversation. Without attribution, cost reduction is guesswork.
+
+Right-sizing is the most impactful cost lever. Most cloud workloads are over-provisioned because teams provision for peak and never revisit. Auto-scaling (scaling out during peak, scaling in during quiet periods) replaces fixed over-provisioning. Reserved instances or savings plans offer 30-60% discounts for committed usage patterns. Spot instances offer 60-90% discounts for interruptible workloads like batch processing.
+
+Performance budgets define the maximum acceptable latency, bundle size or resource consumption for a component. They are the cost-equivalent of SLOs: "this API must respond in under 200ms" is a performance budget; "this service must cost less than $500/month at current scale" is a cost budget. Both are architectural constraints.
+
+Platform engineering is the discipline of building internal developer platforms (IDPs) that reduce cognitive load on product teams. Instead of every team configuring their own CI/CD, infrastructure, observability and security controls from scratch, the platform team provides golden paths — opinionated, well-documented, pre-approved patterns that teams can adopt quickly. This reduces duplication, improves consistency and lets product engineers focus on business logic rather than infrastructure plumbing.
+
+Developer experience (DevEx) metrics measure how effectively engineers can build and ship software: onboarding time (how quickly a new engineer becomes productive), build time (how long feedback loops take), deployment frequency (how often teams can ship) and cognitive load (how much context engineers need to hold to be effective). A senior architect treats developer experience as a first-class architectural concern.
+
+**Why it matters:** Cloud costs grow with usage, and without active governance they grow faster than revenue. Platform engineering multiplies the impact of architectural decisions across the organisation. A senior architect who can articulate cost trade-offs, implement cost guardrails and build platforms that enable teams to move fast while staying within guardrails is operating at enterprise scale.
+
+**Key things to understand:**
+- How resource tagging and cost attribution enable informed cost conversations
+- The trade-offs between on-demand, reserved, savings plans and spot pricing
+- How auto-scaling prevents both over-provisioning and capacity shortfalls
+- What an internal developer platform provides and how it reduces cognitive load
+- How to measure developer experience and why it is an architectural concern
+- The DORA metrics (deployment frequency, lead time, change failure rate, time to restore) as engineering productivity indicators
+
+**Common pitfalls:**
+- Treating cost optimisation as a one-time exercise rather than a continuous practice
+- Building platforms that are too opinionated — teams will work around a platform that does not fit their needs
+- Ignoring developer experience until productivity problems are severe — friction compounds silently
+- Optimising cloud costs by reducing reliability investments — saving money on redundancy is borrowing against future incident costs
+
+---
+
 ## AI Policy — Organisational Principles (English Summary)
 
 The organisation's [AI Policy](https://lfgrp.sharepoint.com/sites/SP-LFAB-PC-AIHub/Lists/Policies/DispForm.aspx?ID=1) establishes the governance framework for all AI use within the organisation. The policy document is in Swedish; the key principles are summarised here in English to ensure all engineers can understand and apply them.

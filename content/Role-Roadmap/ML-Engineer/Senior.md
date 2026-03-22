@@ -740,3 +740,301 @@ class ConformityAssessment:
 ```
 
 > **Why it matters:** The EU AI Act imposes penalties of up to 35 million EUR or 7% of global annual turnover for non-compliance with high-risk AI system requirements. For insurance companies, where most customer-facing AI falls under the high-risk category, this means every model deployed in production must pass a documented conformity assessment. ML Engineers who integrate conformity tracking, fairness evaluation, and documentation into their standard MLOps pipelines make compliance a routine part of the development process rather than a last-minute scramble before audit.
+
+---
+
+## LLM Fine-Tuning – LoRA, QLoRA and PEFT
+
+Large language model fine-tuning has become a core senior ML engineering skill as organisations adapt foundation models to domain-specific tasks. Full fine-tuning updates every parameter in a model — for a 7B parameter model this requires 56+ GB of GPU memory just for the model weights in float16, plus optimiser states and gradients. This is impractical for most teams.
+
+**Parameter-Efficient Fine-Tuning (PEFT)** methods solve this by updating only a small fraction of the model's parameters while freezing the rest. The most widely adopted PEFT method is **LoRA (Low-Rank Adaptation)**, which injects small trainable matrices into the attention layers of a frozen model. Instead of updating the full weight matrix W (dimensions d x d), LoRA decomposes the update into two small matrices A (d x r) and B (r x d) where r << d (typically 8-64). The number of trainable parameters drops from millions to thousands, and memory requirements decrease proportionally.
+
+**QLoRA** combines LoRA with 4-bit quantisation of the base model. The frozen model weights are stored in 4-bit NormalFloat format, reducing memory by 4x compared to float16. Only the LoRA adapter weights remain in higher precision. This allows fine-tuning a 70B parameter model on a single 48GB GPU — a task that would otherwise require multiple high-end GPUs.
+
+The Hugging Face `transformers` and `peft` libraries provide the standard implementation. Training uses the same PyTorch training loop patterns from mid-level, with the addition of PEFT configuration and quantisation setup.
+
+**Code walkthrough:**
+
+```python
+# Step 1: Fine-tune an LLM with LoRA using Hugging Face PEFT
+# Why LoRA? It reduces trainable parameters by 99%+ while preserving model quality
+from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
+from peft import LoraConfig, get_peft_model, TaskType
+from datasets import load_dataset
+import torch
+
+# Step 2: Load base model — freeze all parameters by default
+model_name = "meta-llama/Llama-3.1-8B"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer.pad_token = tokenizer.eos_token
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype=torch.bfloat16,      # bfloat16 is preferred over float16 for training
+    device_map="auto",                # Distribute across available GPUs
+)
+
+# Step 3: Configure LoRA — the key hyperparameters
+# r: rank of the LoRA matrices (higher = more capacity, more memory)
+# lora_alpha: scaling factor (higher = stronger adaptation)
+# target_modules: which layers to adapt (attention layers are most effective)
+lora_config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    r=16,                              # Rank — 8-64 is typical
+    lora_alpha=32,                     # Scaling factor — typically 2x rank
+    lora_dropout=0.05,                 # Dropout on LoRA layers for regularisation
+    target_modules=["q_proj", "v_proj", "k_proj", "o_proj"],  # Attention projections
+    bias="none",                       # Do not train bias terms
+)
+
+# Step 4: Wrap the model with LoRA — only adapter weights are trainable
+peft_model = get_peft_model(model, lora_config)
+peft_model.print_trainable_parameters()
+# Output: "trainable params: 6,553,600 || all params: 8,030,261,248 || trainable%: 0.0816"
+
+# Step 5: Training with the standard Hugging Face Trainer
+from trl import SFTTrainer  # Supervised fine-tuning trainer from TRL library
+
+training_args = TrainingArguments(
+    output_dir="./insurance-llm-lora",
+    num_train_epochs=3,
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,     # Effective batch size: 4 * 4 = 16
+    learning_rate=2e-4,                # Higher LR than full fine-tuning is typical for LoRA
+    bf16=True,                         # Use bfloat16 mixed precision
+    logging_steps=10,
+    save_strategy="epoch",
+    warmup_ratio=0.03,
+    lr_scheduler_type="cosine",
+)
+
+# trainer = SFTTrainer(
+#     model=peft_model,
+#     args=training_args,
+#     train_dataset=train_dataset,
+#     tokenizer=tokenizer,
+#     max_seq_length=2048,
+# )
+# trainer.train()
+
+# Step 6: Save and load LoRA adapters — only the small adapter weights are saved
+# peft_model.save_pretrained("./insurance-llm-lora-adapter")
+# To load: model = AutoModelForCausalLM.from_pretrained(model_name)
+#           model = PeftModel.from_pretrained(model, "./insurance-llm-lora-adapter")
+
+# Step 7: QLoRA — 4-bit quantisation for training 70B+ models on single GPU
+from transformers import BitsAndBytesConfig
+
+qlora_config = BitsAndBytesConfig(
+    load_in_4bit=True,                         # 4-bit quantisation
+    bnb_4bit_quant_type="nf4",                # NormalFloat4 — optimal for LLM weights
+    bnb_4bit_compute_dtype=torch.bfloat16,    # Compute in bfloat16
+    bnb_4bit_use_double_quant=True,           # Quantise the quantisation constants too
+)
+# model_4bit = AutoModelForCausalLM.from_pretrained(
+#     model_name, quantization_config=qlora_config, device_map="auto"
+# )
+```
+
+**Why it matters:** LLM fine-tuning is increasingly part of the senior ML engineer's toolkit. Domain-specific fine-tuning (insurance terminology, claims processing, underwriting guidelines) produces models that outperform prompting alone on specialised tasks. LoRA and QLoRA make this feasible on realistic hardware budgets.
+
+**Key things to understand:**
+- LoRA reduces trainable parameters by 99%+ with minimal quality loss for most tasks.
+- QLoRA adds 4-bit quantisation, enabling 70B+ model fine-tuning on a single 48GB GPU.
+- The rank `r` controls capacity — higher rank means more parameters and more adaptation ability, but diminishing returns beyond r=64 for most tasks.
+- LoRA adapters are tiny (tens of MB) and can be swapped at serving time, enabling multi-tenant model serving from a single base model.
+
+**Common pitfalls:**
+- Setting the learning rate too low (using full fine-tuning defaults) — LoRA typically needs higher learning rates (1e-4 to 3e-4).
+- Targeting only a subset of attention projections when the task requires broader adaptation — experiment with including MLP layers.
+- Not evaluating catastrophic forgetting — the model may lose general capabilities while gaining domain-specific ones.
+- Skipping evaluation on a held-out test set and relying only on training loss, which does not capture overfitting to the fine-tuning data.
+
+---
+
+## Distributed Training and GPU Management
+
+When a single GPU is not enough — either because the model does not fit in memory or training takes too long — distributed training across multiple GPUs or nodes becomes necessary. This is a core senior skill as model sizes continue to grow.
+
+**Data parallelism** is the simplest and most common form of distributed training. The model is replicated on each GPU, and each GPU processes a different batch of data. After the forward-backward pass, gradients are averaged across all GPUs (all-reduce), and each replica updates its weights identically. PyTorch's `DistributedDataParallel` (DDP) implements this efficiently. Training throughput scales near-linearly with the number of GPUs.
+
+**Model parallelism** splits the model itself across GPUs when it does not fit on a single device. Pipeline parallelism splits the model by layers (GPU 0 runs layers 1-12, GPU 1 runs layers 13-24). Tensor parallelism splits individual layers across GPUs (each GPU computes part of a matrix multiplication). DeepSpeed and FSDP (Fully Sharded Data Parallelism) combine aspects of both data and model parallelism for maximum efficiency.
+
+**GPU cost optimisation** is increasingly important. Spot/preemptible instances cost 60-80% less than on-demand but can be reclaimed. Checkpointing every N steps allows training to resume after preemption. Right-sizing GPU selection (A100 vs H100, 40GB vs 80GB) based on actual memory requirements prevents overspending.
+
+**Code walkthrough:**
+
+```python
+# Step 1: Distributed training with PyTorch DDP — the production standard
+# DDP replicates the model on each GPU and synchronises gradients after each step
+import torch
+import torch.distributed as dist
+import torch.nn as nn
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data import DataLoader, DistributedSampler
+import os
+
+def setup_distributed():
+    """Initialise distributed training — called once per process."""
+    dist.init_process_group(backend="nccl")  # NCCL is fastest for GPU-to-GPU communication
+    local_rank = int(os.environ["LOCAL_RANK"])
+    torch.cuda.set_device(local_rank)
+    return local_rank
+
+def train_distributed():
+    local_rank = setup_distributed()
+    device = torch.device(f"cuda:{local_rank}")
+
+    # Step 2: Wrap model with DDP — handles gradient synchronisation automatically
+    model = FraudDetector().to(device)
+    model = DDP(model, device_ids=[local_rank])
+
+    # Step 3: DistributedSampler ensures each GPU sees different data
+    # Without this, all GPUs would train on the same batches — defeating the purpose
+    sampler = DistributedSampler(train_dataset, shuffle=True)
+    train_loader = DataLoader(
+        train_dataset, batch_size=256, sampler=sampler,
+        num_workers=4, pin_memory=True,
+    )
+
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+
+    for epoch in range(10):
+        sampler.set_epoch(epoch)  # Ensures different shuffling per epoch across GPUs
+        model.train()
+        for features, labels in train_loader:
+            features, labels = features.to(device), labels.to(device)
+            optimizer.zero_grad()
+            loss = nn.BCELoss()(model(features), labels)
+            loss.backward()  # DDP automatically synchronises gradients here
+            optimizer.step()
+
+        # Only save checkpoint from rank 0 to avoid file conflicts
+        if local_rank == 0:
+            torch.save(model.module.state_dict(), f"model_epoch_{epoch}.pt")
+
+    dist.destroy_process_group()
+
+# Launch: torchrun --nproc_per_node=4 train.py
+# This starts 4 processes, one per GPU
+
+# Step 4: DeepSpeed ZeRO — memory-efficient distributed training
+# ZeRO partitions optimizer states, gradients, and parameters across GPUs
+# ZeRO Stage 1: Partition optimizer states (saves ~4x memory)
+# ZeRO Stage 2: + Partition gradients (saves ~8x memory)
+# ZeRO Stage 3: + Partition parameters (saves ~Nx memory for N GPUs)
+DEEPSPEED_CONFIG = {
+    "bf16": {"enabled": True},
+    "zero_optimization": {
+        "stage": 2,
+        "offload_optimizer": {"device": "cpu"},  # Offload optimizer states to CPU
+        "contiguous_gradients": True,
+        "overlap_comm": True,
+    },
+    "train_batch_size": 64,
+    "gradient_accumulation_steps": 4,
+}
+
+# Step 5: GPU cost optimisation — right-size and use spot instances
+GPU_COST_COMPARISON = {
+    "A100 40GB on-demand": {"cost_per_hour": 3.67, "memory": "40GB"},
+    "A100 80GB on-demand": {"cost_per_hour": 5.12, "memory": "80GB"},
+    "H100 80GB on-demand": {"cost_per_hour": 8.50, "memory": "80GB"},
+    "A100 40GB spot":      {"cost_per_hour": 1.10, "memory": "40GB"},  # 70% savings
+}
+# Rule of thumb: use spot instances + frequent checkpointing for training
+# Use on-demand for serving (no preemption tolerance)
+```
+
+**Why it matters:** Model sizes and dataset sizes continue to grow. A senior ML engineer who cannot scale training beyond a single GPU is limited in what they can build. Distributed training is also the foundation for LLM fine-tuning of large models.
+
+**Key things to understand:**
+- DDP is the default for multi-GPU training — it scales near-linearly and requires minimal code changes.
+- `DistributedSampler` ensures each GPU processes different data — without it, distributed training gives no speedup.
+- DeepSpeed ZeRO stages progressively reduce memory by partitioning optimizer states, gradients, and parameters across GPUs.
+- GPU cost optimisation (spot instances, right-sizing, checkpoint-and-resume) can reduce training costs by 60-80%.
+
+**Common pitfalls:**
+- Forgetting `sampler.set_epoch(epoch)`, causing all epochs to use the same data ordering and reducing model quality.
+- Saving checkpoints from all ranks instead of just rank 0, causing file corruption from concurrent writes.
+- Using `model.state_dict()` instead of `model.module.state_dict()` with DDP, which saves the wrapper instead of the actual model.
+- Not accounting for gradient synchronisation overhead when benchmarking — DDP adds communication cost that reduces per-GPU throughput.
+
+---
+
+## Feature Stores – Training-Serving Consistency
+
+A feature store is a centralised system for managing, storing, and serving ML features. It solves the most common source of silent model failures: **training-serving skew**, where the features computed during training differ from the features computed during inference.
+
+**Feast** is the most widely adopted open-source feature store. It provides an offline store (for training) and an online store (for low-latency serving) from the same feature definitions. Features are defined once, computed once, and served consistently to both training pipelines and serving endpoints. **Tecton** is the leading managed feature store, providing real-time feature computation, monitoring, and enterprise support.
+
+Feature stores also enable **feature reuse** across teams and models. A carefully engineered feature (e.g., "customer's 90-day rolling claim frequency") can be computed once and served to multiple models — fraud detection, churn prediction, and pricing — without each team re-implementing the same transformation.
+
+**Code walkthrough:**
+
+```python
+# Step 1: Define features in Feast — the open-source feature store
+# Why Feast? It guarantees the same feature values at training and serving time,
+# eliminating the most common source of silent model failures.
+from feast import Entity, Feature, FeatureView, FileSource, Field
+from feast.types import Float32, Int64, String
+from datetime import timedelta
+
+# Step 2: Define entities (the primary keys for feature lookup)
+customer = Entity(name="customer_id", join_keys=["customer_id"])
+
+# Step 3: Define a feature view — maps raw data to named, typed features
+customer_features = FeatureView(
+    name="customer_features",
+    entities=[customer],
+    ttl=timedelta(days=1),  # Features older than 1 day are considered stale
+    schema=[
+        Field(name="claim_count_90d", dtype=Int64),
+        Field(name="avg_claim_amount", dtype=Float32),
+        Field(name="policy_tenure_years", dtype=Float32),
+        Field(name="risk_segment", dtype=String),
+    ],
+    source=FileSource(
+        path="data/customer_features.parquet",
+        timestamp_field="event_timestamp",
+    ),
+)
+
+# Step 4: Use the SAME features for training and serving
+from feast import FeatureStore
+
+store = FeatureStore(repo_path="feature_repo/")
+
+# Training: get historical features for a training dataset
+# entity_df has customer_id and event_timestamp columns
+# training_features = store.get_historical_features(
+#     entity_df=training_entity_df,
+#     features=["customer_features:claim_count_90d",
+#               "customer_features:avg_claim_amount",
+#               "customer_features:policy_tenure_years"],
+# ).to_df()
+
+# Serving: get the latest feature values for real-time prediction
+# online_features = store.get_online_features(
+#     features=["customer_features:claim_count_90d",
+#               "customer_features:avg_claim_amount"],
+#     entity_rows=[{"customer_id": "C12345"}],
+# ).to_dict()
+
+# The critical guarantee: training and serving use the SAME feature definitions
+# and the SAME computation logic — no training-serving skew possible
+```
+
+**Why it matters:** Training-serving skew is the number one cause of silent model degradation that does not show up in any monitoring metric — the model simply produces worse predictions because it receives slightly different features at serving time than it was trained on. Feature stores eliminate this entire class of failure.
+
+**Key things to understand:**
+- Feature stores separate feature computation from feature consumption — features are defined once and served consistently.
+- The offline store serves historical feature values for training; the online store serves the latest values for real-time inference.
+- Feature TTL (time-to-live) prevents serving stale features — if no fresh value is available within the TTL, the feature store returns null rather than a dangerously outdated value.
+- Feature stores enable cross-team feature reuse, reducing duplicated effort and ensuring consistency across models.
+
+**Common pitfalls:**
+- Implementing the same feature transformation separately in training code and serving code — this is exactly the problem feature stores are designed to prevent.
+- Not setting appropriate TTL values, allowing stale features to be served without warning.
+- Over-engineering the feature store before the team has enough features to justify it — start with a simple approach and adopt Feast when feature management becomes a bottleneck.
+- Ignoring feature freshness requirements — some features need real-time computation (last 5 minutes of activity) while others can be batch-computed daily.

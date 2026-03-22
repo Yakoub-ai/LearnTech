@@ -156,6 +156,23 @@ The core components of any ML system are data, algorithms, models, and training 
 
 These three terms describe the fundamental modes by which ML models are trained, and they differ in what kind of signal the algorithm uses to learn.
 
+### ML Learning Paradigms
+
+\`\`\`mermaid
+flowchart TB
+    ML[Machine Learning] --> Sup[Supervised Learning]
+    ML --> Unsup[Unsupervised Learning]
+    ML --> RL[Reinforcement Learning]
+    Sup --> Class[Classification]
+    Sup --> Reg[Regression]
+    Class --> Ex1[Spam Detection]
+    Reg --> Ex2[Price Prediction]
+    Unsup --> Clust[Clustering]
+    Unsup --> DimR[Dimensionality Reduction]
+    Clust --> Ex3[Customer Segmentation]
+    RL --> Ex4[Game Playing / RLHF]
+\`\`\`
+
 **Supervised learning** is the most common approach, making up around 70% of ML applications. The training data consists of input-output pairs — for example, images labelled as "cat" or "not cat", or houses with known sale prices. The algorithm learns a function that maps inputs to outputs by minimising the difference between its predictions and the correct labels. There are two main task types: classification (predicting a discrete category, such as spam/not spam or digit 0–9) and regression (predicting a continuous value, such as house price or tomorrow's temperature). Both are supervised learning — the difference is in the output type.
 
 Supervised learning requires labelled data, which is expensive to produce. Experts must manually categorise thousands of examples, and the quality of those labels directly caps the quality of the model. Many creative approaches exist to generate labels at scale, including crowdsourcing, programmatic labelling, and using existing model predictions as soft labels.
@@ -184,6 +201,20 @@ A fourth type, semi-supervised learning, combines a small amount of labelled dat
 ## The ML Training Pipeline – Data, Features, Model, Evaluation
 
 Building an ML model is not a single step — it is a sequential pipeline. Understanding each stage and how they interact is essential before writing a line of model code.
+
+### ML Pipeline Overview
+
+\`\`\`mermaid
+flowchart LR
+    Data[Raw Data] --> FE[Feature Engineering]
+    FE --> Train[Model Training]
+    Train --> Model[Trained Model]
+    Model --> Eval{Evaluation}
+    Eval -->|Meets threshold| Deploy[Deployment]
+    Eval -->|Below threshold| FE
+    Deploy --> Monitor[Monitoring]
+    Monitor -->|Drift detected| Data
+\`\`\`
 
 **Data collection and preparation** is almost always the longest phase. Raw data is messy: it contains missing values, inconsistent formatting, duplicates, and noise. Engineers must clean it, handle missing entries (by imputation or removal), and split it into training, validation, and test sets. The split ensures that the model is evaluated on data it has never seen during training. The training set teaches the model; the validation set tunes hyperparameters; the test set gives a final unbiased estimate of real-world performance. Using the test set to make decisions about the model defeats its purpose — this is data leakage.
 
@@ -250,9 +281,9 @@ NumPy arrays are homogeneous: all elements must be the same data type. This enab
 
 **Key things to understand:**
 - NumPy arrays are homogeneous: all elements must be the same data type. This enables the memory efficiency that makes vectorised operations fast.
-- Broadcasting rules govern how NumPy handles operations between arrays of different shapes. Always check array shapes with `.shape` before operations.
+- Broadcasting rules govern how NumPy handles operations between arrays of different shapes. Always check array shapes with \`.shape\` before operations.
 - Avoid Python loops over array elements wherever possible; always seek a vectorised equivalent.
-- NumPy slices are views, not copies — modifying a slice modifies the original array. Use `.copy()` when a copy is needed.
+- NumPy slices are views, not copies — modifying a slice modifies the original array. Use \`.copy()\` when a copy is needed.
 
 **Common pitfalls:**
 - Confusing 1D arrays with column or row vectors, leading to shape errors in matrix operations.
@@ -403,6 +434,20 @@ A neural network consists of layers of artificial neurons, inspired by — thoug
 
 ## Feature Engineering – Transforming Raw Data into Model-Ready Features
 
+### Feature Store Architecture
+
+\`\`\`mermaid
+flowchart TB
+    Raw[Raw Data Sources] --> FP[Feature Pipeline]
+    FP --> FS[Feature Store]
+    FS --> Offline[Offline Store]
+    FS --> Online[Online Store]
+    Offline --> Training[Model Training]
+    Online --> Serving[Real-time Serving]
+    Training --> Registry[Model Registry]
+    Registry --> Serving
+\`\`\`
+
 Feature engineering is the process of transforming raw data into features that better represent the underlying problem to the model. It is often the single highest-leverage activity in an ML project — a well-engineered feature set can make a simple model outperform a complex one trained on raw data.
 
 **Numerical features** (age, income, temperature) may need scaling. Standardisation (zero mean, unit variance) is the standard approach for distance-based and gradient-based algorithms — SVMs, KNN, and neural networks are all sensitive to feature scale. Min-max normalisation scales to a fixed range (often 0 to 1). Tree-based models (decision trees, random forests, gradient boosting) do not require scaling because they split on thresholds, not distances.
@@ -461,6 +506,20 @@ The model registry provides version control for models analogous to what Git pro
 
 MLOps is the set of practices for deploying, monitoring, and maintaining ML models in production. Training a model is only part of the job — getting it into production reliably and keeping it healthy over time is where most operational effort is spent.
 
+### Model Serving Flow
+
+\`\`\`mermaid
+flowchart LR
+    MR[Model Registry] --> Deploy[Container Deployment]
+    Deploy --> API[REST API Endpoint]
+    API --> Val[Input Validation]
+    Val --> Inf[Inference]
+    Inf --> Resp[Response]
+    Resp --> Log[Prediction Logging]
+    Log --> Monitor[Performance Monitor]
+    Monitor -->|Drift alert| Retrain[Retrain Pipeline]
+\`\`\`
+
 **Model serving** is the process of deploying a trained model as an API endpoint. The standard approach is containerisation with Docker: the model, its dependencies, and a serving framework (FastAPI, Flask, or a specialised server like TorchServe) are packaged into a container image that can be deployed consistently across environments. Containerisation decouples the model from the infrastructure it runs on — the same image runs identically in development, staging, and production.
 
 **CI/CD for ML** extends standard software CI/CD with ML-specific steps: data validation (checking that training data meets quality and schema expectations), model training and evaluation, threshold gates (rejecting a new model version if its metrics fall below a defined floor), and automated deployment to a registry and serving environment. The Azure ML managed endpoints feature provides a serverless model serving layer with built-in versioning and traffic splitting.
@@ -482,6 +541,54 @@ Retraining should be automated and triggered by monitoring signals rather than o
 - Deploying models manually instead of through a reproducible, containerised pipeline.
 - Not monitoring model performance after deployment, allowing degraded models to serve incorrect predictions for weeks or months.
 - Treating MLOps as a separate concern from model development — it should be considered from the start of the project.
+
+---
+
+## PyTorch Training Pipelines – Data Loading, Training Loops and Mixed Precision
+
+Production-quality training pipelines require understanding \`Dataset\` (individual example access) and \`DataLoader\` (batching, shuffling, parallel loading with \`num_workers\`). The training loop in PyTorch is explicit: forward pass, loss computation, backward pass, optimiser step. **Mixed precision training** with \`torch.amp\` uses float16 for forward pass and float32 for weight updates, reducing memory by ~50% with no accuracy loss. **Gradient accumulation** simulates larger batch sizes on limited hardware by accumulating gradients across multiple forward-backward passes before updating weights.
+
+**Key things to understand:**
+- \`DataLoader\` with \`num_workers > 0\` and \`pin_memory=True\` prevents GPU starvation.
+- Mixed precision is essentially free performance on modern GPUs (Ampere, Hopper).
+- Always checkpoint model, optimiser, and scaler state together for training resumption.
+- Switch between \`model.train()\` and \`model.eval()\` — batch norm and dropout behave differently.
+
+---
+
+## Hyperparameter Tuning – Systematic Search and Bayesian Optimisation
+
+**Grid search** is exhaustive but scales poorly. **Random search** is more efficient — it explores more unique values per dimension. **Bayesian optimisation** (Optuna, Hyperopt) builds a probabilistic model of the objective function and intelligently selects the next trial. **Learning rate schedulers** (cosine annealing, one-cycle) adjust LR during training for better convergence.
+
+**Key things to understand:**
+- Optuna's TPE sampler converges faster than random search for most problems.
+- Always use cross-validation to evaluate each configuration — not a single validation split.
+- Log every tuning trial to MLflow for reproducibility and comparison.
+- Learning rate and batch size often need to be tuned together.
+
+---
+
+## Model Serving Basics – From Notebook to API Endpoint
+
+The most common serving pattern is a REST API with FastAPI. Key considerations: input validation (Pydantic), consistent feature transformation (same preprocessing as training), latency, and throughput. **BentoML** and **TorchServe** provide framework-level serving with built-in batching, scaling, and containerisation.
+
+**Key things to understand:**
+- Load the model once at startup, not on every request.
+- Input validation prevents silent incorrect predictions from malformed inputs.
+- Training-serving skew (different preprocessing at serving vs training) silently degrades predictions.
+- Load test serving endpoints before releasing — latency at p99 under load differs from benchmarks.
+
+---
+
+## torch.compile and PyTorch 2.x Performance
+
+\`torch.compile()\` compiles PyTorch models into optimised kernels for 1.3-2x training speedup with a single line of code. The \`inductor\` backend generates Triton GPU kernels or optimised C++ automatically. Compilation modes: "default" (balanced), "reduce-overhead" (CUDA graphs), "max-autotune" (slowest compile, fastest runtime).
+
+**Key things to understand:**
+- \`torch.compile\` preserves numerical results — it is a pure performance optimisation.
+- First call is slow (compilation); subsequent calls are fast. Always warm up before benchmarking.
+- Use \`dynamic=True\` for varying batch sizes or sequence lengths to avoid recompilation.
+- \`mode="max-autotune"\` is recommended for production inference.
 `,
   senior: `# ML Engineer – Senior Concept Reference
 
@@ -577,6 +684,23 @@ In insurance, fairness is not only an ethical imperative but a legal one. Anti-d
 Senior ML engineers do not just use MLOps tools — they design and operate the MLOps system as a whole. This means reasoning about pipeline architecture, maturity levels, failure modes, and the trade-offs between automation and oversight.
 
 The **MLOps maturity model** describes five levels of increasing automation and reproducibility. At level 0, data scientists train models manually in notebooks and deploy by hand. At level 1, training is scripted and reproducible but still triggered manually. At level 2, a continuous training pipeline runs automatically on new data. At level 3, the entire pipeline including data ingestion, training, evaluation, and deployment is automated and version-controlled as code. At level 4 (the most mature), the system automatically monitors models in production, detects degradation, triggers retraining, evaluates the new model, and promotes it to production — all without human intervention except for policy-level decisions.
+
+### MLOps Lifecycle
+
+\`\`\`mermaid
+flowchart TB
+    Ingest[Data Ingestion] --> Validate[Data Validation]
+    Validate --> FE[Feature Engineering]
+    FE --> Train[Model Training]
+    Train --> Eval[Evaluation Gate]
+    Eval -->|Pass| Register[Model Registry]
+    Eval -->|Fail| FE
+    Register --> Stage[Staging / Shadow]
+    Stage --> Canary[Canary Deployment]
+    Canary --> Prod[Production 100%]
+    Prod --> Monitor[Monitoring]
+    Monitor -->|Drift| Ingest
+\`\`\`
 
 **End-to-end ML pipelines** connect data ingestion, preprocessing, feature engineering, training, evaluation, registration, deployment, and monitoring as a single directed acyclic graph (DAG) of steps. Azure ML Pipelines and Apache Airflow are common orchestration tools. Representing pipelines as code — with each step containerised and its inputs/outputs explicitly declared — ensures reproducibility, enables parallel execution where steps are independent, and makes failures debuggable.
 
@@ -706,6 +830,67 @@ Conformity assessment is the regulatory gate that high-risk AI systems must pass
 GDPR obligations apply to every stage of the ML pipeline: training data with personal data must have a lawful basis, feature stores must support right to erasure, and model predictions affecting individuals must be logged for transparency.
 
 > **Why it matters:** The EU AI Act imposes penalties of up to 35 million EUR or 7% of global annual turnover for non-compliance with high-risk AI system requirements. ML Engineers who integrate conformity tracking, fairness evaluation, and documentation into their standard MLOps pipelines make compliance a routine part of development rather than a last-minute scramble before audit.
+
+---
+
+## LLM Fine-Tuning – LoRA, QLoRA and PEFT
+
+Large language model fine-tuning has become a core senior ML engineering skill. Full fine-tuning of a 7B parameter model requires 56+ GB of GPU memory. **Parameter-Efficient Fine-Tuning (PEFT)** methods solve this by updating only a small fraction of parameters. **LoRA** injects small trainable matrices into frozen attention layers, reducing trainable parameters by 99%+. **QLoRA** adds 4-bit quantisation, enabling fine-tuning of 70B+ models on a single 48GB GPU.
+
+The Hugging Face \`transformers\` and \`peft\` libraries provide the standard implementation. LoRA adapters are tiny (tens of MB) and can be swapped at serving time, enabling multi-tenant model serving from a single base model.
+
+**Key things to understand:**
+- LoRA rank \`r\` (8-64) controls capacity; \`lora_alpha\` (typically 2x rank) controls scaling.
+- QLoRA stores frozen weights in 4-bit NormalFloat, reducing memory by 4x vs float16.
+- LoRA typically needs higher learning rates (1e-4 to 3e-4) than full fine-tuning.
+- Evaluate for catastrophic forgetting — the model may lose general capabilities while gaining domain-specific ones.
+
+---
+
+## Distributed Training and GPU Management
+
+### Distributed Training Pattern
+
+\`\`\`mermaid
+flowchart LR
+    Data[Training Data] --> Shard1[Shard 1]
+    Data --> Shard2[Shard 2]
+    Data --> ShardN[Shard N]
+    Shard1 --> GPU1[GPU 1: Forward + Backward]
+    Shard2 --> GPU2[GPU 2: Forward + Backward]
+    ShardN --> GPUN[GPU N: Forward + Backward]
+    GPU1 --> AR[All-Reduce: Sync Gradients]
+    GPU2 --> AR
+    GPUN --> AR
+    AR --> Update[Weight Update]
+    Update --> GPU1
+    Update --> GPU2
+    Update --> GPUN
+\`\`\`
+
+**Data parallelism** (DDP) replicates the model on each GPU, processes different batches, and synchronises gradients via all-reduce. It scales near-linearly. **Model parallelism** (DeepSpeed ZeRO, FSDP) partitions optimizer states, gradients, and parameters across GPUs for memory efficiency. ZeRO Stage 2 saves ~8x memory; Stage 3 saves ~Nx for N GPUs.
+
+**GPU cost optimisation**: spot/preemptible instances cost 60-80% less; checkpointing every N steps allows training to resume after preemption. Right-sizing GPU selection (A100 vs H100, 40GB vs 80GB) based on actual memory requirements prevents overspending.
+
+**Key things to understand:**
+- DDP is the default for multi-GPU training with minimal code changes.
+- DeepSpeed ZeRO stages progressively reduce memory by partitioning state across GPUs.
+- \`DistributedSampler\` ensures each GPU sees different data — without it, distributed training gives no speedup.
+- Spot instances + frequent checkpointing can reduce training costs by 60-80%.
+
+---
+
+## Feature Stores – Training-Serving Consistency
+
+A feature store (Feast, Tecton) is a centralised system for managing ML features that solves the most common source of silent model failures: **training-serving skew**. Features are defined once and served consistently to both training pipelines and serving endpoints. The offline store serves historical features for training; the online store serves the latest values for real-time inference.
+
+Feature stores also enable cross-team feature reuse — a carefully engineered feature can be computed once and served to multiple models without duplicated effort.
+
+**Key things to understand:**
+- Feature stores separate feature computation from consumption — features are defined once.
+- Feature TTL (time-to-live) prevents serving stale features.
+- Training-serving skew is the #1 cause of silent model degradation not caught by monitoring.
+- Start simple; adopt Feast when feature management becomes a bottleneck.
 
 ---
 
