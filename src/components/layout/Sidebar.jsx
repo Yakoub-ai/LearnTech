@@ -13,7 +13,7 @@ export default function Sidebar() {
   const [expandedLanguage, setExpandedLanguage] = useState(null)
 
   return (
-    <aside className="hidden lg:block w-64 shrink-0 border-r border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-y-auto h-[calc(100vh-4rem)] sticky top-16">
+    <aside className="hidden lg:block w-64 shrink-0 border-r border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-y-auto h-[calc(100dvh-4rem)] sticky top-16">
       <nav className="p-4 space-y-1">
         <Link
           to="/dashboard"

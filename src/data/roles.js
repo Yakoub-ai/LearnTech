@@ -143,7 +143,7 @@ export const roles = [
     id: 'tech-lead-architect',
     name: 'Tech Lead / Architect',
     description: 'Tech Leads and Architects guide technical direction, system design, and engineering quality across a team or programme. This path is intended for experienced developers with three or more years of hands-on experience who are growing into a technical leadership or architecture role.',
-    icon: 'Crown',
+    icon: 'PenSquare',
     color: 'amber',
     fileName: 'Tech-Lead-Architect',
     levels: ['Beginner', 'Mid', 'Senior'],
@@ -159,12 +159,12 @@ export const getRoleById = (id) => roles.find(r => r.id === id);
 
 import {
   Brain, Server, Database, BarChart3, Container, Layout,
-  Megaphone, Cpu, TestTube2, Shield, Crown
+  Megaphone, Cpu, TestTube2, Shield, PenSquare
 } from 'lucide-react'
 
 const iconMap = {
   Brain, Server, Database, BarChart3, Container, Layout,
-  Megaphone, Cpu, TestTube2, Shield, Crown,
+  Megaphone, Cpu, TestTube2, Shield, PenSquare,
 }
 
 export const getRoleIcon = (iconName) => iconMap[iconName] || Brain;

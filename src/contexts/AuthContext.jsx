@@ -69,57 +69,63 @@ export function AuthProvider({ children }) {
     // Track whether initial session has already been handled by getSession()
     // to avoid double-processing when onAuthStateChange also fires INITIAL_SESSION
     const initialHandled = { current: false }
+    // Prevent duplicate concurrent approval checks
+    const approvalCheckRunning = { current: false }
 
-    // Safety net: if auth never resolves within 10s, unblock the UI
+    // Safety net: getSession() reads localStorage (instant), so 3s is ample.
+    // Only fires if Supabase is unreachable or something is truly broken.
     const timeoutId = setTimeout(() => {
       setLoading((current) => {
         if (current) console.warn('[Auth] Session check timed out — unblocking UI')
         return false
       })
-    }, 10_000)
+    }, 3_000)
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       // Skip INITIAL_SESSION if getSession() already handled it
       if (event === 'INITIAL_SESSION' && initialHandled.current) return
 
-      try {
-        setSession(session)
-        setUser(session?.user ?? null)
+      // Unblock the UI immediately — don't wait for the approval DB query
+      setSession(session)
+      setUser(session?.user ?? null)
+      clearTimeout(timeoutId)
+      setLoading(false)
 
-        if (session?.user) {
-          await fetchApprovalStatus(session.user)
-        } else {
-          setApprovalStatus(null)
-          setIsAdmin(false)
-          setPendingCount(0)
+      if (session?.user) {
+        // Fetch approval status in background (non-blocking)
+        if (!approvalCheckRunning.current) {
+          approvalCheckRunning.current = true
+          fetchApprovalStatus(session.user).finally(() => {
+            approvalCheckRunning.current = false
+          })
         }
-      } catch (err) {
-        console.error('Auth state change error:', err)
+      } else {
         setApprovalStatus(null)
-      } finally {
-        clearTimeout(timeoutId)
-        setLoading(false)
+        setIsAdmin(false)
+        setPendingCount(0)
       }
     })
 
-    // Explicit session bootstrap — more reliable than waiting for INITIAL_SESSION
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    // Explicit session bootstrap — reads from localStorage, resolves instantly
+    supabase.auth.getSession().then(({ data: { session } }) => {
       initialHandled.current = true
-      try {
-        setSession(session)
-        setUser(session?.user ?? null)
 
-        if (session?.user) {
-          await fetchApprovalStatus(session.user)
-        } else {
-          setApprovalStatus(null)
+      // Unblock the UI immediately
+      setSession(session)
+      setUser(session?.user ?? null)
+      clearTimeout(timeoutId)
+      setLoading(false)
+
+      if (session?.user) {
+        // Fetch approval status in background (non-blocking)
+        if (!approvalCheckRunning.current) {
+          approvalCheckRunning.current = true
+          fetchApprovalStatus(session.user).finally(() => {
+            approvalCheckRunning.current = false
+          })
         }
-      } catch (err) {
-        console.error('Auth getSession error:', err)
+      } else {
         setApprovalStatus(null)
-      } finally {
-        clearTimeout(timeoutId)
-        setLoading(false)
       }
     })
 

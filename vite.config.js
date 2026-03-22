@@ -35,6 +35,11 @@ export default defineConfig({
           if (id.includes('node_modules/lucide-react/')) {
             return 'vendor-icons'
           }
+          // Consolidate all remaining node_modules into one chunk to avoid
+          // dozens of tiny transitive-dependency files loading on every page
+          if (id.includes('node_modules/')) {
+            return 'vendor-misc'
+          }
         },
       },
     },

@@ -15,6 +15,9 @@ export default function ProtectedRoute() {
   if (loading) return <PageLoader />
   if (!user) return <Navigate to="/" replace />
 
+  // Approval check is still in progress (background DB query)
+  if (approvalStatus === null) return <PageLoader />
+
   if (approvalStatus === 'pending') {
     return <Navigate to="/pending" replace />
   }
@@ -23,6 +26,5 @@ export default function ProtectedRoute() {
     return <Navigate to="/denied" replace />
   }
 
-  // approvalStatus === 'approved' or null (Supabase not configured — dev mode)
   return <Outlet />
 }
