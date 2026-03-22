@@ -15,6 +15,7 @@ vi.mock('../lib/supabase', () => {
           cb('INITIAL_SESSION', null)
           return { data: { subscription: { unsubscribe: unsubscribeMock } } }
         }),
+        getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
         signInWithPassword: vi.fn(),
         signUp: vi.fn(),
         signInWithOAuth: vi.fn(),
