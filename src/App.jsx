@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react'
+import { MotionConfig } from 'framer-motion'
 import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import LandingLayout from './components/layout/LandingLayout'
@@ -37,8 +38,8 @@ function PageTracker() {
 
 function PageLoader() {
   return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary)]" />
+    <div className="flex items-center justify-center min-h-[60vh]" role="status" aria-label="Loading">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary)]" aria-hidden="true" />
     </div>
   )
 }
@@ -76,6 +77,7 @@ function App() {
 
   return (
     <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
+      <MotionConfig reducedMotion="user">
       <ErrorBoundary>
         <PageTracker />
         <Suspense fallback={<PageLoader />}>
@@ -117,6 +119,7 @@ function App() {
           </Routes>
         </Suspense>
       </ErrorBoundary>
+      </MotionConfig>
     </ThemeContext.Provider>
   )
 }

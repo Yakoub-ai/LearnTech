@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /dashboard/
+Disallow: /pending
+Disallow: /denied
+Allow: /
+
+Sitemap: https://techhubb.se/sitemap.xml

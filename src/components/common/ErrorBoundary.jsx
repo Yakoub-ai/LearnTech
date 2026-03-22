@@ -13,10 +13,14 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, info) {
     console.error('Page error:', error, info)
+    this.props.onError?.(error, info)
   }
 
   render() {
     if (this.state.hasError) {
+      if (this.props.fallback) {
+        return this.props.fallback
+      }
       return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
           <h2 className="text-2xl font-bold text-[var(--color-text)] mb-3">Something went wrong</h2>

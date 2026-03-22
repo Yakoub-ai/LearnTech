@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { X, Github, Chrome } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 
@@ -10,13 +10,57 @@ export default function LoginModal({ onClose }) {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(null)
+  const dialogRef = useRef(null)
 
-  const handleKeyDown = (e) => { if (e.key === 'Escape') onClose() }
+  // Focus trap: keep keyboard focus inside the modal and restore it on close
+  useEffect(() => {
+    const previouslyFocused = document.activeElement
+
+    const getFocusable = () =>
+      Array.from(dialogRef.current?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      ) ?? [])
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key !== 'Tab') return
+      const focusable = getFocusable()
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus() }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus() }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      previouslyFocused?.focus()
+    }
+  }, [onClose])
 
   async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
     setLoading(true)
+
+    // Enforce password strength on signup
+    if (mode === 'signup') {
+      if (password.length < 8) {
+        setError('Password must be at least 8 characters.')
+        setLoading(false)
+        return
+      }
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+        setError('Password must include an uppercase letter, a lowercase letter, and a number.')
+        setLoading(false)
+        return
+      }
+    }
+
     try {
       if (mode === 'login') {
         await signInWithEmail(email, password)
@@ -33,8 +77,9 @@ export default function LoginModal({ onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose} onKeyDown={handleKeyDown}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="login-modal-title"
@@ -73,7 +118,7 @@ export default function LoginModal({ onClose }) {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  minLength={6}
+                  minLength={mode === 'signup' ? 8 : 6}
                   className="w-full px-3 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
               </div>

@@ -17,9 +17,13 @@ export default function PageHelmet({ title, description, path = '', ogType = 'we
       <meta property="og:url" content={url} />
       <meta property="og:type" content={ogType} />
       <meta property="og:site_name" content={SITE_NAME} />
-      <meta name="twitter:card" content="summary" />
+      <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={desc} />
+      <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
     </>
   )
 }

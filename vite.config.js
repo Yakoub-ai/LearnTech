@@ -12,11 +12,11 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.md'],
   oxc: {
-    include: /\.(jsx|tsx|ts)$/,
+    include: /\.(jsx?|tsx?)$/,
     exclude: /\.js$/,
   },
   build: {
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 500,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -34,6 +34,16 @@ export default defineConfig({
           }
           if (id.includes('node_modules/lucide-react/')) {
             return 'vendor-icons'
+          }
+          // Heavy page-specific libraries in their own chunks
+          if (id.includes('node_modules/mermaid/')) {
+            return 'vendor-mermaid'
+          }
+          if (id.includes('node_modules/recharts/')) {
+            return 'vendor-charts'
+          }
+          if (id.includes('node_modules/@xyflow/')) {
+            return 'vendor-flow'
           }
           // Consolidate all remaining node_modules into one chunk to avoid
           // dozens of tiny transitive-dependency files loading on every page

@@ -6,6 +6,10 @@
 const STORAGE_KEY = 'tech-hubben-learning-progress';
 const LEGACY_STORAGE_KEY = 'tech-hub-learning-progress';
 
+// Module-level cache to avoid redundant JSON parse/stringify on every call.
+// Invalidated on every saveProgress() call.
+let _progressCache = null;
+
 // Migrate legacy key on first load
 (function migrateLegacyStorage() {
   try {
@@ -72,7 +76,8 @@ function getInitialRoleProgress() {
 export function getProgress() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : getInitialProgress();
+    _progressCache = stored ? JSON.parse(stored) : getInitialProgress();
+    return _progressCache;
   } catch (error) {
     console.warn('Failed to retrieve progress from localStorage:', error);
     return getInitialProgress();
@@ -88,6 +93,7 @@ export function saveProgress(progress) {
   try {
     progress.lastUpdated = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    _progressCache = progress;
     return true;
   } catch (error) {
     console.warn('Failed to save progress to localStorage:', error);
