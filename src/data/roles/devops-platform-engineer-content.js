@@ -300,6 +300,97 @@ The "Every DevOps Tool Explained" video highlights the ecosystem built on top of
 - Force-pushing to shared branches, which rewrites history and disrupts collaborators.
 
 ---
+
+## 7. Networking Fundamentals for DevOps – DNS, HTTP, TCP/IP and Ports
+
+Networking is the invisible fabric that connects every component in a modern system. A DevOps engineer does not need to be a network engineer, but a solid grasp of DNS, HTTP, TCP/IP, and port mechanics is essential for debugging connectivity issues, configuring firewalls, and understanding how traffic flows from user to application.
+
+**Why it matters:** When a deployment fails with "connection refused" or an application cannot reach its database, the root cause is almost always a networking problem: a wrong DNS record, a missing firewall rule, a port not exposed, or an application binding to the wrong interface.
+
+**Key things to understand:**
+
+- **IP addresses** uniquely identify a device on a network. IPv4 addresses (e.g. \`10.0.1.5\`) are still dominant in cloud infrastructure. Private ranges (\`10.x.x.x\`, \`172.16-31.x.x\`, \`192.168.x.x\`) are used inside VNets.
+- **DNS** translates domain names to IP addresses. A records map a domain to an IPv4 address. CNAME records alias one domain to another. TTL controls caching duration.
+- **TCP/IP** is the foundational protocol suite. TCP provides reliable, ordered delivery. UDP provides fast, unreliable delivery.
+- **Ports** identify specific services on a host. Well-known ports: 22 (SSH), 80 (HTTP), 443 (HTTPS), 5432 (PostgreSQL), 6379 (Redis).
+- **HTTP** follows a request-response model with methods (GET, POST, PUT, DELETE) and status codes (2xx success, 3xx redirect, 4xx client error, 5xx server error).
+- **Firewalls and Security Groups** control traffic by port, protocol, and source IP.
+
+**Common pitfalls:**
+
+- Assuming DNS changes propagate instantly; TTL means old records can persist for hours.
+- Confusing \`localhost\` inside a container with the host machine's address.
+- Not understanding that containers have their own network namespace.
+
+---
+
+## 8. Python for DevOps – Scripting Beyond Bash
+
+While Bash is ideal for short automation tasks, Python is the go-to language when scripts grow beyond simple command execution. Python's readability, error handling, and ecosystem make it the better choice for API integrations, data processing, cloud automation, and testable scripts.
+
+**Why it matters:** DevOps automation frequently involves interacting with REST APIs, parsing JSON responses, and producing structured output that pipelines can consume.
+
+**Key things to understand:**
+
+- Use \`#!/usr/bin/env python3\` as the shebang line.
+- Structure scripts with functions and a \`main()\` entry point guarded by \`if __name__ == "__main__":\`.
+- Use \`sys.exit(0)\` for success and \`sys.exit(1)\` for failure.
+- The \`json\` module parses and serialises JSON without external dependencies.
+- Use \`try/except\` blocks around network calls and file operations.
+- Virtual environments (\`python -m venv .venv\`) isolate dependencies per project.
+
+**Common pitfalls:**
+
+- Not handling exceptions in scripts that call external APIs.
+- Installing packages globally instead of using a virtual environment.
+- Writing scripts without functions, making them impossible to unit test.
+
+---
+
+## 9. Multi-Stage Docker Builds and Container Best Practices
+
+A multi-stage build uses multiple \`FROM\` instructions. The first stage builds the application; the final stage copies only the finished artifact into a minimal production image. This reduces image size and attack surface.
+
+**Why it matters:** Smaller images mean faster pulls, faster deployments, and fewer vulnerabilities. Multi-stage builds separate the build environment from the runtime environment.
+
+**Key things to understand:**
+
+- Multi-stage builds use \`FROM ... AS <name>\` and \`COPY --from=<name>\` to transfer artifacts between stages.
+- Only the final stage layers are included in the shipped image.
+- Always run containers as a non-root user with the \`USER\` instruction.
+- Pin base image versions (\`node:20-alpine\`, not \`node:latest\`).
+- Prefer \`CMD\` in exec form (\`["node", "server.js"]\`) for proper signal handling.
+
+**Common pitfalls:**
+
+- Shipping development tools in the production image.
+- Misusing \`ENTRYPOINT\` and \`CMD\`; \`ENTRYPOINT\` defines the executable, \`CMD\` provides default arguments.
+- Not leveraging the Docker build cache.
+
+---
+
+## 10. Introduction to Cloud Concepts and Infrastructure
+
+Cloud computing delivers computing resources over the internet, on demand, with pay-as-you-go pricing. The three major providers are AWS, Azure, and GCP.
+
+**Why it matters:** Every DevOps role in 2025-2026 involves cloud infrastructure. Understanding service models helps you choose the right abstraction level.
+
+**Key things to understand:**
+
+- **IaaS**: You manage the OS and up. Examples: AWS EC2, Azure VMs.
+- **PaaS**: You manage application code and data only. Examples: Azure App Service.
+- **SaaS**: You consume a fully managed application. Examples: Microsoft 365, GitHub.
+- **Shared Responsibility Model**: The provider secures infrastructure; you secure workloads, data, and access controls.
+- **Regions and Availability Zones**: Deploying across zones protects against single data centre failures.
+- Cloud resources are billed by usage. Tags enable cost tracking and ownership identification.
+
+**Common pitfalls:**
+
+- Leaving test resources running and incurring unexpected charges.
+- Not understanding the shared responsibility model.
+- Deploying to a single availability zone.
+
+---
 `,
   mid: `
 # DevOps / Platform Engineer – Mid Concept Reference

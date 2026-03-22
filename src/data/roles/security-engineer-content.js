@@ -302,6 +302,79 @@ The colour-mixing analogy used in teaching Diffie-Hellman captures this well: co
 - Confusing encoding (Base64) with encryption; encoding is trivially reversible and provides zero security.
 - Implementing custom cryptography instead of using well-tested libraries; cryptography is extraordinarily easy to get wrong and the consequences of getting it wrong are catastrophic.
 - Using Diffie-Hellman with parameters that are too small; DH with \`n\` shorter than 2048 bits is vulnerable to the Logjam attack and should not be used.
+
+---
+
+## Authentication Fundamentals – Proving Identity Securely
+
+Authentication is the process of proving that a user, device, or service is who it claims to be. Authorisation — a separate but related concept — determines what an authenticated entity is allowed to do. Confusing the two is one of the most common mistakes in application security.
+
+Modern authentication relies on one or more factors: something you know (password, PIN), something you have (phone, hardware key), or something you are (fingerprint, face). Multi-factor authentication (MFA) requires at least two of these categories and is now the minimum standard for any system that handles sensitive data or provides administrative access.
+
+Passwords remain the most common authentication factor despite decades of known weaknesses. Users reuse passwords, choose predictable ones, and are vulnerable to phishing. Passkeys (FIDO2/WebAuthn) represent the industry shift away from passwords entirely — they use public-key cryptography bound to a specific device, making phishing and credential-stuffing attacks structurally impossible.
+
+**Why it matters:** Broken authentication is one of the top two most exploited vulnerability classes (OWASP A07). A Security Engineer must understand how authentication works at a protocol level to evaluate implementations, identify weaknesses, and recommend appropriate controls. As the industry moves from passwords to passkeys and OAuth 2.1, understanding both legacy and modern authentication mechanisms is essential.
+
+**Key things to understand:**
+
+- Multi-factor authentication (MFA): combines two or more factor categories; SMS-based MFA is better than nothing but vulnerable to SIM-swapping — TOTP (authenticator apps) or FIDO2 hardware keys are preferred
+- Session management: after authentication, the server creates a session token (typically a cookie) that identifies the user on subsequent requests; session tokens must be random, sufficiently long, HttpOnly, Secure, and have appropriate expiry
+- Password policies: length is more important than complexity; minimum 12 characters, check against breached password lists (Have I Been Pwned API), never store in plaintext
+- Passkeys and FIDO2/WebAuthn: public-key authentication where the private key never leaves the user's device; phishing-resistant because the credential is bound to the origin (domain)
+- Credential stuffing: attackers use lists of breached username/password pairs to attempt login on other services; rate limiting, account lockout, and MFA are the primary defences
+
+**Common pitfalls:**
+
+- Implementing "remember me" by storing passwords in cookies or localStorage; use long-lived refresh tokens with proper rotation instead.
+- Relying on client-side session expiry only; the server must also invalidate the session to prevent token reuse.
+- Not implementing rate limiting on login endpoints; without it, attackers can try millions of password combinations.
+- Using SMS-based MFA as the only second factor; SIM-swapping attacks can intercept SMS codes. TOTP or FIDO2 hardware keys are more resistant.
+
+---
+
+## Secure Coding Fundamentals – Writing Code That Resists Attack
+
+Secure coding is the practice of writing software that continues to behave correctly even when an attacker provides unexpected, malicious, or crafted input. The core principle is simple: never trust input. Any data that originates outside the system boundary must be validated, sanitised, or escaped before it is used.
+
+**Why it matters:** The majority of exploitable vulnerabilities stem from code that handles input incorrectly. SQL injection, XSS, command injection, path traversal, and deserialisation attacks all exploit the same fundamental error: treating untrusted input as trusted code or data.
+
+**Key things to understand:**
+
+- Input validation: use allowlists (define what is permitted) rather than denylists (try to block what is dangerous)
+- Output encoding: transform data for the output context — HTML encoding for web pages, URL encoding for query parameters
+- Secure defaults: systems should be secure out of the box; features that weaken security must be opt-in, not opt-out
+- Error handling: never expose internal details (stack traces, database schema) in error messages; log details server-side, return generic messages to users
+- Dependency management: keep third-party libraries updated; use \`pip-audit\`, \`npm audit\`, or Snyk to scan for known vulnerabilities
+- Secrets management: never hardcode secrets in source code; use environment variables or secret managers
+
+**Common pitfalls:**
+
+- Validating input on the client side only without server-side validation; client-side checks can be bypassed trivially.
+- Using denylists instead of allowlists; attackers constantly find new ways to bypass denylists.
+- Concatenating user input into shell commands, SQL queries, or HTML output; always use the language's safe API.
+- Logging sensitive data (passwords, session tokens) in application logs.
+
+---
+
+## Security Tools and Reconnaissance – Building Your Toolkit
+
+A Security Engineer's effectiveness depends on understanding the tools available for both offensive testing and defensive monitoring. The essential categories are: network scanning (Nmap), traffic analysis (Wireshark, tcpdump), web application testing (Burp Suite, OWASP ZAP), and vulnerability scanning (Nessus, Trivy).
+
+**Why it matters:** Security is a practical discipline. Hands-on labs (TryHackMe, Hack The Box, PortSwigger Web Security Academy) provide safe environments to practice. Understanding tools also helps when interpreting findings from automated scanners and penetration test reports.
+
+**Key things to understand:**
+
+- **Nmap**: discovers hosts, open ports, running services, and OS versions; \`nmap -sV -sC target\` runs version detection and default scripts
+- **Wireshark/tcpdump**: packet capture and analysis; inspect individual packets to understand protocols and detect anomalies
+- **Burp Suite**: intercepts HTTP requests between browser and server, allowing modification and replay; essential for web testing
+- **OWASP ZAP**: open-source alternative to Burp Suite for automated web scanning
+- **CyberChef**: web-based tool for encoding, decoding, encryption, hashing, and data transformation
+
+**Common pitfalls:**
+
+- Running Nmap or vulnerability scanners against systems you do not own or have authorisation to test; unauthorised scanning is illegal.
+- Relying entirely on automated scanners and treating the absence of findings as proof of security.
+- Ignoring packet analysis skills; understanding network traffic at the packet level is essential for incident investigation.
 `,
   mid: `# Security Engineer – Mid Concept Reference
 
