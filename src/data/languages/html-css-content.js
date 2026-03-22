@@ -11,6 +11,19 @@ Welcome to the foundational deep dive into **HTML & CSS**. These two technologie
 
 Semantic HTML means using elements that convey **meaning** about the content they contain, rather than relying solely on generic \\\`<div>\\\` and \\\`<span>\\\` tags. HTML5 introduced a rich set of semantic elements that improve accessibility, SEO, and code readability.
 
+### DOM Parsing Pipeline
+
+\\\`\\\`\\\`mermaid
+flowchart TB
+    A[HTML Source] --> B[Tokenizer]
+    B --> C[Token Stream]
+    C --> D[Tree Builder]
+    D --> E[DOM Tree]
+    E --> F[CSSOM Merge]
+    F --> G[Render Tree]
+    G --> H[Layout and Paint]
+\\\`\\\`\\\`
+
 ### Why Semantic Elements Matter
 
 Before HTML5, developers structured pages almost entirely with \\\`<div>\\\` elements, adding classes like \\\`class="header"\\\` or \\\`class="nav"\\\` to indicate purpose. Search engines and assistive technologies had to guess what each \\\`<div>\\\` meant. Semantic elements remove that guesswork.
@@ -495,6 +508,19 @@ p { color: black; }            /* 0-0-1 */
 ## 4. The Box Model
 
 Every HTML element is a rectangular box. The CSS box model describes how the browser calculates the total size of each element by combining content, padding, border, and margin.
+
+### Box Model Layers
+
+\\\`\\\`\\\`mermaid
+flowchart LR
+    A[Content] --> B[Padding]
+    B --> C[Border]
+    C --> D[Margin]
+    A --- A1["Actual text or image"]
+    B --- B1["Space inside border"]
+    C --- C1["Visible edge"]
+    D --- D1["Space outside border"]
+\\\`\\\`\\\`
 
 \\\`\\\`\\\`css
 /*
@@ -1437,6 +1463,34 @@ body {
 > **Role connection:** Design system engineers and front-end architects use custom properties as the bridge between design tokens and implementation. This is a core skill for building themeable component libraries.
 
 ---
+
+### CSS Cascade and Specificity Hierarchy
+
+\\\`\\\`\\\`mermaid
+flowchart TB
+    A["Highest Priority"] --> B["Inline styles"]
+    B --> C["ID selectors - 1-0-0"]
+    C --> D["Class / Attribute / Pseudo-class - 0-1-0"]
+    D --> E["Element / Pseudo-element - 0-0-1"]
+    E --> F["Universal selector - 0-0-0"]
+    F --> G["Inherited styles"]
+    G --> H["Browser defaults"]
+    H --> I["Lowest Priority"]
+\\\`\\\`\\\`
+
+### Layout Algorithm Choice
+
+\\\`\\\`\\\`mermaid
+flowchart LR
+    A[Layout Need] --> B{What type?}
+    B -->|"1D row or column"| C[Flexbox]
+    B -->|"2D grid"| D[CSS Grid]
+    B -->|"Text flow"| E[Normal Flow]
+    B -->|"Overlapping layers"| F["Position absolute/fixed"]
+    C --> G["justify-content, align-items"]
+    D --> H["grid-template-rows/columns"]
+    E --> I["Block and inline formatting"]
+\\\`\\\`\\\`
 
 ## 2. Animations & Transitions
 
@@ -2430,6 +2484,36 @@ Welcome to the senior deep dive. At this level, you are not just writing CSS —
 > **Role connection:** Senior and staff front-end engineers, design system architects, and tech leads need to make decisions about CSS strategy that affect dozens of developers and millions of users. These topics directly inform those architectural decisions.
 
 ---
+
+### Browser Rendering Pipeline
+
+\\\`\\\`\\\`mermaid
+flowchart LR
+    A[Parse HTML + CSS] --> B[Style Calculation]
+    B --> C[Layout]
+    C --> D[Paint]
+    D --> E[Composite]
+    A --- A1["Build DOM + CSSOM"]
+    B --- B1["Match selectors to elements"]
+    C --- C1["Calculate geometry"]
+    D --- D1["Fill in pixels"]
+    E --- E1["Layer composition on GPU"]
+\\\`\\\`\\\`
+
+### CSS Architecture Patterns
+
+\\\`\\\`\\\`mermaid
+flowchart TB
+    A[CSS Architecture Decision] --> B{Project Scale?}
+    B -->|"Small project"| C[BEM Naming Convention]
+    B -->|"Component library"| D[CSS Modules]
+    B -->|"JS framework app"| E[CSS-in-JS]
+    B -->|"Large design system"| F[ITCSS + Cascade Layers]
+    C --> G["Predictable class names"]
+    D --> H["Scoped styles per component"]
+    E --> I["Co-located styles with logic"]
+    F --> J["Layered specificity control"]
+\\\`\\\`\\\`
 
 ## 1. CSS Architecture at Scale
 
