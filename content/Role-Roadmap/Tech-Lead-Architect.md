@@ -27,6 +27,8 @@ Tech Leads and Architects guide technical direction, system design, and engineer
 - Compare REST, GraphQL, gRPC and event-driven API styles
 - Explain what large language models are and where they fit in a system architecture
 - Apply the branching strategy and conduct a code review
+- Explain the SOLID principles and identify violations in a code review
+- Recognise common design patterns (Factory, Adapter, Observer, Strategy) and when to apply them
 
 For deep explanations of each concept, see the [Beginner Concept Reference](Tech-Lead-Architect/Beginner.md).
 
@@ -84,6 +86,8 @@ For deep explanations of each concept, see the [Mid Concept Reference](Tech-Lead
 - Design an LLM agent architecture with appropriate guardrails
 - Apply context engineering to production AI systems
 - Lead an incident response process and facilitate blameless post-mortems
+- Apply cost optimisation strategies and build performance budgets for cloud workloads
+- Design internal developer platforms that reduce cognitive load and improve engineering productivity
 
 For deep explanations of each concept, see the [Senior Concept Reference](Tech-Lead-Architect/Senior.md).
 

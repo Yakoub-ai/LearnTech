@@ -28,6 +28,8 @@ Tech Leads and Architects guide technical direction, system design, and engineer
 - Compare REST, GraphQL, gRPC and event-driven API styles
 - Explain what large language models are and where they fit in a system architecture
 - Apply the branching strategy and conduct a code review
+- Explain the SOLID principles and identify violations in a code review
+- Recognise common design patterns (Factory, Adapter, Observer, Strategy) and when to apply them
 
 For deep explanations of each concept, see the [Beginner Concept Reference](Tech-Lead-Architect/Beginner.md).
 
@@ -85,6 +87,8 @@ For deep explanations of each concept, see the [Mid Concept Reference](Tech-Lead
 - Design an LLM agent architecture with appropriate guardrails
 - Apply context engineering to production AI systems
 - Lead an incident response process and facilitate blameless post-mortems
+- Apply cost optimisation strategies and build performance budgets for cloud workloads
+- Design internal developer platforms that reduce cognitive load and improve engineering productivity
 
 For deep explanations of each concept, see the [Senior Concept Reference](Tech-Lead-Architect/Senior.md).
 
@@ -792,6 +796,54 @@ Multi-agent systems, where multiple LLMs collaborate on a task, amplify context 
 - Treating context construction as a one-time configuration rather than an evolving, tested code path
 - Including all available context on the assumption that more information is always better — irrelevant context degrades output quality
 - Failing to instrument context pipelines, making it impossible to diagnose why output quality changed after a deployment
+
+---
+
+## Incident Management – Leading Through Failure
+
+Incidents are inevitable in production systems. A senior architect's value during an incident is not in writing code faster — it is in structuring the response so the team can diagnose the problem efficiently, communicate status clearly and prevent the same failure from recurring.
+
+A structured incident response process has four phases: detection (automated alerting based on SLOs), triage (classify severity, assemble the team, establish a communication channel), mitigation (restore service as quickly as possible — rollback, failover, feature toggle — even if the root cause is unknown) and resolution (fix the underlying issue and verify in production).
+
+Severity levels determine response urgency: SEV-1 (complete outage — all-hands response), SEV-2 (major feature degraded — on-call plus tech lead), SEV-3 (minor degradation — team priority) and SEV-4 (low-impact — normal backlog).
+
+Blameless post-mortems focus on systemic causes: what was the chain of events? What detection gaps existed? What process or tooling changes would prevent recurrence? A good post-mortem produces concrete action items with owners and deadlines.
+
+**Why it matters:** An organisation's reliability culture is defined by how it responds to failure. A senior architect who leads structured incident responses and facilitates blameless post-mortems builds a team that improves with every failure.
+
+**Key things to understand:**
+- The four phases of incident response: detection, triage, mitigation, resolution
+- How severity classification drives response urgency and communication
+- The principles of blameless post-mortems
+- How DORA metrics (change failure rate, time to restore) measure incident management effectiveness
+
+**Common pitfalls:**
+- Skipping mitigation to pursue root cause — restore service first, investigate second
+- Post-mortems that identify a person rather than a systemic cause
+- Action items with no owners or deadlines
+
+---
+
+## Cost Optimisation and Platform Engineering
+
+At the senior level, architecture is inseparable from economics. Cost optimisation is about spending deliberately with visibility into what drives costs.
+
+Cloud cost management begins with visibility through resource tagging by team, service and environment. Right-sizing is the most impactful cost lever — most workloads are over-provisioned. Auto-scaling, reserved instances and spot instances offer 30-90% savings for appropriate workloads.
+
+Platform engineering builds internal developer platforms (IDPs) that provide golden paths — opinionated, pre-approved patterns — reducing cognitive load on product teams. Developer experience (DevEx) metrics measure onboarding time, build time, deployment frequency and cognitive load. DORA metrics (deployment frequency, lead time, change failure rate, time to restore) provide engineering productivity indicators.
+
+**Why it matters:** Cloud costs grow with usage, and platform engineering multiplies architectural decisions across the organisation. A senior architect who can articulate cost trade-offs and build enabling platforms operates at enterprise scale.
+
+**Key things to understand:**
+- Resource tagging and cost attribution for informed cost decisions
+- Trade-offs between on-demand, reserved, savings plans and spot pricing
+- What an internal developer platform provides and how it reduces cognitive load
+- DORA metrics as engineering productivity indicators
+
+**Common pitfalls:**
+- Treating cost optimisation as a one-time exercise
+- Building platforms too opinionated for teams to adopt
+- Ignoring developer experience until productivity problems are severe
 
 ---
 

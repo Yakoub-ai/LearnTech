@@ -709,6 +709,48 @@ GDPR obligations apply to every stage of the ML pipeline: training data with per
 
 ---
 
+## LLM Fine-Tuning – LoRA, QLoRA and PEFT
+
+Large language model fine-tuning has become a core senior ML engineering skill. Full fine-tuning of a 7B parameter model requires 56+ GB of GPU memory. **Parameter-Efficient Fine-Tuning (PEFT)** methods solve this by updating only a small fraction of parameters. **LoRA** injects small trainable matrices into frozen attention layers, reducing trainable parameters by 99%+. **QLoRA** adds 4-bit quantisation, enabling fine-tuning of 70B+ models on a single 48GB GPU.
+
+The Hugging Face \`transformers\` and \`peft\` libraries provide the standard implementation. LoRA adapters are tiny (tens of MB) and can be swapped at serving time, enabling multi-tenant model serving from a single base model.
+
+**Key things to understand:**
+- LoRA rank \`r\` (8-64) controls capacity; \`lora_alpha\` (typically 2x rank) controls scaling.
+- QLoRA stores frozen weights in 4-bit NormalFloat, reducing memory by 4x vs float16.
+- LoRA typically needs higher learning rates (1e-4 to 3e-4) than full fine-tuning.
+- Evaluate for catastrophic forgetting — the model may lose general capabilities while gaining domain-specific ones.
+
+---
+
+## Distributed Training and GPU Management
+
+**Data parallelism** (DDP) replicates the model on each GPU, processes different batches, and synchronises gradients via all-reduce. It scales near-linearly. **Model parallelism** (DeepSpeed ZeRO, FSDP) partitions optimizer states, gradients, and parameters across GPUs for memory efficiency. ZeRO Stage 2 saves ~8x memory; Stage 3 saves ~Nx for N GPUs.
+
+**GPU cost optimisation**: spot/preemptible instances cost 60-80% less; checkpointing every N steps allows training to resume after preemption. Right-sizing GPU selection (A100 vs H100, 40GB vs 80GB) based on actual memory requirements prevents overspending.
+
+**Key things to understand:**
+- DDP is the default for multi-GPU training with minimal code changes.
+- DeepSpeed ZeRO stages progressively reduce memory by partitioning state across GPUs.
+- \`DistributedSampler\` ensures each GPU sees different data — without it, distributed training gives no speedup.
+- Spot instances + frequent checkpointing can reduce training costs by 60-80%.
+
+---
+
+## Feature Stores – Training-Serving Consistency
+
+A feature store (Feast, Tecton) is a centralised system for managing ML features that solves the most common source of silent model failures: **training-serving skew**. Features are defined once and served consistently to both training pipelines and serving endpoints. The offline store serves historical features for training; the online store serves the latest values for real-time inference.
+
+Feature stores also enable cross-team feature reuse — a carefully engineered feature can be computed once and served to multiple models without duplicated effort.
+
+**Key things to understand:**
+- Feature stores separate feature computation from consumption — features are defined once.
+- Feature TTL (time-to-live) prevents serving stale features.
+- Training-serving skew is the #1 cause of silent model degradation not caught by monitoring.
+- Start simple; adopt Feast when feature management becomes a bottleneck.
+
+---
+
 ## Language Deep Dives
 
 - [Python Deep Dive](/language/python) — The primary language for ML development
