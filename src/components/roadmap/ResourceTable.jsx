@@ -78,7 +78,7 @@ export default function ResourceTable({ resources, _roleId, level, isResourceCom
             </div>
 
             {youtubeId && (
-              <div className="mt-2 ml-7">
+              <div className="mt-2">
                 <YouTubeEmbed videoId={youtubeId} title={resource.title} />
               </div>
             )}

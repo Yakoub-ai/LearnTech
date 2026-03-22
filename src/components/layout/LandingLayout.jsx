@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
 import { ThemeContext } from '../../contexts/ThemeContext'
 import { useAuth } from '../../contexts/AuthContext'
@@ -8,8 +8,16 @@ import Footer from './Footer'
 
 export default function LandingLayout() {
   const { darkMode, setDarkMode } = useContext(ThemeContext)
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
+  const navigate = useNavigate()
   const [loginOpen, setLoginOpen] = useState(false)
+
+  // Redirect authenticated users straight to the dashboard
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [loading, user, navigate])
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--color-surface)]">

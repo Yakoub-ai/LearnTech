@@ -97,6 +97,18 @@ export default function MarkdownRenderer({ content, className = '' }) {
       return <p className="mb-4 leading-relaxed text-[var(--color-text-secondary)]">{children}</p>
     },
     a: ({ href, children }) => {
+      // YouTube links → render as embedded player with thumbnail
+      if (href) {
+        const ytId = extractYouTubeId(href)
+        if (ytId) {
+          const title = typeof children === 'string'
+            ? children
+            : Array.isArray(children)
+              ? children.map(c => (typeof c === 'string' ? c : '')).join('')
+              : ''
+          return <YouTubeEmbed videoId={ytId} title={title || undefined} />
+        }
+      }
       // SPA navigation for internal links
       if (href && (href.startsWith('/language/') || href.startsWith('/role/'))) {
         return (

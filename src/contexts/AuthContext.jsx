@@ -66,7 +66,22 @@ export function AuthProvider({ children }) {
       return
     }
 
+    // Track whether initial session has already been handled by getSession()
+    // to avoid double-processing when onAuthStateChange also fires INITIAL_SESSION
+    const initialHandled = { current: false }
+
+    // Safety net: if auth never resolves within 10s, unblock the UI
+    const timeoutId = setTimeout(() => {
+      setLoading((current) => {
+        if (current) console.warn('[Auth] Session check timed out — unblocking UI')
+        return false
+      })
+    }, 10_000)
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Skip INITIAL_SESSION if getSession() already handled it
+      if (event === 'INITIAL_SESSION' && initialHandled.current) return
+
       try {
         setSession(session)
         setUser(session?.user ?? null)
@@ -82,11 +97,36 @@ export function AuthProvider({ children }) {
         console.error('Auth state change error:', err)
         setApprovalStatus(null)
       } finally {
+        clearTimeout(timeoutId)
         setLoading(false)
       }
     })
 
-    return () => subscription.unsubscribe()
+    // Explicit session bootstrap — more reliable than waiting for INITIAL_SESSION
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      initialHandled.current = true
+      try {
+        setSession(session)
+        setUser(session?.user ?? null)
+
+        if (session?.user) {
+          await fetchApprovalStatus(session.user)
+        } else {
+          setApprovalStatus(null)
+        }
+      } catch (err) {
+        console.error('Auth getSession error:', err)
+        setApprovalStatus(null)
+      } finally {
+        clearTimeout(timeoutId)
+        setLoading(false)
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+      clearTimeout(timeoutId)
+    }
   }, [fetchApprovalStatus])
 
   async function signInWithEmail(email, password) {
@@ -105,18 +145,20 @@ export function AuthProvider({ children }) {
 
   async function signInWithGitHub() {
     if (!supabase) throw new Error('Supabase not configured')
+    const base = import.meta.env.VITE_APP_URL || window.location.origin
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
-      options: { redirectTo: import.meta.env.VITE_APP_URL || window.location.origin }
+      options: { redirectTo: `${base}/dashboard` }
     })
     if (error) throw error
   }
 
   async function signInWithGoogle() {
     if (!supabase) throw new Error('Supabase not configured')
+    const base = import.meta.env.VITE_APP_URL || window.location.origin
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: import.meta.env.VITE_APP_URL || window.location.origin }
+      options: { redirectTo: `${base}/dashboard` }
     })
     if (error) throw error
   }
