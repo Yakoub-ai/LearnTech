@@ -275,6 +275,64 @@ Code review is not primarily about finding bugs — automated tests do that bett
 - Using code review as a gatekeeping ritual rather than a learning opportunity
 - Allowing large pull requests that are impossible to review meaningfully — set a norm for small, focused changes
 - Letting the branching strategy drift — inconsistency creates confusion and integration pain
+
+---
+
+## Software Design Principles – SOLID, DRY, KISS and Clean Code
+
+Before an aspiring tech lead can design systems, they must master the principles that govern the quality of individual components. These principles are the vocabulary of code-level design discussions and the foundation on which architecture is built.
+
+**SOLID** is an acronym for five object-oriented design principles that guide class and module design:
+
+- **Single Responsibility Principle (SRP):** A class should have one, and only one, reason to change. When a class handles both business logic and database access, a change to either concern forces a change to the class — increasing the risk of unintended side effects.
+- **Open/Closed Principle (OCP):** Software entities should be open for extension but closed for modification. New behaviour should be added by writing new code (e.g. a new implementation of an interface), not by modifying existing code that is already tested and deployed.
+- **Liskov Substitution Principle (LSP):** Subtypes must be substitutable for their base types without altering the correctness of the programme. If a method accepts a base class, it must work correctly with any derived class — no surprises.
+- **Interface Segregation Principle (ISP):** Clients should not be forced to depend on interfaces they do not use. Prefer many small, focused interfaces over one large general-purpose interface.
+- **Dependency Inversion Principle (DIP):** High-level modules should not depend on low-level modules; both should depend on abstractions. This is the principle that makes hexagonal architecture possible — the domain depends on interfaces, not on specific database or HTTP implementations.
+
+**DRY (Don't Repeat Yourself)** states that every piece of knowledge must have a single, unambiguous, authoritative representation within a system. Duplication is not just wasted effort — it is a bug waiting to happen, because two copies of the same logic will inevitably diverge.
+
+**KISS (Keep It Simple, Stupid)** reminds us that the simplest solution that meets the requirements is almost always the best. Complexity has a maintenance cost that compounds over time.
+
+**YAGNI (You Aren't Gonna Need It)** is the agile counterpart: do not build features or abstractions until they are actually needed. Speculative generalisation wastes effort and creates unnecessary complexity.
+
+**Why it matters:** Every architecture decision eventually manifests as code. If the code-level design is poor — classes with tangled responsibilities, duplicated logic, unnecessary abstractions — the architecture above it will be undermined regardless of how elegant the system diagram looks. A tech lead who can identify SRP violations in a code review and explain why they matter is more effective than one who only thinks at the whiteboard level.
+
+**Key things to understand:**
+- How each SOLID principle prevents a specific category of design problem
+- Why DIP is the bridge between code-level design and system-level architecture
+- How DRY applies not just to code but to configuration, infrastructure and documentation
+- When KISS and YAGNI should override the desire for elegant abstraction
+- How to recognise violations of these principles during code review
+
+**Common pitfalls:**
+- Applying DRY too aggressively — extracting shared code between two unrelated features creates coupling worse than the duplication it removed
+- Over-abstracting in the name of OCP — not every piece of code needs to be extensible; apply the principle where change is likely
+- Treating SOLID as a checklist rather than a set of guidelines — the principles sometimes conflict and require judgement
+
+---
+
+## Design Patterns – Foundational Patterns Every Tech Lead Should Recognise
+
+Design patterns are reusable solutions to commonly occurring problems in software design. They provide a shared vocabulary for design discussions and reduce the time needed to understand a codebase.
+
+**Creational patterns** control how objects are created: Factory Method (lets subclasses decide which class to instantiate), Builder (separates complex construction from representation), Singleton (single instance — use sparingly).
+
+**Structural patterns** describe how objects are composed: Adapter (converts interfaces — the pattern behind anti-corruption layers in DDD), Decorator (adds behaviour dynamically — middleware pipelines are decorators), Facade (simplified interface to a complex subsystem — API gateways are facades).
+
+**Behavioural patterns** manage communication: Observer (one-to-many notification — event-driven architectures at system scale), Strategy (interchangeable algorithms — load balancing strategies), Repository (collection-like interface mediating domain and data layers — central to DDD).
+
+**Why it matters:** When a tech lead says "we should use an adapter here" or "this is a classic observer pattern," the team immediately understands the intent without lengthy explanation. Patterns are a shared design language that accelerates code reviews and design discussions.
+
+**Key things to understand:**
+- The purpose and trade-offs of each pattern listed above
+- How design patterns map to architecture patterns at a larger scale (observer to event-driven, adapter to anti-corruption layer, facade to API gateway)
+- That patterns are tools, not goals — do not force a pattern where a simpler solution exists
+
+**Common pitfalls:**
+- Pattern obsession — applying patterns for their own sake rather than to solve a concrete problem
+- Using Singleton as a convenience for global state rather than addressing the underlying design issue
+- Choosing inheritance-based patterns when composition would be simpler and more flexible
 `,
   mid: `# Tech Lead / Architect – Mid Concept Reference
 
