@@ -33,6 +33,7 @@ export default function LevelSection({ roleId, level, resources, objectives, isR
             level={level.toLowerCase()}
             isResourceComplete={isResourceComplete}
             toggleResource={toggleResource}
+            showVideoEmbed={false}
           />
         </div>
       )}

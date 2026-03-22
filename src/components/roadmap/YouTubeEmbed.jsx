@@ -4,6 +4,7 @@ import { getYouTubeThumbnail, getYouTubeEmbedUrl } from '../../utils/youtubeUtil
 
 export default function YouTubeEmbed({ videoId, title }) {
   const [loaded, setLoaded] = useState(false)
+  const [thumbSrc, setThumbSrc] = useState(() => getYouTubeThumbnail(videoId))
 
   if (!videoId) return null
 
@@ -14,10 +15,14 @@ export default function YouTubeEmbed({ videoId, title }) {
         className="relative w-full aspect-video rounded-lg overflow-hidden cursor-pointer border-none p-0 group bg-black"
       >
         <img
-          src={getYouTubeThumbnail(videoId)}
+          src={thumbSrc}
           alt={title || 'Video thumbnail'}
           className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
           loading="lazy"
+          onError={() => {
+            const fallback = getYouTubeThumbnail(videoId, 'default')
+            if (thumbSrc !== fallback) setThumbSrc(fallback)
+          }}
         />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">

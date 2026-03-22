@@ -54,7 +54,7 @@ export function extractYouTubeId(url) {
  * @param {string} quality - Quality level: 'maxres' (default), 'sddefault', 'hqdefault', 'mqdefault', 'default'
  * @returns {string} URL to the thumbnail image
  */
-export function getYouTubeThumbnail(videoId, quality = 'hqdefault') {
+export function getYouTubeThumbnail(videoId, quality = 'mqdefault') {
   if (!videoId) {
     return '';
   }

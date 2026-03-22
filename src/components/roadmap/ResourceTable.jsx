@@ -15,7 +15,7 @@ const typeIcons = {
   Internal: Building2,
 }
 
-export default function ResourceTable({ resources, _roleId, level, isResourceComplete, toggleResource }) {
+export default function ResourceTable({ resources, _roleId, level, isResourceComplete, toggleResource, showVideoEmbed = true }) {
   if (!resources || resources.length === 0) return null
 
   return (
@@ -77,7 +77,7 @@ export default function ResourceTable({ resources, _roleId, level, isResourceCom
               </div>
             </div>
 
-            {youtubeId && (
+            {showVideoEmbed && youtubeId && (
               <div className="mt-2">
                 <YouTubeEmbed videoId={youtubeId} title={resource.title} />
               </div>
