@@ -117,6 +117,103 @@ JavaScript is *dynamically typed*: a variable can hold any type at any time. Thi
 
 > **Role connection:** Every web development role uses JavaScript variables and types daily. Front-end engineers, Node.js developers, and full-stack developers all need these fundamentals cold.
 
+### Exercises
+
+**1. Predict the output**
+Without running the code, predict what each \`console.log\` prints. Then run it to verify.
+
+\`\`\`javascript
+console.log(typeof null);
+console.log(typeof undefined);
+console.log("10" - 4);
+console.log("10" + 4);
+console.log(0 == false);
+console.log(0 === false);
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Remember: \`+\` with a string triggers concatenation, while \`-\` always coerces both sides to numbers. \`typeof null\` is a famous historical quirk. \`==\` coerces types; \`===\` does not.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+console.log(typeof null);       // "object"
+console.log(typeof undefined);  // "undefined"
+console.log("10" - 4);          // 6
+console.log("10" + 4);          // "104"
+console.log(0 == false);        // true  (loose equality coerces false → 0)
+console.log(0 === false);       // false (strict: different types)
+\`\`\`
+
+Expected output:
+\`\`\`
+"object"
+"undefined"
+6
+"104"
+true
+false
+\`\`\`
+
+</details>
+
+**2. Fix the variable declarations**
+The code below has three bugs related to variable declarations. Identify and fix each one.
+
+\`\`\`javascript
+// Bug 1: should not be reassignable
+let MAX_SIZE = 100;
+MAX_SIZE = 200; // this should be prevented
+
+// Bug 2: var leaks out of the block
+if (true) {
+  var message = "hello";
+}
+console.log(message); // should throw ReferenceError
+
+// Bug 3: accessing before declaration
+console.log(counter);
+let counter = 0;
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Use \`const\` for values that must not be reassigned. Use \`let\` (not \`var\`) for block-scoped variables. \`let\` and \`const\` are in the Temporal Dead Zone before their declaration line — accessing them throws a \`ReferenceError\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+// Bug 1 fixed: use const for constants
+const MAX_SIZE = 100;
+// MAX_SIZE = 200; // TypeError: Assignment to constant variable
+
+// Bug 2 fixed: use let for block scope
+if (true) {
+  let message = "hello";
+}
+// console.log(message); // ReferenceError: message is not defined
+
+// Bug 3 fixed: declare before use
+let counter = 0;
+console.log(counter); // 0
+\`\`\`
+
+Expected output:
+\`\`\`
+0
+\`\`\`
+
+</details>
+
 ---
 
 ## 2. Functions and Scope
@@ -185,6 +282,88 @@ console.log(counter.getCount()); // 1
 - Declaring functions with \`function\` expressions inside loops (fine) but expecting them to be hoisted (they are not)
 
 > **Role connection:** React components are functions. Node.js APIs use callbacks and closures extensively. Every framework you will use builds on these primitives.
+
+### Exercises
+
+**1. Write a function with default parameters and rest args**
+Write a function called \`buildMessage\` that takes a \`prefix\` (default \`"Info"\`) and any number of additional \`parts\`. It should return a string in the format \`"[prefix] part1 part2 ..."\`.
+
+\`\`\`javascript
+console.log(buildMessage("Error", "file not found", "path: /tmp"));
+console.log(buildMessage(undefined, "server started"));
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Use \`function buildMessage(prefix = "Info", ...parts)\`. Join the parts with a space. Use a template literal to combine the prefix and the joined parts.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function buildMessage(prefix = "Info", ...parts) {
+  return \`[\${prefix}] \${parts.join(" ")}\`;
+}
+
+console.log(buildMessage("Error", "file not found", "path: /tmp"));
+console.log(buildMessage(undefined, "server started"));
+\`\`\`
+
+Expected output:
+\`\`\`
+[Error] file not found path: /tmp
+[Info] server started
+\`\`\`
+
+</details>
+
+**2. Build a closure-based rate limiter**
+Write a function \`createRateLimiter(limit)\` that returns a function. Each time the returned function is called it increments an internal counter. If the counter exceeds \`limit\`, it returns \`"Rate limit exceeded"\` instead of \`"OK"\`. The counter should not be accessible from outside.
+
+\`\`\`javascript
+const limiter = createRateLimiter(2);
+console.log(limiter()); // "OK"
+console.log(limiter()); // "OK"
+console.log(limiter()); // "Rate limit exceeded"
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Declare \`let count = 0\` inside \`createRateLimiter\`. The returned function closes over \`count\` and \`limit\`. Increment \`count\` and compare it to \`limit\` each call.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function createRateLimiter(limit) {
+  let count = 0;
+  return function() {
+    count++;
+    if (count > limit) return "Rate limit exceeded";
+    return "OK";
+  };
+}
+
+const limiter = createRateLimiter(2);
+console.log(limiter()); // "OK"
+console.log(limiter()); // "OK"
+console.log(limiter()); // "Rate limit exceeded"
+\`\`\`
+
+Expected output:
+\`\`\`
+OK
+OK
+Rate limit exceeded
+\`\`\`
+
+</details>
 
 ---
 
@@ -258,6 +437,91 @@ console.log(original.address.city); // "Stockholm" — original is untouched
 - Using \`.sort()\` without a comparator — it sorts *lexicographically* by default (\`[10,2,1].sort()\` → \`[1,10,2]\`)
 - Mutating the array inside \`.map()\` or \`.filter()\` — these should be pure
 - Confusing spread (\`...obj\`) which is a *shallow* copy — nested objects are still shared references
+
+### Exercises
+
+**1. Transform a list of products**
+Given the array below, use \`filter\` and \`map\` in a chain to produce an array of name strings for all products that cost more than 20, uppercased.
+
+\`\`\`javascript
+const products = [
+  { name: "pen", price: 2 },
+  { name: "notebook", price: 8 },
+  { name: "laptop", price: 999 },
+  { name: "headphones", price: 49 },
+];
+// Expected: ["LAPTOP", "HEADPHONES"]
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Chain \`.filter(p => p.price > 20)\` then \`.map(p => p.name.toUpperCase())\`. Each step returns a new array — nothing is mutated.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const products = [
+  { name: "pen", price: 2 },
+  { name: "notebook", price: 8 },
+  { name: "laptop", price: 999 },
+  { name: "headphones", price: 49 },
+];
+
+const result = products
+  .filter(p => p.price > 20)
+  .map(p => p.name.toUpperCase());
+
+console.log(result);
+\`\`\`
+
+Expected output:
+\`\`\`
+["LAPTOP", "HEADPHONES"]
+\`\`\`
+
+</details>
+
+**2. Safe deep read with optional chaining and nullish coalescing**
+Given the \`config\` object below, write a single expression that reads \`config.server.port\` and falls back to \`3000\` if it is missing or \`null\`/\`undefined\`.
+
+\`\`\`javascript
+const config1 = { server: { port: 8080 } };
+const config2 = { server: {} };
+const config3 = {};
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Use \`config?.server?.port ?? 3000\`. Optional chaining stops evaluation and returns \`undefined\` if any step is \`null\`/\`undefined\`. Nullish coalescing then provides the fallback.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const config1 = { server: { port: 8080 } };
+const config2 = { server: {} };
+const config3 = {};
+
+console.log(config1?.server?.port ?? 3000);
+console.log(config2?.server?.port ?? 3000);
+console.log(config3?.server?.port ?? 3000);
+\`\`\`
+
+Expected output:
+\`\`\`
+8080
+3000
+3000
+\`\`\`
+
+</details>
 
 ---
 
@@ -387,6 +651,74 @@ const rect = heading.getBoundingClientRect(); // { top, left, width, height, ...
 - \`querySelectorAll\` returns a *static* NodeList — it does not update when the DOM changes
 - Calling DOM methods before the document is loaded — always wait for \`DOMContentLoaded\` or place scripts at the bottom of \`<body>\`
 
+### Exercises
+
+**1. Create and append a list dynamically**
+In the browser console (or a JS file loaded in a page), write code that:
+1. Creates a \`<ul>\` element with the id \`"fruit-list"\`
+2. Creates three \`<li>\` elements for "Apple", "Banana", and "Cherry" using \`textContent\`
+3. Appends the \`<li>\` elements to the \`<ul>\`, then appends the \`<ul>\` to \`document.body\`
+
+<details>
+<summary>Hint</summary>
+
+Use \`document.createElement("ul")\`, \`document.createElement("li")\`, set \`textContent\` on each \`li\`, and call \`ul.append(li)\` for each. Finally call \`document.body.append(ul)\`. Do not use \`innerHTML\` — set each item's \`textContent\` individually.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const ul = document.createElement("ul");
+ul.id = "fruit-list";
+
+["Apple", "Banana", "Cherry"].forEach(name => {
+  const li = document.createElement("li");
+  li.textContent = name;
+  ul.append(li);
+});
+
+document.body.append(ul);
+// Result: a <ul id="fruit-list"> with three <li> items appears in the page
+\`\`\`
+
+Expected output:
+\`\`\`
+A <ul> with three <li> items is added to the page body.
+\`\`\`
+
+</details>
+
+**2. Toggle a class on an element**
+Write code that selects the first \`<h1>\` on the page, adds the class \`"highlight"\`, then logs whether the element currently has that class. Then toggle it off and log again.
+
+<details>
+<summary>Hint</summary>
+
+Use \`document.querySelector("h1")\`, \`classList.add("highlight")\`, \`classList.contains("highlight")\`, and \`classList.remove("highlight")\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const heading = document.querySelector("h1");
+heading.classList.add("highlight");
+console.log(heading.classList.contains("highlight")); // true
+heading.classList.remove("highlight");
+console.log(heading.classList.contains("highlight")); // false
+\`\`\`
+
+Expected output:
+\`\`\`
+true
+false
+\`\`\`
+
+</details>
+
 ---
 
 ## 6. Events
@@ -453,6 +785,69 @@ emailInput.addEventListener("input", (e) => {
 - Forgetting \`e.preventDefault()\` inside a form's submit handler — the page reloads
 - Creating arrow functions inline and then trying to \`removeEventListener\` — arrow functions create a new reference each time, so the remove call does nothing
 
+### Exercises
+
+**1. Attach and remove a one-time click listener**
+In the browser console, attach a click listener to \`document.body\` that logs \`"Body clicked!"\`. Then immediately remove it using the same function reference. Click the page and confirm nothing is logged.
+
+<details>
+<summary>Hint</summary>
+
+Store the handler in a named function or a \`const\`. Pass the same reference to both \`addEventListener\` and \`removeEventListener\`. Anonymous arrow functions create a new reference each time, so they cannot be removed.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function handleBodyClick() {
+  console.log("Body clicked!");
+}
+
+document.body.addEventListener("click", handleBodyClick);
+document.body.removeEventListener("click", handleBodyClick);
+// Clicking the page now logs nothing — listener was removed successfully
+\`\`\`
+
+Expected output:
+\`\`\`
+(nothing logged when page is clicked)
+\`\`\`
+
+</details>
+
+**2. Use event delegation to handle a dynamic list**
+Given a \`<ul id="todo-list">\` in the page, write a single delegated listener on the \`<ul>\` that logs the \`textContent\` of any \`<li>\` that is clicked. Do not add a listener to each \`<li>\` individually.
+
+<details>
+<summary>Hint</summary>
+
+Listen on the \`ul\` element. In the handler, check \`e.target.matches("li")\` before reading \`e.target.textContent\`. This works for items added dynamically later too.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const list = document.querySelector("#todo-list");
+
+list.addEventListener("click", (e) => {
+  if (e.target.matches("li")) {
+    console.log("Clicked:", e.target.textContent);
+  }
+});
+// One listener handles all current and future <li> children
+\`\`\`
+
+Expected output:
+\`\`\`
+Clicked: (text of the li that was clicked)
+\`\`\`
+
+</details>
+
 ---
 
 ## 7. Asynchronous JavaScript
@@ -517,6 +912,98 @@ Under the hood, \`async/await\` is syntactic sugar over Promises. When you \`awa
 - Using \`await\` inside \`.forEach()\` — \`.forEach\` does not wait for async callbacks; use \`for...of\` instead
 - Calling two \`await\`s sequentially when they could run in parallel with \`Promise.all\`
 
+### Exercises
+
+**1. Convert a Promise chain to async/await**
+Rewrite the following Promise chain using \`async/await\` and \`try/catch\`.
+
+\`\`\`javascript
+function getUser(id) {
+  return fetch(\`/api/users/\${id}\`)
+    .then(res => {
+      if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+      return res.json();
+    })
+    .then(user => {
+      console.log("Got user:", user.name);
+      return user;
+    })
+    .catch(err => {
+      console.error("Failed:", err.message);
+    });
+}
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Mark the function \`async\`. Replace each \`.then()\` with an \`await\`. Wrap the whole body in \`try { ... } catch (err) { ... }\`. The \`if (!res.ok)\` check stays the same — throw inside try to trigger the catch.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+async function getUser(id) {
+  try {
+    const res = await fetch(\`/api/users/\${id}\`);
+    if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+    const user = await res.json();
+    console.log("Got user:", user.name);
+    return user;
+  } catch (err) {
+    console.error("Failed:", err.message);
+  }
+}
+\`\`\`
+
+Expected output (when request succeeds):
+\`\`\`
+Got user: Alice
+\`\`\`
+
+</details>
+
+**2. Run two requests in parallel**
+The code below fetches a user and their posts *sequentially*. Rewrite it to run both requests in parallel using \`Promise.all\`.
+
+\`\`\`javascript
+async function loadProfile(userId) {
+  const user  = await fetch(\`/api/users/\${userId}\`).then(r => r.json());
+  const posts = await fetch(\`/api/posts?userId=\${userId}\`).then(r => r.json());
+  return { user, posts };
+}
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Pass both fetch-and-parse expressions as an array to \`Promise.all([...])\`. Destructure the result with \`const [user, posts] = await Promise.all([...])\`. The two requests now fire simultaneously.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+async function loadProfile(userId) {
+  const [user, posts] = await Promise.all([
+    fetch(\`/api/users/\${userId}\`).then(r => r.json()),
+    fetch(\`/api/posts?userId=\${userId}\`).then(r => r.json()),
+  ]);
+  return { user, posts };
+}
+// Time = max(user latency, posts latency) instead of their sum
+\`\`\`
+
+Expected output:
+\`\`\`
+{ user: { ... }, posts: [ ... ] }
+\`\`\`
+
+</details>
+
 ---
 
 ## 8. ES6+ Features
@@ -568,6 +1055,87 @@ const user2 = {
   greet() { return \`Hi, \${this.name}\`; },  // method shorthand
 };
 \`\`\`
+
+### Exercises
+
+**1. Deduplicate an array using Set**
+Write a function \`unique(arr)\` that returns a new array with duplicate values removed, preserving insertion order.
+
+\`\`\`javascript
+console.log(unique([1, 2, 2, 3, 1, 4]));
+console.log(unique(["a", "b", "a", "c"]));
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+\`new Set(arr)\` creates a Set of unique values. Spreading it with \`[...new Set(arr)]\` converts it back to an array. Sets preserve insertion order.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function unique(arr) {
+  return [...new Set(arr)];
+}
+
+console.log(unique([1, 2, 2, 3, 1, 4]));
+console.log(unique(["a", "b", "a", "c"]));
+\`\`\`
+
+Expected output:
+\`\`\`
+[1, 2, 3, 4]
+["a", "b", "c"]
+\`\`\`
+
+</details>
+
+**2. Use a Map to count word frequencies**
+Write a function \`wordCount(str)\` that splits a string by spaces and returns a \`Map\` where each key is a word and each value is the number of times it appears.
+
+\`\`\`javascript
+const counts = wordCount("the cat sat on the mat the cat");
+console.log(counts.get("the"));
+console.log(counts.get("cat"));
+console.log(counts.get("mat"));
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Use \`str.split(" ")\` to get an array of words. Iterate with \`for...of\`. For each word, use \`map.get(word) ?? 0\` to get the current count, then \`map.set(word, count + 1)\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function wordCount(str) {
+  const map = new Map();
+  for (const word of str.split(" ")) {
+    map.set(word, (map.get(word) ?? 0) + 1);
+  }
+  return map;
+}
+
+const counts = wordCount("the cat sat on the mat the cat");
+console.log(counts.get("the"));
+console.log(counts.get("cat"));
+console.log(counts.get("mat"));
+\`\`\`
+
+Expected output:
+\`\`\`
+3
+2
+1
+\`\`\`
+
+</details>
 
 ---
 
@@ -681,6 +1249,101 @@ fns.forEach(fn => fn()); // 0, 1, 2
 
 > **Role connection:** Every React hook (\`useCallback\`, \`useMemo\`, \`useEffect\`) creates closures. Understanding stale closures in \`useEffect\` (the dependency array issue) is a rite of passage for every React developer.
 
+### Exercises
+
+**1. Explain and fix the loop closure bug**
+The following code logs \`3, 3, 3\` instead of \`0, 1, 2\`. Explain why, and fix it with a one-character change.
+
+\`\`\`javascript
+const fns = [];
+for (var i = 0; i < 3; i++) {
+  fns.push(() => console.log(i));
+}
+fns.forEach(fn => fn());
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+\`var\` is function-scoped — all three closures share the *same* \`i\` variable. By the time the functions run, the loop has finished and \`i\` is \`3\`. Change \`var\` to \`let\` to create a new binding per iteration.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const fns = [];
+for (let i = 0; i < 3; i++) {  // 'let' creates a new binding each iteration
+  fns.push(() => console.log(i));
+}
+fns.forEach(fn => fn());
+\`\`\`
+
+Expected output:
+\`\`\`
+0
+1
+2
+\`\`\`
+
+</details>
+
+**2. Build a memoize function using closures**
+Write a function \`memoize(fn)\` that caches the results of a single-argument function. Calling it twice with the same argument should return the cached result (and not call \`fn\` again).
+
+\`\`\`javascript
+let callCount = 0;
+const slowDouble = (n) => { callCount++; return n * 2; };
+const fastDouble = memoize(slowDouble);
+
+console.log(fastDouble(5));    // 10
+console.log(fastDouble(5));    // 10 (cached)
+console.log(fastDouble(3));    // 6
+console.log(callCount);        // 2 — slowDouble was only called twice (5 and 3)
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Inside \`memoize\`, declare \`const cache = new Map()\`. Return a function that checks \`cache.has(arg)\` before calling \`fn\`. Store the result with \`cache.set(arg, result)\` before returning it.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function memoize(fn) {
+  const cache = new Map();
+  return function(arg) {
+    if (cache.has(arg)) return cache.get(arg);
+    const result = fn(arg);
+    cache.set(arg, result);
+    return result;
+  };
+}
+
+let callCount = 0;
+const slowDouble = (n) => { callCount++; return n * 2; };
+const fastDouble = memoize(slowDouble);
+
+console.log(fastDouble(5));
+console.log(fastDouble(5));
+console.log(fastDouble(3));
+console.log(callCount);
+\`\`\`
+
+Expected output:
+\`\`\`
+10
+10
+6
+2
+\`\`\`
+
+</details>
+
 ---
 
 ## 2. Prototypes and Classes
@@ -784,6 +1447,122 @@ c.increment(); // 3
 
 > **Role connection:** Class-based patterns are central to Angular, NestJS, and TypeORM. Understanding the prototype chain helps when debugging inherited methods or unexpected behavior with \`this\`.
 
+### Exercises
+
+**1. Extend a class and override a method**
+Create a class \`Shape\` with a method \`area()\` that returns \`0\`. Then create a subclass \`Rectangle\` that takes \`width\` and \`height\` in its constructor and overrides \`area()\` to return the correct area. Create a subclass \`Square\` that extends \`Rectangle\` and only takes \`side\`.
+
+\`\`\`javascript
+const r = new Rectangle(4, 5);
+const s = new Square(3);
+console.log(r.area()); // 20
+console.log(s.area()); // 9
+console.log(s instanceof Rectangle); // true
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+In \`Rectangle\`, store \`this.width\` and \`this.height\` and return \`this.width * this.height\` from \`area()\`. In \`Square\`, call \`super(side, side)\` — you don't need to override \`area()\` again.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+class Shape {
+  area() { return 0; }
+}
+
+class Rectangle extends Shape {
+  constructor(width, height) {
+    super();
+    this.width = width;
+    this.height = height;
+  }
+  area() { return this.width * this.height; }
+}
+
+class Square extends Rectangle {
+  constructor(side) {
+    super(side, side);
+  }
+}
+
+const r = new Rectangle(4, 5);
+const s = new Square(3);
+console.log(r.area());
+console.log(s.area());
+console.log(s instanceof Rectangle);
+\`\`\`
+
+Expected output:
+\`\`\`
+20
+9
+true
+\`\`\`
+
+</details>
+
+**2. Use a private field to enforce an invariant**
+Create a class \`PositiveCounter\` with a private \`#count\` field initialized to \`0\`. Add an \`increment()\` method, a \`decrement()\` method that throws a \`RangeError\` if the result would go below \`0\`, and a \`value\` getter.
+
+\`\`\`javascript
+const c = new PositiveCounter();
+c.increment();
+c.increment();
+c.decrement();
+console.log(c.value);  // 1
+c.decrement();
+console.log(c.value);  // 0
+c.decrement();         // throws RangeError
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Declare \`#count = 0\` inside the class body. In \`decrement()\`, check \`if (this.#count === 0) throw new RangeError("...")\` before decrementing. Use \`get value()\` to expose the count read-only.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+class PositiveCounter {
+  #count = 0;
+
+  increment() { this.#count++; }
+
+  decrement() {
+    if (this.#count === 0) throw new RangeError("Count cannot go below 0");
+    this.#count--;
+  }
+
+  get value() { return this.#count; }
+}
+
+const c = new PositiveCounter();
+c.increment();
+c.increment();
+c.decrement();
+console.log(c.value);
+c.decrement();
+console.log(c.value);
+try { c.decrement(); } catch (e) { console.log(e.message); }
+\`\`\`
+
+Expected output:
+\`\`\`
+1
+0
+Count cannot go below 0
+\`\`\`
+
+</details>
+
 ---
 
 ## 3. Modules
@@ -822,6 +1601,82 @@ async function loadChart() {
 \`\`\`
 
 **Why it matters:** Dynamic imports are the mechanism behind route-based code splitting in React and Vue — only the code the user actually needs is loaded. Tree-shaking eliminates exported functions that are never imported, shrinking bundle sizes.
+
+### Exercises
+
+**1. Name the import pattern**
+For each import statement, identify whether it uses a *default import*, *named import*, *namespace import*, or *dynamic import*.
+
+\`\`\`javascript
+import React from "react";
+import { useState, useEffect } from "react";
+import * as ReactDOM from "react-dom";
+const { Chart } = await import("./chart.js");
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Default imports have no braces. Named imports use \`{ name }\`. Namespace imports use \`* as name\`. Dynamic imports use \`import()\` as a function call and must be awaited.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+import React from "react";              // Default import
+import { useState, useEffect } from "react"; // Named imports
+import * as ReactDOM from "react-dom";  // Namespace import
+const { Chart } = await import("./chart.js"); // Dynamic import (code splitting)
+\`\`\`
+
+Expected output:
+\`\`\`
+(this is an identification exercise — no runtime output)
+\`\`\`
+
+</details>
+
+**2. Write a module with named and default exports**
+Write the contents of two files: \`geometry.js\` (exports a \`circle(r)\` function and a \`rectangle(w, h)\` function as named exports, and exports a \`DEFAULT_UNIT\` constant as the default export) and \`app.js\` (imports and uses all three).
+
+<details>
+<summary>Hint</summary>
+
+Use \`export function circle(r) {...}\` and \`export function rectangle(w, h) {...}\` for named exports. Use \`export default "cm"\` for the default export. In \`app.js\`, import with \`import unit, { circle, rectangle } from "./geometry.js"\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+// geometry.js
+export function circle(r) {
+  return Math.PI * r * r;
+}
+export function rectangle(w, h) {
+  return w * h;
+}
+export default "cm";
+
+// app.js
+import unit, { circle, rectangle } from "./geometry.js";
+
+console.log(circle(5).toFixed(2));   // "78.54"
+console.log(rectangle(4, 6));        // 24
+console.log(unit);                   // "cm"
+\`\`\`
+
+Expected output:
+\`\`\`
+78.54
+24
+cm
+\`\`\`
+
+</details>
 
 ---
 
@@ -885,6 +1740,108 @@ async function submitForm(data) {
 
 > **Role connection:** Backend Node.js engineers use custom error hierarchies to map business errors to HTTP status codes. Frontend engineers use them in global error boundaries and toast notification systems.
 
+### Exercises
+
+**1. Create a custom error class hierarchy**
+Create a \`DatabaseError\` class that extends \`Error\`. It should accept a \`message\` and a boolean \`retryable\`. Then write a \`runQuery\` function that throws a \`DatabaseError\` with \`retryable: true\` when given the query \`"FAIL"\`. In the catch block, log whether the error is retryable.
+
+\`\`\`javascript
+try {
+  runQuery("FAIL");
+} catch (err) {
+  if (err instanceof DatabaseError) {
+    console.log(err.message);
+    console.log("Retryable:", err.retryable);
+  }
+}
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+In the constructor, call \`super(message)\` and set \`this.name = "DatabaseError"\` and \`this.retryable = retryable\`. In \`runQuery\`, throw \`new DatabaseError("Query failed", true)\` when the query is \`"FAIL"\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+class DatabaseError extends Error {
+  constructor(message, retryable = false) {
+    super(message);
+    this.name = "DatabaseError";
+    this.retryable = retryable;
+  }
+}
+
+function runQuery(sql) {
+  if (sql === "FAIL") throw new DatabaseError("Query failed", true);
+  return [];
+}
+
+try {
+  runQuery("FAIL");
+} catch (err) {
+  if (err instanceof DatabaseError) {
+    console.log(err.message);
+    console.log("Retryable:", err.retryable);
+  }
+}
+\`\`\`
+
+Expected output:
+\`\`\`
+Query failed
+Retryable: true
+\`\`\`
+
+</details>
+
+**2. Re-throw unknown errors**
+Explain what is wrong with the following error handler, and rewrite it correctly.
+
+\`\`\`javascript
+async function fetchData(url) {
+  try {
+    const res = await fetch(url);
+    return await res.json();
+  } catch (err) {
+    console.log("An error occurred");
+  }
+}
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+The catch block swallows all errors silently — callers can never know a failure happened and cannot respond accordingly. At minimum, re-throw after logging, or only catch known recoverable errors and let others propagate.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+async function fetchData(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+    return await res.json();
+  } catch (err) {
+    console.error("fetchData failed:", err.message);
+    throw err; // re-throw so callers can handle or report the failure
+  }
+}
+\`\`\`
+
+Expected output (on failure):
+\`\`\`
+fetchData failed: HTTP 404
+\`\`\`
+
+</details>
+
 ---
 
 ## 5. Advanced Async Patterns
@@ -944,6 +1901,77 @@ for await (const items of fetchPages("/api/products")) {
 
 **Why it matters:** \`Promise.all\` converts N sequential round trips into one parallel wait. \`AbortController\` prevents stale responses from overwriting newer data — the classic search debouncing bug.
 
+### Exercises
+
+**1. Handle partial failures with Promise.allSettled**
+Write an \`async\` function \`loadAll(urls)\` that fetches all URLs in parallel and returns an array where each item is either the parsed JSON (on success) or the string \`"error"\` (on failure). Use \`Promise.allSettled\` so that one failing URL does not prevent the others from loading.
+
+<details>
+<summary>Hint</summary>
+
+Pass \`urls.map(url => fetch(url).then(r => r.json()))\` to \`Promise.allSettled\`. Each result has a \`status\` field: \`"fulfilled"\` or \`"rejected"\`. Map over results: return \`r.value\` when fulfilled, \`"error"\` when rejected.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+async function loadAll(urls) {
+  const results = await Promise.allSettled(
+    urls.map(url => fetch(url).then(r => r.json()))
+  );
+  return results.map(r => r.status === "fulfilled" ? r.value : "error");
+}
+
+// Example usage:
+loadAll(["/api/users", "/api/broken", "/api/posts"]).then(data => {
+  console.log(data); // [usersArray, "error", postsArray]
+});
+\`\`\`
+
+Expected output:
+\`\`\`
+[{ ...users data... }, "error", { ...posts data... }]
+\`\`\`
+
+</details>
+
+**2. Build a timeout wrapper for fetch**
+Write a function \`fetchWithTimeout(url, ms)\` that rejects with a \`"Timeout"\` error if the fetch takes longer than \`ms\` milliseconds. Use \`AbortController\` and \`setTimeout\`.
+
+<details>
+<summary>Hint</summary>
+
+Create an \`AbortController\`, use \`setTimeout\` to call \`controller.abort()\` after \`ms\` ms, then pass \`{ signal: controller.signal }\` to \`fetch\`. Call \`clearTimeout\` on the timer if the fetch completes first. Rethrow \`AbortError\` as a readable message.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+async function fetchWithTimeout(url, ms) {
+  const controller = new AbortController();
+  const timerId = setTimeout(() => controller.abort(), ms);
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timerId);
+    return res.json();
+  } catch (err) {
+    if (err.name === "AbortError") throw new Error("Timeout");
+    throw err;
+  }
+}
+\`\`\`
+
+Expected output (on timeout):
+\`\`\`
+Error: Timeout
+\`\`\`
+
+</details>
+
 ---
 
 ## 6. Testing with Vitest / Jest
@@ -995,6 +2023,109 @@ describe("API functions", () => {
 **Why it matters:** Mocking \`fetch\` keeps tests fast, deterministic, and free from network dependencies. The \`beforeEach\`/\`afterEach\` pattern ensures mocks are fresh per test and don't bleed between tests.
 
 > **Role connection:** Modern teams require 70-80%+ code coverage. CI pipelines run tests on every commit and block merges on failure. Writing testable code — with dependency injection and clear separation of concerns — is as important as writing working code.
+
+### Exercises
+
+**1. Write unit tests for a pure function**
+Given this \`clamp\` function, write at least three test cases covering the normal range, the lower boundary, and the upper boundary.
+
+\`\`\`javascript
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Use \`describe("clamp", () => { ... })\` with at least one \`test()\` for each: a value within range, a value below \`min\`, and a value above \`max\`. Use \`expect(clamp(x, min, max)).toBe(expected)\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+import { describe, test, expect } from "vitest";
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+describe("clamp", () => {
+  test("returns the value when within range", () => {
+    expect(clamp(5, 0, 10)).toBe(5);
+  });
+
+  test("clamps to min when value is too low", () => {
+    expect(clamp(-5, 0, 10)).toBe(0);
+  });
+
+  test("clamps to max when value is too high", () => {
+    expect(clamp(20, 0, 10)).toBe(10);
+  });
+
+  test("handles value equal to min", () => {
+    expect(clamp(0, 0, 10)).toBe(0);
+  });
+});
+\`\`\`
+
+Expected output:
+\`\`\`
+✓ returns the value when within range
+✓ clamps to min when value is too low
+✓ clamps to max when value is too high
+✓ handles value equal to min
+\`\`\`
+
+</details>
+
+**2. Identify what makes a function hard to test**
+Explain why the following function is hard to unit test, and rewrite it to be testable.
+
+\`\`\`javascript
+function greetUser() {
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : "Good evening";
+  document.getElementById("greeting").textContent = greeting;
+}
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+The function has two problems: it reads the current time (a side effect that changes every second) and it writes to the DOM (hard to assert in unit tests). Extract the logic into a pure function that takes \`hour\` and returns a string.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+// Pure, testable function — no side effects
+function getGreeting(hour) {
+  return hour < 12 ? "Good morning" : "Good evening";
+}
+
+// Integration layer — calls the pure function and handles the side effect
+function greetUser() {
+  const greeting = getGreeting(new Date().getHours());
+  document.getElementById("greeting").textContent = greeting;
+}
+
+// Now testable with no mocking needed:
+// expect(getGreeting(9)).toBe("Good morning");
+// expect(getGreeting(14)).toBe("Good evening");
+\`\`\`
+
+Expected output:
+\`\`\`
+getGreeting(9)  → "Good morning"
+getGreeting(14) → "Good evening"
+\`\`\`
+
+</details>
 
 ---
 
@@ -1049,6 +2180,104 @@ const processOrders = (orders) =>
 
 > **Role connection:** React's functional components and hooks are built on FP principles. Redux reducers are pure functions by requirement. Lodash/fp and RxJS are functional programming libraries used widely in production codebases.
 
+### Exercises
+
+**1. Trace a pipe pipeline**
+Given the \`pipe\` utility and the following pipeline, trace the intermediate values step by step and predict the final output.
+
+\`\`\`javascript
+const pipe = (...fns) => (value) => fns.reduce((v, fn) => fn(v), value);
+
+const addTen  = x => x + 10;
+const halve   = x => x / 2;
+const negate  = x => -x;
+
+const transform = pipe(addTen, halve, negate);
+console.log(transform(6));
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+\`pipe\` applies functions left-to-right. Start with \`6\`, apply \`addTen\` → \`16\`, apply \`halve\` → \`8\`, apply \`negate\` → \`-8\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const pipe = (...fns) => (value) => fns.reduce((v, fn) => fn(v), value);
+
+const addTen  = x => x + 10;
+const halve   = x => x / 2;
+const negate  = x => -x;
+
+const transform = pipe(addTen, halve, negate);
+console.log(transform(6)); // 6 → 16 → 8 → -8
+\`\`\`
+
+Expected output:
+\`\`\`
+-8
+\`\`\`
+
+</details>
+
+**2. Use reduce to group items**
+Without using \`Object.groupBy\`, write a \`groupBy(arr, keyFn)\` function using \`reduce\` that groups an array of objects by a key function.
+
+\`\`\`javascript
+const people = [
+  { name: "Alice", dept: "eng" },
+  { name: "Bob", dept: "sales" },
+  { name: "Charlie", dept: "eng" },
+];
+
+const grouped = groupBy(people, p => p.dept);
+console.log(grouped.eng.map(p => p.name));
+console.log(grouped.sales.map(p => p.name));
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Use \`arr.reduce((acc, item) => { ... }, {})\`. Inside, compute the key with \`keyFn(item)\`. If \`acc[key]\` doesn't exist yet, initialize it to \`[]\`. Then push \`item\` into \`acc[key]\`. Return \`acc\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function groupBy(arr, keyFn) {
+  return arr.reduce((acc, item) => {
+    const key = keyFn(item);
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(item);
+    return acc;
+  }, {});
+}
+
+const people = [
+  { name: "Alice", dept: "eng" },
+  { name: "Bob", dept: "sales" },
+  { name: "Charlie", dept: "eng" },
+];
+
+const grouped = groupBy(people, p => p.dept);
+console.log(grouped.eng.map(p => p.name));
+console.log(grouped.sales.map(p => p.name));
+\`\`\`
+
+Expected output:
+\`\`\`
+["Alice", "Charlie"]
+["Bob"]
+\`\`\`
+
+</details>
+
 ---
 
 ## 8. ES2024 Features You Should Know
@@ -1086,6 +2315,99 @@ console.log(original.nested.value); // 42 — untouched
 \`\`\`
 
 **Why it matters:** \`Object.groupBy\` eliminates one of the most common \`reduce\` patterns. \`Promise.withResolvers\` cleans up the awkward pattern of extracting \`resolve\`/\`reject\` via closure. \`structuredClone\` replaces the \`JSON.parse(JSON.stringify(x))\` hack for deep copying.
+
+### Exercises
+
+**1. Group an array with Object.groupBy**
+Use \`Object.groupBy\` to group the following list of tasks by their \`priority\` field.
+
+\`\`\`javascript
+const tasks = [
+  { title: "Fix login bug", priority: "high" },
+  { title: "Update docs", priority: "low" },
+  { title: "Deploy to staging", priority: "high" },
+  { title: "Refactor auth module", priority: "medium" },
+];
+
+const byPriority = Object.groupBy(tasks, t => t.priority);
+console.log(byPriority.high.length);
+console.log(byPriority.low[0].title);
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+\`Object.groupBy(array, callbackFn)\` — the callback receives each element and returns the key to group by. The result is a plain object whose keys are the unique return values of the callback.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const tasks = [
+  { title: "Fix login bug", priority: "high" },
+  { title: "Update docs", priority: "low" },
+  { title: "Deploy to staging", priority: "high" },
+  { title: "Refactor auth module", priority: "medium" },
+];
+
+const byPriority = Object.groupBy(tasks, t => t.priority);
+console.log(byPriority.high.length);
+console.log(byPriority.low[0].title);
+\`\`\`
+
+Expected output:
+\`\`\`
+2
+Update docs
+\`\`\`
+
+</details>
+
+**2. Deep clone and verify independence**
+Use \`structuredClone\` to clone the object below, mutate the clone, and verify the original is unchanged.
+
+\`\`\`javascript
+const original = {
+  user: { name: "Alice", scores: [10, 20, 30] },
+};
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Call \`const clone = structuredClone(original)\`. Mutate \`clone.user.name\` and push a value into \`clone.user.scores\`. Then log both originals to confirm they are independent objects.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const original = {
+  user: { name: "Alice", scores: [10, 20, 30] },
+};
+
+const clone = structuredClone(original);
+clone.user.name = "Bob";
+clone.user.scores.push(40);
+
+console.log(original.user.name);          // "Alice"
+console.log(original.user.scores.length); // 3
+console.log(clone.user.name);             // "Bob"
+console.log(clone.user.scores.length);    // 4
+\`\`\`
+
+Expected output:
+\`\`\`
+Alice
+3
+Bob
+4
+\`\`\`
+
+</details>
 
 ---
 
@@ -1212,6 +2534,101 @@ async function processWithScheduler(items) {
 
 > **Role connection:** Front-end performance engineers use this model when profiling Chrome DevTools flame charts. Node.js backend engineers use it to understand why CPU-bound code blocks the server from handling new requests.
 
+### Exercises
+
+**1. Predict the event loop execution order**
+Without running the code, write out the exact order in which numbers will be logged.
+
+\`\`\`javascript
+console.log("A");
+setTimeout(() => console.log("B"), 0);
+Promise.resolve().then(() => console.log("C"));
+queueMicrotask(() => console.log("D"));
+console.log("E");
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Synchronous code runs first (call stack). Then all microtasks drain (\`Promise.then\` and \`queueMicrotask\` are both microtasks, processed in the order they were queued). Only after the microtask queue is empty does the event loop pick up the next macrotask (\`setTimeout\` callback).
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+console.log("A"); // Sync
+setTimeout(() => console.log("B"), 0); // Macrotask — queued
+Promise.resolve().then(() => console.log("C")); // Microtask — queued
+queueMicrotask(() => console.log("D")); // Microtask — queued
+console.log("E"); // Sync
+
+// Execution order: A → E → C → D → B
+\`\`\`
+
+Expected output:
+\`\`\`
+A
+E
+C
+D
+B
+\`\`\`
+
+</details>
+
+**2. Identify the main-thread blocking issue and fix it**
+The following function processes a 50,000-item array synchronously. Explain why this blocks the UI and rewrite it to yield to the event loop every 500 items using \`setTimeout\`.
+
+\`\`\`javascript
+function processAll(data) {
+  return data.map(item => item * 2);
+}
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+A synchronous \`map\` over 50,000 items never yields — the call stack is occupied the entire time and no other events (clicks, renders) can be processed. Chunk the work: process 500 items, then \`setTimeout(() => processChunk(), 0)\` to yield before continuing.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function processInChunks(data, chunkSize = 500) {
+  return new Promise((resolve) => {
+    const results = [];
+    let i = 0;
+
+    function processChunk() {
+      const end = Math.min(i + chunkSize, data.length);
+      for (; i < end; i++) {
+        results.push(data[i] * 2);
+      }
+      if (i < data.length) {
+        setTimeout(processChunk, 0); // yield — browser can render and handle events
+      } else {
+        resolve(results);
+      }
+    }
+
+    processChunk();
+  });
+}
+
+processInChunks([1, 2, 3, 4, 5]).then(result => console.log(result));
+\`\`\`
+
+Expected output:
+\`\`\`
+[2, 4, 6, 8, 10]
+\`\`\`
+
+</details>
+
 ---
 
 ### Module Bundling Pipeline
@@ -1301,6 +2718,110 @@ function createLeak() {
 
 **Diagnosing leaks:** Chrome DevTools → Memory tab → Heap Snapshots. Take a snapshot, trigger the suspected leak, take another. Filter by "Objects allocated between Snapshot 1 and 2."
 
+### Exercises
+
+**1. Identify the memory leak and fix it**
+The class below leaks memory. Identify the cause and write a corrected version with a \`destroy()\` method.
+
+\`\`\`javascript
+class Tooltip {
+  constructor(element) {
+    this.element = element;
+    this.data = new Array(5000).fill("tooltip content");
+    window.addEventListener("scroll", () => this.updatePosition());
+  }
+
+  updatePosition() {
+    // uses this.data and this.element
+  }
+}
+
+const tip = new Tooltip(document.querySelector("#btn"));
+// Later: tip is no longer needed, but the object stays alive
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+The inline arrow function passed to \`addEventListener\` creates a new function reference that cannot be removed. Store the handler as \`this.handleScroll = () => this.updatePosition()\` so you can call \`window.removeEventListener("scroll", this.handleScroll)\` in \`destroy()\`.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+class Tooltip {
+  constructor(element) {
+    this.element = element;
+    this.data = new Array(5000).fill("tooltip content");
+    this.handleScroll = () => this.updatePosition(); // store reference
+    window.addEventListener("scroll", this.handleScroll);
+  }
+
+  updatePosition() {
+    // uses this.data and this.element
+  }
+
+  destroy() {
+    window.removeEventListener("scroll", this.handleScroll); // remove by reference
+    this.data = null;       // release large array
+    this.element = null;    // release DOM reference
+  }
+}
+\`\`\`
+
+Expected output:
+\`\`\`
+(no output — this is a structural fix to prevent memory leaks)
+\`\`\`
+
+</details>
+
+**2. Choose WeakMap vs Map**
+Explain why the following cache implementation could cause a memory leak, and rewrite it using \`WeakMap\`.
+
+\`\`\`javascript
+const cache = new Map();
+
+function processElement(domNode) {
+  if (!cache.has(domNode)) {
+    cache.set(domNode, computeLayout(domNode));
+  }
+  return cache.get(domNode);
+}
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+A \`Map\` holds strong references to its keys. When DOM nodes are removed from the document and otherwise unreachable, the \`Map\` still keeps them alive (and their cached data). A \`WeakMap\` holds *weak* references — when the node is otherwise unreachable, the GC can collect both the node and the cache entry.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const cache = new WeakMap(); // weak reference — GC can reclaim DOM nodes
+
+function processElement(domNode) {
+  if (!cache.has(domNode)) {
+    cache.set(domNode, computeLayout(domNode));
+  }
+  return cache.get(domNode);
+}
+// When domNode is removed from the DOM and all JS references are dropped,
+// the WeakMap entry is automatically garbage collected too.
+\`\`\`
+
+Expected output:
+\`\`\`
+(no output — this is a structural fix to prevent memory leaks)
+\`\`\`
+
+</details>
+
 ---
 
 ## 3. Performance Optimization
@@ -1373,6 +2894,99 @@ document.querySelectorAll("img[data-src]").forEach(img => observer.observe(img))
 \`\`\`
 
 **Why it matters:** A debounced search input fires once per 300ms instead of hundreds of times per second, saving hundreds of network requests. Consistent object shapes let V8 compile highly optimized machine code that reuses across all objects of the same shape.
+
+### Exercises
+
+**1. Implement debounce from scratch**
+Write a \`debounce(fn, delay)\` function. The returned function should reset the timer every time it is called and only invoke \`fn\` once the timer has expired without a new call.
+
+\`\`\`javascript
+const log = debounce((msg) => console.log(msg), 200);
+log("a"); // timer starts
+log("b"); // timer resets
+log("c"); // timer resets — only this call fires after 200ms
+// Expected: only "c" is logged (after 200ms of silence)
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Declare \`let timerId\` in the outer scope. In the returned function, call \`clearTimeout(timerId)\` first, then \`timerId = setTimeout(() => fn.apply(this, args), delay)\`. Each call cancels the previous timer and starts a fresh one.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function debounce(fn, delay) {
+  let timerId;
+  return function(...args) {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+const log = debounce((msg) => console.log(msg), 200);
+log("a");
+log("b");
+log("c");
+// After 200ms of silence, logs "c"
+\`\`\`
+
+Expected output (after 200ms):
+\`\`\`
+c
+\`\`\`
+
+</details>
+
+**2. Implement throttle from scratch**
+Write a \`throttle(fn, intervalMs)\` function. The returned function should invoke \`fn\` immediately on the first call, then ignore calls until \`intervalMs\` milliseconds have passed.
+
+\`\`\`javascript
+const throttled = throttle(() => console.log("fired"), 1000);
+throttled(); // fires immediately
+throttled(); // ignored (< 1000ms later)
+throttled(); // ignored (< 1000ms later)
+// After 1000ms:
+throttled(); // fires again
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Track \`let lastRun = 0\`. In the returned function, get \`const now = Date.now()\`. If \`now - lastRun >= intervalMs\`, update \`lastRun = now\` and call \`fn.apply(this, args)\`. Otherwise skip.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function throttle(fn, intervalMs) {
+  let lastRun = 0;
+  return function(...args) {
+    const now = Date.now();
+    if (now - lastRun >= intervalMs) {
+      lastRun = now;
+      fn.apply(this, args);
+    }
+  };
+}
+
+const throttled = throttle(() => console.log("fired"), 1000);
+throttled(); // fired
+throttled(); // (ignored)
+throttled(); // (ignored)
+\`\`\`
+
+Expected output:
+\`\`\`
+fired
+\`\`\`
+
+</details>
 
 ---
 
@@ -1472,6 +3086,112 @@ userModel.email = "alice@acme.com"; // OK
 // userModel.age = -1;              // TypeError
 \`\`\`
 
+### Exercises
+
+**1. Implement a simple EventEmitter**
+Write a minimal \`EventEmitter\` class with \`on(event, fn)\`, \`off(event, fn)\`, and \`emit(event, ...args)\` methods. Test it with a \`"data"\` event.
+
+\`\`\`javascript
+const emitter = new EventEmitter();
+const handler = (msg) => console.log("Received:", msg);
+emitter.on("data", handler);
+emitter.emit("data", "hello");    // Received: hello
+emitter.off("data", handler);
+emitter.emit("data", "world");    // (nothing logged)
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Use a \`Map\` where each key is an event name and each value is a \`Set\` of listener functions. \`on\` adds to the Set, \`off\` deletes from it, \`emit\` iterates the Set and calls each function with the given args.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+class EventEmitter {
+  #listeners = new Map();
+
+  on(event, fn) {
+    if (!this.#listeners.has(event)) this.#listeners.set(event, new Set());
+    this.#listeners.get(event).add(fn);
+  }
+
+  off(event, fn) {
+    this.#listeners.get(event)?.delete(fn);
+  }
+
+  emit(event, ...args) {
+    this.#listeners.get(event)?.forEach(fn => fn(...args));
+  }
+}
+
+const emitter = new EventEmitter();
+const handler = (msg) => console.log("Received:", msg);
+emitter.on("data", handler);
+emitter.emit("data", "hello");
+emitter.off("data", handler);
+emitter.emit("data", "world");
+\`\`\`
+
+Expected output:
+\`\`\`
+Received: hello
+\`\`\`
+
+</details>
+
+**2. Apply the Strategy Pattern**
+Refactor the following function to use the Strategy Pattern so that new discount types can be added without modifying the core logic.
+
+\`\`\`javascript
+function applyDiscount(order, type) {
+  if (type === "percent10") return order.total * 0.9;
+  if (type === "fixed5") return order.total - 5;
+  if (type === "halfprice") return order.total * 0.5;
+  return order.total;
+}
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Create a \`discountStrategies\` object where each key is a strategy name and each value is a function \`(order) => newTotal\`. The main function looks up the strategy and calls it, throwing if the strategy is unknown.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const discountStrategies = {
+  percent10: (order) => order.total * 0.9,
+  fixed5:    (order) => order.total - 5,
+  halfprice: (order) => order.total * 0.5,
+};
+
+function applyDiscount(order, type) {
+  const strategy = discountStrategies[type];
+  if (!strategy) throw new Error(\`Unknown discount type: \${type}\`);
+  return strategy(order);
+}
+
+console.log(applyDiscount({ total: 100 }, "percent10")); // 90
+console.log(applyDiscount({ total: 100 }, "fixed5"));    // 95
+console.log(applyDiscount({ total: 100 }, "halfprice")); // 50
+\`\`\`
+
+Expected output:
+\`\`\`
+90
+95
+50
+\`\`\`
+
+</details>
+
 ---
 
 ## 5. Security Best Practices
@@ -1517,6 +3237,90 @@ async function securePost(url, data) {
 **Content Security Policy** is your second line of defense: configure at the HTTP header level to restrict which scripts the browser will accept. A strict CSP blocks injected scripts even if an XSS vulnerability exists in your code.
 
 > **Role connection:** Security engineers perform code review specifically for these vulnerabilities. Bug bounty programs regularly award thousands of dollars for XSS and CSRF findings in production apps.
+
+### Exercises
+
+**1. Write the safe version of a DOM update function**
+A colleague has written a function that sets an element's content using a string concatenation approach that is unsafe for user-supplied input. Write the corrected version that cannot execute injected markup.
+
+The original (unsafe pattern to avoid):
+\`\`\`
+element.innerHTML = "Results for: " + userQuery;
+\`\`\`
+
+Write a safe replacement that uses \`textContent\` and confirm what the page shows when \`userQuery\` is the string \`<b>hello</b>\`.
+
+<details>
+<summary>Hint</summary>
+
+\`textContent\` always treats the assigned value as a literal string — angle brackets are never interpreted as HTML tags. The text \`<b>hello</b>\` will appear verbatim on the page instead of being rendered as bold text.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function displayQuery(element, userQuery) {
+  element.textContent = "Results for: " + userQuery;
+  // textContent escapes all HTML — the string is shown literally
+}
+
+// When userQuery = "<b>hello</b>":
+// Page shows: Results for: <b>hello</b>   (literal text, no bold tag rendered)
+\`\`\`
+
+Expected output (visible text on page):
+\`\`\`
+Results for: <b>hello</b>
+\`\`\`
+
+</details>
+
+**2. Protect a merge function against prototype pollution**
+Write a \`secureMerge(target, source)\` function that copies own properties from \`source\` onto \`target\` while blocking the keys \`__proto__\`, \`constructor\`, and \`prototype\`.
+
+\`\`\`javascript
+const obj = {};
+secureMerge(obj, JSON.parse('{"__proto__": {"hacked": true}, "name": "Alice"}'));
+console.log(obj.name);          // "Alice"
+console.log(({}).hacked);       // undefined — prototype not polluted
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+Use \`Object.keys(source)\` (not \`for...in\`) to iterate only own keys. Check each key against a blocklist \`Set\` before copying. \`Object.keys\` already skips prototype properties, but the check guards against keys whose *names* are dangerous.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function secureMerge(target, source) {
+  const blocked = new Set(["__proto__", "constructor", "prototype"]);
+  for (const key of Object.keys(source)) {
+    if (!blocked.has(key)) {
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+
+const obj = {};
+secureMerge(obj, JSON.parse('{"__proto__": {"hacked": true}, "name": "Alice"}'));
+console.log(obj.name);
+console.log(({}).hacked);
+\`\`\`
+
+Expected output:
+\`\`\`
+Alice
+undefined
+\`\`\`
+
+</details>
 
 ---
 
@@ -1603,6 +3407,88 @@ class WorkerPool {
 **Why it matters:** Web Workers move CPU-intensive cost to another thread entirely. Image processing, video encoding, cryptography, and large data parsing are all excellent candidates. Companies like Figma run their entire rendering engine in a Web Worker to keep the UI thread free.
 
 > **Role connection:** Performance-critical front-end roles are expected to know this pattern. Companies with complex editors (Figma, Google Maps, Adobe) use Web Workers extensively.
+
+### Exercises
+
+**1. Design a Worker communication protocol**
+You are building a feature that compresses images in a Web Worker. Design the message protocol (the shape of objects passed via \`postMessage\`) for both directions: main → worker and worker → main. Include a message type, a request ID (so multiple in-flight requests can be tracked), and the relevant data or result.
+
+<details>
+<summary>Hint</summary>
+
+Use a \`type\` field to distinguish message kinds (e.g. \`"compress:request"\` and \`"compress:response"\`). Use an \`id\` field (e.g. a UUID or incrementing counter) to match responses back to their requests. Include \`payload\` on the way in and \`result\` (or \`error\`) on the way out.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+// main.js → worker.js
+const request = {
+  type: "compress:request",
+  id: crypto.randomUUID(),    // unique ID to match the response
+  payload: imageArrayBuffer,  // ArrayBuffer — use transferables
+};
+worker.postMessage(request, [request.payload]);
+
+// worker.js → main.js (success)
+const successResponse = {
+  type: "compress:response",
+  id: request.id,             // echo the request ID
+  result: compressedBuffer,   // result data
+  error: null,
+};
+
+// worker.js → main.js (failure)
+const errorResponse = {
+  type: "compress:response",
+  id: request.id,
+  result: null,
+  error: "Unsupported image format",
+};
+\`\`\`
+
+Expected output:
+\`\`\`
+(design exercise — no runtime output)
+\`\`\`
+
+</details>
+
+**2. Explain transferable objects**
+What is the difference between \`worker.postMessage(data)\` and \`worker.postMessage(data, [data.buffer])\`? When should you use the second form?
+
+<details>
+<summary>Hint</summary>
+
+The default \`postMessage\` *copies* the data using the structured clone algorithm — for large \`ArrayBuffer\`s this means copying megabytes of data. Transferable objects (the second argument) *transfer ownership* to the worker with zero copying — after transfer the original buffer is detached and unusable in the main thread.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const buffer = new ArrayBuffer(10 * 1024 * 1024); // 10 MB
+
+// Structured clone — copies the 10 MB (slow for large buffers)
+worker.postMessage({ buffer });
+
+// Transferable — zero-copy transfer, buffer is detached in main thread
+worker.postMessage({ buffer }, [buffer]);
+// After this line: buffer.byteLength === 0 (ownership transferred to worker)
+console.log(buffer.byteLength); // 0
+\`\`\`
+
+Expected output:
+\`\`\`
+0
+\`\`\`
+
+Use the transferable form for \`ArrayBuffer\`, \`MessagePort\`, \`ImageBitmap\`, and \`OffscreenCanvas\` whenever the sending context no longer needs the data after posting.
+
+</details>
 
 ---
 
@@ -1719,6 +3605,78 @@ const inTokyo = meeting.withTimeZone("Asia/Tokyo");
 \`\`\`
 
 **Why it matters:** These features represent the maturation of JavaScript as a systems-capable language. \`using\` declarations eliminate an entire class of resource leak bugs. Set methods and Iterator helpers bring JavaScript closer to parity with Python and Rust for data manipulation. Temporal finally fixes the 25-year-old Date mess.
+
+### Exercises
+
+**1. Use Set methods to find common and unique team members**
+Given two Sets of team members, use the new ES2025 Set methods to find: (a) members on both teams, (b) members on either team, and (c) members only on the frontend team.
+
+\`\`\`javascript
+const frontend = new Set(["Alice", "Bob", "Charlie"]);
+const backend  = new Set(["Bob", "Diana", "Charlie", "Eve"]);
+\`\`\`
+
+<details>
+<summary>Hint</summary>
+
+\`intersection\` returns elements in both sets. \`union\` returns all elements from both. \`difference\` returns elements in the first set that are not in the second.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+const frontend = new Set(["Alice", "Bob", "Charlie"]);
+const backend  = new Set(["Bob", "Diana", "Charlie", "Eve"]);
+
+console.log([...frontend.intersection(backend)]);
+console.log([...frontend.union(backend)]);
+console.log([...frontend.difference(backend)]);
+\`\`\`
+
+Expected output:
+\`\`\`
+["Bob", "Charlie"]
+["Alice", "Bob", "Charlie", "Diana", "Eve"]
+["Alice"]
+\`\`\`
+
+</details>
+
+**2. Consume an infinite generator lazily with Iterator helpers**
+Write a generator \`naturals()\` that yields 1, 2, 3, 4, ... infinitely. Then use ES2025 Iterator helpers to get the first 5 numbers that are divisible by 3, as an array.
+
+<details>
+<summary>Hint</summary>
+
+\`function* naturals()\` with \`let n = 1; while (true) { yield n++; }\`. Then chain \`.filter(n => n % 3 === 0).take(5).toArray()\`. No intermediate array of infinite values is created — lazily evaluated.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`javascript
+function* naturals() {
+  let n = 1;
+  while (true) { yield n++; }
+}
+
+const result = naturals()
+  .filter(n => n % 3 === 0)
+  .take(5)
+  .toArray();
+
+console.log(result);
+\`\`\`
+
+Expected output:
+\`\`\`
+[3, 6, 9, 12, 15]
+\`\`\`
+
+</details>
 
 ---
 

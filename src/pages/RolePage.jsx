@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
+import { ArrowLeft, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
 import PageHelmet from '../components/seo/PageHelmet'
 
@@ -11,14 +11,12 @@ import {
   loadRoleMarkdownContent,
   loadRoleQuizzes,
   loadRoleSkillDiagram,
-  loadRoleCodeSandbox,
   loadRoleLabs,
   loadRoleSetupGuide,
 } from '../data/loaders/roleDataLoader'
 import RoadmapTimeline from '../components/roadmap/RoadmapTimeline'
 import LevelSection from '../components/roadmap/LevelSection'
 import SkillDiagram from '../components/roadmap/SkillDiagram'
-import CodeSandbox from '../components/interactive/CodeSandbox'
 import SetupGuide from '../components/interactive/SetupGuide'
 import QuizBlock from '../components/interactive/QuizBlock'
 import InteractiveLab from '../components/interactive/InteractiveLab'
@@ -27,7 +25,6 @@ import useProgress from '../components/progress/useProgress'
 const tabs = [
   { id: 'roadmap', label: 'Roadmap', icon: BookOpen },
   { id: 'diagram', label: 'Skill Map', icon: BrainCircuit },
-  { id: 'sandbox', label: 'Code Lab', icon: Code2 },
   { id: 'labs', label: 'Interactive Labs', icon: FlaskConical },
   { id: 'setup', label: 'Dev Setup', icon: Wrench },
 ]
@@ -41,7 +38,6 @@ export default function RolePage() {
   const [markdownContent, setMarkdownContent] = useState(null)
   const [quizzes, setQuizzes] = useState(null)
   const [diagram, setDiagram] = useState(undefined)
-  const [examples, setExamples] = useState(undefined)
   const [labs, setLabs] = useState(undefined)
   const [setupGuide, setSetupGuide] = useState(undefined)
   const [loadError, setLoadError] = useState(null)
@@ -50,7 +46,6 @@ export default function RolePage() {
   // Reset tab data when role changes
   useEffect(() => {
     setDiagram(undefined)
-    setExamples(undefined)
     setLabs(undefined)
     setSetupGuide(undefined)
   }, [roleId])
@@ -78,16 +73,13 @@ export default function RolePage() {
     if (activeTab === 'diagram' && diagram === undefined) {
       loadRoleSkillDiagram(roleId).then(setDiagram).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-    if (activeTab === 'sandbox' && examples === undefined) {
-      loadRoleCodeSandbox(roleId).then((data) => setExamples(data || [])).catch(() => setLoadError('Failed to load content. Please refresh.'))
-    }
     if (activeTab === 'labs' && labs === undefined) {
       loadRoleLabs(roleId).then(setLabs).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
     if (activeTab === 'setup' && setupGuide === undefined) {
       loadRoleSetupGuide(roleId).then(setSetupGuide).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-  }, [activeTab, roleId, role, diagram, examples, labs, setupGuide])
+  }, [activeTab, roleId, role, diagram, labs, setupGuide])
 
   if (!role) {
     return (
@@ -231,18 +223,12 @@ export default function RolePage() {
         </div>
       )}
 
-      {activeTab === 'sandbox' && (
-        <div role="tabpanel" id="tabpanel-sandbox" aria-labelledby="tab-sandbox">
-          <CodeSandbox examples={examples || []} roleId={roleId} />
-        </div>
-      )}
-
       {activeTab === 'labs' && (
         <div role="tabpanel" id="tabpanel-labs" aria-labelledby="tab-labs">
           {labs && labs.length > 0 ? (
             <div className="space-y-6">
               {labs.map((lab) => (
-                <InteractiveLab key={lab.id} lab={lab} />
+                <InteractiveLab key={lab.id} lab={lab} onSwitchTab={setActiveTab} />
               ))}
             </div>
           ) : (

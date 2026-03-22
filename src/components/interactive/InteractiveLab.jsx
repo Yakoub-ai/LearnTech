@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ChevronRight, ChevronDown, Lightbulb, Eye, EyeOff, CheckCircle2, Clock } from 'lucide-react'
+import { ChevronRight, ChevronDown, Lightbulb, Eye, EyeOff, CheckCircle2, Clock, Wrench } from 'lucide-react'
 
 function ExpectedOutputToggle({ output }) {
   const [show, setShow] = useState(false)
@@ -24,7 +24,7 @@ function ExpectedOutputToggle({ output }) {
 import CopyButton from '../common/CopyButton'
 import { getLabProgress, setLabStepComplete } from '../../utils/progressStorage'
 
-function StepCard({ step, stepIndex, labId, isActive, onActivate }) {
+function StepCard({ step, stepIndex, labId, isActive, onActivate, onSwitchTab }) {
   const [showHints, setShowHints] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
   const labProgress = getLabProgress(labId)
@@ -67,6 +67,26 @@ function StepCard({ step, stepIndex, labId, isActive, onActivate }) {
           animate={{ opacity: 1, height: 'auto' }}
           className="px-4 pb-4"
         >
+          {step.setupReference && (
+            <div className="mb-4 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center gap-3 mb-2">
+                <Wrench className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" />
+                <p className="text-sm font-medium text-blue-800 dark:text-blue-300">
+                  Environment Setup Required
+                </p>
+              </div>
+              <p className="text-xs text-blue-600 dark:text-blue-400 mb-3">
+                Make sure your development environment is ready before continuing.
+              </p>
+              <button
+                onClick={() => onSwitchTab?.('setup')}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer border-none"
+              >
+                Go to Dev Setup →
+              </button>
+            </div>
+          )}
+
           <p className="text-[var(--color-text-secondary)] mb-4 leading-relaxed">{step.instruction}</p>
 
           {step.starterCode && (
@@ -147,7 +167,7 @@ function StepCard({ step, stepIndex, labId, isActive, onActivate }) {
   )
 }
 
-export default function InteractiveLab({ lab }) {
+export default function InteractiveLab({ lab, onSwitchTab }) {
   const [activeStep, setActiveStep] = useState(0)
   const labProgress = getLabProgress(lab.id)
   const completedSteps = lab.steps.filter((_, i) => labProgress?.steps?.[i]?.completed).length
@@ -197,6 +217,7 @@ export default function InteractiveLab({ lab }) {
             labId={lab.id}
             isActive={activeStep === i}
             onActivate={() => setActiveStep(activeStep === i ? -1 : i)}
+            onSwitchTab={onSwitchTab}
           />
         ))}
       </div>

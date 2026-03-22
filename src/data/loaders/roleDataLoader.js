@@ -23,14 +23,13 @@ export async function loadRoleSkillDiagram(roleId) {
   return skillDiagrams[roleId] || null
 }
 
-export async function loadRoleCodeSandbox(roleId) {
-  const { codeSandboxExamples } = await import('../codeSandboxExamples.js')
-  return codeSandboxExamples[roleId] || null
-}
-
 export async function loadRoleLabs(roleId) {
-  const { interactiveLabs } = await import('../interactiveLabs.js')
-  return interactiveLabs.filter(l => l.roleId === roleId)
+  try {
+    const mod = await import(`../labs/${roleId}-labs.js`)
+    return mod.labs || []
+  } catch {
+    return []
+  }
 }
 
 export async function loadRoleSetupGuide(roleId) {

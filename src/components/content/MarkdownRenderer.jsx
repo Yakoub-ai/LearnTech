@@ -84,11 +84,17 @@ function processContent(markdown) {
 
 const sanitizeSchema = {
   ...defaultSchema,
+  tagNames: [
+    ...(defaultSchema.tagNames || []),
+    'details',
+    'summary',
+  ].filter((v, i, a) => a.indexOf(v) === i),
   attributes: {
     ...defaultSchema.attributes,
     div: [...(defaultSchema.attributes?.div || []), ['data-callout']],
     code: [...(defaultSchema.attributes?.code || []), ['className']],
     span: [...(defaultSchema.attributes?.span || []), ['className']],
+    details: [...(defaultSchema.attributes?.details || []), 'open'],
   },
 }
 

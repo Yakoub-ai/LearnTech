@@ -22,14 +22,13 @@ export async function loadLanguageSkillDiagram(languageId) {
   return languageSkillDiagrams[languageId] || null
 }
 
-export async function loadLanguageCodeSandbox(languageId) {
-  const { languageCodeSandboxExamples } = await import('../languageCodeSandboxExamples.js')
-  return languageCodeSandboxExamples[languageId] || null
-}
-
 export async function loadLanguageLabs(languageId) {
-  const { interactiveLabs } = await import('../interactiveLabs.js')
-  return interactiveLabs.filter(l => l.languageId === languageId)
+  try {
+    const mod = await import(`../labs/${languageId}-labs.js`)
+    return mod.labs || []
+  } catch {
+    return []
+  }
 }
 
 export async function loadLanguageSetupGuide(languageId) {

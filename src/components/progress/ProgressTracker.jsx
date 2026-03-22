@@ -1,7 +1,7 @@
 import { roles, getRoleIcon } from '../../data/roles'
 import { languages, getLanguageIcon } from '../../data/languages'
 import { getRoleProgress, getLanguageProgress, getAllLabProgress } from '../../utils/progressStorage'
-import { interactiveLabs } from '../../data/interactiveLabs'
+import { interactiveLabs } from '../../data/labs/index.js'
 import ProgressBar from './ProgressBar'
 import { Link } from 'react-router-dom'
 import { Trophy, Target, Flame, FlaskConical } from 'lucide-react'

@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Code2, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
+import { ArrowLeft, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { getRoleById } from '../data/roles'
 import { setLanguageQuizScore, syncProgressItemToSupabase } from '../utils/progressStorage'
@@ -12,13 +12,11 @@ import {
   loadLanguageMarkdownContent,
   loadLanguageQuizzes,
   loadLanguageSkillDiagram,
-  loadLanguageCodeSandbox,
   loadLanguageLabs,
   loadLanguageSetupGuide,
 } from '../data/loaders/languageDataLoader'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import SkillDiagram from '../components/roadmap/SkillDiagram'
-import CodeSandbox from '../components/interactive/CodeSandbox'
 import SetupGuide from '../components/interactive/SetupGuide'
 import QuizBlock from '../components/interactive/QuizBlock'
 import InteractiveLab from '../components/interactive/InteractiveLab'
@@ -27,7 +25,6 @@ import Badge from '../components/common/Badge'
 const tabs = [
   { id: 'roadmap', label: 'Roadmap', icon: BookOpen },
   { id: 'diagram', label: 'Skill Map', icon: BrainCircuit },
-  { id: 'sandbox', label: 'Code Lab', icon: Code2 },
   { id: 'labs', label: 'Interactive Labs', icon: FlaskConical },
   { id: 'setup', label: 'Dev Setup', icon: Wrench },
 ]
@@ -49,7 +46,6 @@ export default function LanguagePage() {
   const [content, setContent] = useState(null)
   const [langQuizzes, setLangQuizzes] = useState(null)
   const [diagram, setDiagram] = useState(undefined)
-  const [examples, setExamples] = useState(undefined)
   const [labs, setLabs] = useState(undefined)
   const [setupGuide, setSetupGuide] = useState(undefined)
   const [loadError, setLoadError] = useState(null)
@@ -58,7 +54,6 @@ export default function LanguagePage() {
   // Reset tab data when language changes
   useEffect(() => {
     setDiagram(undefined)
-    setExamples(undefined)
     setLabs(undefined)
     setSetupGuide(undefined)
   }, [languageId])
@@ -86,16 +81,13 @@ export default function LanguagePage() {
     if (activeTab === 'diagram' && diagram === undefined) {
       loadLanguageSkillDiagram(languageId).then(setDiagram).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-    if (activeTab === 'sandbox' && examples === undefined) {
-      loadLanguageCodeSandbox(languageId).then((data) => setExamples(data || [])).catch(() => setLoadError('Failed to load content. Please refresh.'))
-    }
     if (activeTab === 'labs' && labs === undefined) {
       loadLanguageLabs(languageId).then(setLabs).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
     if (activeTab === 'setup' && setupGuide === undefined) {
       loadLanguageSetupGuide(languageId).then(setSetupGuide).catch(() => setLoadError('Failed to load content. Please refresh.'))
     }
-  }, [activeTab, languageId, language, diagram, examples, labs, setupGuide])
+  }, [activeTab, languageId, language, diagram, labs, setupGuide])
 
   if (!language) {
     return (
@@ -241,25 +233,12 @@ export default function LanguagePage() {
         </div>
       )}
 
-      {activeTab === 'sandbox' && (
-        <div role="tabpanel" id="tabpanel-sandbox" aria-labelledby="tab-sandbox">
-          {examples && examples.length > 0 ? (
-            <CodeSandbox examples={examples} roleId={languageId} />
-          ) : (
-            <div className="p-8 text-center rounded-lg border border-dashed border-[var(--color-border)]">
-              <Code2 className="w-12 h-12 mx-auto text-[var(--color-text-secondary)]/30 mb-4" />
-              <p className="text-[var(--color-text-secondary)]">Code examples coming soon</p>
-            </div>
-          )}
-        </div>
-      )}
-
       {activeTab === 'labs' && (
         <div role="tabpanel" id="tabpanel-labs" aria-labelledby="tab-labs">
           {labs && labs.length > 0 ? (
             <div className="space-y-6">
               {labs.map((lab) => (
-                <InteractiveLab key={lab.id} lab={lab} />
+                <InteractiveLab key={lab.id} lab={lab} onSwitchTab={setActiveTab} />
               ))}
             </div>
           ) : (

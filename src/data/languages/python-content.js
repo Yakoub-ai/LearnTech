@@ -104,13 +104,40 @@ for val in falsy_values:
     assert not val, f"{val!r} should be falsy"
 print("All falsy values confirmed!")
 
-# EXERCISE:
-# 1. Create a variable holding your birth year as an int.
-# 2. Calculate your approximate age using 2026 - birth_year.
-# 3. Store the result as a string with the message "I am X years old."
-# 4. Check whether the age variable is an instance of int.
-# 5. Experiment: what happens when you call int(3.9)? Is it 3 or 4?
 \`\`\`
+
+### Exercises
+
+**1. Birth year calculator**
+Create a variable holding your birth year as an int. Calculate your approximate age using \`2026 - birth_year\`. Store the result in a string formatted as "I am X years old." Then check whether the \`age\` variable is an instance of \`int\`. Finally, experiment: what does \`int(3.9)\` return — \`3\` or \`4\`?
+
+<details>
+<summary>Hint</summary>
+
+Use an f-string to build the message: \`f"I am {age} years old."\`. Use \`isinstance(age, int)\` to check the type. \`int()\` truncates toward zero — it does not round.
+
+</details>
+
+<details>
+<summary>Answer</summary>
+
+\`\`\`python
+birth_year = 1995
+age = 2026 - birth_year
+message = f"I am {age} years old."
+print(message)
+print(isinstance(age, int))
+print(int(3.9))
+\`\`\`
+
+Expected output:
+\`\`\`
+I am 31 years old.
+True
+3
+\`\`\`
+
+</details>
 
 ### Python Data Type Hierarchy
 
