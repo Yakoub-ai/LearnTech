@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
-import mermaid from '../../utils/mermaidConfig'
+import { useContext, useEffect, useRef, useState } from 'react'
+import mermaid, { initMermaid } from '../../utils/mermaidConfig'
+import { ThemeContext } from '../../contexts/ThemeContext'
 
 export default function DiagramBlock({ diagram }) {
+  const { darkMode } = useContext(ThemeContext) || {}
   const ref = useRef(null)
   const [error, setError] = useState(null)
 
@@ -10,6 +12,7 @@ export default function DiagramBlock({ diagram }) {
 
     const render = async () => {
       try {
+        initMermaid(darkMode)
         ref.current.innerHTML = ''
         const id = `mermaid-inline-${Date.now()}-${Math.random().toString(36).slice(2)}`
         const { svg } = await mermaid.render(id, diagram)
@@ -23,7 +26,7 @@ export default function DiagramBlock({ diagram }) {
     }
 
     render()
-  }, [diagram])
+  }, [diagram, darkMode])
 
   if (error) {
     return (

@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
-import mermaid from '../../utils/mermaidConfig'
+import { useContext, useEffect, useRef, useState } from 'react'
+import mermaid, { initMermaid } from '../../utils/mermaidConfig'
+import { ThemeContext } from '../../contexts/ThemeContext'
 import { Maximize2, Minimize2 } from 'lucide-react'
 
 export default function SkillDiagram({ diagram, title = 'Skill Roadmap' }) {
+  const { darkMode } = useContext(ThemeContext) || {}
   const containerRef = useRef(null)
   const [expanded, setExpanded] = useState(false)
   const [error, setError] = useState(null)
@@ -12,11 +14,12 @@ export default function SkillDiagram({ diagram, title = 'Skill Roadmap' }) {
 
     const render = async () => {
       try {
-        containerRef.current.innerHTML = ''
+        initMermaid(darkMode)
+        containerRef.current.innerHTML = '' // eslint-disable-line -- Mermaid SVG output is library-controlled, not user input
         const id = `mermaid-${Date.now()}`
         const { svg } = await mermaid.render(id, diagram)
         if (containerRef.current) {
-          containerRef.current.innerHTML = svg
+          containerRef.current.innerHTML = svg // eslint-disable-line -- Mermaid SVG output is library-controlled, not user input
         }
         setError(null)
       } catch (err) {
@@ -26,7 +29,7 @@ export default function SkillDiagram({ diagram, title = 'Skill Roadmap' }) {
     }
 
     render()
-  }, [diagram])
+  }, [diagram, darkMode])
 
   if (!diagram) return null
 
