@@ -67,10 +67,12 @@ export const labs = [
   <header>
     <h1>My Blog</h1>
     <nav>
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/blog">Blog</a>
-      <a href="/contact">Contact</a>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
     </nav>
   </header>
 
@@ -409,7 +411,7 @@ aside li {
 <!-- After </main>: -->
 
 <!-- TODO: Add a <footer> with:
-     - A <p> containing: &copy; 2025 Tech Learning -->
+     - A <p> containing: &copy; 2026 Tech Learning -->
 
 <!-- Accessibility checklist (verify in DevTools):
      - Every <img> has a descriptive alt attribute
@@ -438,7 +440,7 @@ aside li {
 
 <!-- After </main>: -->
 <footer>
-  <p>&copy; 2025 Tech Learning</p>
+  <p>&copy; 2026 Tech Learning</p>
 </footer>`
       },
       {

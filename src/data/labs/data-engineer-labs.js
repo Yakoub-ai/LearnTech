@@ -188,7 +188,7 @@ Stockholm (2 employees):
   - Alice: mid
   - Eve: mid
 
-Gothenburg (1 employees):
+Gothenburg (1 employee):
   - Bob: junior
 ...`,
         solution: `def load_grouped(records, group_by='city'):

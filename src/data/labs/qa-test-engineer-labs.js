@@ -290,7 +290,7 @@ describe('slugify', () => {
 Test Suites: 1 passed, 1 total
 Tests:       7 passed, 7 total`,
         solution: `function slugify(text) {
-  return text.trim().toLowerCase().replace(/\\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  return text.trim().toLowerCase().replace(/\\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '');
 }
 
 describe('Math functions', () => {

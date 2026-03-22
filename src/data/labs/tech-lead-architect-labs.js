@@ -1385,7 +1385,7 @@ PR: Add JWT authentication middleware
 ============================================================
 
 [GENERAL]
-  [PASS] PR title is descriptive -- Title length: 34 chars
+  [PASS] PR title is descriptive -- Title length: 33 chars
   [PASS] PR description is provided
   [PASS] PR is not too large -- 200 lines changed (max 400 recommended)
 
@@ -1814,8 +1814,7 @@ const codebaseMetrics = {
 };
 
 const results = governor.evaluate(codebaseMetrics);
-const healthy = governor.printReport(results);
-console.log(\`\\nOverall: \${healthy ? 'HEALTHY' : 'ACTION REQUIRED'}\`);`,
+governor.printReport(results);`,
         hints: [
           'Freshness: const upToDate = ctx.dependencies.filter(d => d.majorsBehind <= 1).length; return Math.round((upToDate / ctx.dependencies.length) * 100)',
           'Coupling: Math.max(...ctx.services.map(s => s.directDependencies))',
@@ -1934,9 +1933,9 @@ tracker.printTrendReport();`,
 Snapshots tracked: 4
 Latest: 2025-W04
 
-  [PASS] ↑ Test Coverage: 82 (+14.0)
-  [FAIL] → Cyclic Dependencies: 1 (-1.0)
   [PASS] → Dependency Freshness: 80 (+0.0)
+  [FAIL] → Cyclic Dependencies: 1 (-1.0)
+  [PASS] ↑ Test Coverage: 82 (+14.0)
   [FAIL] → Service Coupling: 6 (+0.0)
   [FAIL] → API Versioning: 67 (+0.0)
   [PASS] → Build Time: 240 (+0.0)`,
@@ -2166,8 +2165,8 @@ console.log(\`Effort used: \${sprint.effortUsed}/\${sprint.effortBudget}\`);`,
         ],
         expectedOutput: `Sprint suggestion (budget: 8):
   [TD-003] Add integration tests for payment flow (effort: 3, priority: 17)
-  [TD-004] Upgrade PostgreSQL from 12 to 16 (effort: 3, priority: 16)
-  [TD-005] Document API rate limiting strategy (effort: 1, priority: 4)
+  [TD-004] Upgrade PostgreSQL from 12 to 16 (effort: 3, priority: 15)
+  [TD-005] Document API rate limiting strategy (effort: 1, priority: 5)
 Effort used: 7/8`,
         solution: `resolve(id) {
   const item = this.items.find(i => i.id === id);
@@ -2265,20 +2264,20 @@ console.log(trendResult.message);`,
 TECH DEBT REPORT - Platform Team
 Date: 2025-01-15
 =================================================================
-Open items: 5  |  Resolved: 0  |  Debt Score: 61
+Open items: 5  |  Resolved: 0  |  Debt Score: 58
 
 BREAKDOWN BY CATEGORY:
-  architecture: 1 items (avg priority: 14.0)
+  architecture: 1 items (avg priority: 13.0)
   testing: 1 items (avg priority: 17.0)
-  infrastructure: 1 items (avg priority: 16.0)
+  infrastructure: 1 items (avg priority: 15.0)
   code: 1 items (avg priority: 8.0)
-  documentation: 1 items (avg priority: 4.0)
+  documentation: 1 items (avg priority: 5.0)
 
 TOP PRIORITY ITEMS:
   ID         TITLE                          PRI  IMP  EFF  RISK
   ---------------------------------------------------------------
   TD-003     Add integration tests...       17   5    3    5
-  TD-004     Upgrade PostgreSQL 12→16       16   4    3    5
+  TD-004     Upgrade PostgreSQL 12→16       15   4    3    5
   ...
 
 SPRINT SUGGESTION (budget: 8 effort points):

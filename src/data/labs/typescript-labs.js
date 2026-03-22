@@ -280,7 +280,7 @@ console.log(user);`,
         solution: `let username: string = "Alice";
 let age: number = 30;
 let isActive: boolean = true;
-let score: null = null;
+let score: number | null = null;
 let pending: undefined = undefined;
 
 let scores: number[] = [95, 87, 92];
@@ -822,12 +822,6 @@ function merge<T extends object>(target: T, source: Partial<T>): T {
   return { ...target, ...source };
 }
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
 const users: User[] = [
   { id: 1, name: "Alice", email: "alice@example.com" },
   { id: 2, name: "Bob",   email: "bob@example.com"   },
@@ -1020,13 +1014,6 @@ const products: Product[] = [
     result[bucket].push(item);
   }
   return result;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
 }
 
 const products: Product[] = [

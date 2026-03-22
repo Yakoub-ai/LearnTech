@@ -1496,8 +1496,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   # TODO: name: webapp-config, namespace: production, label app: webapp
-spec:
-  # No spec for ConfigMap — use data:
 data:
   # TODO: LOG_LEVEL: "info"
   # TODO: MAX_CONNECTIONS: "100"

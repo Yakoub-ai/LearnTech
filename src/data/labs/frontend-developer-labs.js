@@ -1129,7 +1129,7 @@ describe('LoginForm accessibility', () => {
 
 // useEffect: call fetchData() when url changes (dep: [fetchData])`,
         hints: [
-          'useCallback(() => { ... }, [url]) — url in deps so a new URL triggers a fresh memoised function',
+          'useCallback(() => { ... }, [url]) — url in deps so a new URL triggers a fresh memoised function; options is excluded from deps intentionally (callers should memoize it with useMemo to avoid infinite re-renders)',
           'useEffect(() => { fetchData(); }, [fetchData]) — depends on the memoised function, not url directly',
           'Return { data, loading, error, refetch: fetchData } — expose fetchData as refetch for manual triggers'
         ],
@@ -1161,6 +1161,8 @@ export function useFetch(url, options = {}) {
     } finally {
       setLoading(false);
     }
+  // Note: options is intentionally excluded from deps — callers must memoize
+  // it with useMemo/useCallback to avoid infinite re-renders.
   }, [url]);
 
   useEffect(() => {
