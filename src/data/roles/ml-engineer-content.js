@@ -482,6 +482,54 @@ Retraining should be automated and triggered by monitoring signals rather than o
 - Deploying models manually instead of through a reproducible, containerised pipeline.
 - Not monitoring model performance after deployment, allowing degraded models to serve incorrect predictions for weeks or months.
 - Treating MLOps as a separate concern from model development — it should be considered from the start of the project.
+
+---
+
+## PyTorch Training Pipelines – Data Loading, Training Loops and Mixed Precision
+
+Production-quality training pipelines require understanding \`Dataset\` (individual example access) and \`DataLoader\` (batching, shuffling, parallel loading with \`num_workers\`). The training loop in PyTorch is explicit: forward pass, loss computation, backward pass, optimiser step. **Mixed precision training** with \`torch.amp\` uses float16 for forward pass and float32 for weight updates, reducing memory by ~50% with no accuracy loss. **Gradient accumulation** simulates larger batch sizes on limited hardware by accumulating gradients across multiple forward-backward passes before updating weights.
+
+**Key things to understand:**
+- \`DataLoader\` with \`num_workers > 0\` and \`pin_memory=True\` prevents GPU starvation.
+- Mixed precision is essentially free performance on modern GPUs (Ampere, Hopper).
+- Always checkpoint model, optimiser, and scaler state together for training resumption.
+- Switch between \`model.train()\` and \`model.eval()\` — batch norm and dropout behave differently.
+
+---
+
+## Hyperparameter Tuning – Systematic Search and Bayesian Optimisation
+
+**Grid search** is exhaustive but scales poorly. **Random search** is more efficient — it explores more unique values per dimension. **Bayesian optimisation** (Optuna, Hyperopt) builds a probabilistic model of the objective function and intelligently selects the next trial. **Learning rate schedulers** (cosine annealing, one-cycle) adjust LR during training for better convergence.
+
+**Key things to understand:**
+- Optuna's TPE sampler converges faster than random search for most problems.
+- Always use cross-validation to evaluate each configuration — not a single validation split.
+- Log every tuning trial to MLflow for reproducibility and comparison.
+- Learning rate and batch size often need to be tuned together.
+
+---
+
+## Model Serving Basics – From Notebook to API Endpoint
+
+The most common serving pattern is a REST API with FastAPI. Key considerations: input validation (Pydantic), consistent feature transformation (same preprocessing as training), latency, and throughput. **BentoML** and **TorchServe** provide framework-level serving with built-in batching, scaling, and containerisation.
+
+**Key things to understand:**
+- Load the model once at startup, not on every request.
+- Input validation prevents silent incorrect predictions from malformed inputs.
+- Training-serving skew (different preprocessing at serving vs training) silently degrades predictions.
+- Load test serving endpoints before releasing — latency at p99 under load differs from benchmarks.
+
+---
+
+## torch.compile and PyTorch 2.x Performance
+
+\`torch.compile()\` compiles PyTorch models into optimised kernels for 1.3-2x training speedup with a single line of code. The \`inductor\` backend generates Triton GPU kernels or optimised C++ automatically. Compilation modes: "default" (balanced), "reduce-overhead" (CUDA graphs), "max-autotune" (slowest compile, fastest runtime).
+
+**Key things to understand:**
+- \`torch.compile\` preserves numerical results — it is a pure performance optimisation.
+- First call is slow (compilation); subsequent calls are fast. Always warm up before benchmarking.
+- Use \`dynamic=True\` for varying batch sizes or sequence lengths to avoid recompilation.
+- \`mode="max-autotune"\` is recommended for production inference.
 `,
   senior: `# ML Engineer – Senior Concept Reference
 

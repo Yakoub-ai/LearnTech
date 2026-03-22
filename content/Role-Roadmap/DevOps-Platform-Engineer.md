@@ -22,9 +22,12 @@ DevOps and Platform Engineers build and maintain the infrastructure, pipelines, 
 
 - Explain the DevOps philosophy and the CALMS framework (Culture, Automation, Lean, Measurement, Sharing)
 - Explain the difference between CI, Continuous Delivery, and Continuous Deployment
-- Build and run a Docker container from a Dockerfile
+- Build and run a Docker container from a Dockerfile, including multi-stage builds
 - Navigate the Linux file system and manage processes from the command line
 - Write basic Bash scripts (variables, loops, conditionals, exit codes)
+- Diagnose basic networking issues using DNS lookups, port checks, and HTTP status codes
+- Write simple Python scripts for DevOps automation tasks
+- Explain IaaS, PaaS, and SaaS and the shared responsibility model
 
 For deep explanations of each concept, see the [Beginner Concept Reference](DevOps-Platform-Engineer/Beginner.md).
 
