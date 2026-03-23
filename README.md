@@ -1,6 +1,6 @@
-# LearnTech
+# techhubb.se
 
-[![CI](https://github.com/Yakoub-ai/LearnTech/actions/workflows/ci.yml/badge.svg)](https://github.com/Yakoub-ai/LearnTech/actions/workflows/ci.yml)
+[![CI](https://github.com/Yakoub-ai/techhubb.se/actions/workflows/ci.yml/badge.svg)](https://github.com/Yakoub-ai/techhubb.se/actions/workflows/ci.yml)
 
 Interactive learning platform for tech roles and programming languages.
 
@@ -17,8 +17,8 @@ Interactive learning platform for tech roles and programming languages.
 
 ```bash
 # Clone the repository
-git clone https://github.com/Yakoub-ai/LearnTech.git
-cd LearnTech
+git clone https://github.com/Yakoub-ai/techhubb.se.git
+cd techhubb.se
 
 # Install dependencies
 npm install
@@ -39,7 +39,7 @@ npm run dev
 2. In the Vercel project dashboard, go to **Settings → Environment Variables** and add:
    - `VITE_SUPABASE_URL` — your Supabase project URL
    - `VITE_SUPABASE_ANON_KEY` — your Supabase anon/public key
-   - `VITE_APP_URL` — your deployed Vercel URL (e.g. `https://your-app.vercel.app`)
+   - `VITE_APP_URL` — your deployed URL (e.g. `https://techhubb.se`)
 3. Deploy — Vercel will automatically build and deploy on every push to `main`
 
 The `vercel.json` in this repo configures SPA rewrites (all routes → `index.html`) and security headers including CSP, HSTS, X-Frame-Options, and immutable asset caching.
@@ -50,7 +50,7 @@ The `vercel.json` in this repo configures SPA rewrites (all routes → `index.ht
 |---|---|
 | `VITE_SUPABASE_URL` | Supabase project URL (e.g. `https://xyz.supabase.co`) |
 | `VITE_SUPABASE_ANON_KEY` | Supabase anon/public API key |
-| `VITE_APP_URL` | Deployed app URL (e.g. `https://your-app.vercel.app`) |
+| `VITE_APP_URL` | Deployed app URL (e.g. `https://techhubb.se`) |
 
 Copy `.env.example` to `.env` for local development.
 
