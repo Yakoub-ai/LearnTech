@@ -5,8 +5,96 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tech Hubben Learning</title>
+
+    <!-- Primary SEO -->
+    <meta name="description" content="Interactive learning platform with structured roadmaps, interactive labs, and curated resources for tech roles — AI Engineer, Backend Developer, DevOps, Data Engineer, Security Engineer, and more." />
+    <meta name="keywords" content="tech learning, programming courses, AI engineer, backend developer, DevOps, data engineer, data scientist, ML engineer, frontend developer, Python, JavaScript, TypeScript, SQL, software engineering education, career roadmap" />
+    <meta name="author" content="Tech Hubben Learning" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#6366f1" />
+
+    <!-- Educational categorization -->
+    <meta name="category" content="Education" />
+    <meta name="classification" content="Education/Technology" />
+    <meta name="subject" content="Technology Education, Programming, Software Engineering, Career Development" />
+    <meta name="audience" content="Software Engineers, Developers, Tech Professionals, Career Changers" />
+    <meta name="educational-level" content="Beginner, Intermediate, Advanced" />
+
+    <!-- OpenGraph (static fallback for crawlers without JS) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Tech Hubben Learning" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://techhubb.se/" />
+    <meta property="og:title" content="Tech Hubben Learning" />
+    <meta property="og:description" content="Interactive learning platform with structured roadmaps, interactive labs, and curated resources for tech roles and programming languages." />
+    <meta property="og:image" content="https://techhubb.se/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Tech Hubben Learning — interactive tech education platform" />
+
+    <!-- Twitter Card (static fallback) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tech Hubben Learning" />
+    <meta name="twitter:description" content="Interactive learning platform with structured roadmaps, interactive labs, and curated resources for tech roles and programming languages." />
+    <meta name="twitter:image" content="https://techhubb.se/og-image.png" />
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Fonts -->
     <link rel="preload" href="/fonts/IBMPlexSans-Regular.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="preload" href="/fonts/LFRubrik2-Regular.otf" as="font" type="font/otf" crossorigin />
+
+    <!-- Static JSON-LD: EducationalOrganization + WebSite (visible to all crawlers) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "EducationalOrganization",
+          "@id": "https://techhubb.se/#organization",
+          "name": "Tech Hubben Learning",
+          "url": "https://techhubb.se",
+          "description": "Interactive learning platform with structured roadmaps, interactive labs, and curated resources for tech roles and programming languages.",
+          "educationalLevel": ["Beginner", "Intermediate", "Advanced"],
+          "teaches": [
+            "AI Engineering",
+            "Backend Development",
+            "Data Engineering",
+            "Data Science",
+            "DevOps and Platform Engineering",
+            "Frontend Development",
+            "Marketing Technology Development",
+            "Machine Learning Engineering",
+            "QA and Test Engineering",
+            "Security Engineering",
+            "Technical Leadership and Architecture",
+            "Python",
+            "JavaScript",
+            "TypeScript",
+            "SQL",
+            "HTML and CSS"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://techhubb.se/#website",
+          "url": "https://techhubb.se",
+          "name": "Tech Hubben Learning",
+          "description": "Interactive learning platform with structured roadmaps, interactive labs, and curated resources for tech roles and programming languages.",
+          "publisher": { "@id": "https://techhubb.se/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://techhubb.se/?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

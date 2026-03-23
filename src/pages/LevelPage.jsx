@@ -4,6 +4,9 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, BookOpen, List } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
 import PageHelmet from '../components/seo/PageHelmet'
+import StructuredData from '../components/seo/StructuredData'
+
+const SITE_URL = import.meta.env.VITE_APP_URL || 'https://techhubb.se'
 import { loadRoleMarkdownContent, loadRoleTopicQuizzes, loadRoleQuizzes } from '../data/loaders/roleDataLoader'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import Badge from '../components/common/Badge'
@@ -128,7 +131,26 @@ export default function LevelPage() {
         description={`${levelCapitalized} level resources and objectives for ${role.name}. Structured learning path with hands-on exercises.`}
         path={`/dashboard/role/${roleId}/${level}`}
         ogType="article"
+        subject={role.name}
+        educationalLevel={levelCapitalized}
       />
+      <StructuredData data={{
+        "@context": "https://schema.org",
+        "@type": "CourseInstance",
+        "name": `${role.name} — ${levelCapitalized}`,
+        "description": `${levelCapitalized} level resources and objectives for ${role.name}. Structured learning path with hands-on exercises.`,
+        "url": `${SITE_URL}/dashboard/role/${roleId}/${level}`,
+        "courseMode": "online",
+        "educationalLevel": levelCapitalized,
+        "inLanguage": "en",
+        "isAccessibleForFree": false,
+        "courseWorkload": `PT${role.estimatedHours?.[level] || 0}H`,
+        "provider": {
+          "@type": "EducationalOrganization",
+          "name": "Tech Hubben Learning",
+          "url": SITE_URL
+        }
+      }} />
       <Link
         to={`/dashboard/role/${roleId}`}
         className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors"

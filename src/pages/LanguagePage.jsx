@@ -8,6 +8,9 @@ import { setLanguageQuizScore, syncProgressItemToSupabase, getLanguageProgress }
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import PageHelmet from '../components/seo/PageHelmet'
+import StructuredData from '../components/seo/StructuredData'
+
+const SITE_URL = import.meta.env.VITE_APP_URL || 'https://techhubb.se'
 import {
   loadLanguageMarkdownContent,
   loadLanguageQuizzes,
@@ -175,9 +178,51 @@ export default function LanguagePage() {
       <PageHelmet
         title={`${language.name} Learning Path`}
         description={language.description || `Learn ${language.name} from beginner to senior with structured roadmaps, quizzes, and interactive labs.`}
-        path={`/language/${languageId}`}
+        path={`/dashboard/language/${languageId}`}
         ogType="article"
+        subject={language.name}
+        educationalLevel="Beginner, Intermediate, Advanced"
       />
+      <StructuredData data={{
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": `${language.name} Learning Path`,
+        "description": language.description || `Learn ${language.name} from beginner to senior with structured roadmaps, quizzes, and interactive labs.`,
+        "url": `${SITE_URL}/dashboard/language/${languageId}`,
+        "inLanguage": "en",
+        "isAccessibleForFree": false,
+        "provider": {
+          "@type": "EducationalOrganization",
+          "name": "Tech Hubben Learning",
+          "url": SITE_URL
+        },
+        "educationalLevel": "Beginner to Senior",
+        "teaches": language.name,
+        "timeRequired": `PT${(language.estimatedHours?.beginner || 0) + (language.estimatedHours?.mid || 0) + (language.estimatedHours?.senior || 0)}H`,
+        "hasCourseInstance": [
+          {
+            "@type": "CourseInstance",
+            "name": `${language.name} — Beginner`,
+            "courseMode": "online",
+            "educationalLevel": "Beginner",
+            "url": `${SITE_URL}/dashboard/language/${languageId}/beginner`
+          },
+          {
+            "@type": "CourseInstance",
+            "name": `${language.name} — Mid`,
+            "courseMode": "online",
+            "educationalLevel": "Intermediate",
+            "url": `${SITE_URL}/dashboard/language/${languageId}/mid`
+          },
+          {
+            "@type": "CourseInstance",
+            "name": `${language.name} — Senior`,
+            "courseMode": "online",
+            "educationalLevel": "Advanced",
+            "url": `${SITE_URL}/dashboard/language/${languageId}/senior`
+          }
+        ]
+      }} />
       <Link to="/dashboard/languages" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" />
         All Languages

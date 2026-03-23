@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, BookOpen, Wrench, BrainCircuit, FlaskConical } from 'lucide-react'
 import { getRoleById, getRoleIcon } from '../data/roles'
 import PageHelmet from '../components/seo/PageHelmet'
+import StructuredData from '../components/seo/StructuredData'
 
 const SITE_URL = import.meta.env.VITE_APP_URL || 'https://techhubb.se'
 import { parseResourceTable, parseObjectives } from '../utils/markdownLoader'
@@ -111,23 +112,51 @@ export default function RolePage() {
       <PageHelmet
         title={role.name}
         description={role.description}
-        path={`/role/${roleId}`}
+        path={`/dashboard/role/${roleId}`}
         ogType="article"
+        subject={role.name}
+        educationalLevel="Beginner, Intermediate, Advanced"
       />
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Course",
-          "name": role.name,
-          "description": role.description,
-          "provider": {
-            "@type": "Organization",
-            "name": "Tech Hubben Learning"
+      <StructuredData data={{
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": `${role.name} Learning Path`,
+        "description": role.description,
+        "url": `${SITE_URL}/dashboard/role/${roleId}`,
+        "inLanguage": "en",
+        "isAccessibleForFree": false,
+        "provider": {
+          "@type": "EducationalOrganization",
+          "name": "Tech Hubben Learning",
+          "url": SITE_URL
+        },
+        "educationalLevel": "Beginner to Senior",
+        "teaches": role.name,
+        "timeRequired": `PT${(role.estimatedHours?.beginner || 0) + (role.estimatedHours?.mid || 0) + (role.estimatedHours?.senior || 0)}H`,
+        "hasCourseInstance": [
+          {
+            "@type": "CourseInstance",
+            "name": `${role.name} — Beginner`,
+            "courseMode": "online",
+            "educationalLevel": "Beginner",
+            "url": `${SITE_URL}/dashboard/role/${roleId}/beginner`
           },
-          "educationalLevel": "Beginner to Senior",
-          "url": `${SITE_URL}/role/${roleId}`
-        })}
-      </script>
+          {
+            "@type": "CourseInstance",
+            "name": `${role.name} — Mid`,
+            "courseMode": "online",
+            "educationalLevel": "Intermediate",
+            "url": `${SITE_URL}/dashboard/role/${roleId}/mid`
+          },
+          {
+            "@type": "CourseInstance",
+            "name": `${role.name} — Senior`,
+            "courseMode": "online",
+            "educationalLevel": "Advanced",
+            "url": `${SITE_URL}/dashboard/role/${roleId}/senior`
+          }
+        ]
+      }} />
       <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] no-underline mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" />
         All Roles

@@ -12,6 +12,9 @@ import QuizBlock from '../components/interactive/QuizBlock'
 import ReportQuestionModal from '../components/interactive/ReportQuestionModal'
 import Badge from '../components/common/Badge'
 import PageHelmet from '../components/seo/PageHelmet'
+import StructuredData from '../components/seo/StructuredData'
+
+const SITE_URL = import.meta.env.VITE_APP_URL || 'https://techhubb.se'
 
 const colorMap = {
   blue: 'from-blue-500 to-blue-600',
@@ -80,7 +83,26 @@ export default function LanguageLevelPage() {
         description={`${levelCapitalized} level ${language.name} learning guide with structured content, quizzes, and exercises.`}
         path={`/dashboard/language/${languageId}/${level}`}
         ogType="article"
+        subject={language.name}
+        educationalLevel={levelCapitalized}
       />
+      <StructuredData data={{
+        "@context": "https://schema.org",
+        "@type": "CourseInstance",
+        "name": `${language.name} — ${levelCapitalized}`,
+        "description": `${levelCapitalized} level ${language.name} learning guide with structured content, quizzes, and exercises.`,
+        "url": `${SITE_URL}/dashboard/language/${languageId}/${level}`,
+        "courseMode": "online",
+        "educationalLevel": levelCapitalized,
+        "inLanguage": "en",
+        "isAccessibleForFree": false,
+        "courseWorkload": `PT${language.estimatedHours?.[level] || 0}H`,
+        "provider": {
+          "@type": "EducationalOrganization",
+          "name": "Tech Hubben Learning",
+          "url": SITE_URL
+        }
+      }} />
       <div className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)] mb-6">
         <Link to="/dashboard/languages" className="hover:text-[var(--color-primary)] no-underline transition-colors">
           Languages
