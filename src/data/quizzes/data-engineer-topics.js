@@ -588,6 +588,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Data models reflect the current understanding of a business domain and its analytical requirements. As the business evolves — new products, new questions, new regulations — models must be updated accordingly."
+        },
+        {
+          question: "What is a many-to-many relationship and how is it implemented in a relational database?",
+          options: [
+            "It is handled by storing comma-separated IDs in a single column",
+            "It requires a junction (bridge) table containing foreign keys to both related tables",
+            "It is implemented by adding a foreign key column to both tables pointing at each other",
+            "Relational databases cannot represent many-to-many relationships"
+          ],
+          correctIndex: 1,
+          explanation: "A many-to-many relationship (e.g., students enrolled in courses) is implemented using a junction table (e.g., student_courses) that contains foreign keys to both tables. Each row in the junction table represents one association."
+        },
+        {
+          question: "What is the difference between a logical data model and a physical data model?",
+          options: [
+            "A logical model includes indexes and partitions; a physical model does not",
+            "A logical model describes entities, attributes, and relationships independent of technology; a physical model defines the actual tables, columns, data types, and indexes for a specific database",
+            "A logical model is created after the physical model to document the implementation",
+            "There is no meaningful difference — they are two names for the same artefact"
+          ],
+          correctIndex: 1,
+          explanation: "The logical model captures what data exists and how it relates — independent of any database engine. The physical model translates this into concrete implementation: table names, column types, indexes, partitioning strategies, and constraints for a specific platform."
         }
       ]
     }
@@ -669,6 +691,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Without SCD handling, when a dimension attribute changes (e.g., a customer moves regions), historical transactions are retrospectively associated with the new value, corrupting historical analysis."
+        },
+        {
+          question: "What is a 'degenerate dimension' in dimensional modelling?",
+          options: [
+            "A dimension that has been deprecated and should be removed",
+            "A dimension key stored directly in the fact table without a corresponding dimension table, such as an order number or invoice number",
+            "A dimension with only one attribute besides the primary key",
+            "A dimension table that references another dimension table"
+          ],
+          correctIndex: 1,
+          explanation: "A degenerate dimension is a dimension key (e.g., order number, invoice number) stored directly in the fact table because creating a separate dimension table for it would add no useful attributes. It is used for grouping or filtering fact rows."
+        },
+        {
+          question: "What is a 'factless fact table' and when is it used?",
+          options: [
+            "A fact table that has been emptied for testing purposes",
+            "A fact table that records events without numeric measures — capturing only the occurrence of an event through dimension key relationships",
+            "A staging table used during ETL before metrics are calculated",
+            "A fact table where all numeric columns contain NULL values"
+          ],
+          correctIndex: 1,
+          explanation: "A factless fact table captures events that have no associated measurements — for example, student attendance (who attended which class on which date). It contains only dimension foreign keys, recording the fact that an event occurred."
         }
       ]
     },
@@ -754,6 +798,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Many intermediate or rarely queried models can be views that run their SQL at query time. Materialising them as tables consumes compute on every dbt run and wastes storage when the underlying data changes infrequently."
+        },
+        {
+          question: "What is the purpose of the `source()` function in dbt, and how does it differ from `ref()`?",
+          options: [
+            "source() references raw tables defined in a YAML file and enables freshness checks; ref() references other dbt models within the project",
+            "source() is an alias for ref() used in older dbt versions",
+            "source() loads data from external APIs; ref() loads data from the warehouse",
+            "source() is used only in dbt Cloud; ref() is used in dbt Core"
+          ],
+          correctIndex: 0,
+          explanation: "`source()` references raw tables from upstream systems declared in a sources YAML file. It enables dbt to track source freshness and warn when data is stale. `ref()` references transformed dbt models, building the internal DAG."
+        },
+        {
+          question: "What is an incremental model in dbt, and when should you use one?",
+          options: [
+            "A model that automatically increases the warehouse compute allocation as data grows",
+            "A model that only processes new or changed rows since the last run, reducing build time for large tables",
+            "A model that incrementally adds columns to a table based on schema evolution",
+            "A model that runs once per hour instead of once per day"
+          ],
+          correctIndex: 1,
+          explanation: "Incremental models use a filter (typically a timestamp) to process only rows that arrived since the last successful run. This avoids rebuilding the entire table every time dbt runs, dramatically reducing compute cost and build time for large datasets."
         }
       ]
     },
@@ -833,6 +899,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Transformations (filter, select, join) are lazy — they add steps to Spark's execution plan without running anything. Actions (count, show, write) trigger the physical execution of the accumulated plan."
+        },
+        {
+          question: "What is the purpose of `broadcast()` in Apache Spark, and when should it be used?",
+          options: [
+            "It sends log messages to all executor nodes for debugging",
+            "It replicates a small DataFrame to every executor so large-to-small joins avoid a full shuffle",
+            "It distributes a DataFrame evenly across all partitions",
+            "It broadcasts the Spark driver's configuration to all workers"
+          ],
+          correctIndex: 1,
+          explanation: "A broadcast join copies a small DataFrame to every executor's memory. When joining a large DataFrame with a small lookup table, this eliminates the expensive shuffle of the large DataFrame across the network."
+        },
+        {
+          question: "Why does repartitioning a Spark DataFrame before writing improve downstream read performance?",
+          options: [
+            "Repartitioning compresses the data more efficiently",
+            "Repartitioning by a frequently filtered column aligns the physical file layout with query patterns, enabling partition pruning to skip irrelevant files",
+            "Repartitioning forces Spark to use columnar storage format",
+            "Repartitioning removes duplicate rows before writing"
+          ],
+          correctIndex: 1,
+          explanation: "When you repartition by a column (e.g., date or region) before writing to storage, each partition becomes a separate directory or file. Queries that filter on that column can skip entire partitions, reading far less data from disk."
         }
       ]
     },
@@ -906,6 +994,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Transient failures (network timeouts, temporary service unavailability) are common in distributed systems. Setting `retries` and `retry_delay` allows Airflow to automatically recover from these without requiring manual intervention."
+        },
+        {
+          question: "What is the purpose of Airflow's `TaskGroup` and how does it improve DAG organisation?",
+          options: [
+            "It runs all grouped tasks in parallel regardless of dependencies",
+            "It visually and logically groups related tasks in the DAG UI without creating a separate sub-DAG, improving readability of complex workflows",
+            "It assigns grouped tasks to a dedicated worker pool for isolation",
+            "It merges multiple tasks into a single task to reduce scheduler overhead"
+          ],
+          correctIndex: 1,
+          explanation: "`TaskGroup` organises related tasks into collapsible sections in the Airflow UI. Unlike the deprecated SubDAG, TaskGroups run within the same DAG and do not create a separate DagRun, avoiding the deadlock and performance issues SubDAGs had."
         }
       ]
     },
@@ -968,6 +1067,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "The Copy Activity is ADF's workhorse for data movement. It supports over 100 connectors (databases, cloud storage, SaaS apps) and handles format conversion (CSV to Parquet, etc.) without custom code."
+        },
+        {
+          question: "What is a Managed Private Endpoint in Azure Data Factory, and why is it important for enterprise data pipelines?",
+          options: [
+            "It provides a public URL that is managed by Azure for external API access",
+            "It creates a private network connection from the ADF managed virtual network to a data source, ensuring traffic never traverses the public internet",
+            "It automatically rotates access keys for connected data sources",
+            "It is a DNS endpoint that routes traffic to the nearest Azure region"
+          ],
+          correctIndex: 1,
+          explanation: "Managed Private Endpoints use Azure Private Link to establish network-level isolation between ADF and data sources. This ensures sensitive data (database connections, storage access) travels only over the Azure backbone, meeting enterprise security and compliance requirements."
         }
       ]
     },
@@ -1025,6 +1135,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "A pipeline can execute without throwing errors while producing logically incorrect results (wrong aggregations, missing rows, duplicates). Data quality checks must validate the output, not just confirm that the pipeline ran."
+        },
+        {
+          question: "What is a 'data contract' in the context of data quality, and what problem does it solve?",
+          options: [
+            "A legal agreement between a data provider and a consumer organisation",
+            "A formal specification of expected schema, semantics, and quality guarantees between a data producer and consumer, enabling early detection of breaking changes",
+            "A database constraint like NOT NULL or UNIQUE applied at the table level",
+            "A service-level agreement (SLA) that guarantees pipeline uptime"
+          ],
+          correctIndex: 1,
+          explanation: "Data contracts define the interface between producers and consumers: expected columns, data types, allowed values, freshness guarantees, and ownership. When a producer breaks the contract (e.g., renames a column), automated validation catches it before downstream systems fail silently."
+        },
+        {
+          question: "What is Great Expectations in the context of data quality, and how does it fit into a pipeline?",
+          options: [
+            "A Python library for generating synthetic test data",
+            "A data validation framework that lets you define expectations (rules) about your data and run them as automated checks inside pipelines",
+            "A monitoring dashboard for tracking pipeline execution times",
+            "A SQL linter that checks query syntax before execution"
+          ],
+          correctIndex: 1,
+          explanation: "Great Expectations allows data engineers to write declarative expectations (e.g., 'this column should never be NULL', 'row count should be within 10% of yesterday'). These expectations run as pipeline steps, failing the pipeline if data does not meet quality thresholds."
         }
       ]
     },
@@ -1098,6 +1230,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Docker builds images layer by layer and caches each layer. If a layer's instruction has not changed, Docker reuses the cached layer. Placing frequently changing instructions (e.g., COPY source code) after stable ones (e.g., RUN apt-get install) maximises cache reuse."
+        },
+        {
+          question: "What is a multi-stage Docker build, and why is it useful for data engineering containers?",
+          options: [
+            "It builds the same image for multiple CPU architectures simultaneously",
+            "It uses multiple FROM statements to separate build dependencies from the final runtime image, producing smaller and more secure containers",
+            "It runs multiple containers in sequence as part of a pipeline",
+            "It builds the image in stages across multiple CI/CD pipeline steps"
+          ],
+          correctIndex: 1,
+          explanation: "Multi-stage builds use a first stage to install compilers, build tools, and compile dependencies, then copy only the final artefacts into a slim runtime image. This keeps the production container small (no build tools) and reduces the attack surface."
         }
       ]
     },
@@ -1155,6 +1298,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "`LAG(column, n)` returns the value of the specified column from n rows before the current row within the partition. It is commonly used to compare a row with a previous period (e.g., comparing this month's revenue to last month's)."
+        },
+        {
+          question: "What is a recursive CTE and when would a data engineer use one?",
+          options: [
+            "A CTE that references a temporary table created in a previous query",
+            "A CTE that references itself to traverse hierarchical or graph-like data such as organisational trees or bill-of-materials structures",
+            "A CTE that automatically retries failed queries until they succeed",
+            "A CTE that is cached in memory for repeated use within the same session"
+          ],
+          correctIndex: 1,
+          explanation: "A recursive CTE has an anchor member (base case) and a recursive member that references the CTE itself. Each iteration processes the next level of the hierarchy until no new rows are produced. It is essential for querying tree structures like manager-employee relationships or category hierarchies."
         }
       ]
     }
@@ -1236,6 +1390,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Azure Event Hubs provides a Kafka-compatible endpoint, meaning Kafka clients (producers, consumers, Kafka Connect) can connect to Event Hubs without code changes. It offers a managed alternative to running your own Kafka cluster in Azure."
+        },
+        {
+          question: "What is a Kafka consumer group, and how does it enable parallel processing of a topic?",
+          options: [
+            "A security group that controls which consumers can access a topic",
+            "A set of consumers that jointly read from a topic — each partition is assigned to exactly one consumer in the group, enabling parallel processing",
+            "A feature that groups related messages together before delivering them to a consumer",
+            "A monitoring dashboard that tracks consumer lag across topics"
+          ],
+          correctIndex: 1,
+          explanation: "Within a consumer group, Kafka assigns each partition to exactly one consumer. If a topic has 12 partitions and the group has 4 consumers, each consumer reads from 3 partitions. Adding consumers (up to the partition count) increases parallelism linearly."
         }
       ]
     },
@@ -1298,6 +1463,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Parquet stores data by column rather than by row. Analytical queries that touch only a few columns (e.g., SELECT revenue, region FROM ...) only read those columns from disk, ignoring the rest. Combined with efficient compression, this makes Parquet far faster than CSV for analytical workloads."
+        },
+        {
+          question: "How do open table formats like Delta Lake, Apache Iceberg, and Apache Hudi prevent vendor lock-in in a lakehouse?",
+          options: [
+            "They use proprietary APIs that all cloud vendors have agreed to support",
+            "They store data in open file formats (Parquet) with metadata layers, allowing any compatible engine to read and write without being tied to one vendor's platform",
+            "They replicate data across multiple cloud providers automatically",
+            "They encrypt data so that only open-source tools can decrypt it"
+          ],
+          correctIndex: 1,
+          explanation: "Open table formats store data as Parquet files in object storage with an open metadata layer. Any engine that understands the format (Spark, Trino, Flink, DuckDB) can read and write the data, preventing dependence on a single vendor's proprietary storage."
+        },
+        {
+          question: "What role does a metastore (such as Unity Catalog or Hive Metastore) play in a lakehouse architecture?",
+          options: [
+            "It stores the actual data files in a compressed format",
+            "It provides a centralised catalog of table metadata — schema definitions, file locations, access controls, and lineage — enabling multiple engines to discover and query the same tables",
+            "It replaces the need for a query engine by executing SQL directly",
+            "It monitors query performance and automatically tunes cluster resources"
+          ],
+          correctIndex: 1,
+          explanation: "A metastore acts as the central registry for all lakehouse tables. It maps logical table names to physical file locations, stores schema information, enforces access policies, and provides a shared catalog so different engines (Spark, SQL, BI tools) all see the same tables."
         }
       ]
     },
@@ -1360,6 +1547,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Time travel retains old versions of data files. Without `VACUUM`, these files accumulate indefinitely. `VACUUM` deletes files older than the configured retention period (default 7 days), freeing storage while preserving the configured history window."
+        },
+        {
+          question: "What is schema enforcement in Delta Lake, and how does it differ from schema evolution?",
+          options: [
+            "Schema enforcement validates data types at read time; schema evolution validates at write time",
+            "Schema enforcement rejects writes that do not match the table's schema; schema evolution allows the schema to change automatically when new columns appear in incoming data",
+            "Schema enforcement is for batch loads; schema evolution is for streaming loads",
+            "They are the same feature with different names in different Delta Lake versions"
+          ],
+          correctIndex: 1,
+          explanation: "Schema enforcement (schema on write) rejects data that does not match the table's current schema, preventing accidental corruption. Schema evolution (`mergeSchema` option) allows controlled addition of new columns when the incoming data has extra fields, enabling the schema to grow safely over time."
+        },
+        {
+          question: "What is Z-Ordering in Delta Lake, and how does it improve query performance?",
+          options: [
+            "It sorts data alphabetically by table name for easier cataloguing",
+            "It co-locates related data within the same files by the specified columns, allowing the query engine to skip files that do not contain matching values",
+            "It compresses files using a Z-algorithm for better storage efficiency",
+            "It creates secondary indexes on the specified columns"
+          ],
+          correctIndex: 1,
+          explanation: "Z-Ordering rearranges data within files so that rows with similar values in the Z-Ordered columns are physically close together. Combined with Delta Lake's file-level statistics, the query engine can skip entire files that do not contain relevant values, dramatically reducing I/O for filtered queries."
         }
       ]
     },
@@ -1422,6 +1631,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Federated governance balances domain autonomy with organisational consistency. Central policy teams define standards (e.g., PII handling, naming conventions), but enforcement is automated via the self-serve platform, eliminating manual gatekeeping."
+        },
+        {
+          question: "What is a 'data product' in Data Mesh, and what qualities must it have?",
+          options: [
+            "A commercial SaaS tool used by domain teams for analytics",
+            "A domain-owned dataset that is discoverable, addressable, trustworthy, self-describing, and governed — treated as a product with its consumers as customers",
+            "A pre-built machine learning model that domains can deploy without modification",
+            "A data pipeline that produces output consumed only within the owning domain"
+          ],
+          correctIndex: 1,
+          explanation: "A data product is the core unit of Data Mesh. It must be discoverable (catalogued), addressable (stable access endpoint), trustworthy (with SLAs and quality guarantees), self-describing (documented schema and semantics), and interoperable (adhering to organisational standards). Domain teams own them end-to-end."
+        },
+        {
+          question: "What is 'domain-oriented data ownership' in Data Mesh, and how does it change the data engineer's role?",
+          options: [
+            "A single central data team owns all data assets but delegates query access to domains",
+            "Each business domain owns, produces, and maintains its own data products — data engineers embed within domains rather than sitting in a centralised team",
+            "Domain ownership means business analysts write their own pipelines without engineering support",
+            "Domains own the data catalog entries but a central team owns the actual data infrastructure"
+          ],
+          correctIndex: 1,
+          explanation: "Domain-oriented ownership shifts data responsibility from a central team to the domains that generate and understand the data best. Data engineers work within domain teams, building and maintaining data products with deep business context rather than acting as a shared service fulfilling tickets from all domains."
         }
       ]
     },
@@ -1484,6 +1715,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "When data pipelines lack CI/CD, changes are deployed manually (error-prone), tests are run inconsistently (if at all), and rollbacks are difficult. This creates lower reliability for the data platform compared to application software in the same organisation."
+        },
+        {
+          question: "What is a 'data pipeline integration test' in a DataOps CI pipeline, and why is it harder than a typical application unit test?",
+          options: [
+            "It tests that the pipeline code compiles without errors",
+            "It runs the pipeline against a representative test dataset and validates output correctness — harder because it requires test data, target infrastructure, and idempotent execution",
+            "It checks that the pipeline's YAML configuration follows a naming convention",
+            "It verifies that the pipeline's dependencies are pinned to exact versions"
+          ],
+          correctIndex: 1,
+          explanation: "Unlike stateless application unit tests, data pipeline integration tests require realistic input data, a target database or storage to write to, and deterministic validation of the output. Managing test fixtures and ensuring tests are idempotent (repeatable) adds significant complexity."
         }
       ]
     },
@@ -1546,6 +1788,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "AI assistant inputs may be used for model training or logged by the vendor. Pasting production customer data, PII, or sensitive business data into an external AI tool risks regulatory violations and data breaches."
+        },
+        {
+          question: "How can a data engineer use GenAI to accelerate data pipeline documentation, and what risk must be mitigated?",
+          options: [
+            "GenAI can auto-generate complete architecture diagrams; no risks as diagrams are always accurate",
+            "GenAI can draft column descriptions, lineage summaries, and README files from code context, but outputs must be reviewed for accuracy because the model may hallucinate business logic it has not seen",
+            "GenAI can replace the need for documentation by making code self-explanatory",
+            "GenAI can generate documentation only for Python pipelines, not SQL-based ones"
+          ],
+          correctIndex: 1,
+          explanation: "GenAI excels at generating first drafts of documentation from code: column descriptions, transformation logic summaries, and onboarding guides. However, it may invent plausible but incorrect business context, so human review is essential to ensure accuracy."
         }
       ]
     },
@@ -1619,6 +1872,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "GDPR's maximum penalties are €20 million or 4% of global annual turnover (whichever is greater) for the most serious violations. For a large organisation, 4% of global turnover can far exceed €20 million."
+        },
+        {
+          question: "What is a Data Protection Impact Assessment (DPIA), and when is it required under GDPR?",
+          options: [
+            "A quarterly report on data storage costs submitted to the data protection authority",
+            "A mandatory assessment required before processing that is likely to result in high risk to individuals — it identifies risks and mitigation measures for new data processing activities",
+            "A technical audit of database encryption performed by an external vendor",
+            "A self-certification form that data engineers sign before accessing production data"
+          ],
+          correctIndex: 1,
+          explanation: "A DPIA is required under Article 35 of GDPR when processing is likely to result in high risk to individuals (e.g., large-scale profiling, systematic monitoring, processing sensitive categories). It documents the processing purpose, necessity, risks, and safeguards — and must be completed before processing begins."
         }
       ]
     },
@@ -1681,6 +1945,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "CDC excels at propagating row-level changes in near real-time. However, large historical backfills, complex multi-table aggregations, and full recalculations are still better served by batch processing. The two patterns are complementary, not mutually exclusive."
+        },
+        {
+          question: "What is Debezium, and why is it widely adopted for CDC in data engineering?",
+          options: [
+            "A proprietary ETL tool by Databricks for batch data loading",
+            "An open-source distributed platform that captures row-level changes from database transaction logs and streams them as events to Kafka",
+            "A cloud-managed CDC service available only on AWS",
+            "A SQL extension that adds change tracking columns to existing tables"
+          ],
+          correctIndex: 1,
+          explanation: "Debezium is an open-source CDC platform built on Kafka Connect. It reads the transaction log of source databases (PostgreSQL, MySQL, SQL Server, MongoDB, etc.) and publishes change events to Kafka topics. Its non-invasive, log-based approach avoids impacting source database performance."
         }
       ]
     },
@@ -1721,6 +1996,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "AI tools accelerate code generation but also amplify inconsistency if teams have no conventions. Without agreement on patterns (naming, structure, testing approach), AI-assisted teams can produce highly inconsistent codebases quickly."
+        },
+        {
+          question: "What is the 'inner loop' and 'outer loop' of AI-powered data engineering development?",
+          options: [
+            "Inner loop refers to model training; outer loop refers to model deployment",
+            "Inner loop is the rapid local development cycle (code, test, iterate with AI assistance); outer loop is the CI/CD pipeline that validates, builds, and deploys to production",
+            "Inner loop processes data in memory; outer loop writes results to disk",
+            "Inner loop handles structured data; outer loop handles unstructured data"
+          ],
+          correctIndex: 1,
+          explanation: "The inner loop is where AI assistants have the most impact: quickly generating code, writing tests, and iterating locally. The outer loop (CI/CD, automated testing, deployment) ensures that AI-generated code meets production standards before reaching users."
         }
       ]
     }
