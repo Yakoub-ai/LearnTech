@@ -8,18 +8,21 @@ import StructuredData from '../components/seo/StructuredData'
 
 const SITE_URL = import.meta.env.VITE_APP_URL || 'https://techhubb.se'
 import { parseResourceTable, parseObjectives } from '../utils/markdownLoader'
+import { isLevelFullyComplete, getLevelStats } from '../utils/progressStorage'
 import {
   loadRoleMarkdownContent,
   loadRoleQuizzes,
   loadRoleSkillDiagram,
   loadRoleLabs,
   loadRoleSetupGuide,
+  loadRoleGlossary,
 } from '../data/loaders/roleDataLoader'
 import RoadmapTimeline from '../components/roadmap/RoadmapTimeline'
-import LevelSection from '../components/roadmap/LevelSection'
+import LevelJourneyBlock from '../components/roadmap/LevelJourneyBlock'
+import LevelDivider from '../components/roadmap/LevelDivider'
+import GlossarySection from '../components/roadmap/GlossarySection'
 import SkillDiagram from '../components/roadmap/SkillDiagram'
 import SetupGuide from '../components/interactive/SetupGuide'
-import QuizBlock from '../components/interactive/QuizBlock'
 import InteractiveLab from '../components/interactive/InteractiveLab'
 import useProgress from '../components/progress/useProgress'
 
@@ -38,6 +41,7 @@ export default function RolePage() {
 
   const [markdownContent, setMarkdownContent] = useState(null)
   const [quizzes, setQuizzes] = useState(null)
+  const [glossary, setGlossary] = useState(null)
   const [diagram, setDiagram] = useState(undefined)
   const [labs, setLabs] = useState(undefined)
   const [setupGuide, setSetupGuide] = useState(undefined)
@@ -57,10 +61,12 @@ export default function RolePage() {
     setContentLoading(true)
     Promise.all([
       loadRoleMarkdownContent(role.fileName),
-      loadRoleQuizzes(roleId)
-    ]).then(([content, q]) => {
+      loadRoleQuizzes(roleId),
+      loadRoleGlossary(roleId)
+    ]).then(([content, q, g]) => {
       setMarkdownContent(content)
       setQuizzes(q)
+      setGlossary(g)
       setContentLoading(false)
     }).catch(() => {
       setLoadError('Failed to load content. Please refresh.')
@@ -210,38 +216,46 @@ export default function RolePage() {
               <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
-            <div className="space-y-10">
+            <div className="space-y-2">
               <RoadmapTimeline roleId={roleId} levels={role.levels} />
 
-              {role.levels.map((level) => {
-                const ld = levelData[level.toLowerCase()] || {}
-                return (
-                  <div key={level}>
-                    <LevelSection
-                      roleId={roleId}
-                      level={level}
-                      resources={ld.resources}
-                      objectives={ld.objectives}
-                      isResourceComplete={isResourceComplete}
-                      isObjectiveComplete={isObjectiveComplete}
-                      toggleResource={toggleResource}
-                      toggleObjective={toggleObjective}
-                      levelProgress={roleProgress[level.toLowerCase()]}
-                    />
+              <div className="mt-8">
+                {role.levels.map((level, index) => {
+                  const levelKey = level.toLowerCase()
+                  const ld = levelData[levelKey] || {}
+                  const isComplete = isLevelFullyComplete(roleId, levelKey)
+                  const isPreviousComplete = index === 0 || isLevelFullyComplete(roleId, role.levels[index - 1].toLowerCase())
+                  const stats = isComplete ? getLevelStats(roleId, levelKey) : null
 
-                    {quizzes && quizzes[level.toLowerCase()] && (
-                      <div className="mt-6">
-                        <QuizBlock
-                          questions={quizzes[level.toLowerCase()]}
-                          roleId={roleId}
-                          level={level.toLowerCase()}
-                          onComplete={(score) => saveQuizScore(level.toLowerCase(), score)}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
+                  return (
+                    <div key={level}>
+                      {index > 0 && (
+                        <LevelDivider nextLevel={level} />
+                      )}
+                      <LevelJourneyBlock
+                        roleId={roleId}
+                        level={level}
+                        levelIndex={index}
+                        resources={ld.resources}
+                        objectives={ld.objectives}
+                        isResourceComplete={isResourceComplete}
+                        isObjectiveComplete={isObjectiveComplete}
+                        toggleResource={toggleResource}
+                        toggleObjective={toggleObjective}
+                        levelProgress={roleProgress[levelKey]}
+                        isComplete={isComplete}
+                        isPreviousComplete={isPreviousComplete}
+                        stats={stats}
+                        quizzes={quizzes?.[levelKey]}
+                        onQuizComplete={(score) => saveQuizScore(levelKey, score)}
+                        type="role"
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+
+              <GlossarySection glossary={glossary} title={`Key concepts and terms for ${role.name}`} />
             </div>
           )}
         </div>

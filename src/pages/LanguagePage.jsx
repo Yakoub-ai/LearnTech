@@ -1,10 +1,10 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, BookOpen, Wrench, BrainCircuit, FlaskConical, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { ArrowLeft, BookOpen, Wrench, BrainCircuit, FlaskConical, Lock, ArrowRight } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { getRoleById } from '../data/roles'
-import { setLanguageQuizScore, syncProgressItemToSupabase, getLanguageProgress } from '../utils/progressStorage'
+import { setLanguageQuizScore, syncProgressItemToSupabase, getLanguageProgress, isLanguageLevelFullyComplete, getLanguageLevelStats } from '../utils/progressStorage'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import PageHelmet from '../components/seo/PageHelmet'
@@ -17,6 +17,7 @@ import {
   loadLanguageSkillDiagram,
   loadLanguageLabs,
   loadLanguageSetupGuide,
+  loadLanguageGlossary,
 } from '../data/loaders/languageDataLoader'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import SkillDiagram from '../components/roadmap/SkillDiagram'
@@ -24,75 +25,9 @@ import SetupGuide from '../components/interactive/SetupGuide'
 import QuizBlock from '../components/interactive/QuizBlock'
 import InteractiveLab from '../components/interactive/InteractiveLab'
 import Badge from '../components/common/Badge'
-
-function LanguageLevelSection({ level, levelKey, languageId, levelContent, levelQuizzes, isComplete, user }) {
-  const [expanded, setExpanded] = useState(!isComplete)
-
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3 flex-wrap">
-          <Badge variant={levelKey}>{level}</Badge>
-          <Link
-            to={`/dashboard/language/${languageId}/${levelKey}`}
-            className={`text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline transition-all ${isComplete ? 'line-through opacity-60' : ''}`}
-          >
-            View full guide →
-          </Link>
-          {isComplete && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              Complete
-            </span>
-          )}
-        </div>
-        {isComplete && (
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="p-1 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-3)] transition-colors cursor-pointer bg-transparent border-none"
-            aria-label={expanded ? 'Collapse section' : 'Expand section'}
-          >
-            {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-        )}
-      </div>
-
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <motion.div
-            key="content"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden"
-          >
-            {levelContent ? (
-              <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](/dashboard/language/' + languageId + '/' + levelKey + ')*'} />
-            ) : (
-              <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
-                <p className="text-[var(--color-text-secondary)]">Content coming soon for {level}</p>
-              </div>
-            )}
-            {levelQuizzes && levelQuizzes.length > 0 && (
-              <div className="mt-6">
-                <QuizBlock
-                  questions={levelQuizzes}
-                  roleId={languageId}
-                  level={levelKey}
-                  onComplete={(score) => {
-                    setLanguageQuizScore(languageId, levelKey, score)
-                    syncProgressItemToSupabase(supabase, user?.id, languageId, levelKey, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
-                  }}
-                />
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
+import CompletedLevelShowcase from '../components/roadmap/CompletedLevelShowcase'
+import LevelDivider from '../components/roadmap/LevelDivider'
+import GlossarySection from '../components/roadmap/GlossarySection'
 
 const tabs = [
   { id: 'roadmap', label: 'Roadmap', icon: BookOpen },
@@ -117,6 +52,7 @@ export default function LanguagePage() {
 
   const [content, setContent] = useState(null)
   const [langQuizzes, setLangQuizzes] = useState(null)
+  const [glossary, setGlossary] = useState(null)
   const [diagram, setDiagram] = useState(undefined)
   const [labs, setLabs] = useState(undefined)
   const [setupGuide, setSetupGuide] = useState(undefined)
@@ -136,10 +72,12 @@ export default function LanguagePage() {
     setContentLoading(true)
     Promise.all([
       loadLanguageMarkdownContent(languageId),
-      loadLanguageQuizzes(languageId)
-    ]).then(([c, q]) => {
+      loadLanguageQuizzes(languageId),
+      loadLanguageGlossary(languageId)
+    ]).then(([c, q, g]) => {
       setContent(c)
       setLangQuizzes(q)
+      setGlossary(g)
       setContentLoading(false)
     }).catch(() => {
       setLoadError('Failed to load content. Please refresh.')
@@ -290,26 +228,89 @@ export default function LanguagePage() {
               <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
-            <div className="space-y-10">
-              {language.levels.map((level) => {
+            <div className="space-y-2">
+              {language.levels.map((level, index) => {
                 const levelKey = level.toLowerCase()
                 const levelContent = content ? content[levelKey] : null
                 const levelQuizzes = langQuizzes ? langQuizzes[levelKey] : null
-                const langProgress = getLanguageProgress(languageId)
-                const isComplete = (langProgress?.[levelKey]?.percentage ?? 0) >= 100
+                const isComplete = isLanguageLevelFullyComplete(languageId, levelKey)
+                const isPreviousComplete = index === 0 || isLanguageLevelFullyComplete(languageId, language.levels[index - 1].toLowerCase())
+                const isSoftLocked = index > 0 && !isPreviousComplete
+                const stats = isComplete ? getLanguageLevelStats(languageId, levelKey) : null
+                const deepDiveUrl = `/dashboard/language/${languageId}/${levelKey}`
+
+                const levelContentBlock = (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <Badge variant={levelKey}>{level}</Badge>
+                      <Link
+                        to={deepDiveUrl}
+                        className="inline-flex items-center gap-1 text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline transition-colors font-medium"
+                      >
+                        <BookOpen className="w-3.5 h-3.5" />
+                        View full guide
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                    {levelContent ? (
+                      <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](' + deepDiveUrl + ')*'} />
+                    ) : (
+                      <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
+                        <p className="text-[var(--color-text-secondary)]">Content coming soon for {level}</p>
+                      </div>
+                    )}
+                    {levelQuizzes && levelQuizzes.length > 0 && (
+                      <div className="mt-6">
+                        <QuizBlock
+                          questions={levelQuizzes}
+                          roleId={languageId}
+                          level={levelKey}
+                          onComplete={(score) => {
+                            setLanguageQuizScore(languageId, levelKey, score)
+                            syncProgressItemToSupabase(supabase, user?.id, languageId, levelKey, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )
+
                 return (
-                  <LanguageLevelSection
-                    key={level}
-                    level={level}
-                    levelKey={levelKey}
-                    languageId={languageId}
-                    levelContent={levelContent}
-                    levelQuizzes={levelQuizzes}
-                    isComplete={isComplete}
-                    user={user}
-                  />
+                  <div key={level}>
+                    {index > 0 && <LevelDivider nextLevel={level} />}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      className={isSoftLocked ? 'opacity-60' : ''}
+                    >
+                      {isSoftLocked && (
+                        <div className="flex items-center gap-2 mb-3 px-1">
+                          <Lock className="w-3.5 h-3.5 text-[var(--color-text-secondary)]" />
+                          <span className="text-xs text-[var(--color-text-secondary)] font-medium">
+                            Complete previous level first
+                          </span>
+                        </div>
+                      )}
+                      {isComplete ? (
+                        <CompletedLevelShowcase
+                          level={level}
+                          stats={stats}
+                          deepDiveUrl={deepDiveUrl}
+                        >
+                          {levelContentBlock}
+                        </CompletedLevelShowcase>
+                      ) : (
+                        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+                          {levelContentBlock}
+                        </div>
+                      )}
+                    </motion.div>
+                  </div>
                 )
               })}
+
+              <GlossarySection glossary={glossary} title={`Key concepts and terms for ${language.name}`} />
             </div>
           )}
         </div>
