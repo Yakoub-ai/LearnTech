@@ -1,7 +1,7 @@
 // JavaScript quiz additions — 15 questions per level
 // These extend the base languageQuizzes for the 'javascript' language key.
 
-export const javascriptAdditions = {
+export const additions = {
   beginner: [
     {
       question: 'What is the output of: console.log(typeof null)?',

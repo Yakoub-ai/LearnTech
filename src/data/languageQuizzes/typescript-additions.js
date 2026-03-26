@@ -1,6 +1,7 @@
 // TypeScript quiz additions — 3 questions per level
 // These supplement the main languageQuizzes.js entries for 'typescript'
-export const beginner = [
+export const additions = {
+beginner: [
   {
     question: 'What is the key difference between the `any` and `unknown` types in TypeScript?',
     options: [
@@ -33,9 +34,8 @@ export const beginner = [
     explanation:
       '`as const` applies a "const assertion" that narrows every value to its literal type and marks every property as `readonly`. So `config.retries` has type `3` (the literal number three), not the wider `number` type.',
   },
-];
-
-export const mid = [
+],
+mid: [
   {
     question:
       'You have `interface ApiResponse<T = unknown, E = Error>`. What does the `= unknown` part do?',
@@ -75,9 +75,8 @@ export const mid = [
     explanation:
       '`z.infer<typeof UserSchema>` derives the TypeScript type directly from the Zod schema. This means you define your data shape once (in the schema), and the type follows automatically. If you update the schema, the type updates too — no risk of the two falling out of sync.',
   },
-];
-
-export const senior = [
+],
+senior: [
   {
     question:
       'You define `type Brand<T, B extends string> = T & { readonly [brand]: B }` where `brand` is a `unique symbol`. What class of runtime bugs does this pattern prevent?',
@@ -117,4 +116,5 @@ export const senior = [
     explanation:
       'High instantiation counts typically stem from conditional or mapped types being evaluated for every member of a large union, or from unbounded recursive type aliases. Solutions include bounding recursion with a depth counter tuple, splitting large unions, and preferring `interface extends` over type intersections — the latter is processed more efficiently by the checker.',
   },
-];
+],
+};

@@ -14,7 +14,18 @@ export async function loadLanguageMarkdownContent(languageId) {
 
 export async function loadLanguageQuizzes(languageId) {
   const { languageQuizzes } = await import('../languageQuizzes.js')
-  return languageQuizzes[languageId] || {}
+  const base = languageQuizzes[languageId] || {}
+  try {
+    const mod = await import(`../languageQuizzes/${languageId}-additions.js`)
+    const addns = mod.additions || {}
+    const merged = {}
+    for (const level of ['beginner', 'mid', 'senior']) {
+      merged[level] = [...(base[level] || []), ...(addns[level] || [])]
+    }
+    return merged
+  } catch {
+    return base
+  }
 }
 
 export async function loadLanguageSkillDiagram(languageId) {
