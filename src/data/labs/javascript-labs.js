@@ -2527,8 +2527,8 @@ console.log('tagged:', tagged);`
         solution: null
       },
       {
-        title: 'Step 2: if/else Chains and switch',
-        instruction: 'Use <code>if/else if/else</code> chains to convert a numeric grade to a letter grade. Then use <code>switch</code> to print the day type for a given day number. In <code>switch</code>, execution falls through from one <code>case</code> to the next unless you add <code>break</code> — this can be a bug or intentional.',
+        title: 'Step 2: if/else Chains, switch, and Ternary',
+        instruction: 'Use <code>if/else if/else</code> chains to convert a numeric grade to a letter grade. Then use <code>switch</code> to print the day type for a given day number. In <code>switch</code>, execution falls through from one <code>case</code> to the next unless you add <code>break</code> — this can be a bug or intentional. Finally, refactor your grade letter function using the <strong>ternary operator</strong> (<code>condition ? valueIfTrue : valueIfFalse</code>) — it\'s concise for simple true/false choices.',
         starterCode: `// --- Grade converter with if/else if/else ---
 function getLetterGrade(score) {
   // TODO: Return 'A' for 90-100, 'B' for 80-89,
@@ -2574,11 +2574,22 @@ function demonstrateFallthrough(value) {
 
 console.log(demonstrateFallthrough(1)); // "one two" (fallthrough)
 console.log(demonstrateFallthrough(2)); // "two"
-console.log(demonstrateFallthrough(3)); // "three"`,
+console.log(demonstrateFallthrough(3)); // "three"
+
+// --- Ternary operator ---
+// Syntax: condition ? valueIfTrue : valueIfFalse
+// Example: const result = score >= 60 ? 'pass' : 'fail';
+function isPass(score) {
+  // TODO: use the ternary operator to return 'pass' if score >= 60, else 'fail'
+}
+
+console.log(isPass(75));  // pass
+console.log(isPass(40));  // fail`,
         hints: [
           'if/else if chains are evaluated top to bottom — order matters for overlapping ranges',
           'switch uses strict equality (===) to match cases',
-          'Intentional fallthrough: omit break; unintentional fallthrough is a common bug — always add break unless deliberate'
+          'Intentional fallthrough: omit break; unintentional fallthrough is a common bug — always add break unless deliberate',
+          'The ternary operator is shorthand for simple if/else: condition ? trueValue : falseValue'
         ],
         expectedOutput: `A
 B
@@ -2590,7 +2601,9 @@ Weekday
 Weekend
 one two
 two
-three`,
+three
+pass
+fail`,
         solution: `function getLetterGrade(score) {
   if (score >= 90) return 'A';
   else if (score >= 80) return 'B';
@@ -2636,7 +2649,14 @@ function demonstrateFallthrough(value) {
 
 console.log(demonstrateFallthrough(1));
 console.log(demonstrateFallthrough(2));
-console.log(demonstrateFallthrough(3));`
+console.log(demonstrateFallthrough(3));
+
+function isPass(score) {
+  return score >= 60 ? 'pass' : 'fail';
+}
+
+console.log(isPass(75));
+console.log(isPass(40));`
       },
       {
         title: 'Step 3: for Loops and for...of',
