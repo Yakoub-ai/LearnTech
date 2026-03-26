@@ -196,7 +196,8 @@ describe('getRoleProgress', () => {
     expect(result.beginner).toBeDefined()
     expect(result.beginner.objectives.completed).toBe(2)
     expect(result.beginner.objectives.total).toBe(2)
-    expect(result.beginner.percentage).toBe(100)
+    // 2 objectives complete out of (2 obj + 2 quiz weight + 2 exam weight) = 2/6 = 33%
+    expect(result.beginner.percentage).toBe(33)
   })
 
   it('calculates overall percentage across levels', () => {
@@ -221,7 +222,8 @@ describe('getRoleProgress', () => {
     const result = getRoleProgress('dev')
     expect(result.senior.objectives.completed).toBe(1)
     expect(result.senior.resources.completed).toBe(1)
-    expect(result.senior.percentage).toBe(100)
+    // 2 items complete out of (1 obj + 1 res + 2 quiz weight + 2 exam weight) = 2/6 = 33%
+    expect(result.senior.percentage).toBe(33)
   })
 })
 
