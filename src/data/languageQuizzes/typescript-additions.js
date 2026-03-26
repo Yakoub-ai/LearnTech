@@ -1,7 +1,7 @@
 // TypeScript quiz additions — 3 questions per level
 // These supplement the main languageQuizzes.js entries for 'typescript'
 export const additions = {
-beginner: [
+  beginner: [
   {
     question: 'What is the key difference between the `any` and `unknown` types in TypeScript?',
     options: [
@@ -35,7 +35,7 @@ beginner: [
       '`as const` applies a "const assertion" that narrows every value to its literal type and marks every property as `readonly`. So `config.retries` has type `3` (the literal number three), not the wider `number` type.',
   },
 ],
-mid: [
+  mid: [
   {
     question:
       'You have `interface ApiResponse<T = unknown, E = Error>`. What does the `= unknown` part do?',
@@ -76,7 +76,7 @@ mid: [
       '`z.infer<typeof UserSchema>` derives the TypeScript type directly from the Zod schema. This means you define your data shape once (in the schema), and the type follows automatically. If you update the schema, the type updates too — no risk of the two falling out of sync.',
   },
 ],
-senior: [
+  senior: [
   {
     question:
       'You define `type Brand<T, B extends string> = T & { readonly [brand]: B }` where `brand` is a `unique symbol`. What class of runtime bugs does this pattern prevent?',
