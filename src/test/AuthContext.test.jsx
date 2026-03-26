@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, act } from '@testing-library/react'
+import { render, screen, act, waitFor } from '@testing-library/react'
 import { renderHook } from '@testing-library/react'
 import { AuthProvider, useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -29,6 +29,23 @@ beforeEach(() => {
   vi.clearAllMocks()
 })
 
+// Helper: render and flush all pending async state updates
+async function renderAuthHook() {
+  let result
+  await act(async () => {
+    result = renderHook(() => useAuth(), { wrapper: AuthProvider })
+  })
+  return result
+}
+
+async function renderAuthProvider(children) {
+  let result
+  await act(async () => {
+    result = render(<AuthProvider>{children}</AuthProvider>)
+  })
+  return result
+}
+
 // ─── useAuth outside provider ────────────────────────────────────────────────
 
 describe('useAuth', () => {
@@ -45,42 +62,29 @@ describe('useAuth', () => {
 // ─── AuthProvider ────────────────────────────────────────────────────────────
 
 describe('AuthProvider', () => {
-  it('renders children', () => {
-    render(
-      <AuthProvider>
-        <div data-testid="child">hello</div>
-      </AuthProvider>
-    )
+  it('renders children', async () => {
+    await renderAuthProvider(<div data-testid="child">hello</div>)
     expect(screen.getByTestId('child')).toBeInTheDocument()
   })
 
-  it('initial state: user=null, loading=false after INITIAL_SESSION fires', () => {
-    const { result } = renderHook(() => useAuth(), {
-      wrapper: AuthProvider
-    })
-    // onAuthStateChange fires synchronously with null session in our mock
+  it('initial state: user=null, loading=false after INITIAL_SESSION fires', async () => {
+    const { result } = await renderAuthHook()
     expect(result.current.user).toBeNull()
     expect(result.current.loading).toBe(false)
   })
 
-  it('initial state: session=null after INITIAL_SESSION fires', () => {
-    const { result } = renderHook(() => useAuth(), {
-      wrapper: AuthProvider
-    })
+  it('initial state: session=null after INITIAL_SESSION fires', async () => {
+    const { result } = await renderAuthHook()
     expect(result.current.session).toBeNull()
   })
 
-  it('provides signInWithEmail function', () => {
-    const { result } = renderHook(() => useAuth(), {
-      wrapper: AuthProvider
-    })
+  it('provides signInWithEmail function', async () => {
+    const { result } = await renderAuthHook()
     expect(typeof result.current.signInWithEmail).toBe('function')
   })
 
-  it('provides signOut function', () => {
-    const { result } = renderHook(() => useAuth(), {
-      wrapper: AuthProvider
-    })
+  it('provides signOut function', async () => {
+    const { result } = await renderAuthHook()
     expect(typeof result.current.signOut).toBe('function')
   })
 })
@@ -91,7 +95,7 @@ describe('signInWithEmail', () => {
   it('calls supabase.auth.signInWithPassword with email and password', async () => {
     supabase.auth.signInWithPassword.mockResolvedValue({ data: { user: { id: '1' } }, error: null })
 
-    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider })
+    const { result } = await renderAuthHook()
 
     await act(async () => {
       await result.current.signInWithEmail('test@example.com', 'password123')
@@ -109,7 +113,7 @@ describe('signInWithEmail', () => {
       error: new Error('Invalid credentials')
     })
 
-    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider })
+    const { result } = await renderAuthHook()
 
     await expect(
       act(async () => {
@@ -125,7 +129,7 @@ describe('signOut', () => {
   it('calls supabase.auth.signOut', async () => {
     supabase.auth.signOut.mockResolvedValue({ error: null })
 
-    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider })
+    const { result } = await renderAuthHook()
 
     await act(async () => {
       await result.current.signOut()
@@ -138,12 +142,8 @@ describe('signOut', () => {
 // ─── subscription cleanup ────────────────────────────────────────────────────
 
 describe('subscription cleanup', () => {
-  it('calls unsubscribe on unmount', () => {
-    const { unmount } = render(
-      <AuthProvider>
-        <div />
-      </AuthProvider>
-    )
+  it('calls unsubscribe on unmount', async () => {
+    const { unmount } = await renderAuthProvider(<div />)
 
     // Get the unsubscribe mock from the module factory
     const unsubscribeMock = supabase.auth.onAuthStateChange.mock.results[0]?.value?.data?.subscription?.unsubscribe
@@ -155,16 +155,8 @@ describe('subscription cleanup', () => {
 // ─── supabase is null ─────────────────────────────────────────────────────────
 
 describe('AuthProvider when supabase is null', () => {
-  it('renders without crashing when AuthProvider is mounted', () => {
-    // The null path (`if (!supabase)`) sets loading=false without subscribing.
-    // Since our top-level mock always provides a non-null supabase, we verify
-    // the "configured" path doesn't crash and children are rendered, which
-    // covers the render path. The null guard is integration-level behavior.
-    render(
-      <AuthProvider>
-        <span data-testid="alive">alive</span>
-      </AuthProvider>
-    )
+  it('renders without crashing when AuthProvider is mounted', async () => {
+    await renderAuthProvider(<span data-testid="alive">alive</span>)
     expect(screen.getByTestId('alive')).toBeInTheDocument()
   })
 })
