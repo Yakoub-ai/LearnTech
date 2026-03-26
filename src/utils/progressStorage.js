@@ -636,6 +636,66 @@ export function setLanguageLevelExamScore(languageId, level, score) {
 }
 
 // ──────────────────────────────────────────────────
+// Level Completion Helpers (used by dashboard journey view)
+// ──────────────────────────────────────────────────
+
+/**
+ * Check if a role level is fully complete (objectives + resources at 100% AND quiz taken).
+ * Used by the dashboard to decide whether to compact a level into a showcase card.
+ */
+export function isLevelFullyComplete(roleId, level) {
+  const progress = getRoleProgress(roleId)
+  if (!progress || !progress[level]) return false
+  const lp = progress[level]
+  return lp.percentage >= 100 && lp.quizScore != null
+}
+
+/**
+ * Check if a language level is fully complete.
+ */
+export function isLanguageLevelFullyComplete(languageId, level) {
+  const progress = getLanguageProgress(languageId)
+  if (!progress || !progress[level]) return false
+  const lp = progress[level]
+  return lp.percentage >= 100 && lp.quizScore != null
+}
+
+/**
+ * Get detailed level stats for the completed showcase display.
+ * Returns { objectives, resources, quizScore, completedAt } or null.
+ */
+export function getLevelStats(roleId, level) {
+  const allProgress = getProgress()
+  const roleData = allProgress.roles?.[roleId]?.[level]
+  if (!roleData) return null
+  const progress = getRoleProgress(roleId)
+  if (!progress?.[level]) return null
+  return {
+    objectives: progress[level].objectives || { completed: 0, total: 0 },
+    resources: progress[level].resources || { completed: 0, total: 0 },
+    quizScore: roleData.quizScore?.score ?? null,
+    completedAt: roleData.completedAt || null,
+  }
+}
+
+/**
+ * Get detailed language level stats for the completed showcase display.
+ */
+export function getLanguageLevelStats(languageId, level) {
+  const allProgress = getProgress()
+  const langData = allProgress.languages?.[languageId]?.[level]
+  if (!langData) return null
+  const objectives = langData.objectives || []
+  const resources = langData.resources || []
+  return {
+    objectives: { completed: objectives.filter(o => o.completed).length, total: objectives.length },
+    resources: { completed: resources.filter(r => r.completed).length, total: resources.length },
+    quizScore: langData.quizScore?.score ?? null,
+    completedAt: langData.completedAt || null,
+  }
+}
+
+// ──────────────────────────────────────────────────
 // Interactive Lab Progress
 // ──────────────────────────────────────────────────
 

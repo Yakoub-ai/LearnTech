@@ -44,3 +44,12 @@ export async function loadLanguageTopicQuizzes(languageId) {
     return {}
   }
 }
+
+export async function loadLanguageGlossary(languageId) {
+  try {
+    const mod = await import(`../glossaries/${languageId}-glossary.js`)
+    return mod.default || null
+  } catch {
+    return null
+  }
+}

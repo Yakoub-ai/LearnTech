@@ -45,3 +45,12 @@ export async function loadRoleTopicQuizzes(roleId) {
     return {}
   }
 }
+
+export async function loadRoleGlossary(roleId) {
+  try {
+    const mod = await import(`../glossaries/${roleId}-glossary.js`)
+    return mod.default || null
+  } catch {
+    return null
+  }
+}
