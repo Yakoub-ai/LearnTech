@@ -10,6 +10,8 @@ export default {
     { term: 'Database', definition: 'A structured system for storing, retrieving, and managing data persistently so it survives server restarts and can be queried efficiently.' },
     { term: 'Web Framework', definition: 'A software library (e.g. FastAPI, Django, Express) that provides structure and utilities for building web applications, handling routing, request parsing, and response formatting.' },
     { term: 'Status Code', definition: 'A three-digit number returned in an HTTP response indicating the result — 200 (OK), 404 (Not Found), 500 (Server Error), etc.' },
+    { term: 'Function', definition: 'A named, reusable block of code that accepts inputs (parameters), performs a task, and optionally returns an output value.' },
+    { term: 'JSON (JavaScript Object Notation)', definition: 'A lightweight, text-based data interchange format using key-value pairs and arrays. The standard payload format for REST APIs.' },
   ],
   mid: [
     { term: 'API Versioning', definition: 'A strategy for evolving an API without breaking existing clients, typically via URL path (/v2/), headers, or query parameters.' },
@@ -22,6 +24,8 @@ export default {
     { term: 'ORM (Object-Relational Mapping)', definition: 'A technique that maps database tables to programming language objects, allowing developers to query and manipulate data without writing raw SQL.' },
     { term: 'CI/CD (Continuous Integration / Continuous Deployment)', definition: 'A practice where code changes are automatically built, tested, and deployed, reducing manual effort and catching bugs early.' },
     { term: 'System Design', definition: 'The process of defining a system\'s architecture — components, data flow, scaling strategy, and trade-offs — to meet functional and non-functional requirements.' },
+    { term: 'gRPC', definition: 'A high-performance RPC framework using Protocol Buffers for serialisation and HTTP/2 for transport, enabling strongly-typed, bidirectional streaming between services.' },
+    { term: 'Caching', definition: 'Storing frequently accessed data in a fast layer (e.g. Redis, Memcached, CDN) to reduce database load and latency. Strategies include write-through, write-behind, and cache-aside.' },
   ],
   senior: [
     { term: 'Microservices', definition: 'An architectural style where an application is composed of small, independently deployable services, each owning its own data and communicating over the network.' },
@@ -34,5 +38,7 @@ export default {
     { term: 'Observability', definition: 'The ability to understand a system\'s internal state from its external outputs — logs, metrics, and distributed traces.' },
     { term: 'Infrastructure as Code (IaC)', definition: 'Managing and provisioning infrastructure through machine-readable configuration files (e.g. Terraform, Pulumi) instead of manual processes.' },
     { term: 'Service Mesh', definition: 'A dedicated infrastructure layer (e.g. Istio, Linkerd) that handles service-to-service communication, providing load balancing, encryption, and observability without changing application code.' },
+    { term: 'Idempotency', definition: 'A property of an operation where performing it multiple times produces the same result as performing it once — critical for safe retries in distributed systems.' },
+    { term: 'Rate Limiting', definition: 'Controlling the number of requests a client can make within a time window to protect APIs from abuse, ensure fair usage, and prevent resource exhaustion.' },
   ],
 }

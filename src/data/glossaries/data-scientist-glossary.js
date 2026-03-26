@@ -39,5 +39,6 @@ export default {
     { term: 'Graph Analytics', definition: 'Analysing relationships in network-structured data (social graphs, knowledge graphs) using algorithms for centrality, community detection, and link prediction.' },
     { term: 'Natural Language Processing (NLP)', definition: 'Techniques for processing and understanding human language — including text classification, named entity recognition, sentiment analysis, and summarisation.' },
     { term: 'Recommendation Systems', definition: 'Algorithms that predict user preferences for items using collaborative filtering (user/item similarity), content-based filtering, or hybrid approaches.' },
+    { term: 'Statistical Modeling at Scale', definition: 'Adapting classical statistical methods to work on massive datasets using distributed frameworks (Spark MLlib, Dask), approximate algorithms, and sampling strategies.' },
   ],
 }

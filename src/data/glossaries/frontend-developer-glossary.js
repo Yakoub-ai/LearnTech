@@ -10,6 +10,8 @@ export default {
     { term: 'Flexbox', definition: 'A CSS layout module for arranging items in a single row or column with flexible sizing, alignment, and distribution of space.' },
     { term: 'Event Listener', definition: 'A function attached to a DOM element that runs when a specified event (click, keypress, scroll) occurs.' },
     { term: 'Version Control (Git)', definition: 'A system that tracks changes to files over time, enabling collaboration, history review, and rollback via branches and commits.' },
+    { term: 'CSS Selector', definition: 'A pattern that targets HTML elements for styling — by element (p), class (.name), ID (#id), attribute ([type="text"]), or combinators (parent > child).' },
+    { term: 'Developer Tools (DevTools)', definition: 'Browser-built debugging tools for inspecting the DOM, editing CSS live, profiling performance, monitoring network requests, and debugging JavaScript.' },
   ],
   mid: [
     { term: 'SPA (Single-Page Application)', definition: 'A web app that loads a single HTML page and dynamically updates content via JavaScript, avoiding full page reloads.' },
@@ -22,6 +24,8 @@ export default {
     { term: 'Bundler', definition: 'A tool (e.g. Vite, Webpack, esbuild) that combines and optimises JavaScript modules, CSS, and assets into files optimised for production delivery.' },
     { term: 'Testing (Unit / Integration)', definition: 'Writing automated tests to verify individual functions (unit) or how multiple components work together (integration), preventing regressions.' },
     { term: 'Routing', definition: 'The mechanism that maps URL paths to specific views or components in an SPA, typically handled by libraries like React Router.' },
+    { term: 'Hooks / Signals', definition: 'Primitives for managing state and side effects in component frameworks — React uses hooks (useState, useEffect); Solid, Angular, and Preact use signals for fine-grained reactivity.' },
+    { term: 'CSS Custom Properties (Variables)', definition: 'Author-defined values set with --name and read with var(--name), enabling dynamic theming, consistent design tokens, and runtime style changes via JavaScript.' },
   ],
   senior: [
     { term: 'Server-Side Rendering (SSR)', definition: 'Rendering pages on the server before sending HTML to the client, improving initial load time and SEO compared to client-only rendering.' },
@@ -34,5 +38,7 @@ export default {
     { term: 'Web Workers', definition: 'Browser APIs that run JavaScript in background threads, enabling CPU-intensive tasks without blocking the main UI thread.' },
     { term: 'Monorepo', definition: 'A version control strategy where multiple related projects (apps, packages, libraries) live in a single repository, managed by tools like Nx or Turborepo.' },
     { term: 'CI/CD for Frontend', definition: 'Automating build, test, preview deployment, and production release pipelines for frontend applications, often with branch-based preview URLs.' },
+    { term: 'Hydration', definition: 'The process of attaching JavaScript event handlers and state to server-rendered HTML on the client, making static markup interactive. Techniques include progressive, selective, and resumable hydration.' },
+    { term: 'Edge Computing', definition: 'Running code at CDN edge locations close to users rather than a central server, reducing latency for dynamic content. Platforms include Cloudflare Workers, Vercel Edge Functions, and Deno Deploy.' },
   ],
 }

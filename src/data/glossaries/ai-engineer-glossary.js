@@ -25,6 +25,7 @@ export default {
     { term: 'Semantic Search', definition: 'Finding documents by meaning rather than keyword matching, using embeddings and vector similarity to return contextually relevant results.' },
     { term: 'LoRA / QLoRA', definition: 'Low-Rank Adaptation — a parameter-efficient fine-tuning technique that trains small adapter matrices instead of the full model. QLoRA adds quantisation for lower memory usage.' },
     { term: 'Structured Output', definition: 'Constraining LLM responses to follow a specific schema (JSON, XML, etc.) using grammar-based decoding, function calling, or guided generation.' },
+    { term: 'Model Distillation', definition: 'Training a smaller, faster "student" model to replicate the behaviour of a larger "teacher" model, reducing inference cost while preserving most of the output quality.' },
   ],
   senior: [
     { term: 'AI Agent', definition: 'An autonomous system that uses an LLM as its reasoning core, combined with tools, memory, and planning capabilities to accomplish multi-step tasks without continuous human guidance.' },

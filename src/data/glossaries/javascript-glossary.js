@@ -10,6 +10,8 @@ export default {
     { term: 'Template Literal', definition: 'A string delimited by backticks (`) that supports multi-line text and embedded expressions: `Hello, ${name}!`.' },
     { term: 'Truthy / Falsy', definition: 'Values that coerce to true or false in boolean context. Falsy: false, 0, "", null, undefined, NaN. Everything else is truthy.' },
     { term: 'JSON', definition: 'JavaScript Object Notation — a lightweight text format for data exchange. Parsed with JSON.parse() and serialised with JSON.stringify().' },
+    { term: 'Conditional (if / else / switch)', definition: 'Control flow statements that execute different code branches based on conditions. The ternary operator (condition ? a : b) provides inline conditionals.' },
+    { term: 'Loop (for, while, for...of)', definition: 'Constructs for repeated execution: for for counted iteration, while for condition-based, for...of for iterating values of arrays, strings, Maps, and Sets.' },
   ],
   mid: [
     { term: 'Promise', definition: 'An object representing the eventual completion (or failure) of an async operation, with .then(), .catch(), and .finally() methods.' },
@@ -22,6 +24,8 @@ export default {
     { term: 'this Keyword', definition: 'A context-dependent reference: in methods it refers to the object, in arrow functions it inherits from the enclosing scope, in global scope it\'s window/globalThis.' },
     { term: 'Error Handling', definition: 'Using try/catch/finally blocks and custom Error subclasses to gracefully handle runtime errors and rejected Promises.' },
     { term: 'Map / Set', definition: 'Built-in collection types: Map stores key-value pairs (any type as key), Set stores unique values. Both are iterable and have O(1) lookups.' },
+    { term: 'Optional Chaining / Nullish Coalescing', definition: 'The ?. operator safely accesses nested properties without throwing if a value is null/undefined. The ?? operator provides a fallback only for null/undefined (not 0 or "").' },
+    { term: 'Fetch API', definition: 'The modern browser API for making HTTP requests, returning Promises. Supports request/response headers, streaming, AbortController cancellation, and various body formats.' },
   ],
   senior: [
     { term: 'Prototype Chain', definition: 'JavaScript\'s inheritance mechanism where objects delegate property lookups to their prototype, forming a chain ending at Object.prototype.' },
@@ -34,5 +38,7 @@ export default {
     { term: 'Structured Clone', definition: 'The structuredClone() API for deep-copying objects including Dates, RegExps, Maps, Sets, and ArrayBuffers — unlike JSON.parse(JSON.stringify()).' },
     { term: 'V8 Optimisation', definition: 'Understanding how the V8 engine (Chrome, Node) optimises JavaScript — hidden classes, inline caches, and deoptimisation triggers — to write performant code.' },
     { term: 'TC39 Process', definition: 'The standardisation process for ECMAScript (JavaScript) features, moving through stages 0-4 from proposal to specification inclusion.' },
+    { term: 'Iterator / Iterable Protocol', definition: 'A convention where objects implement Symbol.iterator to return an iterator with a next() method, enabling use in for...of, spread, and destructuring.' },
+    { term: 'Import Attributes', definition: 'A syntax for providing metadata when importing modules: import data from "./file.json" with { type: "json" }. Standardises how non-JS assets are imported.' },
   ],
 }

@@ -10,6 +10,8 @@ export default {
     { term: 'pip', definition: 'Python\'s package installer that downloads and installs third-party libraries from the Python Package Index (PyPI).' },
     { term: 'String Formatting (f-strings)', definition: 'A syntax for embedding expressions inside string literals using f"..." with curly braces: f"Hello, {name}!".' },
     { term: 'Exception Handling', definition: 'Using try/except blocks to catch and handle errors gracefully instead of letting the program crash.' },
+    { term: 'Boolean', definition: 'A data type with two values: True and False. Used in conditions, comparisons, and logical operations (and, or, not).' },
+    { term: 'Loop (for / while)', definition: 'Constructs for repeated execution: for iterates over sequences (lists, ranges, strings); while repeats as long as a condition is True.' },
   ],
   mid: [
     { term: 'List Comprehension', definition: 'A concise syntax for creating lists: [expression for item in iterable if condition]. More readable than equivalent for-loops.' },
@@ -22,6 +24,8 @@ export default {
     { term: 'Lambda', definition: 'An anonymous, single-expression function: lambda x: x * 2. Often used with map(), filter(), and sorted().' },
     { term: 'async / await', definition: 'Python\'s syntax for writing asynchronous code using coroutines, enabling non-blocking I/O operations with asyncio.' },
     { term: 'Unit Testing (pytest)', definition: 'Writing automated tests using the pytest framework to verify individual functions and catch regressions early.' },
+    { term: 'Dataclass', definition: 'A decorator (@dataclass) that auto-generates __init__, __repr__, and comparison methods for classes that primarily store data, reducing boilerplate.' },
+    { term: 'Pathlib', definition: 'An object-oriented module (pathlib.Path) for filesystem operations — reading, writing, and navigating paths — replacing older os.path string-based approaches.' },
   ],
   senior: [
     { term: 'Metaclass', definition: 'A class whose instances are themselves classes. Metaclasses control class creation and can modify class behaviour at definition time.' },
@@ -34,5 +38,7 @@ export default {
     { term: 'Packaging & Distribution', definition: 'Creating installable packages using pyproject.toml, setuptools or Poetry, and publishing to PyPI for community or internal use.' },
     { term: 'Profiling & Optimisation', definition: 'Using tools like cProfile, line_profiler, and memory_profiler to identify bottlenecks and optimise hot paths.' },
     { term: 'Abstract Base Classes (ABC)', definition: 'Classes from the abc module that define interfaces — subclasses must implement abstract methods, enforcing contracts at instantiation time.' },
+    { term: 'Concurrency Models', definition: 'Python offers three concurrency approaches: asyncio (cooperative I/O-bound), threading (preemptive I/O-bound, limited by GIL), and multiprocessing (true parallelism for CPU-bound work).' },
+    { term: '__slots__', definition: 'A class attribute that restricts instances to a fixed set of attributes, eliminating the per-instance __dict__ and significantly reducing memory usage for large numbers of objects.' },
   ],
 }
