@@ -1,26 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 export default defineConfig({
-  plugins: [
-    react({ jsxRuntime: 'automatic' }),
-    tailwindcss(),
-    VitePWA({
-      strategies: 'injectManifest',
-      srcDir: 'src',
-      filename: 'sw.js',
-      registerType: 'autoUpdate',
-      manifest: false,
-      includeAssets: ['favicon.svg', 'icons/*.png'],
-      injectManifest: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff,woff2,ttf,otf}'],
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3 MB (mermaid chunk is ~2.4 MB)
-      },
-    }),
-  ],
+  plugins: [react({ jsxRuntime: 'automatic' }), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
