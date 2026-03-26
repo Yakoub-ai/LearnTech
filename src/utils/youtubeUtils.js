@@ -54,7 +54,7 @@ export function extractYouTubeId(url) {
  * @param {string} quality - Quality level: 'maxres' (default), 'sddefault', 'hqdefault', 'mqdefault', 'default'
  * @returns {string} URL to the thumbnail image
  */
-export function getYouTubeThumbnail(videoId, quality = 'mqdefault') {
+export function getYouTubeThumbnail(videoId, quality = 'hqdefault') {
   if (!videoId) {
     return '';
   }
@@ -62,7 +62,7 @@ export function getYouTubeThumbnail(videoId, quality = 'mqdefault') {
   const validQualities = ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault', 'default'];
   const resolved = validQualities.includes(quality) ? quality : 'mqdefault';
 
-  return `https://img.youtube.com/vi/${videoId}/${resolved}`;
+  return `https://img.youtube.com/vi/${videoId}/${resolved}.jpg`;
 }
 
 /**
