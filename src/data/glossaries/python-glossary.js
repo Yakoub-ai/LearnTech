@@ -3,7 +3,7 @@ export default {
     { term: 'Variable', definition: 'A name that refers to a value stored in memory. In Python, variables are dynamically typed — no explicit type declaration is needed.' },
     { term: 'Data Types', definition: 'Python\'s built-in types: int, float, str, bool, list, tuple, dict, set, and NoneType. Everything in Python is an object.' },
     { term: 'List', definition: 'An ordered, mutable collection of items accessed by index. Supports slicing, appending, and iteration.' },
-    { term: 'Dictionary', definition: 'An unordered collection of key-value pairs accessed by key. Keys must be hashable (strings, numbers, tuples).' },
+    { term: 'Dictionary', definition: 'An insertion-ordered collection of key-value pairs accessed by key (guaranteed since Python 3.7). Keys must be hashable (strings, numbers, tuples).' },
     { term: 'Function (def)', definition: 'A reusable block of code defined with the def keyword that takes parameters and optionally returns a value.' },
     { term: 'Indentation', definition: 'Python uses whitespace indentation (typically 4 spaces) to define code blocks instead of braces, making structure part of the syntax.' },
     { term: 'Module', definition: 'A .py file containing Python code (functions, classes, variables) that can be imported into other files using the import statement.' },
@@ -26,7 +26,7 @@ export default {
   senior: [
     { term: 'Metaclass', definition: 'A class whose instances are themselves classes. Metaclasses control class creation and can modify class behaviour at definition time.' },
     { term: 'Descriptor Protocol', definition: 'Objects implementing __get__, __set__, or __delete__ that customise attribute access — the mechanism behind property, classmethod, and staticmethod.' },
-    { term: 'GIL (Global Interpreter Lock)', definition: 'A mutex in CPython that allows only one thread to execute Python bytecode at a time, limiting true parallelism in CPU-bound threaded code.' },
+    { term: 'GIL (Global Interpreter Lock)', definition: 'A mutex in CPython that allows only one thread to execute Python bytecode at a time, limiting true parallelism in CPU-bound threaded code. Python 3.13+ offers an experimental free-threaded mode that removes the GIL.' },
     { term: 'Multiprocessing', definition: 'Running code in separate OS processes to bypass the GIL and achieve true parallelism for CPU-bound tasks.' },
     { term: 'C Extension', definition: 'A Python module written in C (or using Cython/pybind11) for performance-critical code, compiled into a shared library importable by Python.' },
     { term: 'Design Patterns', definition: 'Reusable solutions to common problems: Singleton, Factory, Observer, Strategy, etc. — applied idiomatically in Python.' },
