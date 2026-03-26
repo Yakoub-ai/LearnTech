@@ -59,6 +59,39 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Foundation models changed the AI adoption curve by making powerful generative AI accessible through an API call — this is the shift that created the AI Engineer role. Engineers no longer need to train models to leverage advanced AI capabilities."
+        },
+        {
+          question: "What distinguishes generative AI from discriminative AI?",
+          options: [
+            "Generative AI is faster; discriminative AI is more accurate",
+            "Generative AI creates new content (text, images, code); discriminative AI classifies or labels existing content",
+            "Discriminative AI requires more training data than generative AI",
+            "They are two names for the same approach applied to different data types"
+          ],
+          correctIndex: 1,
+          explanation: "Discriminative AI classifies or labels existing inputs (spam vs. not spam, cat vs. dog). Generative AI creates new content — text, images, audio, or code — that did not exist before. Both are subsets of ML but serve fundamentally different purposes."
+        },
+        {
+          question: "Why is the term 'hallucination' used when an LLM generates false information confidently?",
+          options: [
+            "The model intentionally fabricates information to fill gaps in its training data",
+            "The model retrieves information from a corrupted database",
+            "The model generates statistically plausible text that has no grounding in verified facts, producing confident-sounding fiction",
+            "Hallucination only occurs when the model is given ambiguous prompts"
+          ],
+          correctIndex: 2,
+          explanation: "Hallucination describes the phenomenon where an LLM produces text that sounds authoritative but is factually incorrect. Because the model generates text based on statistical patterns rather than fact-checking, it can confidently state things that are entirely wrong — a critical risk in production applications."
+        },
+        {
+          question: "A company wants to add AI capabilities to its product. What is the fastest path to production using foundation models?",
+          options: [
+            "Hire a team of ML researchers to train a custom model from scratch",
+            "Use a pre-trained foundation model through an API, integrating it into existing application code",
+            "Wait until open-source models match GPT-4 quality before starting",
+            "Build a custom neural network architecture tailored to the specific use case"
+          ],
+          correctIndex: 1,
+          explanation: "Foundation models accessible via APIs are the fastest path to production AI. Instead of training models from scratch (expensive, slow, requires ML expertise), engineers can integrate powerful AI through API calls — the core insight behind the AI Engineer role."
         }
       ]
     },
@@ -121,6 +154,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Each LLM API call is independent and stateless. The model has no memory of previous conversations unless you explicitly include that history in the current context window. This is a common pitfall for engineers new to LLM development."
+        },
+        {
+          question: "What is the purpose of positional encoding in transformer models?",
+          options: [
+            "It encrypts the position of sensitive data within the input",
+            "It tells the model the order of tokens in the sequence, since self-attention processes all tokens simultaneously without inherent ordering",
+            "It reduces the number of tokens by merging adjacent positions",
+            "It assigns priority to tokens at the start of the input over those at the end"
+          ],
+          correctIndex: 1,
+          explanation: "Transformers process all tokens in parallel, unlike earlier sequential models. Without positional encoding, the model would have no notion of word order — 'the cat sat on the mat' and 'the mat sat on the cat' would be identical. Positional encodings inject order information into the representation."
+        },
+        {
+          question: "A developer notices their LLM API costs are unexpectedly high. Which factor most directly determines API cost?",
+          options: [
+            "The number of HTTP requests made to the API",
+            "The total number of input and output tokens processed across all requests",
+            "The time of day the requests are made",
+            "The programming language used in the client application"
+          ],
+          correctIndex: 1,
+          explanation: "LLM API pricing is token-based — you pay per input token and per output token. Long system prompts, extensive conversation history, and verbose outputs all increase cost. Understanding tokenisation is essential for cost management."
         }
       ]
     },
@@ -183,6 +238,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Data quality is the most important factor in ML model performance. Even the most sophisticated algorithms cannot compensate for poor, biased, or incorrectly labelled training data. This applies directly to any model you fine-tune."
+        },
+        {
+          question: "What is the difference between a model and an algorithm in machine learning?",
+          options: [
+            "They are the same thing — both refer to the trained system",
+            "The algorithm is the mathematical process used during training; the model is the trained result that makes predictions",
+            "The model is written by engineers; the algorithm is learned from data",
+            "Algorithms run during inference; models run during training"
+          ],
+          correctIndex: 1,
+          explanation: "The algorithm is the learning process (e.g., gradient descent, backpropagation) applied during training. The model is the output of training — a function with learned parameters that can make predictions on new data. When you call an API, you are using the model, not the algorithm."
+        },
+        {
+          question: "What does 'unsupervised learning' mean and how does it differ from supervised learning?",
+          options: [
+            "Unsupervised learning requires no data at all — the model learns from its architecture alone",
+            "Unsupervised learning finds patterns in data without labelled examples, unlike supervised learning which requires labels",
+            "Unsupervised learning is less accurate than supervised learning in all cases",
+            "Unsupervised learning is only used for text data; supervised learning is used for images"
+          ],
+          correctIndex: 1,
+          explanation: "Unsupervised learning discovers patterns (clusters, anomalies, associations) in unlabelled data. Supervised learning requires labelled examples to learn input-output mappings. Customer segmentation is a classic unsupervised task — grouping customers by behaviour without pre-defined categories."
         }
       ]
     },
@@ -245,6 +322,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "LLM APIs enforce usage quotas. When exceeded, the API returns an error (typically 429 Too Many Requests). Without explicit rate limit handling (retry with backoff), applications will fail under load — this is a common production failure mode."
+        },
+        {
+          question: "What does a 401 Unauthorized HTTP status code from an LLM API typically indicate?",
+          options: [
+            "The request payload is too large for the model to process",
+            "The API key is missing, invalid, or expired",
+            "The model is temporarily overloaded and cannot accept requests",
+            "The requested model version does not exist"
+          ],
+          correctIndex: 1,
+          explanation: "A 401 status code indicates an authentication failure — the API key is missing, invalid, or expired. Understanding HTTP status codes (401 authentication, 429 rate limit, 500 server error) is essential for debugging LLM API integrations."
+        },
+        {
+          question: "What is the primary difference between synchronous and streaming LLM API responses?",
+          options: [
+            "Streaming responses are always faster in total time than synchronous responses",
+            "Synchronous responses return the complete output at once; streaming delivers tokens incrementally as they are generated",
+            "Streaming is only available for chat models, not completion models",
+            "Synchronous responses cost less per token than streaming responses"
+          ],
+          correctIndex: 1,
+          explanation: "Synchronous API calls wait until the entire response is generated before returning. Streaming delivers tokens incrementally as they are generated, reducing perceived latency for the user. The total generation time is similar, but streaming improves user experience by showing progress immediately."
         }
       ]
     },
@@ -307,6 +406,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 2,
           explanation: "Role prompting frames the model as a particular persona, influencing its vocabulary, level of technical detail, and perspective. It is a useful way to target a specific audience or domain without writing lengthy style instructions."
+        },
+        {
+          question: "A developer wants the LLM to output data in a consistent JSON format. Which technique is most effective?",
+          options: [
+            "Setting temperature to 0 — this guarantees structured output",
+            "Providing a clear JSON schema example in the prompt and requesting the model respond in that exact format",
+            "Using a system prompt that says 'always respond in JSON' without showing the expected structure",
+            "Fine-tuning the model on JSON output examples before using it"
+          ],
+          correctIndex: 1,
+          explanation: "Showing the model the exact JSON structure you expect (a few-shot example of the schema) is the most effective way to get consistent structured output. Simply saying 'respond in JSON' without demonstrating the structure leads to inconsistent key names, nesting, and formatting."
+        },
+        {
+          question: "What is the difference between a system prompt and a user prompt in modern LLM APIs?",
+          options: [
+            "System prompts are processed by a separate model; user prompts go to the main model",
+            "System prompts set the model's behaviour, persona, and constraints for the entire conversation; user prompts contain the specific request or question",
+            "System prompts are optional and ignored by most models",
+            "User prompts are more influential than system prompts in determining output"
+          ],
+          correctIndex: 1,
+          explanation: "The system prompt establishes the model's behaviour, persona, and constraints for the conversation. The user prompt contains the specific request. Separating them helps maintain consistent behaviour across multiple user interactions and makes prompt management cleaner."
         }
       ]
     }

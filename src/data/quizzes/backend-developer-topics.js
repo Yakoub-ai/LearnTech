@@ -49,6 +49,28 @@ export const topicQuizzes = {
           correctIndex: 0,
           explanation: '404 Not Found is a 4xx client error indicating that the server cannot locate the requested resource. Understanding status code classes (2xx success, 4xx client error, 5xx server error) is the first step to diagnosing production bugs from logs.',
         },
+        {
+          question: 'A mobile app and a web dashboard both need data from the same backend. What architectural benefit does an API provide in this scenario?',
+          options: [
+            'Both clients can consume the same API without duplicating server-side logic, because the API is a technology-agnostic contract',
+            'The API automatically translates JSON into XML for the mobile app and HTML for the web dashboard',
+            'The API stores separate copies of data for each client type to optimise response times',
+            'The API ensures mobile and web users can never access the same resource simultaneously',
+          ],
+          correctIndex: 0,
+          explanation: 'An API decouples the backend from any specific client. Whether the consumer is a mobile app, a web dashboard, or a third-party integration, the same endpoint serves the same data in the same format. This avoids duplicating business logic across client-specific backends.',
+        },
+        {
+          question: 'What is the purpose of rate limiting on an API?',
+          options: [
+            'To prevent server overload by restricting how many requests a client can make within a time window',
+            'To limit the size of the JSON response payload returned to the client',
+            'To throttle the API so it responds no faster than a minimum latency',
+            'To restrict which HTTP methods a client is allowed to use',
+          ],
+          correctIndex: 0,
+          explanation: 'Rate limiting caps the number of requests a client can make in a given period (e.g., 100 requests per minute). This protects the server from abuse, accidental flooding from buggy clients, and denial-of-service scenarios where one consumer could degrade the experience for all others.',
+        },
       ],
     },
     {
@@ -99,6 +121,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 0,
           explanation: "Confusing = (assignment) with == (equality comparison) is one of the most common beginner mistakes. `if x = 5` assigns 5 to x rather than testing whether x equals 5, producing incorrect branching logic.",
+        },
+        {
+          question: 'What is the difference between a for loop and a while loop?',
+          options: [
+            'A for loop iterates a known number of times (e.g., over a list); a while loop continues as long as a condition remains true, making it suitable when the number of iterations is unknown in advance',
+            'A for loop can only iterate over numbers; a while loop can iterate over any data type including strings and lists',
+            'A for loop always runs at least once; a while loop may never execute its body if the condition is false initially',
+            'A for loop is faster than a while loop because the interpreter pre-computes the number of iterations',
+          ],
+          correctIndex: 0,
+          explanation: 'A for loop is ideal when you know what you are iterating over — a list, a range of numbers, or a dictionary. A while loop is ideal when the exit condition depends on runtime logic — waiting for user input, reading until end-of-file, or retrying until a service responds.',
         },
       ],
     },
@@ -151,6 +184,17 @@ export const topicQuizzes = {
           correctIndex: 0,
           explanation: "Django's models, SQLAlchemy's mapped classes, and FastAPI's Pydantic models are all OOP in practice. Understanding classes, inheritance, and encapsulation is essential for reading, extending, and contributing to any substantial backend codebase.",
         },
+        {
+          question: 'What is polymorphism in object-oriented programming?',
+          options: [
+            'A way for objects of different types to respond to the same method call differently',
+            'A pattern where a single object stores multiple types of data in one attribute',
+            'A technique that converts objects between different programming languages at runtime',
+            'The ability to create multiple instances of the same class simultaneously',
+          ],
+          correctIndex: 0,
+          explanation: 'Polymorphism means "many forms." A method like `calculate_area()` can be called on a Circle, Rectangle, or Triangle — each class provides its own implementation. This allows code to work with objects generically (e.g., looping over shapes) without knowing the specific type at compile time.',
+        },
       ],
     },
     {
@@ -201,6 +245,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 0,
           explanation: "The standard library covers most common backend tasks without external dependencies. Every third-party dependency is a potential supply chain attack vector — using the standard library where it suffices reduces the attack surface.",
+        },
+        {
+          question: 'What is a Python dictionary and when would you use one in a backend application?',
+          options: [
+            'A key-value data structure that provides O(1) average-case lookups; commonly used for mapping IDs to objects, storing configuration, and building JSON responses',
+            'An ordered list of unique elements; commonly used for deduplicating database query results before returning them to the client',
+            'A fixed-size array of bytes; commonly used for efficient binary data transfer between the server and the database',
+            'A hierarchical tree structure; commonly used for representing nested URL routing tables in web frameworks',
+          ],
+          correctIndex: 0,
+          explanation: 'A Python dict maps keys to values with average O(1) lookup time. In backend code, dicts are everywhere: parsing JSON request bodies produces dicts, building JSON responses uses dicts, and caching frequently accessed data in memory often uses a dict keyed by ID.',
         },
       ],
     },
@@ -253,6 +308,28 @@ export const topicQuizzes = {
           correctIndex: 0,
           explanation: 'PATCH is the semantically correct method for partial updates. PUT replaces the entire resource. Using the wrong method signals poor API design and breaks clients that rely on correct method semantics for caching and retry logic.',
         },
+        {
+          question: 'What is the Content-Type header used for in an HTTP request?',
+          options: [
+            'It tells the server the format of the data in the request body, such as application/json or multipart/form-data',
+            'It specifies the maximum size of the response the client can accept',
+            'It indicates the programming language the client application was written in',
+            'It defines the character encoding of the URL path',
+          ],
+          correctIndex: 0,
+          explanation: 'The Content-Type header tells the server how to parse the request body. Sending JSON without setting Content-Type to application/json can cause the server to reject the request or misparse the data, leading to confusing 400 errors.',
+        },
+        {
+          question: 'What does an HTTP 500 status code tell the client?',
+          options: [
+            'The client must resend the request with different headers',
+            'The requested resource has been permanently moved to a new URL',
+            'The server encountered an unexpected internal error while processing the request',
+            'The client is not authenticated and must provide credentials',
+          ],
+          correctIndex: 2,
+          explanation: '500 Internal Server Error is a generic server-side error indicating something went wrong that the server did not anticipate. Unlike 4xx errors which point to client mistakes, 5xx errors indicate the problem is on the server. In production, a 500 should trigger an alert because it usually means an unhandled exception.',
+        },
       ],
     },
     {
@@ -304,6 +381,17 @@ export const topicQuizzes = {
           correctIndex: 0,
           explanation: 'Idempotent methods produce the same result regardless of how many times they are called. GET, PUT, and DELETE are idempotent; POST is not. This property is important for safe client retries — retrying a GET after a network failure cannot cause harm.',
         },
+        {
+          question: 'What is the purpose of a resource identifier in a REST URL like /users/42?',
+          options: [
+            'It specifies the database engine to use for the query',
+            '42 is the unique identifier of a specific user resource, allowing the server to locate and return that particular record',
+            'It tells the server to return the first 42 results from the users collection',
+            'It sets the cache duration for the response to 42 seconds',
+          ],
+          correctIndex: 1,
+          explanation: 'In REST, URLs identify resources. /users is the collection, and /users/42 identifies one specific user. The server uses this identifier to look up the correct record. This convention makes APIs intuitive — consumers can predict how to access a specific resource without reading documentation.',
+        },
       ],
     },
     {
@@ -354,6 +442,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 0,
           explanation: 'The server runs application logic, enforces business rules, controls database access, and responds to requests. It never trusts the client. Multiple clients (web, mobile, third-party) all connect to the same server which is the authoritative source of truth.',
+        },
+        {
+          question: 'What is the "three-tier architecture" commonly used in web applications?',
+          options: [
+            'A pattern with three servers: one for authentication, one for business logic, and one for logging',
+            'A model where the application is split into frontend, middleware proxy, and CDN tiers',
+            'A pattern that separates the presentation tier (client), application tier (server logic), and data tier (database)',
+            'A deployment model using three identical server replicas behind a load balancer',
+          ],
+          correctIndex: 2,
+          explanation: 'The three-tier architecture cleanly separates concerns: the presentation tier handles the user interface, the application tier runs business logic and processes requests, and the data tier persists and retrieves data. This separation allows each tier to be developed, scaled, and secured independently.',
         },
       ],
     },
