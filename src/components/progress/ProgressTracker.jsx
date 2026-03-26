@@ -140,31 +140,85 @@ export default function ProgressTracker() {
         })}
       </div>
 
-      {interactiveLabs.length > 0 && (
-        <>
-          <h2 className="text-xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
-            <FlaskConical className="w-5 h-5 text-[var(--color-primary)]" />
-            Interactive Labs
-          </h2>
-          <div className="space-y-3">
-            {interactiveLabs.slice(0, 10).map((lab) => {
-              const labProgress = getAllLabProgress()[lab.id]
-              const completedSteps = labProgress?.steps ? labProgress.steps.filter(s => s?.completed).length : 0
-              const totalSteps = lab.steps.length
-              const pct = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0
+      {interactiveLabs.length > 0 && (() => {
+        const allLabProg = getAllLabProgress()
+        const labsByRole = {}
+        const labsByLanguage = {}
+        interactiveLabs.forEach(lab => {
+          if (lab.roleId) {
+            if (!labsByRole[lab.roleId]) labsByRole[lab.roleId] = []
+            labsByRole[lab.roleId].push(lab)
+          }
+          if (lab.languageId) {
+            if (!labsByLanguage[lab.languageId]) labsByLanguage[lab.languageId] = []
+            labsByLanguage[lab.languageId].push(lab)
+          }
+        })
+
+        const renderLabCard = (lab) => {
+          const labProgress = allLabProg[lab.id]
+          const completedSteps = labProgress?.steps ? labProgress.steps.filter(s => s?.completed).length : 0
+          const totalSteps = lab.steps.length
+          const pct = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0
+          return (
+            <div key={lab.id} className="p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-[var(--color-text)]">{lab.title}</span>
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                    lab.level === 'beginner' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                    : lab.level === 'mid' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                  }`}>{lab.level}</span>
+                  <span className="text-xs text-[var(--color-text-secondary)]">{completedSteps}/{totalSteps} steps</span>
+                </div>
+              </div>
+              <ProgressBar value={pct} size="sm" showLabel={false} />
+            </div>
+          )
+        }
+
+        return (
+          <>
+            <h2 className="text-xl font-bold text-[var(--color-text)] mb-4 flex items-center gap-2">
+              <FlaskConical className="w-5 h-5 text-[var(--color-primary)]" />
+              Interactive Labs
+            </h2>
+
+            {/* Role Labs */}
+            {roles.filter(r => labsByRole[r.id]).map((role) => {
+              const Icon = getRoleIcon(role.icon)
               return (
-                <div key={lab.id} className="p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-[var(--color-text)]">{lab.title}</span>
-                    <span className="text-xs text-[var(--color-text-secondary)]">{completedSteps}/{totalSteps} steps</span>
+                <div key={`role-labs-${role.id}`} className="mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon className="w-4 h-4 text-[var(--color-primary)]" />
+                    <h3 className="text-sm font-semibold text-[var(--color-text)]">{role.name}</h3>
                   </div>
-                  <ProgressBar value={pct} size="sm" showLabel={false} />
+                  <div className="space-y-2 ml-6">
+                    {labsByRole[role.id].map(renderLabCard)}
+                  </div>
                 </div>
               )
             })}
-          </div>
-        </>
-      )}
+
+            {/* Language Labs */}
+            {languages.filter(l => labsByLanguage[l.id]).map((lang) => {
+              const Icon = getLanguageIcon(lang.icon)
+              return (
+                <div key={`lang-labs-${lang.id}`} className="mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon className="w-4 h-4 text-[var(--color-primary)]" />
+                    <h3 className="text-sm font-semibold text-[var(--color-text)]">{lang.name}</h3>
+                  </div>
+                  <div className="space-y-2 ml-6">
+                    {labsByLanguage[lang.id].map(renderLabCard)}
+                  </div>
+                </div>
+              )
+            })}
+          </>
+        )
+      })()}
     </div>
   )
 }

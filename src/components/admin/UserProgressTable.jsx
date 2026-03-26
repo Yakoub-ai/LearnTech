@@ -16,8 +16,25 @@ function computeRoleStats(rows) {
 
     const completedObjectives = objectives.filter(r => r.value?.completed).length
     const completedResources = resources.filter(r => r.value?.completed).length
-    const total = objectives.length + resources.length
-    const completed = completedObjectives + completedResources
+    const topicQuizzes = levelRows.filter(r => r.type === 'topic_quiz')
+    const levelExam = levelRows.find(r => r.type === 'level_exam')
+
+    let total = objectives.length + resources.length
+    let completed = completedObjectives + completedResources
+
+    // Include assessments with 2x weight (only for levels with content)
+    if (total > 0) {
+      total += 2
+      if (quiz?.value?.score != null) completed += 2
+
+      if (topicQuizzes.length > 0) {
+        total += 2
+        completed += 2
+      }
+
+      total += 2
+      if (levelExam?.value?.score != null) completed += 2
+    }
 
     byLevel[level] = {
       percentage: total > 0 ? Math.round((completed / total) * 100) : 0,
