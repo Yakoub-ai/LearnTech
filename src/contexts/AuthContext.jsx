@@ -20,6 +20,11 @@ export function AuthProvider({ children }) {
       return
     }
 
+    // On slow mobile connections, DB queries can hang for a very long time.
+    // Abort and fall back to 'pending' after 15 seconds so the UI doesn't spin forever.
+    const controller = new AbortController()
+    const approvalTimeoutId = setTimeout(() => controller.abort(), 15_000)
+
     try {
       // Check admin status via app_metadata (server-side, set via Supabase dashboard or admin API)
       const adminFlag = currentUser.app_metadata?.role === 'admin'
@@ -35,6 +40,7 @@ export function AuthProvider({ children }) {
           .from('user_approvals')
           .select('*', { count: 'exact', head: true })
           .eq('status', 'pending')
+          .abortSignal(controller.signal)
         setPendingCount(count || 0)
         return
       }
@@ -44,6 +50,7 @@ export function AuthProvider({ children }) {
         .select('status')
         .eq('id', currentUser.id)
         .single()
+        .abortSignal(controller.signal)
 
       if (error || !data) {
         // Row not yet created (e.g., trigger hasn't fired) — treat as pending
@@ -58,6 +65,8 @@ export function AuthProvider({ children }) {
       }
     } catch {
       setApprovalStatus('pending')
+    } finally {
+      clearTimeout(approvalTimeoutId)
     }
   }, [])
 
@@ -74,14 +83,15 @@ export function AuthProvider({ children }) {
     // Prevent duplicate concurrent approval checks
     const approvalCheckRunning = { current: false }
 
-    // Safety net: getSession() reads localStorage (instant), so 3s is ample.
-    // Only fires if Supabase is unreachable or something is truly broken.
+    // Safety net: getSession() reads localStorage but also makes a network call
+    // to refresh the token when it has expired. On slow mobile connections this
+    // can take several seconds, so we use a generous 15-second timeout here.
     const timeoutId = setTimeout(() => {
       setLoading((current) => {
         if (current) console.warn('[Auth] Session check timed out — unblocking UI')
         return false
       })
-    }, 3_000)
+    }, 15_000)
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       // Skip INITIAL_SESSION if getSession() already handled it

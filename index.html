@@ -41,8 +41,12 @@
     <!-- Web App Manifest -->
     <link rel="manifest" href="/manifest.json" />
 
-    <!-- Fonts -->
+    <!-- Fonts (all four weights preloaded so the browser fetches them in parallel
+         rather than discovering them one-by-one as CSS is parsed) -->
     <link rel="preload" href="/fonts/IBMPlexSans-Regular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/fonts/IBMPlexSans-Medium.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/fonts/IBMPlexSans-SemiBold.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/fonts/IBMPlexSans-Bold.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="preload" href="/fonts/LFRubrik2-Regular.otf" as="font" type="font/otf" crossorigin />
 
     <!-- Static JSON-LD: EducationalOrganization + WebSite (visible to all crawlers) -->
