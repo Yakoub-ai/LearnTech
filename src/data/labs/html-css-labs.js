@@ -1777,5 +1777,2653 @@ Same HTML, same CSS file — behaviour determined entirely by container width`,
 }`
       }
     ]
+  },
+
+  // ============================================================
+  // LAB 7 — Box Model & Positioning
+  // ============================================================
+  {
+    id: 'hc-lab-7',
+    languageId: 'html-css',
+    level: 'beginner',
+    title: 'Box Model & Positioning',
+    description: 'Master the CSS box model (content-box vs border-box, margin collapse) and all five position values — static, relative, absolute, fixed, and sticky.',
+    estimatedMinutes: 25,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your HTML/CSS Environment',
+        setupReference: true,
+        instruction: 'Before building web interfaces, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: a modern code editor (VS Code with Live Server extension), browser DevTools, and Node.js for build tools. Open your browser DevTools (F12) to inspect and debug your work. Complete all setup steps before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Install the VS Code Live Server extension for instant preview',
+          'Open Chrome DevTools (F12) and familiarize yourself with the Elements panel'
+        ],
+        expectedOutput: 'VS Code with Live Server extension installed\nBrowser DevTools accessible via F12\nLive Server running at localhost:5500',
+        solution: null
+      },
+      {
+        title: 'Step 2: box-sizing — content-box vs border-box',
+        instruction: 'WHAT: Create two boxes of the same declared width. One uses the default content-box model; the other uses border-box. Add equal padding to both and observe how their rendered widths differ. Then apply box-sizing: border-box globally. WHY: With content-box, padding is added outside the declared width, so a 200px wide element with 20px padding renders as 240px. With border-box, padding is included inside the declared width — 200px stays 200px. The global reset (*, *::before, *::after) is the first rule in virtually every modern stylesheet. HOW: Create two <div> elements with identical CSS except box-sizing. Use DevTools (Elements → Computed) to compare their actual widths.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Box Model</title>
+  <style>
+    /* TODO: Add a global box-sizing reset here */
+
+    .box {
+      width: 200px;
+      padding: 20px;
+      border: 2px solid steelblue;
+      margin-bottom: 1rem;
+      background: lightblue;
+    }
+
+    /* TODO: Create .box-content that uses box-sizing: content-box */
+    /* TODO: Create .box-border that uses box-sizing: border-box */
+  </style>
+</head>
+<body>
+  <h1>Box Sizing Demo</h1>
+
+  <!-- TODO: Add two divs — one with class "box box-content", one with "box box-border" -->
+  <!-- Label each one with a <p> inside explaining which model it uses -->
+</body>
+</html>`,
+        hints: [
+          'The global reset is: *, *::before, *::after { box-sizing: border-box; }',
+          'content-box: rendered width = declared width + padding-left + padding-right + border-left + border-right',
+          'border-box: rendered width = declared width (padding and border eat into the interior)',
+          'Check actual rendered width in DevTools → Elements → Computed → width'
+        ],
+        expectedOutput: 'Two boxes both declared at 200px width.\nThe content-box box renders wider (240px or more) due to padding being added outside.\nThe border-box box stays at exactly 200px.\nAfter the global reset, all new elements default to border-box.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Box Model</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+
+    .box {
+      width: 200px;
+      padding: 20px;
+      border: 2px solid steelblue;
+      margin-bottom: 1rem;
+      background: lightblue;
+    }
+
+    .box-content {
+      box-sizing: content-box;
+    }
+
+    .box-border {
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <h1>Box Sizing Demo</h1>
+
+  <div class="box box-content">
+    <p>content-box: declared 200px → renders wider (200 + padding + border)</p>
+  </div>
+
+  <div class="box box-border">
+    <p>border-box: declared 200px → stays exactly 200px</p>
+  </div>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 3: Margin Collapse',
+        instruction: 'WHAT: Demonstrate vertical margin collapse between sibling elements and between a parent and its first child. WHY: When two vertical margins meet they collapse into one — the larger margin wins. This happens between siblings (the gap is the max, not the sum) and between a parent and child when there is no border, padding, or block formatting context separating them. It never happens with horizontal margins or with flexbox/grid children. HOW: Create two paragraphs with margin-bottom and margin-top; inspect the gap. Then wrap a child in a parent with no padding — observe the child\'s margin bleeding outside the parent. Fix it by adding padding-top: 1px or overflow: hidden to the parent.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Margin Collapse</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body { font-family: sans-serif; padding: 2rem; }
+
+    .sibling {
+      background: lightcoral;
+      padding: 1rem;
+      /* TODO: Add margin-bottom: 40px */
+    }
+
+    .sibling + .sibling {
+      /* TODO: Add margin-top: 20px */
+      /* The gap should be 40px (larger wins), not 60px (sum) */
+    }
+
+    .parent {
+      background: lightyellow;
+      border: 2px dashed orange;
+      /* TODO: To prevent child margin bleed, try: padding-top: 1px
+         or overflow: hidden */
+    }
+
+    .child {
+      background: lightgreen;
+      padding: 1rem;
+      /* TODO: Add margin-top: 30px — observe it bleeds outside .parent */
+    }
+  </style>
+</head>
+<body>
+  <h1>Margin Collapse</h1>
+
+  <h2>Sibling collapse</h2>
+  <div class="sibling">Sibling A (margin-bottom: 40px)</div>
+  <div class="sibling">Sibling B (margin-top: 20px) — gap is 40px, not 60px</div>
+
+  <h2>Parent/child collapse</h2>
+  <div class="parent">
+    <div class="child">Child (margin-top: 30px bleeds out of parent)</div>
+  </div>
+</body>
+</html>`,
+        hints: [
+          'Margins collapse only in the block direction (vertically for horizontal writing modes)',
+          'Collapse is prevented by: padding, border, overflow (not visible), display: flex/grid on the parent',
+          'Use DevTools box model diagram (Elements → Computed → scroll to the box diagram) to see margin values visually',
+          'Negative margins can cancel out positive ones — the result is the largest positive plus the smallest (most negative)'
+        ],
+        expectedOutput: 'Sibling gap is 40px (larger of 40 and 20), not 60px.\nChild margin-top bleeds outside the parent when parent has no padding/border.\nAdding padding-top: 1px or overflow: hidden to parent contains the child margin.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Margin Collapse</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: 2rem; }
+
+    .sibling {
+      background: lightcoral;
+      padding: 1rem;
+      margin-bottom: 40px;
+    }
+
+    .sibling + .sibling {
+      margin-top: 20px;
+    }
+
+    .parent {
+      background: lightyellow;
+      border: 2px dashed orange;
+      /* overflow: hidden also works */
+      padding-top: 1px;
+    }
+
+    .child {
+      background: lightgreen;
+      padding: 1rem;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Margin Collapse</h1>
+
+  <h2>Sibling collapse</h2>
+  <div class="sibling">Sibling A (margin-bottom: 40px)</div>
+  <div class="sibling">Sibling B (margin-top: 20px) — gap is 40px, not 60px</div>
+
+  <h2>Parent/child collapse — fixed with padding-top: 1px</h2>
+  <div class="parent">
+    <div class="child">Child margin is now contained inside parent</div>
+  </div>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 4: Relative and Absolute Positioning',
+        instruction: 'WHAT: Build a card with a tooltip badge positioned absolutely relative to its parent. WHY: position: relative keeps the element in normal flow but establishes a positioning context for absolutely positioned descendants. position: absolute removes the element from normal flow and places it relative to the nearest ancestor with a non-static position. Without a positioned ancestor, absolute elements escape to the viewport. HOW: Give the card container position: relative. Absolutely position a "New" badge in the top-right corner using top and right offsets. The badge must sit inside the card regardless of card size.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Positioning</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: 4rem 2rem; }
+
+    .card {
+      width: 280px;
+      padding: 1.5rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      /* TODO: Add position: relative so the badge anchors to this card */
+    }
+
+    .badge {
+      background: crimson;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      /* TODO: position this badge at top: -10px, right: -10px
+         using absolute positioning */
+    }
+  </style>
+</head>
+<body>
+  <h1>Relative + Absolute Positioning</h1>
+
+  <div class="card">
+    <!-- TODO: Add the badge INSIDE the card div -->
+    <h2>Article Title</h2>
+    <p>This card has a "New" badge positioned absolutely in its top-right corner.</p>
+  </div>
+</body>
+</html>`,
+        hints: [
+          'position: absolute positions relative to the nearest ancestor with position !== static',
+          'If no positioned ancestor exists, the element positions relative to the initial containing block (viewport)',
+          'top/right/bottom/left offsets move the element from the specified edge',
+          'Negative offset values move the element outside the parent boundary'
+        ],
+        expectedOutput: 'A card with a red "New" badge overlapping its top-right corner.\nThe badge stays anchored to the card regardless of card width.\nRemoving position: relative from .card causes the badge to escape to the viewport corner.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Positioning</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: 4rem 2rem; }
+
+    .card {
+      width: 280px;
+      padding: 1.5rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: crimson;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Relative + Absolute Positioning</h1>
+
+  <div class="card">
+    <span class="badge">New</span>
+    <h2>Article Title</h2>
+    <p>This card has a "New" badge positioned absolutely in its top-right corner.</p>
+  </div>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 5: Fixed and Sticky Positioning',
+        instruction: 'WHAT: Build a sticky site header that stays at the top as the page scrolls, plus a fixed "back to top" button in the bottom-right corner. WHY: position: fixed removes the element from flow and pins it to the viewport — it never scrolls. position: sticky is a hybrid: the element scrolls normally until it hits a threshold (top: 0), then sticks. Sticky requires a defined top/bottom/left/right offset and only sticks within its scroll container. HOW: Add a <header> with position: sticky; top: 0. Add a "↑ Top" anchor with position: fixed; bottom: 1rem; right: 1rem. Give the page enough content to scroll. Note the z-index on the header to stay above content.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixed & Sticky</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: sans-serif;
+      margin: 0;
+    }
+
+    .site-header {
+      background: #1e3a5f;
+      color: white;
+      padding: 1rem 2rem;
+      /* TODO: Make this sticky — stays at top: 0 when scrolling */
+      /* TODO: Add z-index: 100 so it overlaps content */
+    }
+
+    .back-to-top {
+      background: #1e3a5f;
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      border-radius: 50%;
+      font-size: 1.25rem;
+      /* TODO: position: fixed, bottom: 1.5rem, right: 1.5rem */
+    }
+
+    .content {
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Generate enough content to scroll */
+    .content p { margin-bottom: 2rem; line-height: 1.8; }
+  </style>
+</head>
+<body id="top">
+  <header class="site-header">
+    <nav>My Sticky Site</nav>
+  </header>
+
+  <div class="content">
+    <h1>Scroll down to test sticky and fixed positioning</h1>
+    <!-- TODO: Add 10 or more <p> elements with filler text so the page scrolls -->
+  </div>
+
+  <!-- TODO: Add an <a href="#top"> with class "back-to-top" and text ↑ -->
+</body>
+</html>`,
+        hints: [
+          'position: sticky requires a threshold offset (top: 0) — without it the element never sticks',
+          'position: sticky only works within its scroll container; if a parent has overflow: hidden it will not stick',
+          'position: fixed always positions relative to the viewport, never relative to a parent element',
+          'Add z-index to stacked positioned elements — higher values appear on top'
+        ],
+        expectedOutput: 'Header sticks to the top of the viewport as the page scrolls.\nThe ↑ button remains fixed in the bottom-right corner at all scroll positions.\nClicking ↑ jumps back to the top of the page.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixed & Sticky</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: sans-serif;
+      margin: 0;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #1e3a5f;
+      color: white;
+      padding: 1rem 2rem;
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #1e3a5f;
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      border-radius: 50%;
+      font-size: 1.25rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .content {
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .content p { margin-bottom: 2rem; line-height: 1.8; }
+  </style>
+</head>
+<body id="top">
+  <header class="site-header">
+    <nav>My Sticky Site</nav>
+  </header>
+
+  <div class="content">
+    <h1>Scroll down to test sticky and fixed positioning</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem.</p>
+    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magni dolores.</p>
+    <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit sed quia non numquam.</p>
+    <p>Ut labore et dolore magnam aliquam quaerat voluptatem ut enim ad minima veniam quis nostrum exercitationem.</p>
+    <p>Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur vel illum.</p>
+    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque.</p>
+  </div>
+
+  <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+</body>
+</html>`
+      }
+    ]
+  },
+
+  // ============================================================
+  // LAB 8 — Accessible Forms
+  // ============================================================
+  {
+    id: 'hc-lab-8',
+    languageId: 'html-css',
+    level: 'mid',
+    title: 'Accessible Forms',
+    description: 'Build forms that work for everyone — correct label associations, grouped controls with fieldset/legend, ARIA validation states, and visible focus styling.',
+    estimatedMinutes: 30,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your HTML/CSS Environment',
+        setupReference: true,
+        instruction: 'Before building web interfaces, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: a modern code editor (VS Code with Live Server extension), browser DevTools, and Node.js for build tools. Open your browser DevTools (F12) to inspect and debug your work. Complete all setup steps before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Install the VS Code Live Server extension for instant preview',
+          'Open Chrome DevTools (F12) and familiarize yourself with the Elements panel'
+        ],
+        expectedOutput: 'VS Code with Live Server extension installed\nBrowser DevTools accessible via F12\nLive Server running at localhost:5500',
+        solution: null
+      },
+      {
+        title: 'Step 2: Proper Label Associations',
+        instruction: 'WHAT: Build a login form using both label association patterns — the for/id pattern and the wrapping pattern. WHY: Screen readers announce the label text when focus moves to an input. Without an association, the user hears only the input type with no context. The for/id pattern is most common; the wrapping pattern (label contains the input) also works but can confuse some older assistive technology. Every interactive control must have an accessible name. HOW: Create an email field with <label for="email"> and <input id="email">. Create a password field where the label wraps the input. Add a submit button. Test by tabbing through — a screen reader (or DevTools Accessibility panel) should announce each label.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Login Form</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 3rem 1rem;
+      background: #f5f5f5;
+    }
+
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    input {
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.75rem;
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <form novalidate>
+    <h1>Log in</h1>
+
+    <!-- TODO: for/id pattern — label with for="email", input with id="email" -->
+    <div class="field">
+    </div>
+
+    <!-- TODO: wrapping pattern — label element wraps the input directly -->
+    <div class="field">
+    </div>
+
+    <button type="submit">Log in</button>
+  </form>
+</body>
+</html>`,
+        hints: [
+          'for/id pattern: <label for="email">Email</label> <input id="email" type="email">',
+          'Wrapping pattern: <label>Password <input type="password"></label>',
+          'Both the for/id and wrapping patterns give the input an accessible name',
+          'Check DevTools → Elements → Accessibility tab → "Computed Properties" → "Name" to verify the accessible name'
+        ],
+        expectedOutput: 'A login form with two fields.\nEach input has an accessible name visible in DevTools Accessibility panel.\nTabbing through the form moves focus: Email input → Password input → Submit button.\nScreen readers announce "Email, edit text" and "Password, edit text".',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Login Form</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 3rem 1rem;
+      background: #f5f5f5;
+    }
+
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    input {
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.75rem;
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <form novalidate>
+    <h1>Log in</h1>
+
+    <!-- for/id pattern -->
+    <div class="field">
+      <label for="email">Email address</label>
+      <input type="email" id="email" name="email" autocomplete="email">
+    </div>
+
+    <!-- wrapping pattern -->
+    <div class="field">
+      <label>
+        Password
+        <input type="password" name="password" autocomplete="current-password">
+      </label>
+    </div>
+
+    <button type="submit">Log in</button>
+  </form>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 3: fieldset and legend for Grouped Controls',
+        instruction: 'WHAT: Use <fieldset> and <legend> to group a set of radio buttons and a mailing address section. WHY: Radio buttons and checkboxes that belong to the same question need a group label. <fieldset>/<legend> provides this — screen readers prepend the legend text to each radio button\'s label ("Preferred contact: Phone, radio button"). Without it, the user hears only "Phone, radio button" with no context. <fieldset> also works for logically grouped text inputs (like an address block) to communicate their shared purpose. HOW: Wrap the "Preferred contact" radio group in a <fieldset> with <legend>Preferred contact method</legend>. Wrap street/city/postcode inputs in a second <fieldset> with <legend>Mailing address</legend>.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fieldset & Legend</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: 2rem; max-width: 500px; }
+
+    fieldset {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    legend {
+      font-weight: 700;
+      padding: 0 0.5rem;
+    }
+
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .field label { font-weight: 600; font-size: 0.9rem; }
+
+    .field input {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <!-- TODO: Wrap in <fieldset> with <legend>Preferred contact method</legend> -->
+    <div class="radio-group">
+      <label><input type="radio" name="contact" value="email"> Email</label>
+      <label><input type="radio" name="contact" value="phone"> Phone</label>
+      <label><input type="radio" name="contact" value="post"> Post</label>
+    </div>
+
+    <!-- TODO: Wrap in <fieldset> with <legend>Mailing address</legend> -->
+    <div>
+      <div class="field">
+        <label for="street">Street address</label>
+        <input type="text" id="street" name="street" autocomplete="street-address">
+      </div>
+      <div class="field">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" autocomplete="address-level2">
+      </div>
+      <div class="field">
+        <label for="postcode">Postcode</label>
+        <input type="text" id="postcode" name="postcode" autocomplete="postal-code">
+      </div>
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>`,
+        hints: [
+          '<fieldset> wraps the group; <legend> is its first child and provides the group name',
+          'Screen readers announce: "[legend text], [label text], radio button" for each option',
+          'autocomplete attribute helps browsers prefill — use values from the HTML autocomplete spec',
+          '<fieldset> can be styled — remove default border with border: none, or keep it for visual grouping'
+        ],
+        expectedOutput: 'Radio buttons grouped in a fieldset with "Preferred contact method" legend.\nAddress inputs grouped in a second fieldset with "Mailing address" legend.\nScreen reader announces "Preferred contact method: Email, radio button" for the first option.\nAutocomplete attributes allow browser autofill for address fields.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fieldset & Legend</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: 2rem; max-width: 500px; }
+
+    fieldset {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    legend {
+      font-weight: 700;
+      padding: 0 0.5rem;
+    }
+
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .field label { font-weight: 600; font-size: 0.9rem; }
+
+    .field input {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button[type="submit"] {
+      padding: 0.75rem 2rem;
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <fieldset>
+      <legend>Preferred contact method</legend>
+      <div class="radio-group">
+        <label><input type="radio" name="contact" value="email"> Email</label>
+        <label><input type="radio" name="contact" value="phone"> Phone</label>
+        <label><input type="radio" name="contact" value="post"> Post</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Mailing address</legend>
+      <div class="field">
+        <label for="street">Street address</label>
+        <input type="text" id="street" name="street" autocomplete="street-address">
+      </div>
+      <div class="field">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" autocomplete="address-level2">
+      </div>
+      <div class="field">
+        <label for="postcode">Postcode</label>
+        <input type="text" id="postcode" name="postcode" autocomplete="postal-code">
+      </div>
+    </fieldset>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 4: ARIA for Validation States',
+        instruction: 'WHAT: Add ARIA attributes to communicate validation errors to assistive technology. WHY: Visual error styling (red border) is invisible to screen readers. aria-invalid="true" tells the AT the field is in an error state. aria-describedby links the input to an error message element so the screen reader reads the message when focus enters the field. aria-required="true" announces the field as required (the HTML required attribute achieves the same thing natively — use both for maximum compatibility). HOW: Build an email field with aria-required="true". On "submit", if empty: add aria-invalid="true" to the input, set aria-describedby to point to an error <span>, and populate that span with the error text. Remove the attributes when the error clears.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARIA Validation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: 2rem; max-width: 420px; }
+
+    .field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1.25rem; }
+    label { font-weight: 600; font-size: 0.9rem; }
+
+    input {
+      padding: 0.6rem 0.75rem;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    /* TODO: Style input[aria-invalid="true"] with a red border */
+
+    .error-msg {
+      color: crimson;
+      font-size: 0.85rem;
+      min-height: 1.2em;
+      /* Hidden by default — shown when aria-invalid is present */
+    }
+
+    button {
+      padding: 0.75rem 2rem;
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <form id="signup-form" novalidate>
+    <h1>Sign up</h1>
+    <div class="field">
+      <label for="signup-email">Email address</label>
+      <!--
+        TODO: Add to the input:
+          aria-required="true"
+          aria-describedby="email-error"
+          (and aria-invalid="true" only when there IS an error)
+      -->
+      <input type="email" id="signup-email" name="email">
+      <!-- TODO: Add a <span id="email-error" class="error-msg" role="alert"></span> -->
+    </div>
+    <button type="submit">Sign up</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('signup-form');
+    const emailInput = document.getElementById('signup-email');
+    // TODO: get reference to the error span
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // TODO: if emailInput.value is empty:
+      //   - set aria-invalid="true" on emailInput
+      //   - set errorSpan.textContent to 'Email address is required'
+      // else:
+      //   - remove aria-invalid attribute from emailInput
+      //   - clear errorSpan.textContent
+    });
+  </script>
+</body>
+</html>`,
+        hints: [
+          'aria-invalid="true" is the string "true" (set via setAttribute), not a boolean',
+          'aria-describedby takes the id of the element that describes this input — multiple ids are space-separated',
+          'role="alert" on the error span causes screen readers to announce it immediately when its content changes',
+          'Remove aria-invalid with removeAttribute("aria-invalid") when the error is cleared — do not set it to "false"'
+        ],
+        expectedOutput: 'Submitting with an empty email shows a visible red error message.\nThe input gains a red border (aria-invalid="true" styling).\nA screen reader announces the error message when focus is on the input.\nFixing the email and resubmitting clears both the error message and the red border.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARIA Validation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: 2rem; max-width: 420px; }
+
+    .field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1.25rem; }
+    label { font-weight: 600; font-size: 0.9rem; }
+
+    input {
+      padding: 0.6rem 0.75rem;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    input[aria-invalid="true"] {
+      border-color: crimson;
+    }
+
+    .error-msg {
+      color: crimson;
+      font-size: 0.85rem;
+      min-height: 1.2em;
+    }
+
+    button {
+      padding: 0.75rem 2rem;
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <form id="signup-form" novalidate>
+    <h1>Sign up</h1>
+    <div class="field">
+      <label for="signup-email">Email address</label>
+      <input
+        type="email"
+        id="signup-email"
+        name="email"
+        aria-required="true"
+        aria-describedby="email-error"
+      >
+      <span id="email-error" class="error-msg" role="alert"></span>
+    </div>
+    <button type="submit">Sign up</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('signup-form');
+    const emailInput = document.getElementById('signup-email');
+    const errorSpan = document.getElementById('email-error');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!emailInput.value.trim()) {
+        emailInput.setAttribute('aria-invalid', 'true');
+        errorSpan.textContent = 'Email address is required';
+        emailInput.focus();
+      } else {
+        emailInput.removeAttribute('aria-invalid');
+        errorSpan.textContent = '';
+        alert('Form submitted successfully!');
+      }
+    });
+  </script>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 5: Focus Styling and Keyboard Navigation',
+        instruction: 'WHAT: Add visible :focus-visible styles, verify logical tab order, and add a skip navigation link. WHY: Keyboard users navigate by pressing Tab. Without visible focus indicators, they cannot tell where they are. :focus-visible shows the outline only for keyboard focus (not mouse clicks), avoiding the unwanted ring on click. Skip links let keyboard/screen reader users jump past repeated navigation directly to main content — they should be the first interactive element on the page and are typically visible only on focus. tabindex="0" makes non-interactive elements focusable; tabindex="-1" removes elements from tab order while keeping them programmatically focusable. HOW: Remove any outline: none from inputs/buttons. Add a :focus-visible rule with a high-contrast outline. Add a "Skip to main content" link as the first element in <body>. Verify tab order matches reading order.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus & Keyboard Nav</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; }
+
+    /* TODO: Add a .skip-link style:
+       - position: absolute; top: -100%; left: 0
+       - when focused: top: 0 (use :focus-within or :focus)
+       - high contrast background, white text, padding */
+
+    nav {
+      background: #1e3a5f;
+      padding: 1rem 2rem;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* TODO: Style :focus-visible for a, input, button, select, textarea
+       Use outline: 3px solid #f90; outline-offset: 2px (or similar high-contrast) */
+
+    /* REMOVE THIS — bad practice: */
+    /* *:focus { outline: none; } */
+
+    input, select, textarea {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 0.5rem 1.5rem;
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- TODO: Add a skip link as the FIRST element:
+       <a class="skip-link" href="#main-content">Skip to main content</a> -->
+
+  <nav aria-label="Main navigation">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+  </nav>
+
+  <!-- TODO: Add id="main-content" and tabindex="-1" to <main>
+       tabindex="-1" lets the skip link programmatically focus the main element -->
+  <main>
+    <h1>Contact us</h1>
+    <form>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">
+        <label for="name">Your name</label>
+        <input type="text" id="name" name="name">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="4"></textarea>
+      </div>
+      <button type="submit">Send message</button>
+    </form>
+  </main>
+</body>
+</html>`,
+        hints: [
+          ':focus-visible targets keyboard focus only (not mouse/touch); :focus targets all focus',
+          'Skip links are typically positioned off-screen (top: -100%) and brought on-screen on :focus',
+          'tabindex="-1" on <main> lets the skip link call main.focus() to move keyboard focus past the nav',
+          'Never remove outline entirely — instead replace it with a custom outline that meets contrast requirements'
+        ],
+        expectedOutput: 'Pressing Tab shows a visible orange outline on the focused element.\nThe first Tab press reveals the "Skip to main content" link.\nActivating the skip link moves focus directly to the <main> element, bypassing navigation.\nAll interactive elements are reachable and visibly focused via keyboard.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus & Keyboard Nav</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; }
+
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 0;
+      background: #1e3a5f;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      z-index: 200;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    nav {
+      background: #1e3a5f;
+      padding: 1rem 2rem;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    :focus-visible {
+      outline: 3px solid #f90;
+      outline-offset: 2px;
+    }
+
+    input, select, textarea {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 0.5rem 1.5rem;
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <nav aria-label="Main navigation">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+    <h1>Contact us</h1>
+    <form>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">
+        <label for="name">Your name</label>
+        <input type="text" id="name" name="name" autocomplete="name">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="4"></textarea>
+      </div>
+      <button type="submit">Send message</button>
+    </form>
+  </main>
+</body>
+</html>`
+      }
+    ]
+  },
+
+  // ============================================================
+  // LAB 9 — CSS Animations
+  // ============================================================
+  {
+    id: 'hc-lab-9',
+    languageId: 'html-css',
+    level: 'mid',
+    title: 'CSS Animations',
+    description: 'Build smooth UI animations using CSS transitions and @keyframes, transform functions, and make them accessible with prefers-reduced-motion.',
+    estimatedMinutes: 30,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your HTML/CSS Environment',
+        setupReference: true,
+        instruction: 'Before building web interfaces, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: a modern code editor (VS Code with Live Server extension), browser DevTools, and Node.js for build tools. Open your browser DevTools (F12) to inspect and debug your work. Complete all setup steps before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Install the VS Code Live Server extension for instant preview',
+          'Open Chrome DevTools (F12) and familiarize yourself with the Elements panel'
+        ],
+        expectedOutput: 'VS Code with Live Server extension installed\nBrowser DevTools accessible via F12\nLive Server running at localhost:5500',
+        solution: null
+      },
+      {
+        title: 'Step 2: CSS Transitions',
+        instruction: 'WHAT: Add smooth hover transitions to a button — background colour, scale, and box-shadow — and chain multiple properties. Experiment with easing functions. WHY: transition interpolates CSS property values between states over time. The shorthand is transition: property duration easing delay. You can animate multiple properties with a comma-separated list. Easing functions (ease, ease-in-out, cubic-bezier()) control the acceleration curve. HOW: Create a button with default and :hover styles. Use transition to animate background-color, transform, and box-shadow. Try changing the easing from ease to cubic-bezier(0.34, 1.56, 0.64, 1) for a springy overshoot effect.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Transitions</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f4f8;
+    }
+
+    .btn {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #1e3a5f;
+      color: white;
+      /* TODO: Add transition for background-color, transform, and box-shadow
+         Use duration: 200ms and easing: ease */
+    }
+
+    .btn:hover {
+      /* TODO: Change background to a lighter blue */
+      /* TODO: Scale up slightly: transform: scale(1.05) */
+      /* TODO: Add a box-shadow */
+    }
+
+    .btn-spring {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #2d6a4f;
+      color: white;
+      /* TODO: Same transition but use cubic-bezier(0.34, 1.56, 0.64, 1) as easing */
+    }
+
+    .btn-spring:hover {
+      transform: scale(1.1);
+      background: #40916c;
+    }
+  </style>
+</head>
+<body>
+  <button class="btn">Hover me (ease)</button>
+  <button class="btn-spring">Hover me (spring)</button>
+</body>
+</html>`,
+        hints: [
+          'transition shorthand: transition: property duration easing delay',
+          'Chain multiple: transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease',
+          'Or use transition: all 200ms ease (convenient but transitions every animatable property — can be expensive)',
+          'cubic-bezier() lets you define custom easing curves — cubic-bezier.com is a great visual editor'
+        ],
+        expectedOutput: 'Hovering the first button smoothly transitions background, scale, and shadow over 200ms.\nHovering the spring button overshoots the target scale before settling — a springy feel.\nThe transitions reverse smoothly when the mouse leaves.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Transitions</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f4f8;
+    }
+
+    .btn {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #1e3a5f;
+      color: white;
+      transition: background-color 200ms ease,
+                  transform 200ms ease,
+                  box-shadow 200ms ease;
+    }
+
+    .btn:hover {
+      background: #2d5f8a;
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px rgba(30, 58, 95, 0.35);
+    }
+
+    .btn-spring {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #2d6a4f;
+      color: white;
+      transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background-color 200ms ease;
+    }
+
+    .btn-spring:hover {
+      transform: scale(1.1);
+      background: #40916c;
+    }
+  </style>
+</head>
+<body>
+  <button class="btn">Hover me (ease)</button>
+  <button class="btn-spring">Hover me (spring)</button>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 3: @keyframes Animations',
+        instruction: 'WHAT: Create a loading spinner using a rotation @keyframes animation, and a pulsing circle using scale. WHY: @keyframes defines the animation sequence as a set of waypoints. The animation property attaches it to an element. animation-iteration-count: infinite loops it forever. animation-timing-function inside @keyframes controls easing per segment. Spinners use transform: rotate() rather than animating left/top because transforms do not trigger layout — only the composite layer repaints, which is GPU-accelerated. HOW: Create a circular div with a partial border (transparent on one side). Animate with @keyframes spin { to { transform: rotate(360deg) } }. For the pulse, animate transform: scale(1) to scale(1.15) and back, with animation-direction: alternate and iteration-count: infinite.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyframe Animations</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      display: flex;
+      gap: 4rem;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f4f8;
+    }
+
+    /* TODO: Define @keyframes spin — from 0deg to 360deg rotate */
+
+    /* TODO: Define @keyframes pulse — scale from 1 to 1.15 */
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 4px solid #ddd;
+      /* TODO: Make one side of the border a strong colour (e.g. border-top-color: #1e3a5f) */
+      /* TODO: Apply the spin animation: 0.8s linear infinite */
+    }
+
+    .pulse {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #1e3a5f;
+      /* TODO: Apply the pulse animation:
+         1s ease-in-out infinite alternate */
+    }
+  </style>
+</head>
+<body>
+  <div class="spinner" role="status" aria-label="Loading"></div>
+  <div class="pulse"></div>
+</body>
+</html>`,
+        hints: [
+          '@keyframes name { from { } to { } } or use percentage stops: 0% { } 50% { } 100% { }',
+          'animation shorthand: animation: name duration easing iteration-count direction fill-mode',
+          'animation-direction: alternate makes the animation play forward then backward',
+          'Use role="status" and aria-label on loading indicators so screen readers announce them'
+        ],
+        expectedOutput: 'A spinning circle that rotates continuously at a constant speed.\nA pulsing circle that smoothly grows and shrinks in a breathing rhythm.\nBoth animations run independently and loop indefinitely.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyframe Animations</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      display: flex;
+      gap: 4rem;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f4f8;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse {
+      from {
+        transform: scale(1);
+        opacity: 1;
+      }
+      to {
+        transform: scale(1.15);
+        opacity: 0.7;
+      }
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 4px solid #ddd;
+      border-top-color: #1e3a5f;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .pulse {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #1e3a5f;
+      animation: pulse 1s ease-in-out infinite alternate;
+    }
+  </style>
+</head>
+<body>
+  <div class="spinner" role="status" aria-label="Loading"></div>
+  <div class="pulse" aria-hidden="true"></div>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 4: Transform Functions and Card Flip',
+        instruction: 'WHAT: Animate a card flip with rotateY, stack multiple transforms, and understand transform-origin. WHY: transform applies geometric transformations without affecting layout. Multiple functions are applied right-to-left: transform: translateX(50px) rotate(45deg) first rotates then translates. transform-origin sets the pivot point — the default is 50% 50% (centre). For a card flip, you need two faces (front/back), perspective on the container, and backface-visibility: hidden to hide the back face when it is pointing away. HOW: Create a .card-container with perspective: 800px. Inside, a .card with transform-style: preserve-3d that rotates on hover. Add .card-front and .card-back faces; hide the back face initially with rotateY(180deg) and backface-visibility: hidden on both.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Flip</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f4f8;
+    }
+
+    .card-container {
+      width: 240px;
+      height: 320px;
+      /* TODO: perspective: 800px — creates the 3D depth */
+      cursor: pointer;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      /* TODO: transform-style: preserve-3d — children render in 3D space */
+      /* TODO: transition: transform 0.6s ease */
+    }
+
+    .card-container:hover .card {
+      /* TODO: transform: rotateY(180deg) */
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      text-align: center;
+      /* TODO: backface-visibility: hidden — hides the face pointing away */
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #1e3a5f, #2d6a4f);
+      color: white;
+    }
+
+    .card-back {
+      background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+      color: #1e3a5f;
+      /* TODO: Start rotated 180deg so it is initially hidden */
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div class="card">
+      <div class="card-front">
+        <h2>Hover me</h2>
+        <p>CSS Card Flip</p>
+      </div>
+      <div class="card-back">
+        <h2>Back side!</h2>
+        <p>transform: rotateY(180deg)</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`,
+        hints: [
+          'perspective on the parent sets the viewpoint distance — lower values = more extreme 3D effect',
+          'transform-style: preserve-3d tells the browser children should exist in 3D space',
+          'backface-visibility: hidden hides an element when it is rotated more than 90deg away from the viewer',
+          'The back face needs transform: rotateY(180deg) so it starts face-down and ends face-up after the flip'
+        ],
+        expectedOutput: 'A card that smoothly flips to reveal its back side on hover.\nThe flip uses perspective to simulate depth.\nOnly one face is visible at a time — the hidden face is invisible.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Flip</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f4f8;
+    }
+
+    .card-container {
+      width: 240px;
+      height: 320px;
+      perspective: 800px;
+      cursor: pointer;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+    }
+
+    .card-container:hover .card {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      text-align: center;
+      backface-visibility: hidden;
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #1e3a5f, #2d6a4f);
+      color: white;
+    }
+
+    .card-back {
+      background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+      color: #1e3a5f;
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div class="card">
+      <div class="card-front">
+        <h2>Hover me</h2>
+        <p>CSS Card Flip</p>
+      </div>
+      <div class="card-back">
+        <h2>Back side!</h2>
+        <p>transform: rotateY(180deg)</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 5: Performance and Accessibility',
+        instruction: 'WHAT: Add will-change: transform to animated elements, and wrap all animations in @media (prefers-reduced-motion: no-preference) so users who prefer reduced motion see no animations. WHY: will-change hints to the browser that an element will be animated, promoting it to its own compositor layer before animation starts — this avoids jank on the first frame. Over-using it wastes memory; only apply it to elements about to animate. prefers-reduced-motion: reduce is a user OS setting (on macOS: System Settings → Accessibility → Reduce Motion) that signals motion sensitivity. Vestibular disorders, epilepsy, and motion sickness can all be triggered by animation. WCAG 2.1 criterion 2.3.3 (AAA) and 2.3.1 cover this. HOW: Move all @keyframes and transition declarations inside @media (prefers-reduced-motion: no-preference) { }. Add will-change: transform to spinner and flip card.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Animations</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f4f8;
+      padding: 2rem;
+    }
+
+    /* Spinner — base styles (no animation yet) */
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 4px solid #ddd;
+      border-top-color: #1e3a5f;
+      /* TODO: Add will-change: transform */
+    }
+
+    /* Button — base styles */
+    .btn {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #1e3a5f;
+      color: white;
+    }
+
+    /* TODO: Wrap ALL animation/transition declarations inside:
+       @media (prefers-reduced-motion: no-preference) {
+         @keyframes spin { to { transform: rotate(360deg); } }
+
+         .spinner { animation: spin 0.8s linear infinite; }
+
+         .btn {
+           transition: transform 200ms ease, background-color 200ms ease;
+         }
+         .btn:hover {
+           transform: scale(1.05);
+           background: #2d5f8a;
+         }
+       }
+    */
+  </style>
+</head>
+<body>
+  <div class="spinner" role="status" aria-label="Loading"></div>
+  <button class="btn">Hover me</button>
+  <p style="max-width:360px;color:#444;font-size:0.9rem;">
+    Enable "Reduce Motion" in your OS accessibility settings to see animations disabled.
+    On macOS: System Settings → Accessibility → Display → Reduce Motion.
+  </p>
+</body>
+</html>`,
+        hints: [
+          '@media (prefers-reduced-motion: no-preference) targets users who have NOT requested reduced motion',
+          '@media (prefers-reduced-motion: reduce) targets users who HAVE requested it — use to override to instant/fade',
+          'will-change: transform should be added just before animation starts and removed after — in CSS, add it to the element that will animate',
+          'A safe fallback: if reduced motion is preferred, provide an instant state change instead of removing the feature entirely'
+        ],
+        expectedOutput: 'Spinner and button hover both animate normally in default OS settings.\nWith OS "Reduce Motion" enabled, the spinner does not spin and the button has no hover transition.\nThe spinner and flip card have will-change: transform for GPU promotion.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Animations</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f4f8;
+      padding: 2rem;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 4px solid #ddd;
+      border-top-color: #1e3a5f;
+      will-change: transform;
+    }
+
+    .btn {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #1e3a5f;
+      color: white;
+      will-change: transform;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spinner {
+        animation: spin 0.8s linear infinite;
+      }
+
+      .btn {
+        transition: transform 200ms ease,
+                    background-color 200ms ease;
+      }
+
+      .btn:hover {
+        transform: scale(1.05);
+        background: #2d5f8a;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="spinner" role="status" aria-label="Loading"></div>
+  <button class="btn">Hover me</button>
+  <p style="max-width:360px;color:#444;font-size:0.9rem;">
+    Enable "Reduce Motion" in your OS accessibility settings to see animations disabled.
+    On macOS: System Settings → Accessibility → Display → Reduce Motion.
+  </p>
+</body>
+</html>`
+      }
+    ]
+  },
+
+  // ============================================================
+  // LAB 10 — Design System Tokens
+  // ============================================================
+  {
+    id: 'hc-lab-10',
+    languageId: 'html-css',
+    level: 'senior',
+    title: 'Design System Tokens',
+    description: 'Build a CSS design token system with primitive and semantic tokens, light/dark theming via data-theme, and component-scoped overrides.',
+    estimatedMinutes: 35,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your HTML/CSS Environment',
+        setupReference: true,
+        instruction: 'Before building web interfaces, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: a modern code editor (VS Code with Live Server extension), browser DevTools, and Node.js for build tools. Open your browser DevTools (F12) to inspect and debug your work. Complete all setup steps before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Install the VS Code Live Server extension for instant preview',
+          'Open Chrome DevTools (F12) and familiarize yourself with the Elements panel'
+        ],
+        expectedOutput: 'VS Code with Live Server extension installed\nBrowser DevTools accessible via F12\nLive Server running at localhost:5500',
+        solution: null
+      },
+      {
+        title: 'Step 2: Primitive Tokens',
+        instruction: 'WHAT: Define primitive (raw) CSS custom properties for colour, spacing, and typography on :root. WHY: Primitive tokens are the atomic values of your design system — every possible colour, every spacing step, every font size. They are never used directly in component styles; instead they are referenced by semantic tokens. The naming convention is --category-scale-variant (e.g. --color-blue-500, --space-4). A consistent spacing scale (multiples of a base unit, often 4px or 8px) prevents arbitrary spacing and makes the UI feel cohesive. HOW: Define at least 6 colour primitives across a blue and neutral scale. Define a spacing scale from --space-1 (4px) through --space-8 (32px) using multiples of 4px. Define font-size primitives --text-sm through --text-2xl.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Tokens — Primitives</title>
+  <style>
+    :root {
+      /* ── Colour primitives ── */
+      /* TODO: Define a blue scale:
+         --color-blue-100: #dbeafe
+         --color-blue-300: #93c5fd
+         --color-blue-500: #3b82f6
+         --color-blue-700: #1d4ed8
+         --color-blue-900: #1e3a8a */
+
+      /* TODO: Define a neutral scale:
+         --color-neutral-0: #ffffff
+         --color-neutral-100: #f5f7fa
+         --color-neutral-300: #d1d5db
+         --color-neutral-500: #6b7280
+         --color-neutral-700: #374151
+         --color-neutral-900: #111827 */
+
+      /* TODO: Define an error scale:
+         --color-red-500: #ef4444
+         --color-red-700: #b91c1c */
+
+      /* ── Spacing primitives (base unit = 4px) ── */
+      /* TODO: Define --space-1 through --space-8
+         1=4px, 2=8px, 3=12px, 4=16px, 5=20px, 6=24px, 7=28px, 8=32px */
+
+      /* ── Typography primitives ── */
+      /* TODO: Define font sizes:
+         --text-xs: 0.75rem
+         --text-sm: 0.875rem
+         --text-base: 1rem
+         --text-lg: 1.125rem
+         --text-xl: 1.25rem
+         --text-2xl: 1.5rem */
+
+      /* TODO: Define font weights:
+         --font-normal: 400
+         --font-semibold: 600
+         --font-bold: 700 */
+    }
+
+    /* Visualise the tokens */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: var(--space-8); background: var(--color-neutral-100); }
+
+    .swatch-grid { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-6); }
+    .swatch {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-end;
+      padding: var(--space-1);
+      font-size: var(--text-xs);
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <h1>Primitive Tokens</h1>
+  <h2>Blue scale</h2>
+  <div class="swatch-grid">
+    <div class="swatch" style="background: var(--color-blue-100); color: #111">100</div>
+    <div class="swatch" style="background: var(--color-blue-300); color: #111">300</div>
+    <div class="swatch" style="background: var(--color-blue-500)">500</div>
+    <div class="swatch" style="background: var(--color-blue-700)">700</div>
+    <div class="swatch" style="background: var(--color-blue-900)">900</div>
+  </div>
+  <h2>Spacing scale</h2>
+  <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+    <div style="background:var(--color-blue-300);height:var(--space-1);width:var(--space-1)"></div>
+    <div style="background:var(--color-blue-500);height:var(--space-2);width:var(--space-2)"></div>
+    <div style="background:var(--color-blue-700);height:var(--space-4);width:var(--space-4)"></div>
+    <div style="background:var(--color-blue-900);height:var(--space-8);width:var(--space-8)"></div>
+  </div>
+</body>
+</html>`,
+        hints: [
+          'CSS custom properties are defined on :root (the html element) to make them globally available',
+          'Naming convention: --category-scale (--color-blue-500) or --category-subcategory-variant',
+          'Use var(--token-name) to consume a token anywhere in CSS',
+          'The var() function accepts a fallback: var(--color-brand, #3b82f6) returns #3b82f6 if the token is not defined'
+        ],
+        expectedOutput: 'Colour swatches visible for the blue scale from lightest to darkest.\nSpacing visualisation shows progressively larger squares using the spacing scale.\nAll values reference CSS custom properties defined on :root.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Tokens — Primitives</title>
+  <style>
+    :root {
+      /* Colour primitives */
+      --color-blue-100: #dbeafe;
+      --color-blue-300: #93c5fd;
+      --color-blue-500: #3b82f6;
+      --color-blue-700: #1d4ed8;
+      --color-blue-900: #1e3a8a;
+
+      --color-neutral-0: #ffffff;
+      --color-neutral-100: #f5f7fa;
+      --color-neutral-300: #d1d5db;
+      --color-neutral-500: #6b7280;
+      --color-neutral-700: #374151;
+      --color-neutral-900: #111827;
+
+      --color-red-500: #ef4444;
+      --color-red-700: #b91c1c;
+
+      /* Spacing primitives */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-7: 28px;
+      --space-8: 32px;
+
+      /* Typography primitives */
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+
+      --font-normal: 400;
+      --font-semibold: 600;
+      --font-bold: 700;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: var(--space-8); background: var(--color-neutral-100); }
+
+    .swatch-grid { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-6); }
+    .swatch {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-end;
+      padding: var(--space-1);
+      font-size: var(--text-xs);
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <h1>Primitive Tokens</h1>
+  <h2>Blue scale</h2>
+  <div class="swatch-grid">
+    <div class="swatch" style="background: var(--color-blue-100); color: #111">100</div>
+    <div class="swatch" style="background: var(--color-blue-300); color: #111">300</div>
+    <div class="swatch" style="background: var(--color-blue-500)">500</div>
+    <div class="swatch" style="background: var(--color-blue-700)">700</div>
+    <div class="swatch" style="background: var(--color-blue-900)">900</div>
+  </div>
+  <h2>Spacing scale</h2>
+  <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+    <div style="background:var(--color-blue-300);height:var(--space-1);width:var(--space-1)"></div>
+    <div style="background:var(--color-blue-500);height:var(--space-2);width:var(--space-2)"></div>
+    <div style="background:var(--color-blue-700);height:var(--space-4);width:var(--space-4)"></div>
+    <div style="background:var(--color-blue-900);height:var(--space-8);width:var(--space-8)"></div>
+  </div>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 3: Semantic Tokens',
+        instruction: 'WHAT: Create semantic tokens that reference primitives and expose a meaningful API for component styles. WHY: Semantic tokens describe intent, not appearance. --color-primary does not say "blue" — it says "the brand action colour". When you swap --color-primary from --color-blue-500 to --color-purple-500, every component that uses --color-primary updates automatically. This decoupling is what makes theming scalable. Categories include surface (backgrounds), content (text), border, feedback (success/error/warning), and interactive (states). HOW: On :root define semantic tokens that var() reference primitive tokens. Component styles should only ever reference semantic tokens, never primitives directly.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semantic Tokens</title>
+  <style>
+    :root {
+      /* ── Primitives (copy from Step 2) ── */
+      --color-blue-100: #dbeafe; --color-blue-300: #93c5fd;
+      --color-blue-500: #3b82f6; --color-blue-700: #1d4ed8; --color-blue-900: #1e3a8a;
+      --color-neutral-0: #ffffff; --color-neutral-100: #f5f7fa;
+      --color-neutral-300: #d1d5db; --color-neutral-500: #6b7280;
+      --color-neutral-700: #374151; --color-neutral-900: #111827;
+      --color-red-500: #ef4444; --color-red-700: #b91c1c;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+      --space-5: 20px; --space-6: 24px; --space-7: 28px; --space-8: 32px;
+      --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+      --text-lg: 1.125rem; --text-xl: 1.25rem; --text-2xl: 1.5rem;
+      --font-normal: 400; --font-semibold: 600; --font-bold: 700;
+
+      /* ── Semantic tokens (reference primitives) ── */
+      /* TODO: Interactive/brand */
+      /* --color-primary: var(--color-blue-500);
+         --color-primary-hover: var(--color-blue-700);
+         --color-primary-subtle: var(--color-blue-100); */
+
+      /* TODO: Surface (backgrounds) */
+      /* --color-surface-base: var(--color-neutral-0);
+         --color-surface-raised: var(--color-neutral-100);
+         --color-surface-sunken: var(--color-neutral-100); */
+
+      /* TODO: Content (text) */
+      /* --color-content-primary: var(--color-neutral-900);
+         --color-content-secondary: var(--color-neutral-500);
+         --color-content-on-primary: var(--color-neutral-0); */
+
+      /* TODO: Border */
+      /* --color-border-default: var(--color-neutral-300);
+         --color-border-strong: var(--color-neutral-700); */
+
+      /* TODO: Feedback */
+      /* --color-error: var(--color-red-500);
+         --color-error-hover: var(--color-red-700); */
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      padding: var(--space-8);
+      background: var(--color-surface-raised, #f5f7fa);
+      color: var(--color-content-primary, #111827);
+    }
+
+    /* Component uses ONLY semantic tokens */
+    .btn-primary {
+      padding: var(--space-3) var(--space-6);
+      background: var(--color-primary);
+      color: var(--color-content-on-primary);
+      border: none;
+      border-radius: 6px;
+      font-size: var(--text-base);
+      font-weight: var(--font-semibold);
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .card {
+      padding: var(--space-6);
+      background: var(--color-surface-base);
+      border: 1px solid var(--color-border-default);
+      border-radius: 8px;
+      max-width: 360px;
+      margin-top: var(--space-6);
+    }
+
+    .card p {
+      color: var(--color-content-secondary);
+      font-size: var(--text-sm);
+    }
+
+    .error-text {
+      color: var(--color-error);
+      font-size: var(--text-sm);
+    }
+  </style>
+</head>
+<body>
+  <h1>Semantic Tokens</h1>
+  <button class="btn-primary">Primary action</button>
+
+  <div class="card">
+    <h2>Card title</h2>
+    <p>Secondary text uses --color-content-secondary.</p>
+    <p class="error-text">Error text uses --color-error.</p>
+  </div>
+</body>
+</html>`,
+        hints: [
+          'Semantic token names describe role/intent, not the value: --color-primary not --color-blue',
+          'Layers: primitive (--color-blue-500) → semantic (--color-primary) → component (--button-bg)',
+          'Components should ONLY use semantic tokens — this makes theming a matter of redefining semantics, not touching components',
+          'If you change --color-primary to reference --color-purple-500, every button, link, and badge updates automatically'
+        ],
+        expectedOutput: 'Blue primary button and card render using only semantic token references.\nChanging --color-primary to a different primitive (e.g. --color-neutral-700) updates the button colour instantly.\nNo component rule contains a raw hex value — all colours flow from tokens.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semantic Tokens</title>
+  <style>
+    :root {
+      /* Primitives */
+      --color-blue-100: #dbeafe; --color-blue-300: #93c5fd;
+      --color-blue-500: #3b82f6; --color-blue-700: #1d4ed8; --color-blue-900: #1e3a8a;
+      --color-neutral-0: #ffffff; --color-neutral-100: #f5f7fa;
+      --color-neutral-300: #d1d5db; --color-neutral-500: #6b7280;
+      --color-neutral-700: #374151; --color-neutral-900: #111827;
+      --color-red-500: #ef4444; --color-red-700: #b91c1c;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+      --space-5: 20px; --space-6: 24px; --space-7: 28px; --space-8: 32px;
+      --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+      --text-lg: 1.125rem; --text-xl: 1.25rem; --text-2xl: 1.5rem;
+      --font-normal: 400; --font-semibold: 600; --font-bold: 700;
+
+      /* Semantic tokens */
+      --color-primary: var(--color-blue-500);
+      --color-primary-hover: var(--color-blue-700);
+      --color-primary-subtle: var(--color-blue-100);
+
+      --color-surface-base: var(--color-neutral-0);
+      --color-surface-raised: var(--color-neutral-100);
+      --color-surface-sunken: var(--color-neutral-100);
+
+      --color-content-primary: var(--color-neutral-900);
+      --color-content-secondary: var(--color-neutral-500);
+      --color-content-on-primary: var(--color-neutral-0);
+
+      --color-border-default: var(--color-neutral-300);
+      --color-border-strong: var(--color-neutral-700);
+
+      --color-error: var(--color-red-500);
+      --color-error-hover: var(--color-red-700);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      padding: var(--space-8);
+      background: var(--color-surface-raised);
+      color: var(--color-content-primary);
+    }
+
+    .btn-primary {
+      padding: var(--space-3) var(--space-6);
+      background: var(--color-primary);
+      color: var(--color-content-on-primary);
+      border: none;
+      border-radius: 6px;
+      font-size: var(--text-base);
+      font-weight: var(--font-semibold);
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .card {
+      padding: var(--space-6);
+      background: var(--color-surface-base);
+      border: 1px solid var(--color-border-default);
+      border-radius: 8px;
+      max-width: 360px;
+      margin-top: var(--space-6);
+    }
+
+    .card p {
+      color: var(--color-content-secondary);
+      font-size: var(--text-sm);
+    }
+
+    .error-text {
+      color: var(--color-error);
+      font-size: var(--text-sm);
+    }
+  </style>
+</head>
+<body>
+  <h1>Semantic Tokens</h1>
+  <button class="btn-primary">Primary action</button>
+
+  <div class="card">
+    <h2>Card title</h2>
+    <p>Secondary text uses --color-content-secondary.</p>
+    <p class="error-text">Error text uses --color-error.</p>
+  </div>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 4: Theming with data-theme',
+        instruction: 'WHAT: Implement a light/dark theme by redefining semantic tokens on [data-theme="dark"]. Toggle the theme with JavaScript. WHY: The data-theme pattern gives full control over theming without duplicating component styles. Only the token definitions change — every component that uses semantic tokens adapts automatically. This is far more maintainable than maintaining two separate stylesheets. The attribute can be set with JS (document.documentElement.setAttribute("data-theme", "dark")) and persisted in localStorage. You can also set the initial value based on prefers-color-scheme. HOW: Add [data-theme="dark"] { } block that redefines the semantic tokens. Add a toggle button that switches the attribute on <html>.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theming</title>
+  <style>
+    :root {
+      /* Primitives */
+      --color-blue-100: #dbeafe; --color-blue-500: #3b82f6; --color-blue-700: #1d4ed8;
+      --color-neutral-0: #ffffff; --color-neutral-100: #f5f7fa;
+      --color-neutral-200: #e5e7eb; --color-neutral-300: #d1d5db;
+      --color-neutral-500: #6b7280; --color-neutral-700: #374151;
+      --color-neutral-800: #1f2937; --color-neutral-850: #18202d;
+      --color-neutral-900: #111827;
+      --space-2: 8px; --space-3: 12px; --space-4: 16px;
+      --space-6: 24px; --space-8: 32px;
+      --text-sm: 0.875rem; --text-base: 1rem; --text-2xl: 1.5rem;
+      --font-semibold: 600;
+
+      /* Semantic tokens — light theme (default) */
+      --color-primary: var(--color-blue-500);
+      --color-primary-hover: var(--color-blue-700);
+      --color-surface-base: var(--color-neutral-0);
+      --color-surface-raised: var(--color-neutral-100);
+      --color-content-primary: var(--color-neutral-900);
+      --color-content-secondary: var(--color-neutral-500);
+      --color-content-on-primary: var(--color-neutral-0);
+      --color-border-default: var(--color-neutral-300);
+    }
+
+    /* TODO: Define [data-theme="dark"] with overridden semantic tokens:
+       --color-primary: var(--color-blue-300);            (lighter blue on dark bg)
+       --color-primary-hover: var(--color-blue-100);
+       --color-surface-base: var(--color-neutral-800);
+       --color-surface-raised: var(--color-neutral-850);
+       --color-content-primary: var(--color-neutral-100);
+       --color-content-secondary: var(--color-neutral-300);
+       --color-content-on-primary: var(--color-neutral-900);
+       --color-border-default: var(--color-neutral-700); */
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: sans-serif;
+      min-height: 100vh;
+      background: var(--color-surface-raised);
+      color: var(--color-content-primary);
+      padding: var(--space-8);
+      transition: background-color 200ms ease, color 200ms ease;
+    }
+
+    .card {
+      background: var(--color-surface-base);
+      border: 1px solid var(--color-border-default);
+      border-radius: 8px;
+      padding: var(--space-6);
+      max-width: 400px;
+      margin-bottom: var(--space-4);
+    }
+
+    .card p { color: var(--color-content-secondary); font-size: var(--text-sm); }
+
+    .btn-primary {
+      padding: var(--space-3) var(--space-6);
+      background: var(--color-primary);
+      color: var(--color-content-on-primary);
+      border: none; border-radius: 6px;
+      font-size: var(--text-base); font-weight: var(--font-semibold);
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+
+    .btn-primary:hover { background: var(--color-primary-hover); }
+
+    .theme-toggle {
+      position: fixed; top: var(--space-4); right: var(--space-4);
+      padding: var(--space-2) var(--space-4);
+      background: var(--color-surface-base);
+      color: var(--color-content-primary);
+      border: 1px solid var(--color-border-default);
+      border-radius: 6px; cursor: pointer; font-size: var(--text-sm);
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="theme-btn">🌙 Dark mode</button>
+
+  <h1>Design Token Theming</h1>
+
+  <div class="card">
+    <h2>Card component</h2>
+    <p>This card uses only semantic tokens — it adapts to any theme automatically.</p>
+    <br>
+    <button class="btn-primary">Primary action</button>
+  </div>
+
+  <script>
+    const btn = document.getElementById('theme-btn');
+    const html = document.documentElement;
+
+    // TODO: Read persisted theme from localStorage
+    // TODO: Apply the theme on load based on localStorage or prefers-color-scheme
+
+    btn.addEventListener('click', () => {
+      // TODO: Toggle data-theme attribute on html element
+      // TODO: Update button text (🌙 Dark mode / ☀️ Light mode)
+      // TODO: Persist choice to localStorage
+    });
+  </script>
+</body>
+</html>`,
+        hints: [
+          '[data-theme="dark"] overrides only the semantic tokens — primitive tokens and component styles are untouched',
+          'document.documentElement is the <html> element — set the attribute there so all descendants inherit it',
+          'localStorage.getItem("theme") / localStorage.setItem("theme", value) persists the preference',
+          'window.matchMedia("(prefers-color-scheme: dark)").matches reads the OS setting for the initial default'
+        ],
+        expectedOutput: 'Page starts in light mode with white card and dark text.\nClicking the toggle switches to dark mode — card becomes dark, text becomes light.\nRefreshing the page preserves the chosen theme (via localStorage).\nAll colour changes happen by redefining semantic tokens — no component CSS changes.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theming</title>
+  <style>
+    :root {
+      --color-blue-100: #dbeafe; --color-blue-500: #3b82f6; --color-blue-700: #1d4ed8;
+      --color-neutral-0: #ffffff; --color-neutral-100: #f5f7fa;
+      --color-neutral-200: #e5e7eb; --color-neutral-300: #d1d5db;
+      --color-neutral-500: #6b7280; --color-neutral-700: #374151;
+      --color-neutral-800: #1f2937; --color-neutral-850: #18202d;
+      --color-neutral-900: #111827;
+      --space-2: 8px; --space-3: 12px; --space-4: 16px;
+      --space-6: 24px; --space-8: 32px;
+      --text-sm: 0.875rem; --text-base: 1rem; --text-2xl: 1.5rem;
+      --font-semibold: 600;
+
+      --color-primary: var(--color-blue-500);
+      --color-primary-hover: var(--color-blue-700);
+      --color-surface-base: var(--color-neutral-0);
+      --color-surface-raised: var(--color-neutral-100);
+      --color-content-primary: var(--color-neutral-900);
+      --color-content-secondary: var(--color-neutral-500);
+      --color-content-on-primary: var(--color-neutral-0);
+      --color-border-default: var(--color-neutral-300);
+    }
+
+    [data-theme="dark"] {
+      --color-primary: var(--color-blue-300);
+      --color-primary-hover: var(--color-blue-100);
+      --color-surface-base: var(--color-neutral-800);
+      --color-surface-raised: var(--color-neutral-850);
+      --color-content-primary: var(--color-neutral-100);
+      --color-content-secondary: var(--color-neutral-300);
+      --color-content-on-primary: var(--color-neutral-900);
+      --color-border-default: var(--color-neutral-700);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: sans-serif;
+      min-height: 100vh;
+      background: var(--color-surface-raised);
+      color: var(--color-content-primary);
+      padding: var(--space-8);
+      transition: background-color 200ms ease, color 200ms ease;
+    }
+
+    .card {
+      background: var(--color-surface-base);
+      border: 1px solid var(--color-border-default);
+      border-radius: 8px;
+      padding: var(--space-6);
+      max-width: 400px;
+      margin-bottom: var(--space-4);
+      transition: background-color 200ms ease, border-color 200ms ease;
+    }
+
+    .card p { color: var(--color-content-secondary); font-size: var(--text-sm); }
+
+    .btn-primary {
+      padding: var(--space-3) var(--space-6);
+      background: var(--color-primary);
+      color: var(--color-content-on-primary);
+      border: none; border-radius: 6px;
+      font-size: var(--text-base); font-weight: var(--font-semibold);
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+
+    .btn-primary:hover { background: var(--color-primary-hover); }
+
+    .theme-toggle {
+      position: fixed; top: var(--space-4); right: var(--space-4);
+      padding: var(--space-2) var(--space-4);
+      background: var(--color-surface-base);
+      color: var(--color-content-primary);
+      border: 1px solid var(--color-border-default);
+      border-radius: 6px; cursor: pointer; font-size: var(--text-sm);
+      transition: background-color 200ms ease, color 200ms ease;
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="theme-btn">🌙 Dark mode</button>
+
+  <h1>Design Token Theming</h1>
+
+  <div class="card">
+    <h2>Card component</h2>
+    <p>This card uses only semantic tokens — it adapts to any theme automatically.</p>
+    <br>
+    <button class="btn-primary">Primary action</button>
+  </div>
+
+  <script>
+    const btn = document.getElementById('theme-btn');
+    const html = document.documentElement;
+
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initial = saved || (prefersDark ? 'dark' : 'light');
+
+    if (initial === 'dark') {
+      html.setAttribute('data-theme', 'dark');
+      btn.textContent = '☀️ Light mode';
+    }
+
+    btn.addEventListener('click', () => {
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        html.removeAttribute('data-theme');
+        btn.textContent = '🌙 Dark mode';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        btn.textContent = '☀️ Light mode';
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>`
+      },
+      {
+        title: 'Step 5: Component Tokens',
+        instruction: 'WHAT: Build a Button component that uses component-scoped tokens, allowing per-instance overrides without touching global tokens. WHY: Component tokens are the third layer of the token hierarchy: primitive → semantic → component. They reference semantic tokens by default, but can be overridden at the component or instance level. This enables patterns like "make all buttons in this sidebar compact" with a single CSS variable override on the parent, without a utility class proliferation. HOW: Define --button-* tokens on the .btn selector itself, referencing semantic tokens. Variants override only the relevant component token. A wrapper can override component tokens to create context-specific sizing.',
+        starterCode: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component Tokens</title>
+  <style>
+    :root {
+      /* Primitives */
+      --color-blue-500: #3b82f6; --color-blue-700: #1d4ed8;
+      --color-red-500: #ef4444; --color-red-700: #b91c1c;
+      --color-green-500: #22c55e; --color-green-700: #15803d;
+      --color-neutral-0: #ffffff; --color-neutral-100: #f5f7fa;
+      --color-neutral-200: #e5e7eb; --color-neutral-300: #d1d5db;
+      --color-neutral-700: #374151; --color-neutral-900: #111827;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px;
+      --space-4: 16px; --space-6: 24px; --space-8: 32px;
+      --text-sm: 0.875rem; --text-base: 1rem;
+      --font-semibold: 600;
+      --radius-md: 6px;
+
+      /* Semantic tokens */
+      --color-primary: var(--color-blue-500);
+      --color-primary-hover: var(--color-blue-700);
+      --color-content-on-primary: var(--color-neutral-0);
+      --color-surface-base: var(--color-neutral-0);
+      --color-border-default: var(--color-neutral-300);
+      --color-content-primary: var(--color-neutral-900);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: var(--space-8); background: var(--color-neutral-100); }
+
+    /* ── Button component with component-scoped tokens ── */
+    .btn {
+      /* TODO: Define component tokens that reference semantic tokens:
+         --button-bg: var(--color-primary);
+         --button-bg-hover: var(--color-primary-hover);
+         --button-color: var(--color-content-on-primary);
+         --button-border: transparent;
+         --button-padding-y: var(--space-3);
+         --button-padding-x: var(--space-6);
+         --button-font-size: var(--text-base);
+         --button-radius: var(--radius-md); */
+
+      /* TODO: Use the component tokens in the actual properties:
+         background: var(--button-bg);
+         color: var(--button-color);
+         padding: var(--button-padding-y) var(--button-padding-x);
+         etc. */
+      border: none;
+      cursor: pointer;
+      font-weight: var(--font-semibold);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .btn:hover {
+      /* TODO: background: var(--button-bg-hover) */
+    }
+
+    /* Variant: danger — override only the colour tokens */
+    .btn-danger {
+      /* TODO: --button-bg: var(--color-red-500);
+              --button-bg-hover: var(--color-red-700); */
+    }
+
+    /* Variant: ghost — override to a transparent/outline style */
+    .btn-ghost {
+      /* TODO:
+         --button-bg: transparent;
+         --button-bg-hover: var(--color-neutral-200);
+         --button-color: var(--color-content-primary);
+         --button-border: var(--color-border-default); */
+    }
+
+    /* Context override: compact toolbar shrinks all buttons inside */
+    .toolbar {
+      display: flex;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--color-surface-base);
+      border: 1px solid var(--color-border-default);
+      border-radius: 8px;
+      margin-top: var(--space-6);
+      /* TODO: Override component tokens to create compact buttons:
+         --button-padding-y: var(--space-1);
+         --button-padding-x: var(--space-3);
+         --button-font-size: var(--text-sm); */
+    }
+  </style>
+</head>
+<body>
+  <h1>Component Tokens</h1>
+
+  <h2>Normal size</h2>
+  <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-6)">
+    <button class="btn">Default</button>
+    <button class="btn btn-danger">Delete</button>
+    <button class="btn btn-ghost">Cancel</button>
+  </div>
+
+  <h2>Compact toolbar (context override)</h2>
+  <div class="toolbar">
+    <button class="btn">Bold</button>
+    <button class="btn">Italic</button>
+    <button class="btn btn-ghost">Clear</button>
+  </div>
+</body>
+</html>`,
+        hints: [
+          'Component tokens are defined on the component selector itself (not :root) so they inherit but can be locally overridden',
+          'Variants only override the component tokens they need — all other tokens fall through to the component defaults',
+          'A parent element can override component tokens; all matching components inside that parent will use the new values',
+          'This pattern is also called "CSS variable API" — you are exposing a documented API for customisation'
+        ],
+        expectedOutput: 'Three buttons of normal size: a blue default, a red danger, and a ghost outline.\nThe toolbar section shows the same button classes but compact — overriding tokens on the parent shrinks all buttons.\nNo button variant touches background or padding directly — only component tokens.',
+        solution: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component Tokens</title>
+  <style>
+    :root {
+      --color-blue-500: #3b82f6; --color-blue-700: #1d4ed8;
+      --color-red-500: #ef4444; --color-red-700: #b91c1c;
+      --color-green-500: #22c55e; --color-green-700: #15803d;
+      --color-neutral-0: #ffffff; --color-neutral-100: #f5f7fa;
+      --color-neutral-200: #e5e7eb; --color-neutral-300: #d1d5db;
+      --color-neutral-700: #374151; --color-neutral-900: #111827;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px;
+      --space-4: 16px; --space-6: 24px; --space-8: 32px;
+      --text-sm: 0.875rem; --text-base: 1rem;
+      --font-semibold: 600;
+      --radius-md: 6px;
+
+      --color-primary: var(--color-blue-500);
+      --color-primary-hover: var(--color-blue-700);
+      --color-content-on-primary: var(--color-neutral-0);
+      --color-surface-base: var(--color-neutral-0);
+      --color-border-default: var(--color-neutral-300);
+      --color-content-primary: var(--color-neutral-900);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: sans-serif; padding: var(--space-8); background: var(--color-neutral-100); }
+
+    .btn {
+      /* Component-scoped tokens */
+      --button-bg: var(--color-primary);
+      --button-bg-hover: var(--color-primary-hover);
+      --button-color: var(--color-content-on-primary);
+      --button-border: transparent;
+      --button-padding-y: var(--space-3);
+      --button-padding-x: var(--space-6);
+      --button-font-size: var(--text-base);
+      --button-radius: var(--radius-md);
+
+      /* Consume component tokens */
+      background: var(--button-bg);
+      color: var(--button-color);
+      border: 1px solid var(--button-border);
+      padding: var(--button-padding-y) var(--button-padding-x);
+      font-size: var(--button-font-size);
+      border-radius: var(--button-radius);
+      cursor: pointer;
+      font-weight: var(--font-semibold);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      transition: background-color 150ms ease, border-color 150ms ease;
+    }
+
+    .btn:hover {
+      background: var(--button-bg-hover);
+    }
+
+    .btn-danger {
+      --button-bg: var(--color-red-500);
+      --button-bg-hover: var(--color-red-700);
+    }
+
+    .btn-ghost {
+      --button-bg: transparent;
+      --button-bg-hover: var(--color-neutral-200);
+      --button-color: var(--color-content-primary);
+      --button-border: var(--color-border-default);
+    }
+
+    .toolbar {
+      display: flex;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--color-surface-base);
+      border: 1px solid var(--color-border-default);
+      border-radius: 8px;
+      margin-top: var(--space-6);
+      /* Context-level component token override */
+      --button-padding-y: var(--space-1);
+      --button-padding-x: var(--space-3);
+      --button-font-size: var(--text-sm);
+    }
+  </style>
+</head>
+<body>
+  <h1>Component Tokens</h1>
+
+  <h2>Normal size</h2>
+  <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-6)">
+    <button class="btn">Default</button>
+    <button class="btn btn-danger">Delete</button>
+    <button class="btn btn-ghost">Cancel</button>
+  </div>
+
+  <h2>Compact toolbar (context override)</h2>
+  <div class="toolbar">
+    <button class="btn">Bold</button>
+    <button class="btn">Italic</button>
+    <button class="btn btn-ghost">Clear</button>
+  </div>
+</body>
+</html>`
+      }
+    ]
   }
 ]
