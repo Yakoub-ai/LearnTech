@@ -1653,5 +1653,1227 @@ router.get("/search?q=:query&page=:page", (params) => {
 router.match("/search?q=typescript&page=1");`
       }
     ]
+  },
+
+  // ============================================================
+  // ts-lab-7: Enums, Literals & as const
+  // ============================================================
+  {
+    id: 'ts-lab-7',
+    languageId: 'typescript',
+    level: 'beginner',
+    title: 'Enums, Literals & as const',
+    description: 'Learn how to model fixed sets of values using numeric and string enums, const enums, as const assertions, and literal types for discriminated unions.',
+    estimatedMinutes: 25,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your TypeScript Environment',
+        setupReference: true,
+        instruction: 'Before writing TypeScript, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22 LTS (via nvm), TypeScript 5.x installed globally, ts-node or tsx for running .ts files directly, and VS Code with built-in TypeScript IntelliSense. Complete all setup steps and verify compilation works before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `tsc --version` to verify TypeScript installation',
+          'Test: `echo "console.log(\'TS works\')" > test.ts && npx ts-node test.ts`'
+        ],
+        expectedOutput: 'TypeScript 5.x.x\nts-node v10.x.x\nTS works (compilation and execution successful)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Numeric and String Enums',
+        instruction: `Define a \`Direction\` numeric enum and a \`Status\` string enum, then use them in function signatures.\n\nWHY: Enums give meaningful names to sets of related constants. Numeric enums auto-increment from 0 (or a chosen start), so you get both a name and a number. String enums have no auto-increment, but they produce readable values in serialized output (useful for APIs and logs).\n\nHOW: Use \`enum Direction { Up, Down, Left, Right }\` for numeric (Up = 0, Down = 1, …). For string enums, assign each member a string literal: \`enum Status { Active = "ACTIVE" }\`.`,
+        starterCode: `// TODO: Define a numeric enum for cardinal directions
+// Direction.Up should be 0, Down = 1, Left = 2, Right = 3
+
+// TODO: Define a string enum for request status
+// Status.Active = "ACTIVE", Idle = "IDLE", Error = "ERROR"
+
+// TODO: Add TypeScript types to these functions using the enums above
+
+function move(direction) {
+  console.log(\`Moving \${Direction[direction]}\`);
+}
+
+function getStatusLabel(status) {
+  if (status === Status.Error) return "Something went wrong";
+  return \`Status: \${status}\`;
+}
+
+move(Direction.Up);
+console.log(getStatusLabel(Status.Active));`,
+        hints: [
+          'enum Direction { Up, Down, Left, Right } — Up auto-gets value 0',
+          'String enum: enum Status { Active = "ACTIVE", Idle = "IDLE", Error = "ERROR" }',
+          'Use the enum as a type: function move(direction: Direction): void'
+        ],
+        expectedOutput: `Moving Up
+Status: ACTIVE`,
+        solution: `enum Direction {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+
+enum Status {
+  Active = "ACTIVE",
+  Idle = "IDLE",
+  Error = "ERROR",
+}
+
+function move(direction: Direction): void {
+  console.log(\`Moving \${Direction[direction]}\`);
+}
+
+function getStatusLabel(status: Status): string {
+  if (status === Status.Error) return "Something went wrong";
+  return \`Status: \${status}\`;
+}
+
+move(Direction.Up);          // Moving Up
+console.log(getStatusLabel(Status.Active)); // Status: ACTIVE`
+      },
+      {
+        title: 'Step 3: Const Enums vs Regular Enums',
+        instruction: `Compare \`const enum\` with a regular \`enum\` and understand the compile-time trade-off.\n\nWHY: Regular enums emit a JavaScript object at runtime that lets you reverse-lookup values (e.g. \`Direction[0] === "Up"\`). \`const enum\` members are inlined by the compiler — the JS output has no object at all, just the raw literal values. This is faster and smaller, but you can no longer iterate over the enum at runtime.\n\nHOW: Prefix the declaration with \`const\`: \`const enum Color { Red, Green, Blue }\`. Try compiling both versions with \`tsc\` and compare the emitted JS.`,
+        starterCode: `// Regular enum — emits a JS object at runtime
+enum HttpMethod {
+  GET,
+  POST,
+  PUT,
+  DELETE,
+}
+
+// TODO: Convert this to a const enum and observe the difference
+// When compiled, const enum values are inlined as numbers in the output
+enum LogLevel {
+  Debug,
+  Info,
+  Warn,
+  Error,
+}
+
+function log(level: LogLevel, message: string): void {
+  if (level >= LogLevel.Warn) {
+    console.error(\`[\${LogLevel[level]}] \${message}\`);
+  } else {
+    console.log(\`[\${LogLevel[level]}] \${message}\`);
+  }
+}
+
+// TODO: Why does this break if LogLevel becomes a const enum?
+// LogLevel[level] — reverse lookup only works on regular enums
+log(LogLevel.Info, "Server started");
+log(LogLevel.Error, "Connection failed");`,
+        hints: [
+          'Add const before enum: const enum LogLevel { ... }',
+          'After converting, tsc will fail on LogLevel[level] — reverse lookup requires a runtime object',
+          'Fix: use a lookup table Record<LogLevel, string> or keep LogLevel as a regular enum',
+          'const enums are ideal for simple switch/if comparisons where you never need the name at runtime'
+        ],
+        expectedOutput: `[Info] Server started
+[Error] Connection failed
+
+// With const enum the compiled JS inlines the number:
+// if (level >= 2) { ... }  — no LogLevel object in output`,
+        solution: `// Regular enum — keeps a runtime object, supports reverse lookup
+enum HttpMethod {
+  GET,
+  POST,
+  PUT,
+  DELETE,
+}
+
+// const enum — inlined at compile time, no runtime object
+const enum LogLevel {
+  Debug,
+  Info,
+  Warn,
+  Error,
+}
+
+// Because LogLevel is const, reverse lookup doesn't exist at runtime.
+// Use a plain object instead:
+const LogLevelName: Record<LogLevel, string> = {
+  [LogLevel.Debug]: "Debug",
+  [LogLevel.Info]: "Info",
+  [LogLevel.Warn]: "Warn",
+  [LogLevel.Error]: "Error",
+};
+
+function log(level: LogLevel, message: string): void {
+  if (level >= LogLevel.Warn) {
+    console.error(\`[\${LogLevelName[level]}] \${message}\`);
+  } else {
+    console.log(\`[\${LogLevelName[level]}] \${message}\`);
+  }
+}
+
+log(LogLevel.Info, "Server started");
+log(LogLevel.Error, "Connection failed");`
+      },
+      {
+        title: 'Step 4: as const for Object Literals',
+        instruction: `Use \`as const\` to freeze an object literal and derive a union type from its values.\n\nWHY: Without \`as const\`, TypeScript widens the type of an object literal — \`{ method: "GET" }\` becomes \`{ method: string }\`, losing the literal information. Adding \`as const\` makes every value its own literal type and marks all properties as \`readonly\`.\n\nHOW: Append \`as const\` after the object literal. To derive a union of its values, combine \`keyof typeof\` with indexed access: \`typeof CONFIG[keyof typeof CONFIG]\`.`,
+        starterCode: `// Without as const — TypeScript widens types to string
+const ROUTES = {
+  home: "/",
+  users: "/users",
+  profile: "/profile",
+};
+
+// TODO: Add 'as const' to ROUTES and observe what changes in the types
+
+// TODO: Derive a Route type that is the union of all values in ROUTES
+// Expected: type Route = "/" | "/users" | "/profile"
+// Hint: use typeof ROUTES[keyof typeof ROUTES]
+
+// TODO: Use your Route type in this function signature
+function navigate(path) {
+  console.log(\`Navigating to \${path}\`);
+}
+
+// This should produce a type error — "/unknown" is not a valid Route
+navigate("/profile");
+// navigate("/unknown"); // uncomment to see the error`,
+        hints: [
+          'const ROUTES = { home: "/" } as const',
+          'type Route = typeof ROUTES[keyof typeof ROUTES]',
+          'keyof typeof ROUTES gives the union of key names: "home" | "users" | "profile"',
+          'Indexed access ROUTES["home"] narrows to the literal type "/"'
+        ],
+        expectedOutput: `Navigating to /profile
+
+// Type error (expected):
+// Argument of type '"/unknown"' is not assignable to parameter of type '"/" | "/users" | "/profile"'`,
+        solution: `const ROUTES = {
+  home: "/",
+  users: "/users",
+  profile: "/profile",
+} as const;
+
+// Derive the union of all value literals
+type Route = typeof ROUTES[keyof typeof ROUTES];
+// Equivalent to: type Route = "/" | "/users" | "/profile"
+
+function navigate(path: Route): void {
+  console.log(\`Navigating to \${path}\`);
+}
+
+navigate(ROUTES.profile); // Navigating to /profile
+// navigate("/unknown");  // Error: not assignable to type Route`
+      },
+      {
+        title: 'Step 5: Literal Types and Discriminated Unions',
+        instruction: `Use a literal "kind" field as a discriminant to safely narrow a union type.\n\nWHY: Discriminated unions are the idiomatic TypeScript pattern for modelling data that can be one of several distinct shapes. A shared literal field (the discriminant) lets TypeScript narrow the type inside a switch or if-else without needing runtime instanceof checks.\n\nHOW: Give each member of the union a \`kind\` property with a unique string literal type. In the handler function, switch on \`event.kind\` — TypeScript knows which branch has which shape.`,
+        starterCode: `// TODO: Define three event types with a 'kind' discriminant field
+// MouseEvent: kind = "mouse", x: number, y: number
+// KeyboardEvent: kind = "keyboard", key: string
+// ResizeEvent: kind = "resize", width: number, height: number
+
+// TODO: Define an AppEvent union type from the three types above
+
+// TODO: Implement handleEvent so each branch has the correct narrowed type
+function handleEvent(event) {
+  // switch on event.kind
+  // In the "mouse" branch TypeScript should know event.x and event.y exist
+}
+
+handleEvent({ kind: "mouse", x: 100, y: 200 });
+handleEvent({ kind: "keyboard", key: "Enter" });
+handleEvent({ kind: "resize", width: 1920, height: 1080 });`,
+        hints: [
+          'type MouseEvent = { kind: "mouse"; x: number; y: number }',
+          'type AppEvent = MouseEvent | KeyboardEvent | ResizeEvent',
+          'switch (event.kind) { case "mouse": ... } — TypeScript narrows the type in each case',
+          'Add a default branch that calls a never-typed variable to ensure exhaustive handling'
+        ],
+        expectedOutput: `Mouse click at (100, 200)
+Key pressed: Enter
+Window resized to 1920x1080`,
+        solution: `type MouseEvent = { kind: "mouse"; x: number; y: number };
+type KeyboardEvent = { kind: "keyboard"; key: string };
+type ResizeEvent = { kind: "resize"; width: number; height: number };
+
+type AppEvent = MouseEvent | KeyboardEvent | ResizeEvent;
+
+function handleEvent(event: AppEvent): void {
+  switch (event.kind) {
+    case "mouse":
+      console.log(\`Mouse click at (\${event.x}, \${event.y})\`);
+      break;
+    case "keyboard":
+      console.log(\`Key pressed: \${event.key}\`);
+      break;
+    case "resize":
+      console.log(\`Window resized to \${event.width}x\${event.height}\`);
+      break;
+    default: {
+      // Exhaustive check — TypeScript errors if a new event kind is added
+      const _exhaustive: never = event;
+      throw new Error(\`Unhandled event: \${_exhaustive}\`);
+    }
+  }
+}
+
+handleEvent({ kind: "mouse", x: 100, y: 200 });
+handleEvent({ kind: "keyboard", key: "Enter" });
+handleEvent({ kind: "resize", width: 1920, height: 1080 });`
+      }
+    ]
+  },
+
+  // ============================================================
+  // ts-lab-8: Zod API Layer
+  // ============================================================
+  {
+    id: 'ts-lab-8',
+    languageId: 'typescript',
+    level: 'mid',
+    title: 'Zod API Layer',
+    description: 'Build a fully-typed API validation layer using Zod: define schemas, derive TypeScript types with z.infer, compose complex schemas, and handle parse errors gracefully.',
+    estimatedMinutes: 35,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your TypeScript Environment',
+        setupReference: true,
+        instruction: 'Before writing TypeScript, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22 LTS (via nvm), TypeScript 5.x installed globally, ts-node or tsx for running .ts files directly, and VS Code with built-in TypeScript IntelliSense. Complete all setup steps and verify compilation works before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `tsc --version` to verify TypeScript installation',
+          'Install Zod: npm install zod',
+          'Test: `echo "console.log(\'TS works\')" > test.ts && npx ts-node test.ts`'
+        ],
+        expectedOutput: 'TypeScript 5.x.x\nts-node v10.x.x\nTS works (compilation and execution successful)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Basic Schema Definition',
+        instruction: `Define a Zod schema for a \`User\` object with validation constraints on each field.\n\nWHY: Zod schemas are executable validators — they check data at runtime while simultaneously describing the TypeScript type. You write the shape once and get both runtime safety and static type checking.\n\nHOW: Use \`z.object({})\` to define the shape, \`z.string().min(2)\` for strings with constraints, \`z.string().email()\` for email format validation, and \`z.number().positive()\` for numeric constraints.`,
+        starterCode: `import { z } from "zod";
+
+// TODO: Define a UserSchema with these fields and constraints:
+// - name: string, minimum 2 characters
+// - email: string, must be valid email format
+// - age: number, must be positive (> 0)
+// - role: must be one of "admin" | "user" | "guest" (use z.enum)
+// - bio: optional string (use .optional())
+
+const UserSchema = z.object({
+  // fill this in
+});
+
+// Test with valid data — should not throw
+const validUser = UserSchema.parse({
+  name: "Alice",
+  email: "alice@example.com",
+  age: 30,
+  role: "admin",
+});
+console.log("Valid:", validUser);
+
+// Test with invalid data — should throw ZodError
+try {
+  UserSchema.parse({
+    name: "A",          // too short
+    email: "not-email", // invalid format
+    age: -5,            // not positive
+    role: "superuser",  // not in enum
+  });
+} catch (err) {
+  console.log("Validation failed (expected)");
+}`,
+        hints: [
+          'z.string().min(2) — minimum length of 2 characters',
+          'z.string().email() — validates email format',
+          'z.number().positive() — must be greater than 0',
+          'z.enum(["admin", "user", "guest"]) — restricts to these exact values',
+          'Append .optional() to make a field optional: z.string().optional()'
+        ],
+        expectedOutput: `Valid: { name: 'Alice', email: 'alice@example.com', age: 30, role: 'admin', bio: undefined }
+Validation failed (expected)`,
+        solution: `import { z } from "zod";
+
+const UserSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Must be a valid email address"),
+  age: z.number().positive("Age must be a positive number"),
+  role: z.enum(["admin", "user", "guest"]),
+  bio: z.string().optional(),
+});
+
+const validUser = UserSchema.parse({
+  name: "Alice",
+  email: "alice@example.com",
+  age: 30,
+  role: "admin",
+});
+console.log("Valid:", validUser);
+
+try {
+  UserSchema.parse({
+    name: "A",
+    email: "not-email",
+    age: -5,
+    role: "superuser",
+  });
+} catch (err) {
+  console.log("Validation failed (expected)");
+}`
+      },
+      {
+        title: 'Step 3: Type Inference with z.infer',
+        instruction: `Derive the TypeScript type for a Zod schema using \`z.infer\` so the schema and the type never fall out of sync.\n\nWHY: Writing a separate \`interface User\` alongside a \`UserSchema\` creates two sources of truth that can diverge. \`z.infer<typeof UserSchema>\` generates the TypeScript type directly from the schema. Add a field to the schema and the type updates automatically — no manual sync required.\n\nHOW: Use the utility type \`z.infer<typeof MySchema>\` to derive the type. Export both the schema and the type.`,
+        starterCode: `import { z } from "zod";
+
+const UserSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  age: z.number().positive(),
+  role: z.enum(["admin", "user", "guest"]),
+  bio: z.string().optional(),
+});
+
+// TODO: Derive the User type from UserSchema using z.infer
+// type User = ...
+
+// TODO: Write a function createUser that accepts a User and returns it
+// The return type should be User (inferred from z.infer)
+function createUser(data) {
+  return data;
+}
+
+// TODO: Add a new field 'createdAt: z.date()' to UserSchema above
+// Notice that the User type automatically includes the new field — no manual update needed
+
+const user = createUser({
+  name: "Bob",
+  email: "bob@example.com",
+  age: 25,
+  role: "user",
+  createdAt: new Date(),
+});
+
+console.log(user.name, user.role);`,
+        hints: [
+          'type User = z.infer<typeof UserSchema>',
+          'The inferred type is a plain TypeScript interface — you can use it anywhere you use a type or interface',
+          'Try hovering over "User" in your editor to see the generated type definition',
+          'z.date() validates that the value is a JavaScript Date instance'
+        ],
+        expectedOutput: `Bob user`,
+        solution: `import { z } from "zod";
+
+const UserSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  age: z.number().positive(),
+  role: z.enum(["admin", "user", "guest"]),
+  bio: z.string().optional(),
+  createdAt: z.date(),
+});
+
+// Derived entirely from the schema — always in sync
+type User = z.infer<typeof UserSchema>;
+
+function createUser(data: User): User {
+  return data;
+}
+
+const user = createUser({
+  name: "Bob",
+  email: "bob@example.com",
+  age: 25,
+  role: "user",
+  createdAt: new Date(),
+});
+
+console.log(user.name, user.role); // Bob user`
+      },
+      {
+        title: 'Step 4: Composing Schemas',
+        instruction: `Build a \`CreateUserRequest\` schema from reusable parts and a discriminated union \`ApiResponse<T>\` for success/error responses.\n\nWHY: Zod schemas are composable — you can extend, merge, and nest them just like TypeScript types. \`z.discriminatedUnion\` is Zod's equivalent of a TypeScript discriminated union: it uses a key to pick which schema to validate against.\n\nHOW: Use \`.omit()\` or \`.extend()\` to derive schemas from existing ones. Use \`z.discriminatedUnion("key", [SchemaA, SchemaB])\` for discriminated unions.`,
+        starterCode: `import { z } from "zod";
+
+const UserSchema = z.object({
+  id: z.number(),
+  name: z.string().min(2),
+  email: z.string().email(),
+  age: z.number().positive(),
+  role: z.enum(["admin", "user", "guest"]),
+});
+
+// TODO: Derive CreateUserRequest by omitting 'id' from UserSchema
+// (a new user doesn't have an id yet)
+const CreateUserRequestSchema = /* ... */;
+
+// TODO: Define a generic ApiResponse using z.discriminatedUnion on a "success" field
+// Success case: { success: true, data: T }
+// Error case:   { success: false, error: string }
+// Hint: Zod doesn't support true generics — define two concrete schemas and union them
+const SuccessResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.unknown(), // data can be any validated payload
+});
+
+const ErrorResponseSchema = z.object({
+  success: z.literal(false),
+  error: z.string(),
+});
+
+const ApiResponseSchema = /* z.discriminatedUnion(...) */;
+
+type ApiResponse = z.infer<typeof ApiResponseSchema>;
+
+const ok: ApiResponse = { success: true, data: { id: 1, name: "Alice" } };
+const err: ApiResponse = { success: false, error: "Not found" };
+
+console.log(ok.success, err.error);`,
+        hints: [
+          'UserSchema.omit({ id: true }) — creates a new schema without the id field',
+          'z.discriminatedUnion("success", [SuccessResponseSchema, ErrorResponseSchema])',
+          'z.literal(true) matches only the boolean value true',
+          'For a truly generic response schema at runtime, use z.unknown() for the data field and validate separately'
+        ],
+        expectedOutput: `true Not found`,
+        solution: `import { z } from "zod";
+
+const UserSchema = z.object({
+  id: z.number(),
+  name: z.string().min(2),
+  email: z.string().email(),
+  age: z.number().positive(),
+  role: z.enum(["admin", "user", "guest"]),
+});
+
+const CreateUserRequestSchema = UserSchema.omit({ id: true });
+type CreateUserRequest = z.infer<typeof CreateUserRequestSchema>;
+
+const SuccessResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.unknown(),
+});
+
+const ErrorResponseSchema = z.object({
+  success: z.literal(false),
+  error: z.string(),
+});
+
+const ApiResponseSchema = z.discriminatedUnion("success", [
+  SuccessResponseSchema,
+  ErrorResponseSchema,
+]);
+
+type ApiResponse = z.infer<typeof ApiResponseSchema>;
+
+const ok: ApiResponse = { success: true, data: { id: 1, name: "Alice" } };
+const err: ApiResponse = { success: false, error: "Not found" };
+
+console.log(ok.success, err.error); // true Not found`
+      },
+      {
+        title: 'Step 5: Safe Parse and Error Handling',
+        instruction: `Use \`safeParse\` instead of \`parse\` to handle invalid data without throwing, and format ZodError messages for API consumers.\n\nWHY: \`parse\` throws a \`ZodError\` on failure. In a request handler this means you must wrap every call in try/catch. \`safeParse\` returns a discriminated union \`{ success: true, data } | { success: false, error }\` that you can inspect without exceptions — the same shape as the ApiResponse you built in the previous step.\n\nHOW: Call \`schema.safeParse(value)\`. Check \`result.success\`. If false, access \`result.error.issues\` to get the array of field-level errors.`,
+        starterCode: `import { z } from "zod";
+
+const UserSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  age: z.number().positive(),
+  role: z.enum(["admin", "user", "guest"]),
+});
+
+type User = z.infer<typeof UserSchema>;
+
+// TODO: Implement validateUser using safeParse (not parse)
+// Return { success: true, data: User } or { success: false, errors: string[] }
+function validateUser(input: unknown) {
+  // use UserSchema.safeParse(input)
+  // if failed, map result.error.issues to an array of strings like:
+  // "name: String must contain at least 2 character(s)"
+}
+
+// Test cases
+console.log(validateUser({ name: "Alice", email: "alice@example.com", age: 30, role: "admin" }));
+console.log(validateUser({ name: "A", email: "bad", age: -1, role: "unknown" }));`,
+        hints: [
+          'const result = UserSchema.safeParse(input)',
+          'result.success is true when valid, false when not',
+          'result.error.issues is an array of { path: string[], message: string } objects',
+          'Format each issue: issue.path.join(".") + ": " + issue.message'
+        ],
+        expectedOutput: `{ success: true, data: { name: 'Alice', email: 'alice@example.com', age: 30, role: 'admin' } }
+{
+  success: false,
+  errors: [
+    'name: String must contain at least 2 character(s)',
+    'email: Invalid email',
+    'age: Number must be greater than 0',
+    'role: Invalid enum value. Expected ...'
+  ]
+}`,
+        solution: `import { z } from "zod";
+
+const UserSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  age: z.number().positive(),
+  role: z.enum(["admin", "user", "guest"]),
+});
+
+type User = z.infer<typeof UserSchema>;
+
+type ValidationResult =
+  | { success: true; data: User }
+  | { success: false; errors: string[] };
+
+function validateUser(input: unknown): ValidationResult {
+  const result = UserSchema.safeParse(input);
+  if (result.success) {
+    return { success: true, data: result.data };
+  }
+  const errors = result.error.issues.map(
+    (issue) => \`\${issue.path.join(".") || "root"}: \${issue.message}\`
+  );
+  return { success: false, errors };
+}
+
+console.log(validateUser({ name: "Alice", email: "alice@example.com", age: 30, role: "admin" }));
+console.log(validateUser({ name: "A", email: "bad", age: -1, role: "unknown" }));`
+      }
+    ]
+  },
+
+  // ============================================================
+  // ts-lab-9: Mapped & Conditional Types
+  // ============================================================
+  {
+    id: 'ts-lab-9',
+    languageId: 'typescript',
+    level: 'mid',
+    title: 'Mapped & Conditional Types',
+    description: 'Master TypeScript\'s type-level programming: use keyof, indexed access, mapped types, conditional types, and the infer keyword to recreate standard utility types from scratch.',
+    estimatedMinutes: 30,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your TypeScript Environment',
+        setupReference: true,
+        instruction: 'Before writing TypeScript, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22 LTS (via nvm), TypeScript 5.x installed globally, ts-node or tsx for running .ts files directly, and VS Code with built-in TypeScript IntelliSense. Complete all setup steps and verify compilation works before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `tsc --version` to verify TypeScript installation',
+          'Test: `echo "console.log(\'TS works\')" > test.ts && npx ts-node test.ts`'
+        ],
+        expectedOutput: 'TypeScript 5.x.x\nts-node v10.x.x\nTS works (compilation and execution successful)',
+        solution: null
+      },
+      {
+        title: 'Step 2: keyof and Indexed Access',
+        instruction: `Use \`keyof\` to get a union of an object type's keys, then use indexed access (\`T[K]\`) to get the type at a specific key.\n\nWHY: \`keyof\` and indexed access are the foundation of every mapped and utility type. They let you work with the shape of a type programmatically — derive keys as strings, pick the value type at a given key, or compute the union of all possible values.\n\nHOW: \`keyof User\` produces \`"id" | "name" | "email"\`. \`User["name"]\` produces \`string\`. \`User[keyof User]\` produces the union of all value types.`,
+        starterCode: `interface User {
+  id: number;
+  name: string;
+  email: string;
+  isActive: boolean;
+}
+
+// TODO: Use keyof to define the UserKey type
+// Expected: "id" | "name" | "email" | "isActive"
+type UserKey = /* keyof ... */;
+
+// TODO: Use indexed access to get the type of the 'name' field
+// Expected: string
+type UserName = /* User["name"] */;
+
+// TODO: Use T[keyof T] to get the union of all value types in User
+// Expected: number | string | boolean
+type UserValues = /* User[keyof User] */;
+
+// TODO: Write a generic function getProperty<T, K extends keyof T> that
+// returns the value of obj[key] with the correct type T[K]
+function getProperty(obj, key) {
+  return obj[key];
+}
+
+const user: User = { id: 1, name: "Alice", email: "alice@example.com", isActive: true };
+const name = getProperty(user, "name"); // should be inferred as string
+const id = getProperty(user, "id");     // should be inferred as number
+console.log(name, id);`,
+        hints: [
+          'type UserKey = keyof User',
+          'type UserName = User["name"]',
+          'type UserValues = User[keyof User]',
+          'function getProperty<T, K extends keyof T>(obj: T, key: K): T[K]'
+        ],
+        expectedOutput: `Alice 1`,
+        solution: `interface User {
+  id: number;
+  name: string;
+  email: string;
+  isActive: boolean;
+}
+
+type UserKey = keyof User;             // "id" | "name" | "email" | "isActive"
+type UserName = User["name"];          // string
+type UserValues = User[keyof User];    // number | string | boolean
+
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+  return obj[key];
+}
+
+const user: User = { id: 1, name: "Alice", email: "alice@example.com", isActive: true };
+const name = getProperty(user, "name"); // string
+const id = getProperty(user, "id");     // number
+console.log(name, id); // Alice 1`
+      },
+      {
+        title: 'Step 3: Mapped Types',
+        instruction: `Write mapped types that transform every property in an object type — making all properties \`readonly\` or all properties nullable.\n\nWHY: Mapped types let you apply a uniform transformation to every key in a type without repeating yourself. They are the mechanism behind built-in types like \`Readonly<T>\`, \`Partial<T>\`, and \`Required<T>\`.\n\nHOW: The syntax is \`{ [K in keyof T]: ... }\`. Add \`readonly\` before the key to make it read-only. Use \`T[K] | null\` to make the value nullable.`,
+        starterCode: `interface Config {
+  host: string;
+  port: number;
+  debug: boolean;
+}
+
+// TODO: Write a mapped type MyReadonly<T> that makes all properties readonly
+// Expected: { readonly host: string; readonly port: number; readonly debug: boolean }
+type MyReadonly<T> = {
+  // [K in keyof T]: ...
+};
+
+// TODO: Write a mapped type Nullable<T> that makes all properties nullable (T[K] | null)
+// Expected: { host: string | null; port: number | null; debug: boolean | null }
+type Nullable<T> = {
+  // [K in keyof T]: ...
+};
+
+// Verify by using the types
+const frozen: MyReadonly<Config> = { host: "localhost", port: 3000, debug: true };
+// frozen.host = "other"; // This should be a type error — uncomment to verify
+
+const maybeConfig: Nullable<Config> = { host: null, port: 3000, debug: null };
+console.log(frozen.host, maybeConfig.port);`,
+        hints: [
+          'type MyReadonly<T> = { readonly [K in keyof T]: T[K] }',
+          'type Nullable<T> = { [K in keyof T]: T[K] | null }',
+          'The "in" keyword iterates over every member of the keyof T union',
+          'T[K] is the indexed access that gives you the original value type for each key'
+        ],
+        expectedOutput: `localhost 3000`,
+        solution: `interface Config {
+  host: string;
+  port: number;
+  debug: boolean;
+}
+
+type MyReadonly<T> = {
+  readonly [K in keyof T]: T[K];
+};
+
+type Nullable<T> = {
+  [K in keyof T]: T[K] | null;
+};
+
+const frozen: MyReadonly<Config> = { host: "localhost", port: 3000, debug: true };
+// frozen.host = "other"; // Error: cannot assign to readonly property
+
+const maybeConfig: Nullable<Config> = { host: null, port: 3000, debug: null };
+console.log(frozen.host, maybeConfig.port); // localhost 3000`
+      },
+      {
+        title: 'Step 4: Conditional Types',
+        instruction: `Use conditional types (\`T extends U ? X : Y\`) to write types that branch based on the shape of \`T\`.\n\nWHY: Conditional types are the if/else of the type system. They allow you to express relationships that depend on the structure of a type — for example, "if T is nullable, remove the null; if T is an array, extract the element type".\n\nHOW: The syntax mirrors a ternary: \`type NonNullable<T> = T extends null | undefined ? never : T\`. The \`infer\` keyword lets you capture a type inside the extends clause.`,
+        starterCode: `// TODO: Write a MyNonNullable<T> type that removes null and undefined from T
+// Examples:
+// MyNonNullable<string | null>      → string
+// MyNonNullable<number | undefined> → number
+// MyNonNullable<string | null | undefined> → string
+type MyNonNullable<T> = /* T extends ... ? never : T */;
+
+// TODO: Write an IsArray<T> type that resolves to true if T is an array, false otherwise
+// Examples:
+// IsArray<string[]> → true
+// IsArray<string>   → false
+// IsArray<number[]> → true
+type IsArray<T> = /* T extends any[] ? ... : ... */;
+
+// TODO: Write an Unpack<T> type that extracts the element type from an array
+// Examples:
+// Unpack<string[]>  → string
+// Unpack<number[]>  → number
+// Unpack<string>    → string (non-arrays pass through unchanged)
+// Hint: use 'infer E' inside the extends clause
+type Unpack<T> = /* T extends (infer E)[] ? E : T */;
+
+// Verify
+type T1 = MyNonNullable<string | null>;          // string
+type T2 = IsArray<string[]>;                      // true
+type T3 = IsArray<number>;                        // false
+type T4 = Unpack<string[]>;                       // string
+type T5 = Unpack<number>;                         // number`,
+        hints: [
+          'type MyNonNullable<T> = T extends null | undefined ? never : T',
+          'type IsArray<T> = T extends any[] ? true : false',
+          'type Unpack<T> = T extends (infer E)[] ? E : T',
+          'infer introduces a type variable that TypeScript fills in during the check'
+        ],
+        expectedOutput: `// All type assertions hold — no TypeScript errors
+
+type T1 = string              // MyNonNullable<string | null>
+type T2 = true                // IsArray<string[]>
+type T3 = false               // IsArray<number>
+type T4 = string              // Unpack<string[]>
+type T5 = number              // Unpack<number>`,
+        solution: `type MyNonNullable<T> = T extends null | undefined ? never : T;
+
+type IsArray<T> = T extends any[] ? true : false;
+
+type Unpack<T> = T extends (infer E)[] ? E : T;
+
+// Verification (no runtime output — check with tsc or hover in IDE)
+type T1 = MyNonNullable<string | null>;           // string
+type T2 = IsArray<string[]>;                       // true
+type T3 = IsArray<number>;                         // false
+type T4 = Unpack<string[]>;                        // string
+type T5 = Unpack<number>;                          // number
+
+// Runtime assertion to confirm the file compiles
+const x: T1 = "hello";
+console.log(x); // hello`
+      },
+      {
+        title: 'Step 5: Recreate Utility Types',
+        instruction: `Implement your own \`Partial<T>\`, \`Required<T>\`, \`Pick<T, K>\`, and \`Omit<T, K>\` from scratch using mapped types.\n\nWHY: Understanding how utility types are implemented demystifies a large portion of advanced TypeScript. Once you can write these yourself, you can create domain-specific utility types using the same building blocks.\n\nHOW: Use \`?\` in a mapped type to make properties optional, \`-?\` to remove optionality, restrict \`K\` with \`extends keyof T\` for Pick, and use \`Exclude<keyof T, K>\` in a mapped type for Omit.`,
+        starterCode: `// Implement each utility type from scratch.
+// Do not use the built-in TypeScript versions.
+
+// TODO: MyPartial<T> — make all properties optional
+type MyPartial<T> = {
+  // [K in keyof T]?: ...
+};
+
+// TODO: MyRequired<T> — make all properties required (remove optionality)
+// Hint: -? removes the optional modifier
+type MyRequired<T> = {
+  // [K in keyof T]-?: ...
+};
+
+// TODO: MyPick<T, K extends keyof T> — keep only the keys in K
+type MyPick<T, K extends keyof T> = {
+  // [P in K]: ...
+};
+
+// TODO: MyOmit<T, K extends keyof T> — remove the keys in K
+// Hint: use Exclude<keyof T, K> to get the remaining keys
+type MyOmit<T, K extends keyof T> = {
+  // [P in Exclude<keyof T, K>]: ...
+};
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  bio?: string;
+}
+
+// Verify
+type PartialUser = MyPartial<User>;      // all optional
+type RequiredUser = MyRequired<User>;    // bio no longer optional
+type UserPreview = MyPick<User, "id" | "name">;  // only id and name
+type UserWithoutBio = MyOmit<User, "bio">;        // no bio field`,
+        hints: [
+          'type MyPartial<T> = { [K in keyof T]?: T[K] }',
+          'type MyRequired<T> = { [K in keyof T]-?: T[K] }',
+          'type MyPick<T, K extends keyof T> = { [P in K]: T[P] }',
+          'type MyOmit<T, K extends keyof T> = { [P in Exclude<keyof T, K>]: T[P] }',
+          'Exclude<"a"|"b"|"c", "b"> results in "a"|"c" — it filters a union'
+        ],
+        expectedOutput: `// All type assignments compile without errors:
+const p: MyPartial<User> = {};             // ok — all optional
+const r: MyRequired<User> = { id: 1, name: "Alice", email: "a@b.com", bio: "hi" }; // ok — bio now required
+const preview: MyPick<User, "id"|"name"> = { id: 1, name: "Alice" }; // ok
+const noBio: MyOmit<User, "bio"> = { id: 1, name: "Alice", email: "a@b.com" }; // ok`,
+        solution: `type MyPartial<T> = {
+  [K in keyof T]?: T[K];
+};
+
+type MyRequired<T> = {
+  [K in keyof T]-?: T[K];
+};
+
+type MyPick<T, K extends keyof T> = {
+  [P in K]: T[P];
+};
+
+type MyOmit<T, K extends keyof T> = {
+  [P in Exclude<keyof T, K>]: T[P];
+};
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  bio?: string;
+}
+
+const p: MyPartial<User> = {};
+const r: MyRequired<User> = { id: 1, name: "Alice", email: "alice@example.com", bio: "Developer" };
+const preview: MyPick<User, "id" | "name"> = { id: 1, name: "Alice" };
+const noBio: MyOmit<User, "bio"> = { id: 1, name: "Alice", email: "alice@example.com" };
+
+console.log(r.name, preview.id, noBio.email); // Alice 1 alice@example.com`
+      }
+    ]
+  },
+
+  // ============================================================
+  // ts-lab-10: JS-to-TS Migration
+  // ============================================================
+  {
+    id: 'ts-lab-10',
+    languageId: 'typescript',
+    level: 'senior',
+    title: 'JS-to-TS Migration',
+    description: 'Learn the incremental strategy for migrating a JavaScript codebase to TypeScript: tsconfig strict mode, fixing implicit any errors, typing function signatures, and writing declaration files.',
+    estimatedMinutes: 40,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your TypeScript Environment',
+        setupReference: true,
+        instruction: 'Before writing TypeScript, ensure your development environment is ready. Click "Go to Dev Setup" below for complete setup instructions. You will need: Node.js 22 LTS (via nvm), TypeScript 5.x installed globally, ts-node or tsx for running .ts files directly, and VS Code with built-in TypeScript IntelliSense. Complete all setup steps and verify compilation works before continuing.',
+        starterCode: null,
+        hints: [
+          'Click "Go to Dev Setup" for step-by-step instructions',
+          'Run `tsc --version` to verify TypeScript installation',
+          'Test: `echo "console.log(\'TS works\')" > test.ts && npx ts-node test.ts`'
+        ],
+        expectedOutput: 'TypeScript 5.x.x\nts-node v10.x.x\nTS works (compilation and execution successful)',
+        solution: null
+      },
+      {
+        title: 'Step 2: Initial Migration',
+        instruction: `Rename a \`.js\` file to \`.ts\` and see what TypeScript reports — without changing any code yet.\n\nWHY: The first step in any JS→TS migration is not to fix all errors at once. Run the compiler to see what it finds. Common initial errors: implicit \`any\` on parameters, missing return types, and implicit globals. This gives you a prioritized list of what needs attention.\n\nHOW: Rename the file, run \`tsc --noEmit --allowJs\` to check without emitting output. The \`allowJs\` flag lets TypeScript process \`.js\` files alongside \`.ts\` files — useful during an incremental migration.`,
+        starterCode: `// This is JavaScript code. Rename this file to migration.ts
+// Run: npx tsc --noEmit migration.ts
+// and observe the errors TypeScript reports.
+
+// No type annotations — TypeScript will infer what it can
+// and flag implicit 'any' where it cannot
+
+function processOrder(order) {
+  const total = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discount = order.coupon ? order.coupon.value : 0;
+  return {
+    orderId: order.id,
+    total: total - discount,
+    currency: order.currency,
+  };
+}
+
+function formatCurrency(amount, currency) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);
+}
+
+const result = processOrder({
+  id: "ORD-001",
+  items: [{ price: 10, quantity: 2 }, { price: 5, quantity: 3 }],
+  coupon: { value: 5 },
+  currency: "USD",
+});
+
+console.log(formatCurrency(result.total, result.currency));`,
+        hints: [
+          'tsc will report: Parameter \'order\' implicitly has an \'any\' type',
+          'These errors exist because TypeScript cannot infer the shape of the parameter from its usage alone',
+          'The goal of this step is to SEE the errors, not fix them yet — understand what tsc is telling you',
+          'In a real migration, add "allowJs": true and "checkJs": true to tsconfig.json to check JS files before renaming them'
+        ],
+        expectedOutput: `migration.ts(7,22): error TS7006: Parameter 'order' implicitly has an 'any' type.
+migration.ts(14,27): error TS7006: Parameter 'amount' implicitly has an 'any' type.
+migration.ts(14,35): error TS7006: Parameter 'currency' implicitly has an 'any' type.
+
+// After adding types:
+$25.00`,
+        solution: `// migration.ts — after initial type annotations
+
+interface OrderItem {
+  price: number;
+  quantity: number;
+}
+
+interface Coupon {
+  value: number;
+}
+
+interface Order {
+  id: string;
+  items: OrderItem[];
+  coupon?: Coupon;
+  currency: string;
+}
+
+interface OrderResult {
+  orderId: string;
+  total: number;
+  currency: string;
+}
+
+function processOrder(order: Order): OrderResult {
+  const total = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discount = order.coupon ? order.coupon.value : 0;
+  return {
+    orderId: order.id,
+    total: total - discount,
+    currency: order.currency,
+  };
+}
+
+function formatCurrency(amount: number, currency: string): string {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);
+}
+
+const result = processOrder({
+  id: "ORD-001",
+  items: [{ price: 10, quantity: 2 }, { price: 5, quantity: 3 }],
+  coupon: { value: 5 },
+  currency: "USD",
+});
+
+console.log(formatCurrency(result.total, result.currency)); // $25.00`
+      },
+      {
+        title: 'Step 3: tsconfig Strict Mode',
+        instruction: `Enable \`"strict": true\` in \`tsconfig.json\` and understand what each flag it activates actually does.\n\nWHY: TypeScript's \`strict\` flag is a shorthand that enables a bundle of strictness checks. On a fresh project you should always enable it. On a migrating project you enable it incrementally — either all at once and fix the errors, or one flag at a time.\n\nHOW: Add \`"strict": true\` to your \`tsconfig.json\` compilerOptions. The key sub-flags are: \`noImplicitAny\` (no untyped parameters), \`strictNullChecks\` (null/undefined are not assignable to other types), \`strictFunctionTypes\`, and \`strictPropertyInitialization\`.`,
+        starterCode: `// tsconfig.json to create in your project root:
+// {
+//   "compilerOptions": {
+//     "target": "ES2020",
+//     "module": "commonjs",
+//     "strict": true,
+//     "outDir": "./dist",
+//     "rootDir": "./src"
+//   }
+// }
+
+// The following code has errors under strict mode.
+// Fix each one and explain what flag it violates.
+
+// Error 1: strictNullChecks — value can be null
+function getLength(value: string | null) {
+  return value.length; // null is not safe to access .length on
+}
+
+// Error 2: noImplicitAny — callback parameter has no type
+const numbers = [1, 2, 3];
+const doubled = numbers.map(n => n * 2); // this is fine — TypeScript infers n: number
+
+// Harder case: callback from an untyped source
+function applyToAll(arr: any[], fn) {  // fn has implicit any
+  return arr.map(fn);
+}
+
+// Error 3: strictNullChecks — result of find can be undefined
+const items = [{ id: 1, name: "apple" }, { id: 2, name: "banana" }];
+function findItem(id: number) {
+  const item = items.find(i => i.id === id);
+  return item.name; // item might be undefined
+}`,
+        hints: [
+          'Fix null: use optional chaining value?.length or a null check: if (value === null) return 0',
+          'Fix implicit any on fn: (fn: (item: any) => any) or use a generic: <T, R>(arr: T[], fn: (item: T) => R)',
+          'Fix undefined from find: check for undefined before accessing — if (!item) return null',
+          'strict: true enables ~8 flags; the most impactful are noImplicitAny and strictNullChecks'
+        ],
+        expectedOutput: `// After fixes — no TypeScript errors with strict: true
+
+getLength("hello") // 5
+getLength(null)    // 0 (handled null case)
+findItem(1)        // "apple"
+findItem(99)       // null (handled undefined case)`,
+        solution: `// tsconfig.json
+// {
+//   "compilerOptions": {
+//     "target": "ES2020",
+//     "module": "commonjs",
+//     "strict": true,
+//     "outDir": "./dist",
+//     "rootDir": "./src"
+//   }
+// }
+
+// Fix 1: handle null with a guard (strictNullChecks)
+function getLength(value: string | null): number {
+  if (value === null) return 0;
+  return value.length;
+}
+
+// Fix 2: explicit generic removes implicit any (noImplicitAny)
+function applyToAll<T, R>(arr: T[], fn: (item: T) => R): R[] {
+  return arr.map(fn);
+}
+
+// Fix 3: handle undefined from Array.find (strictNullChecks)
+const items = [{ id: 1, name: "apple" }, { id: 2, name: "banana" }];
+function findItem(id: number): string | null {
+  const item = items.find(i => i.id === id);
+  if (!item) return null;
+  return item.name;
+}
+
+console.log(getLength("hello")); // 5
+console.log(getLength(null));    // 0
+console.log(findItem(1));        // apple
+console.log(findItem(99));       // null`
+      },
+      {
+        title: 'Step 4: Typing Function Signatures',
+        instruction: `Replace \`any\` with proper types or \`unknown\` in function signatures, and add explicit return types.\n\nWHY: \`any\` opts the value out of the type system entirely — TypeScript will not catch errors involving it. \`unknown\` is the safer alternative: it forces you to narrow the type before using it. Explicit return types act as a contract — if the implementation returns something unexpected, TypeScript tells you at the function, not at every call site.\n\nHOW: Replace \`any\` parameter types with proper interfaces or generics. Replace \`any\` return types with the actual shape. Use \`unknown\` for values you genuinely don't know the type of, then narrow with \`typeof\`, \`instanceof\`, or a type guard.`,
+        starterCode: `// These functions use 'any' — replace with proper types
+
+// BAD: any erases type safety
+function parseJson(input: any): any {
+  return JSON.parse(input);
+}
+
+// BAD: any on parameter means anything goes
+function logError(error: any): void {
+  console.error(error.message); // what if error has no .message?
+}
+
+// BAD: any[] loses element type information
+function firstNonNull(arr: any[]): any {
+  return arr.find(x => x !== null && x !== undefined);
+}
+
+// TODO: Fix parseJson — input should be string, return should be unknown
+// (we can't know what JSON.parse returns at compile time without runtime checks)
+
+// TODO: Fix logError — use unknown and narrow to Error before accessing .message
+
+// TODO: Fix firstNonNull using a generic T so the return type preserves element type`,
+        hints: [
+          'parseJson(input: string): unknown — return unknown forces callers to narrow',
+          'logError(error: unknown): if (error instanceof Error) { console.error(error.message) }',
+          'firstNonNull<T>(arr: (T | null | undefined)[]): T | undefined',
+          'unknown is like any but safe — you must narrow before using'
+        ],
+        expectedOutput: `// Type-safe versions compile without errors
+
+const data = parseJson(\'{"name":"Alice"}\');
+// data is unknown — must narrow before use:
+if (typeof data === "object" && data !== null && "name" in data) {
+  console.log((data as { name: string }).name); // Alice
+}
+
+logError(new Error("timeout")); // Error: timeout
+logError("plain string error"); // plain string error
+
+firstNonNull([null, undefined, 42, "hello"]); // 42 (type: number | string)`,
+        solution: `// Fixed: proper types instead of any
+
+function parseJson(input: string): unknown {
+  return JSON.parse(input);
+}
+
+function logError(error: unknown): void {
+  if (error instanceof Error) {
+    console.error("Error:", error.message);
+  } else if (typeof error === "string") {
+    console.error("Error:", error);
+  } else {
+    console.error("Unknown error:", error);
+  }
+}
+
+function firstNonNull<T>(arr: (T | null | undefined)[]): T | undefined {
+  return arr.find((x): x is T => x !== null && x !== undefined);
+}
+
+const data = parseJson('{"name":"Alice"}');
+if (typeof data === "object" && data !== null && "name" in data) {
+  console.log((data as { name: string }).name); // Alice
+}
+
+logError(new Error("timeout"));
+logError("plain string error");
+
+const result = firstNonNull([null, undefined, 42, "hello"]);
+console.log(result); // 42`
+      },
+      {
+        title: 'Step 5: Declaration Files',
+        instruction: `Write a \`.d.ts\` declaration file to add types to a JavaScript module that ships without them.\n\nWHY: Many older npm packages don't include TypeScript types. Without a declaration file, TypeScript treats every import from them as \`any\`. Writing a \`.d.ts\` file teaches TypeScript the shape of the module so you get IntelliSense and type checking for all uses.\n\nHOW: Create a file with the same name as the module (e.g. \`math-utils.d.ts\`). Use \`declare module "module-name" { ... }\` to describe its exports. For local files without types, place the \`.d.ts\` file alongside the \`.js\` file.`,
+        starterCode: `// Imagine this is a legacy JS file: math-utils.js
+// It has no TypeScript types. You cannot modify it.
+//
+// export function add(a, b) { return a + b; }
+// export function multiply(a, b) { return a * b; }
+// export function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
+// export const PI = 3.14159;
+// export function formatNumber(n, decimals) { return n.toFixed(decimals); }
+
+// TODO: Write the declaration file for math-utils
+// Create a file called math-utils.d.ts with declare module "math-utils" { ... }
+// or, for a local file, a file math-utils.d.ts in the same folder with
+// the export declarations (no 'declare module' wrapper needed for ambient declarations)
+
+// The declarations you need:
+// add(a: number, b: number): number
+// multiply(a: number, b: number): number
+// clamp(value: number, min: number, max: number): number
+// PI: number  (use 'const')
+// formatNumber(n: number, decimals: number): string
+
+// Once the .d.ts file exists, this import should type-check:
+// import { add, PI } from "./math-utils";
+// const sum: number = add(1, 2);  // OK
+// const x: string = add(1, 2);   // Error: number not assignable to string`,
+        hints: [
+          'declare module "./math-utils" { export function add(a: number, b: number): number; ... }',
+          'For ambient declarations in a .d.ts file (same folder), omit declare module and just write export function ...',
+          'declare const PI: number — use declare for values you are describing but not implementing',
+          'Place the .d.ts file alongside the .js file — TypeScript will pick it up automatically'
+        ],
+        expectedOutput: `// math-utils.d.ts content:
+
+declare module "./math-utils" {
+  export function add(a: number, b: number): number;
+  export function multiply(a: number, b: number): number;
+  export function clamp(value: number, min: number, max: number): number;
+  export const PI: number;
+  export function formatNumber(n: number, decimals: number): string;
+}
+
+// After creating the .d.ts file:
+// import { add, PI } from "./math-utils";
+// add(1, 2)          → 3  (type: number)
+// add(1, "2")        → Type error: Argument of type 'string' is not assignable to 'number'`,
+        solution: `// math-utils.d.ts
+// Place this file alongside math-utils.js
+
+declare module "./math-utils" {
+  export function add(a: number, b: number): number;
+  export function multiply(a: number, b: number): number;
+  export function clamp(value: number, min: number, max: number): number;
+  export const PI: number;
+  export function formatNumber(n: number, decimals: number): string;
+}
+
+// --- Usage in typed TypeScript file ---
+// import { add, multiply, clamp, PI, formatNumber } from "./math-utils";
+
+// const sum: number = add(3, 4);               // 7
+// const product: number = multiply(3, 4);       // 12
+// const limited: number = clamp(150, 0, 100);   // 100
+// const circle: number = 2 * PI * 5;            // ~31.4
+// const formatted: string = formatNumber(3.14159, 2); // "3.14"
+
+// Type error examples (caught by TypeScript):
+// add(1, "2");          // Error: string not assignable to number
+// const x: string = add(1, 2); // Error: number not assignable to string`
+      }
+    ]
   }
 ];
