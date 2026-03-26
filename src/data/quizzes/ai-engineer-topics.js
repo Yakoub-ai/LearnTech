@@ -59,6 +59,39 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Foundation models changed the AI adoption curve by making powerful generative AI accessible through an API call — this is the shift that created the AI Engineer role. Engineers no longer need to train models to leverage advanced AI capabilities."
+        },
+        {
+          question: "What distinguishes generative AI from discriminative AI?",
+          options: [
+            "Generative AI is faster; discriminative AI is more accurate",
+            "Generative AI creates new content (text, images, code); discriminative AI classifies or labels existing content",
+            "Discriminative AI requires more training data than generative AI",
+            "They are two names for the same approach applied to different data types"
+          ],
+          correctIndex: 1,
+          explanation: "Discriminative AI classifies or labels existing inputs (spam vs. not spam, cat vs. dog). Generative AI creates new content — text, images, audio, or code — that did not exist before. Both are subsets of ML but serve fundamentally different purposes."
+        },
+        {
+          question: "Why is the term 'hallucination' used when an LLM generates false information confidently?",
+          options: [
+            "The model intentionally fabricates information to fill gaps in its training data",
+            "The model retrieves information from a corrupted database",
+            "The model generates statistically plausible text that has no grounding in verified facts, producing confident-sounding fiction",
+            "Hallucination only occurs when the model is given ambiguous prompts"
+          ],
+          correctIndex: 2,
+          explanation: "Hallucination describes the phenomenon where an LLM produces text that sounds authoritative but is factually incorrect. Because the model generates text based on statistical patterns rather than fact-checking, it can confidently state things that are entirely wrong — a critical risk in production applications."
+        },
+        {
+          question: "A company wants to add AI capabilities to its product. What is the fastest path to production using foundation models?",
+          options: [
+            "Hire a team of ML researchers to train a custom model from scratch",
+            "Use a pre-trained foundation model through an API, integrating it into existing application code",
+            "Wait until open-source models match GPT-4 quality before starting",
+            "Build a custom neural network architecture tailored to the specific use case"
+          ],
+          correctIndex: 1,
+          explanation: "Foundation models accessible via APIs are the fastest path to production AI. Instead of training models from scratch (expensive, slow, requires ML expertise), engineers can integrate powerful AI through API calls — the core insight behind the AI Engineer role."
         }
       ]
     },
@@ -121,6 +154,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Each LLM API call is independent and stateless. The model has no memory of previous conversations unless you explicitly include that history in the current context window. This is a common pitfall for engineers new to LLM development."
+        },
+        {
+          question: "What is the purpose of positional encoding in transformer models?",
+          options: [
+            "It encrypts the position of sensitive data within the input",
+            "It tells the model the order of tokens in the sequence, since self-attention processes all tokens simultaneously without inherent ordering",
+            "It reduces the number of tokens by merging adjacent positions",
+            "It assigns priority to tokens at the start of the input over those at the end"
+          ],
+          correctIndex: 1,
+          explanation: "Transformers process all tokens in parallel, unlike earlier sequential models. Without positional encoding, the model would have no notion of word order — 'the cat sat on the mat' and 'the mat sat on the cat' would be identical. Positional encodings inject order information into the representation."
+        },
+        {
+          question: "A developer notices their LLM API costs are unexpectedly high. Which factor most directly determines API cost?",
+          options: [
+            "The number of HTTP requests made to the API",
+            "The total number of input and output tokens processed across all requests",
+            "The time of day the requests are made",
+            "The programming language used in the client application"
+          ],
+          correctIndex: 1,
+          explanation: "LLM API pricing is token-based — you pay per input token and per output token. Long system prompts, extensive conversation history, and verbose outputs all increase cost. Understanding tokenisation is essential for cost management."
         }
       ]
     },
@@ -183,6 +238,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Data quality is the most important factor in ML model performance. Even the most sophisticated algorithms cannot compensate for poor, biased, or incorrectly labelled training data. This applies directly to any model you fine-tune."
+        },
+        {
+          question: "What is the difference between a model and an algorithm in machine learning?",
+          options: [
+            "They are the same thing — both refer to the trained system",
+            "The algorithm is the mathematical process used during training; the model is the trained result that makes predictions",
+            "The model is written by engineers; the algorithm is learned from data",
+            "Algorithms run during inference; models run during training"
+          ],
+          correctIndex: 1,
+          explanation: "The algorithm is the learning process (e.g., gradient descent, backpropagation) applied during training. The model is the output of training — a function with learned parameters that can make predictions on new data. When you call an API, you are using the model, not the algorithm."
+        },
+        {
+          question: "What does 'unsupervised learning' mean and how does it differ from supervised learning?",
+          options: [
+            "Unsupervised learning requires no data at all — the model learns from its architecture alone",
+            "Unsupervised learning finds patterns in data without labelled examples, unlike supervised learning which requires labels",
+            "Unsupervised learning is less accurate than supervised learning in all cases",
+            "Unsupervised learning is only used for text data; supervised learning is used for images"
+          ],
+          correctIndex: 1,
+          explanation: "Unsupervised learning discovers patterns (clusters, anomalies, associations) in unlabelled data. Supervised learning requires labelled examples to learn input-output mappings. Customer segmentation is a classic unsupervised task — grouping customers by behaviour without pre-defined categories."
         }
       ]
     },
@@ -245,6 +322,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "LLM APIs enforce usage quotas. When exceeded, the API returns an error (typically 429 Too Many Requests). Without explicit rate limit handling (retry with backoff), applications will fail under load — this is a common production failure mode."
+        },
+        {
+          question: "What does a 401 Unauthorized HTTP status code from an LLM API typically indicate?",
+          options: [
+            "The request payload is too large for the model to process",
+            "The API key is missing, invalid, or expired",
+            "The model is temporarily overloaded and cannot accept requests",
+            "The requested model version does not exist"
+          ],
+          correctIndex: 1,
+          explanation: "A 401 status code indicates an authentication failure — the API key is missing, invalid, or expired. Understanding HTTP status codes (401 authentication, 429 rate limit, 500 server error) is essential for debugging LLM API integrations."
+        },
+        {
+          question: "What is the primary difference between synchronous and streaming LLM API responses?",
+          options: [
+            "Streaming responses are always faster in total time than synchronous responses",
+            "Synchronous responses return the complete output at once; streaming delivers tokens incrementally as they are generated",
+            "Streaming is only available for chat models, not completion models",
+            "Synchronous responses cost less per token than streaming responses"
+          ],
+          correctIndex: 1,
+          explanation: "Synchronous API calls wait until the entire response is generated before returning. Streaming delivers tokens incrementally as they are generated, reducing perceived latency for the user. The total generation time is similar, but streaming improves user experience by showing progress immediately."
         }
       ]
     },
@@ -307,6 +406,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 2,
           explanation: "Role prompting frames the model as a particular persona, influencing its vocabulary, level of technical detail, and perspective. It is a useful way to target a specific audience or domain without writing lengthy style instructions."
+        },
+        {
+          question: "A developer wants the LLM to output data in a consistent JSON format. Which technique is most effective?",
+          options: [
+            "Setting temperature to 0 — this guarantees structured output",
+            "Providing a clear JSON schema example in the prompt and requesting the model respond in that exact format",
+            "Using a system prompt that says 'always respond in JSON' without showing the expected structure",
+            "Fine-tuning the model on JSON output examples before using it"
+          ],
+          correctIndex: 1,
+          explanation: "Showing the model the exact JSON structure you expect (a few-shot example of the schema) is the most effective way to get consistent structured output. Simply saying 'respond in JSON' without demonstrating the structure leads to inconsistent key names, nesting, and formatting."
+        },
+        {
+          question: "What is the difference between a system prompt and a user prompt in modern LLM APIs?",
+          options: [
+            "System prompts are processed by a separate model; user prompts go to the main model",
+            "System prompts set the model's behaviour, persona, and constraints for the entire conversation; user prompts contain the specific request or question",
+            "System prompts are optional and ignored by most models",
+            "User prompts are more influential than system prompts in determining output"
+          ],
+          correctIndex: 1,
+          explanation: "The system prompt establishes the model's behaviour, persona, and constraints for the conversation. The user prompt contains the specific request. Separating them helps maintain consistent behaviour across multiple user interactions and makes prompt management cleaner."
         }
       ]
     }
@@ -371,6 +492,50 @@ export const topicQuizzes = {
           ],
           correctIndex: 2,
           explanation: "Training is extremely expensive (GPU clusters running for weeks or months). Inference — what happens when you call an LLM API — is comparatively cheap. Understanding this helps make cost and architecture decisions, and explains why most AI Engineers use pre-trained models rather than training their own."
+        },
+        {
+          question: "What is backpropagation and why is it essential to training neural networks?",
+          options: [
+            "A method for compressing model weights after training to reduce file size",
+            "The algorithm that propagates the loss backward through the network, computing gradients for each parameter so they can be updated",
+            "A technique for reversing incorrect predictions at inference time",
+            "A data augmentation strategy that feeds outputs back as inputs"
+          ],
+          correctIndex: 1,
+          explanation: "Backpropagation computes how much each parameter contributed to the overall prediction error by propagating the loss backward through the network layers. These gradients tell gradient descent which direction and how much to adjust each parameter — it is the engine that makes neural network training possible."
+        },
+        {
+          question: "What is an epoch in the context of model training?",
+          options: [
+            "A single forward pass through one training example",
+            "One complete pass through the entire training dataset",
+            "The time interval between model checkpoints",
+            "A measure of model accuracy at a point in training"
+          ],
+          correctIndex: 1,
+          explanation: "An epoch is one complete pass through the entire training dataset. Training typically runs for multiple epochs. Too few epochs leads to underfitting; too many can lead to overfitting. Monitoring evaluation loss across epochs helps determine when to stop training."
+        },
+        {
+          question: 'What is the vanishing gradient problem and which architecture was designed to address it?',
+          options: [
+            'Gradients grow too large during training; batch normalisation was introduced to solve it',
+            'Gradients shrink toward zero in deep networks, preventing early layers from learning; residual connections (skip connections) in architectures like ResNet address it',
+            'Gradients oscillate between positive and negative values; dropout layers were introduced to stabilise them',
+            'Gradients become sparse in wide networks; pruning was introduced to reduce unnecessary connections',
+          ],
+          correctIndex: 1,
+          explanation: 'In deep networks, gradients can shrink exponentially as they are backpropagated through many layers, effectively preventing early layers from learning. Residual connections (skip connections) allow gradients to flow directly through shortcut paths, enabling training of much deeper networks.',
+        },
+        {
+          question: 'What is the key difference between supervised and self-supervised learning in the context of training LLMs?',
+          options: [
+            'Supervised learning requires human-labelled data for every example; self-supervised learning generates its own labels from the structure of the data (e.g. predicting the next token)',
+            'Self-supervised learning is unsupervised learning with a different name',
+            'Supervised learning is used for pre-training; self-supervised learning is used for fine-tuning',
+            'Self-supervised learning requires more labelled data than supervised learning but produces better results',
+          ],
+          correctIndex: 0,
+          explanation: 'Self-supervised learning creates training signals from the data itself — for example, masking a word and predicting it, or predicting the next token in a sequence. This is how LLMs are pre-trained on massive unlabelled text corpora. Supervised learning, by contrast, requires explicit human-provided labels for each example.',
         }
       ]
     },
@@ -495,6 +660,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 2,
           explanation: "High temperature makes the probability distribution over tokens more uniform, increasing randomness and creativity — but also increasing hallucination on factual tasks. For factual, accurate output, low temperature (close to 0) produces more focused, deterministic responses."
+        },
+        {
+          question: 'Why do most modern LLMs use subword tokenisation (e.g. BPE) rather than word-level or character-level tokenisation?',
+          options: [
+            'Subword tokenisation produces smaller model files that are faster to download',
+            'It balances vocabulary size with the ability to handle rare and unseen words by breaking them into meaningful subword units',
+            'Character-level tokenisation is more accurate but too slow for real-time inference',
+            'Word-level tokenisation cannot represent numbers or punctuation correctly',
+          ],
+          correctIndex: 1,
+          explanation: 'Byte Pair Encoding (BPE) and similar subword tokenisers strike a balance: common words get their own tokens for efficiency, while rare or novel words are decomposed into known subword pieces. This keeps vocabulary size manageable while ensuring any input can be represented — unlike word-level tokenisation which fails on out-of-vocabulary words.',
         }
       ]
     },
@@ -557,6 +733,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Embedding a long document as a single vector averages out all its content, diluting specific information. A query about one specific detail will have a low similarity score against the averaged vector even if that detail is in the document. Chunking strategies significantly affect retrieval quality."
+        },
+        {
+          question: 'What is the purpose of using an Approximate Nearest Neighbour (ANN) algorithm like HNSW in a vector database instead of exact nearest neighbour search?',
+          options: [
+            'ANN algorithms produce more accurate results than exact search',
+            'ANN algorithms trade a small amount of recall accuracy for dramatically faster search at scale — exact search becomes impractical with millions of vectors',
+            'ANN algorithms require less storage because they compress the embedding vectors',
+            'ANN algorithms are only needed when using sparse embeddings, not dense embeddings',
+          ],
+          correctIndex: 1,
+          explanation: 'Exact nearest neighbour search compares the query vector to every vector in the database — O(n) complexity that becomes prohibitively slow at scale. ANN algorithms like HNSW (Hierarchical Navigable Small World) build graph-based index structures that enable sub-linear search time, sacrificing a tiny amount of recall accuracy for orders-of-magnitude speed improvement.',
         }
       ]
     },
@@ -619,6 +806,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Prompts shift the probability distribution of model outputs — they do not guarantee a specific output. The same prompt can produce different results across runs. Production systems must account for this through extensive testing across input ranges and output validation."
+        },
+        {
+          question: 'What is the "structured output" prompting technique and when should you use it?',
+          options: [
+            'Asking the model to format its response as a bulleted list for readability',
+            'Constraining the model to return responses in a strict schema (e.g. JSON with defined keys) so downstream code can reliably parse the output',
+            'Using XML tags in the prompt to separate different sections of the instruction',
+            'Training the model on structured data so it learns to produce tables',
+          ],
+          correctIndex: 1,
+          explanation: 'Structured output constrains the model to respond in a predefined schema — typically JSON with specific keys and types. This is essential for production systems where LLM output feeds into downstream code that needs reliable, parseable data rather than free-form text. Many APIs now offer native JSON mode or function calling to enforce this.',
         }
       ]
     },
@@ -681,6 +879,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Including full documents when only a paragraph is relevant fills the context window with noise. The relevant information becomes harder for the model to attend to, producing responses that miss the key point even when the answer is technically in the context."
+        },
+        {
+          question: 'What is the "lost in the middle" phenomenon in large context windows?',
+          options: [
+            'Models cannot process tokens in the middle of the vocabulary range accurately',
+            'Models tend to attend more strongly to information at the beginning and end of the context, often missing or underweighting information placed in the middle',
+            'Tokenisation errors accumulate in the middle of long inputs, corrupting downstream processing',
+            'API costs are highest for tokens in the middle of the context window due to attention computation patterns',
+          ],
+          correctIndex: 1,
+          explanation: 'Research has shown that LLMs exhibit a U-shaped attention pattern: they attend most strongly to information at the beginning and end of the context window, while information in the middle receives less attention. This has practical implications for context engineering — placing the most important information at the start or end of the context improves response quality.',
         }
       ]
     },
@@ -743,6 +952,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "The five failure points of RAG are independent. If retrieval is returning the wrong chunks, improving the generation prompt cannot compensate — the model simply does not have the right information. Evaluation must start with retrieval before optimising generation."
+        },
+        {
+          question: 'What is hybrid search in the context of RAG, and why is it often more effective than pure semantic search?',
+          options: [
+            'Using two different LLMs to generate answers and selecting the better one',
+            'Combining semantic (vector) search with keyword (lexical) search to capture both meaning-based and exact-match relevance',
+            'Running the same query against two separate vector databases and merging results',
+            'Using both dense and sparse embeddings generated by the same model',
+          ],
+          correctIndex: 1,
+          explanation: 'Hybrid search combines semantic search (which understands meaning and synonyms) with keyword search like BM25 (which excels at exact term matching, acronyms, and product codes). This is often more effective than either alone because semantic search can miss exact terms while keyword search misses synonyms and paraphrases. Results are typically merged using reciprocal rank fusion.',
+        },
+        {
+          question: 'What is metadata filtering in RAG and why is it important for production systems?',
+          options: [
+            'Filtering out personally identifiable information from retrieved chunks before passing them to the LLM',
+            'Applying structured filters (e.g. document date, department, access level) at query time to narrow the retrieval scope before semantic search, improving both relevance and performance',
+            'Removing duplicate metadata fields from the vector database to save storage space',
+            'Filtering the LLM output to remove any metadata that was accidentally included in the response',
+          ],
+          correctIndex: 1,
+          explanation: 'Metadata filtering applies structured pre-filters (date ranges, categories, permission levels) before semantic search executes. This narrows the search space to only relevant documents, dramatically improving precision. In production, it also enables access control — ensuring users only retrieve documents they are authorised to see.',
         }
       ]
     },
@@ -805,6 +1036,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "LangGraph supports checkpointing — the ability to save workflow state at any point and resume execution later, even across process boundaries. This enables long-running workflows, human-in-the-loop patterns where execution pauses for human review, and fault-tolerant agent systems."
+        },
+        {
+          question: 'In LangGraph, what is a conditional edge and how does it enable dynamic agent behaviour?',
+          options: [
+            'An edge that randomly selects the next node to introduce variability in agent responses',
+            'An edge with a routing function that inspects the current state and decides which node to execute next, enabling branching logic based on LLM output or tool results',
+            'An edge that only activates after a specified time delay to throttle agent execution',
+            'An edge that connects two nodes but skips execution if the state has not changed since the last step',
+          ],
+          correctIndex: 1,
+          explanation: 'Conditional edges are the mechanism that makes LangGraph agents dynamic rather than following a fixed pipeline. A routing function examines the current state (e.g. whether the LLM decided to call a tool or provide a final answer) and directs execution to the appropriate next node. This enables patterns like tool-calling loops, error recovery branches, and human approval gates.',
         }
       ]
     },
@@ -867,6 +1109,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "The more context you provide — function signatures, expected behaviour, type definitions, example output — the better the results. AI coding tools work best when your codebase is well-structured, well-named, and the task is clearly specified."
+        },
+        {
+          question: 'What is the most important practice when reviewing code generated by an AI coding assistant?',
+          options: [
+            'Accept it if the code compiles and passes linting without errors',
+            'Run it through a second AI tool to cross-check for correctness',
+            'Review it with the same rigour as human-written code — verify correctness, security, edge cases, and alignment with the codebase conventions',
+            'Only review the parts of the code that differ from what you would have written yourself',
+          ],
+          correctIndex: 2,
+          explanation: 'AI-generated code can contain subtle bugs, security vulnerabilities, outdated patterns, or logic errors that look plausible at first glance. It must be reviewed with at least the same rigour as human-written code. Compiling and passing lint checks does not guarantee correctness, security, or alignment with your project conventions.',
         }
       ]
     }
@@ -931,6 +1184,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Multi-agent systems increase capability at the cost of significantly increased debugging complexity and communication overhead between agents. When agents interact, failures can cascade in non-obvious ways, making root-cause analysis much harder."
+        },
+        {
+          question: 'What is the purpose of a "scratchpad" or working memory in an LLM agent architecture?',
+          options: [
+            'To store the model weights between inference calls for faster loading',
+            'To cache API responses and avoid redundant calls to external services',
+            'To maintain intermediate reasoning steps, observations, and partial results across multiple agent turns so the agent can build on prior work',
+            'To log errors during tool execution for later debugging by developers',
+          ],
+          correctIndex: 2,
+          explanation: 'A scratchpad (working memory) allows the agent to accumulate intermediate reasoning, tool outputs, and partial results across multiple steps. Without it, each step would start from scratch. The scratchpad is typically injected into the context window on each turn, enabling the agent to reflect on what it has learned and plan next actions.',
+        },
+        {
+          question: 'Why is implementing a maximum iteration limit critical in autonomous LLM agent loops?',
+          options: [
+            'To comply with API rate limits imposed by LLM providers',
+            'To prevent runaway loops where the agent fails to converge on a solution, consuming unbounded tokens, time, and cost',
+            'To ensure the agent produces a response within the context window limit',
+            'To force the agent to use fewer tools per task, improving response quality',
+          ],
+          correctIndex: 1,
+          explanation: 'Without iteration limits, an agent that cannot solve a task or enters a reasoning loop will keep calling tools and the LLM indefinitely — burning through API credits and time. Maximum iteration limits, combined with fallback behaviour (e.g. escalating to a human), are essential guardrails for production agent systems.',
         }
       ]
     },
@@ -993,6 +1268,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "LLM output that drives tool calls is an execution boundary — it may contain instructions from prompt injection, hallucinated arguments, or unsafe content. It must be treated with the same distrust as user input in a web application: validated, sanitised, and access-controlled before execution."
+        },
+        {
+          question: 'What is a "dual LLM" defence pattern against prompt injection?',
+          options: [
+            'Using two different LLM providers so that if one is compromised, the other acts as a fallback',
+            'Separating the privileged LLM (which has access to tools and system instructions) from an untrusted LLM that processes user input, ensuring injected instructions never reach the privileged context',
+            'Running every prompt through the LLM twice and comparing outputs for consistency',
+            'Using one LLM for text generation and another for image generation to isolate attack surfaces',
+          ],
+          correctIndex: 1,
+          explanation: 'The dual LLM pattern creates a privilege boundary: an outer "quarantine" LLM processes untrusted user input and extracts structured parameters, while an inner privileged LLM holds the system prompt, tool access, and sensitive context. This prevents injected instructions in user input from reaching the privileged execution context.',
         }
       ]
     },
@@ -1055,6 +1341,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Fine-tuning teaches the model how to behave (style, format, task capability) but does not reliably update factual knowledge. For tasks requiring up-to-date or domain-specific factual accuracy, RAG is still needed alongside fine-tuning."
+        },
+        {
+          question: 'When should you consider a hybrid architecture combining RAG with an agentic layer rather than using RAG alone?',
+          options: [
+            'When the documents in the knowledge base are too large to chunk effectively',
+            'When the task requires multi-step reasoning, dynamic tool selection, or combining information from multiple retrieval sources before generating a response',
+            'When the vector database does not support metadata filtering',
+            'When the LLM provider does not offer a streaming API for real-time responses',
+          ],
+          correctIndex: 1,
+          explanation: 'RAG alone follows a fixed retrieve-then-generate pipeline. When tasks require iterative reasoning (e.g. retrieving, analysing, then retrieving again based on findings), combining multiple data sources, or dynamically choosing tools, an agentic layer adds the planning and decision-making loop that RAG lacks.',
         }
       ]
     },
@@ -1117,6 +1414,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "AI governance must be revisited regularly because all three dimensions evolve: model capabilities (new models change risk profiles), regulatory landscapes (new laws and guidance), and internal risk appetites (as the organisation's experience with AI matures)."
+        },
+        {
+          question: 'What is the primary risk of an enterprise deploying GenAI without a clear data governance framework?',
+          options: [
+            'The AI models will produce lower quality outputs due to insufficient training data',
+            'Sensitive or proprietary data may be inadvertently sent to third-party LLM providers, violating privacy regulations and exposing trade secrets',
+            'The organisation will be unable to fine-tune models on internal data',
+            'Employee adoption rates will be too low to justify the investment',
+          ],
+          correctIndex: 1,
+          explanation: 'Without data governance, employees may paste confidential data — customer records, proprietary code, strategic documents — into third-party LLM APIs. This creates regulatory exposure (GDPR, industry-specific regulations), intellectual property risks, and potential data breaches. A data classification framework must define what data can flow to which AI services.',
         }
       ]
     },
@@ -1179,6 +1487,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "The OWASP Top 10 for LLM Applications provides a standardised taxonomy of the most critical security risks — including prompt injection, insecure output handling, and supply chain vulnerabilities — that should inform threat modelling and security reviews for any LLM application."
+        },
+        {
+          question: 'What is model supply chain risk, and how should organisations mitigate it?',
+          options: [
+            'The risk that GPU suppliers will increase hardware costs — mitigated by negotiating long-term contracts',
+            'The risk that pre-trained models or adapters downloaded from public repositories contain backdoors, biases, or vulnerabilities — mitigated through provenance verification, scanning, and controlled model registries',
+            'The risk that training data pipelines will break during production deployments — mitigated by redundant data storage',
+            'The risk that open-source model licences will change — mitigated by using only proprietary models',
+          ],
+          correctIndex: 1,
+          explanation: 'Models from public repositories (e.g. Hugging Face) may contain poisoned weights, hidden backdoors, or undisclosed biases. Organisations should verify model provenance, scan for known vulnerabilities, maintain an internal model registry with approved versions, and evaluate models on adversarial test sets before production deployment.',
         }
       ]
     },
@@ -1241,6 +1560,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "The AI Register must be completed before development begins — the risk classification determines the governance requirements that must be built into the system design. Building first and registering later creates retroactive compliance work and may require architectural changes."
+        },
+        {
+          question: 'Why should an AI policy mandate human-in-the-loop oversight for high-risk AI decisions rather than relying solely on automated guardrails?',
+          options: [
+            'Because automated guardrails are too expensive to maintain at enterprise scale',
+            'Because current regulations require a human signature on every AI-generated output',
+            'Because automated guardrails cannot anticipate every edge case or context-dependent risk — human oversight provides a final check that accounts for nuance, ethical considerations, and organisational context that rules-based systems may miss',
+            'Because human reviewers are faster than automated guardrails at processing high-risk decisions',
+          ],
+          correctIndex: 2,
+          explanation: 'Automated guardrails (content filters, threshold checks, rule-based validators) are essential but insufficient for high-risk decisions. They operate on predefined rules and cannot reason about novel edge cases, contextual nuances, or ethical dimensions. Human-in-the-loop oversight ensures that consequential AI outputs are reviewed by someone who can apply judgement, domain expertise, and ethical reasoning before action is taken.',
         }
       ]
     },
@@ -1303,6 +1633,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Maximising faithfulness alone can produce answers that copy context verbatim — technically faithful but not useful as synthesised answers. Evaluation metrics must be balanced: faithfulness, relevancy, context precision, and recall together provide a complete picture."
+        },
+        {
+          question: 'What is LLM-as-a-judge evaluation and what is its main limitation?',
+          options: [
+            'Using an LLM to evaluate another LLM\'s outputs by scoring them against defined criteria — limited by the judge model\'s own biases, such as preferring verbose answers or outputs similar to its own style',
+            'Using a fine-tuned classifier to label LLM outputs as pass or fail — limited by the need for large labelled training sets',
+            'Having multiple human evaluators score LLM outputs for inter-rater reliability — limited by the cost and speed of human evaluation',
+            'Running automated test suites against LLM outputs — limited by the inability to evaluate open-ended responses',
+          ],
+          correctIndex: 0,
+          explanation: 'LLM-as-a-judge uses a (typically stronger) LLM to evaluate outputs against rubrics or criteria. It scales better than human evaluation but inherits the judge model\'s biases — it may prefer longer responses, penalise unconventional but correct answers, or exhibit position bias. Calibrating the judge with human-agreement benchmarks is essential.',
+        },
+        {
+          question: 'Why is it important to evaluate retrieval and generation separately in a RAG pipeline rather than only evaluating the final output?',
+          options: [
+            'Because retrieval and generation use different programming languages and must be tested independently',
+            'Because evaluating only the final output cannot distinguish whether a bad answer was caused by retrieving the wrong context or by the LLM failing to synthesise the correct context — making root-cause diagnosis impossible',
+            'Because generation evaluation is faster than retrieval evaluation, so they should be parallelised',
+            'Because retrieval metrics are standardised across all vector databases but generation metrics are not',
+          ],
+          correctIndex: 1,
+          explanation: 'A bad final answer in RAG can stem from two independent failure points: poor retrieval (wrong chunks) or poor generation (right chunks but wrong synthesis). Evaluating only the end-to-end output hides which component failed. Separate retrieval metrics (context precision, context recall) and generation metrics (faithfulness, answer relevancy) enable targeted debugging and optimisation.',
         }
       ]
     },
@@ -1365,6 +1717,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "A held-out evaluation set (data the model never trains on) is essential for detecting overfitting. If training loss decreases but evaluation loss increases, the model is memorising rather than generalising — a critical signal to stop training or regularise."
+        },
+        {
+          question: 'What is the key advantage of QLoRA over standard LoRA for fine-tuning large models?',
+          options: [
+            'QLoRA trains faster by using a higher learning rate than standard LoRA',
+            'QLoRA quantises the base model to 4-bit precision while keeping LoRA adapter weights in higher precision, dramatically reducing GPU memory requirements without significant quality loss',
+            'QLoRA eliminates the need for a validation set during training',
+            'QLoRA supports fine-tuning on image data, while standard LoRA is limited to text',
+          ],
+          correctIndex: 1,
+          explanation: 'QLoRA (Quantised LoRA) enables fine-tuning of very large models on consumer-grade GPUs by quantising the frozen base model to 4-bit (NF4) precision while training the small LoRA adapter weights in 16-bit. This reduces memory requirements by 4-8x compared to standard LoRA with minimal quality degradation, making fine-tuning of 70B+ parameter models feasible on a single GPU.',
         }
       ]
     },
@@ -1427,6 +1790,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Non-compliance with the EU AI Act for high-risk AI systems carries penalties up to 35 million EUR or 7% of global turnover. For large insurance organisations, 7% of global turnover represents a very significant financial exposure."
+        },
+        {
+          question: 'What does the EU AI Act require from providers of general-purpose AI (GPAI) models, such as foundation model providers?',
+          options: [
+            'They must open-source all model weights and training data for public inspection',
+            'They must provide technical documentation, comply with copyright law, and publish a sufficiently detailed summary of training data — with additional obligations for models posing systemic risk',
+            'They are exempt from regulation because GPAI models are not application-specific',
+            'They must register each individual use case of their model in the EU AI Database',
+          ],
+          correctIndex: 1,
+          explanation: 'The EU AI Act creates a dedicated regulatory tier for GPAI models. All GPAI providers must provide technical documentation, implement copyright compliance policies, and publish training data summaries. Models classified as posing systemic risk (e.g. trained with compute above a threshold) face additional obligations including adversarial testing and incident reporting.',
+        },
+        {
+          question: 'What is the "conformity assessment" requirement for high-risk AI systems under the EU AI Act?',
+          options: [
+            'A one-time certification by an EU-approved testing laboratory before the system can be marketed',
+            'A structured process to demonstrate that the AI system meets all requirements (risk management, data governance, transparency, human oversight, accuracy, robustness) — which must be repeated when the system is substantially modified',
+            'A self-declaration by the provider that the system does not pose risks to fundamental rights',
+            'An annual audit conducted by the national supervisory authority at the provider\'s expense',
+          ],
+          correctIndex: 1,
+          explanation: 'Conformity assessment is the process by which a provider demonstrates that a high-risk AI system meets all the EU AI Act requirements before placing it on the market. For most high-risk systems, this is an internal assessment based on documented evidence. Critically, it must be repeated when the system undergoes substantial modifications — not just at initial deployment.',
         }
       ]
     }

@@ -52,6 +52,24 @@ export const topicQuizzes = {
           options: ["False", "True", "TypeError", "None"],
           correctIndex: 1,
           explanation: "`bool` is a subclass of `int` in Python, so any `bool` is also an `int`. Therefore `isinstance(True, int)` returns `True`."
+        },
+        {
+          question: "What is the result of `complex(3, 4).real`?",
+          options: ["3", "4", "3+4j", "TypeError"],
+          correctIndex: 0,
+          explanation: "`complex(3, 4)` creates the complex number `3+4j`. The `.real` attribute returns the real part (`3.0`), and `.imag` returns the imaginary part (`4.0`)."
+        },
+        {
+          question: "What does `isinstance([], (list, tuple))` return?",
+          options: ["False", "True", "TypeError", "None"],
+          correctIndex: 1,
+          explanation: "`isinstance()` accepts a tuple of types as the second argument and returns `True` if the object is an instance of any of them. Since `[]` is a `list`, and `list` is in the tuple, it returns `True`."
+        },
+        {
+          question: "What is the result of `x = 5; x //= 2; print(x)`?",
+          options: ["2.5", "2", "3", "TypeError"],
+          correctIndex: 1,
+          explanation: "The `//=` operator performs floor (integer) division in place. `5 // 2` equals `2` because floor division truncates toward negative infinity. For positive numbers this behaves like integer division."
         }
       ]
     },
@@ -101,6 +119,24 @@ export const topicQuizzes = {
           options: ["[(0, 'apple'), (1, 'banana')]", "[(1, 'apple'), (2, 'banana')]", "[('apple', 1), ('banana', 2)]", "[(1, 0), (2, 1)]"],
           correctIndex: 1,
           explanation: "`enumerate()` produces `(index, value)` tuples. With `start=1`, the first index is `1`, giving `(1, 'apple'), (2, 'banana')`."
+        },
+        {
+          question: "What does `break` do inside a nested loop?",
+          options: ["Exits all enclosing loops", "Exits only the innermost loop containing the `break`", "Skips to the next iteration of the outer loop", "Raises a StopIteration exception"],
+          correctIndex: 1,
+          explanation: "`break` only exits the innermost loop it is placed in. To break out of multiple nested loops, you can use a flag variable, refactor into a function with `return`, or use exception-based control flow."
+        },
+        {
+          question: "What is the output of `for i in range(3): pass` followed by `print(i)`?",
+          options: ["NameError", "0", "2", "3"],
+          correctIndex: 2,
+          explanation: "In Python, the loop variable `i` persists after the loop ends with its last assigned value. Since `range(3)` yields 0, 1, 2, the variable `i` is `2` after the loop completes."
+        },
+        {
+          question: "What does `while True: ... break` accomplish as a pattern?",
+          options: ["An infinite loop that never stops", "A syntax error because `break` cannot appear in `while True`", "A loop that runs exactly twice", "A loop that runs at least once before checking a condition"],
+          correctIndex: 3,
+          explanation: "The `while True` loop with a conditional `break` inside is Python's idiom for a do-while loop (which Python lacks). The body always executes at least once before the exit condition is evaluated."
         }
       ]
     },
@@ -156,6 +192,12 @@ export const topicQuizzes = {
           options: ["Functions run faster than other objects", "Functions can be assigned to variables, passed as arguments, and returned from other functions", "Functions have higher priority than classes", "Functions must be defined before they are used"],
           correctIndex: 1,
           explanation: "First-class objects can be used anywhere a value can be used. Python functions can be stored in variables, passed as arguments to other functions, and returned as values."
+        },
+        {
+          question: "What happens when you use a mutable default argument like `def add(item, lst=[]):`?",
+          options: ["A new list is created each time the function is called", "The same list object is shared across all calls, accumulating items", "Python raises a SyntaxError", "The default is ignored if no argument is passed"],
+          correctIndex: 1,
+          explanation: "Default argument values are evaluated once at function definition time. A mutable default like `[]` is shared across all calls, so items persist between calls. Use `None` as the default and create the list inside the function instead."
         }
       ]
     },
@@ -211,6 +253,12 @@ export const topicQuizzes = {
           options: ["A & B", "A | B", "A - B", "A ^ B"],
           correctIndex: 2,
           explanation: "`A - B` (set difference) returns all elements that are in A but not in B. `A & B` is intersection, `A | B` is union, and `A ^ B` is symmetric difference."
+        },
+        {
+          question: "What does `collections.defaultdict(list)` do when you access a missing key?",
+          options: ["Automatically creates the key with an empty list as the default value", "Raises a KeyError", "Returns None", "Returns an empty tuple"],
+          correctIndex: 0,
+          explanation: "`defaultdict` takes a factory function as its argument. When a missing key is accessed, it calls the factory (`list()` here) to create a default value, inserts it, and returns it. This avoids the need to check for key existence before appending."
         }
       ]
     },
@@ -260,6 +308,12 @@ export const topicQuizzes = {
           options: ["'  Hello  '", "'Hello'", "'Hello  '", "'  Hello'"],
           correctIndex: 1,
           explanation: "`.strip()` removes leading and trailing whitespace from both ends of the string, returning `'Hello'`. Use `.lstrip()` or `.rstrip()` to strip only one side."
+        },
+        {
+          question: "What does `\"hello\".replace(\"l\", \"r\", 1)` return?",
+          options: ["'herro'", "'herlo'", "'hello'", "'rerlo'"],
+          correctIndex: 1,
+          explanation: "The third argument to `.replace()` limits the number of replacements. With `1`, only the first occurrence of `'l'` is replaced, producing `'herlo'`. Without a count, all occurrences would be replaced."
         }
       ]
     },
@@ -303,6 +357,12 @@ export const topicQuizzes = {
           options: ["A division error", "A new Path object for 'data/output.txt'", "The string 'data/output.txt'", "An integer"],
           correctIndex: 1,
           explanation: "`pathlib` overloads the `/` operator for path joining. `Path(\"data\") / \"output.txt\"` creates a new `Path` object representing `data/output.txt` in a platform-independent way."
+        },
+        {
+          question: "What does `open('data.txt', 'r', encoding='utf-8')` ensure?",
+          options: ["The file is opened in binary mode", "The file is created if it does not exist", "The file contents are decoded using UTF-8 encoding", "The file is locked for exclusive access"],
+          correctIndex: 2,
+          explanation: "Specifying `encoding='utf-8'` ensures the file is read as UTF-8 text. Without it, Python uses the platform's default encoding, which varies across operating systems and can cause subtle bugs."
         }
       ]
     },
@@ -346,6 +406,12 @@ export const topicQuizzes = {
           options: ["import json as j", "There is no convention; json is always imported as json", "import json as JSON", "from json import *"],
           correctIndex: 1,
           explanation: "The `json` module has no widespread aliasing convention. Unlike `numpy` (aliased as `np`) or `pandas` (as `pd`), `json` is typically imported with its full name: `import json`."
+        },
+        {
+          question: "Why is `from module import *` generally discouraged?",
+          options: ["It causes a syntax error in Python 3", "It only imports private names", "It is slower than named imports", "It pollutes the local namespace with all public names, making it unclear where names come from"],
+          correctIndex: 3,
+          explanation: "Wildcard imports bring every public name from the module into the current namespace. This makes it hard to trace where a name was defined, can cause name collisions, and confuses static analysis tools."
         }
       ]
     },
@@ -395,6 +461,12 @@ export const topicQuizzes = {
           options: ["It causes infinite recursion", "It also catches `KeyboardInterrupt` and `SystemExit`, preventing normal program termination", "It is deprecated in Python 3", "It re-raises all exceptions automatically"],
           correctIndex: 1,
           explanation: "`BaseException` is the root of all exceptions including `KeyboardInterrupt` (Ctrl+C) and `SystemExit`. Catching it prevents users from stopping the program and masks critical system signals."
+        },
+        {
+          question: "What is the EAFP principle in Python error handling?",
+          options: ["Errors Are Fatal Problems — always re-raise exceptions", "Easier to Ask Forgiveness than Permission — use try/except instead of checking conditions first", "Every Action Fails Predictably — all errors are deterministic", "Exceptions Are For Programmers — end users never see exceptions"],
+          correctIndex: 1,
+          explanation: "EAFP (Easier to Ask Forgiveness than Permission) is a core Python idiom: attempt the operation and handle the exception if it fails, rather than checking preconditions. It is often faster and avoids race conditions."
         }
       ]
     }
@@ -482,6 +554,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "`__contains__` is called when you use the `in` operator, e.g., `'deposit' in account`. It lets you define custom membership testing logic for your class."
+        },
+        {
+          question: "What is the Method Resolution Order (MRO) in Python?",
+          options: [
+            "The order in which methods are defined inside a class",
+            "The order Python searches through a class hierarchy to find a method, using the C3 linearization algorithm",
+            "The order in which decorators are applied to methods",
+            "The order methods are stored in `__dict__`"
+          ],
+          correctIndex: 1,
+          explanation: "Python uses the C3 linearization algorithm to determine the MRO. You can inspect it with `MyClass.__mro__` or `MyClass.mro()`. It ensures a consistent and predictable lookup order in multiple inheritance."
+        },
+        {
+          question: "What does `@dataclass(order=True)` add to a dataclass?",
+          options: [
+            "Sorts the fields alphabetically",
+            "Ensures instances are stored in sorted collections",
+            "Adds an `order` attribute to each instance",
+            "Generates `__lt__`, `__le__`, `__gt__`, and `__ge__` based on field order"
+          ],
+          correctIndex: 3,
+          explanation: "`order=True` auto-generates the four comparison dunder methods by comparing instances as tuples of their fields in definition order. This makes instances directly sortable."
         }
       ]
     },
@@ -555,6 +649,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "A `@singleton` decorator intercepts `__call__` on the class. The first call creates and stores the instance; subsequent calls return the cached instance, ensuring only one exists."
+        },
+        {
+          question: "What problem does `@functools.wraps` solve when stacking multiple decorators?",
+          options: [
+            "It prevents decorators from being applied more than once",
+            "It preserves the original function's metadata through each layer of wrapping so introspection tools see the correct name and docstring",
+            "It ensures decorators are applied in the correct order",
+            "It merges the metadata of all decorators into one"
+          ],
+          correctIndex: 1,
+          explanation: "Without `@functools.wraps`, each decorator layer overwrites `__name__`, `__doc__`, and `__wrapped__`. When stacking decorators, every wrapper should use `@functools.wraps` to keep the chain traceable back to the original function."
         }
       ]
     },
@@ -618,6 +723,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "`itertools.islice` returns an iterator that yields at most `n` items from the input, stopping early. This allows safely consuming a finite slice from an infinite generator."
+        },
+        {
+          question: "What does `itertools.chain(iter1, iter2)` do?",
+          options: [
+            "Merges two iterators by alternating elements",
+            "Yields all elements from `iter1` followed by all elements from `iter2` as a single sequence",
+            "Returns a list containing both iterators",
+            "Creates a chain of nested iterators"
+          ],
+          correctIndex: 1,
+          explanation: "`itertools.chain` concatenates multiple iterables lazily, yielding all elements from the first, then all from the second, and so on. It avoids creating an intermediate list in memory."
+        },
+        {
+          question: "What does `generator.send(value)` do?",
+          options: [
+            "Sends a value to the generator and throws an exception",
+            "Appends `value` to the generator's output",
+            "Resumes the generator and makes `value` the result of the current `yield` expression",
+            "Sends `value` to all active generators"
+          ],
+          correctIndex: 2,
+          explanation: "`send(value)` resumes the generator and the `yield` expression evaluates to `value`. This enables two-way communication with generators, turning them into coroutines. The generator must be primed with `next()` or `send(None)` first."
         }
       ]
     },
@@ -680,6 +807,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "`ExitStack` dynamically manages a variable number of context managers. You call `stack.enter_context(cm)` for each, and all are properly cleaned up when the stack exits."
+        },
+        {
+          question: "What arguments does `__exit__(self, exc_type, exc_val, exc_tb)` receive when no exception occurs?",
+          options: [
+            "All three are set to empty strings",
+            "All three are set to `None`",
+            "`exc_type` is `None` but `exc_val` and `exc_tb` are undefined",
+            "The method is not called when no exception occurs"
+          ],
+          correctIndex: 1,
+          explanation: "`__exit__` is always called when leaving the `with` block. When no exception occurred, all three arguments (`exc_type`, `exc_val`, `exc_tb`) are `None`. This lets you distinguish normal exit from error handling."
         }
       ]
     },
@@ -742,6 +880,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "As the content notes: readability is more important than micro-optimization. Overly complex comprehensions should be refactored into explicit generator functions for clarity."
+        },
+        {
+          question: "What does `(x**2 for x in range(10))` create?",
+          options: [
+            "A tuple of squares",
+            "A list comprehension",
+            "A syntax error because parentheses are for tuples",
+            "A generator expression that lazily yields squares"
+          ],
+          correctIndex: 3,
+          explanation: "Parentheses around a comprehension-style expression create a generator expression, not a tuple. It yields values lazily one at a time, consuming minimal memory regardless of the range size."
+        },
+        {
+          question: "What is the output of `{k: v for k, v in [('a', 1), ('b', 2), ('a', 3)]}`?",
+          options: [
+            "{'a': 1, 'b': 2, 'a': 3}",
+            "{'a': 3, 'b': 2}",
+            "{'a': 1, 'b': 2}",
+            "KeyError because 'a' appears twice"
+          ],
+          correctIndex: 1,
+          explanation: "Dict comprehensions follow the same rule as dict literals: later keys overwrite earlier ones. Since `'a'` appears twice, the last value `3` wins, producing `{'a': 3, 'b': 2}`."
         }
       ]
     },
@@ -810,6 +970,17 @@ export const topicQuizzes = {
           options: ["pylint", "flake8", "mypy", "black"],
           correctIndex: 2,
           explanation: "`mypy` is the primary static type checker for Python. It reads type annotations and flags type mismatches before runtime. It can be integrated into CI/CD pipelines."
+        },
+        {
+          question: "What does `Union[int, str]` mean in a type hint, and what is its modern equivalent?",
+          options: [
+            "The value must be both `int` and `str` at the same time; no modern equivalent",
+            "The value can be either `int` or `str`; in Python 3.10+ you can write `int | str`",
+            "The value starts as `int` and converts to `str`; replaced by `cast()`",
+            "The value is a combined int-str type; replaced by `TypeAlias`"
+          ],
+          correctIndex: 1,
+          explanation: "`Union[int, str]` indicates the value can be either type. Python 3.10 introduced the `X | Y` syntax as a cleaner alternative, so `int | str` is equivalent to `Union[int, str]`."
         }
       ]
     },
@@ -883,6 +1054,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "`@patch` replaces the target with a `Mock` object for the duration of the test, then restores the original. This isolates the code under test from external dependencies like databases or APIs."
+        },
+        {
+          question: "What does `@pytest.fixture(autouse=True)` do?",
+          options: [
+            "Makes the fixture available only in the current file",
+            "Automatically applies the fixture to every test in its scope without requiring it as a parameter",
+            "Runs the fixture after each test instead of before",
+            "Skips the fixture if the test already has a fixture with the same name"
+          ],
+          correctIndex: 1,
+          explanation: "`autouse=True` means the fixture is automatically used by every test in its scope (function, class, module, or session) without the test needing to declare it as a parameter. Useful for setup/teardown that every test needs."
+        },
+        {
+          question: "What does `Mock(side_effect=ValueError('bad'))` do when the mock is called?",
+          options: [
+            "Returns a `ValueError` object",
+            "Logs the error and returns `None`",
+            "Sets `ValueError` as the mock's return type",
+            "Raises `ValueError('bad')` every time the mock is called"
+          ],
+          correctIndex: 3,
+          explanation: "When `side_effect` is set to an exception class or instance, calling the Mock raises that exception. This is useful for testing error handling paths. `side_effect` can also be a function or an iterable of return values."
         }
       ]
     },
@@ -945,6 +1138,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "`re.compile()` parses the pattern into an internal representation once. Reusing the compiled object avoids re-parsing on every call, which is a significant improvement in tight loops."
+        },
+        {
+          question: "What does the `re.DOTALL` (re.S) flag change about the `.` metacharacter?",
+          options: [
+            "Makes `.` match literal dots only",
+            "Makes `.` match Unicode characters",
+            "Makes `.` match any character including newlines",
+            "Makes `.` match only digits"
+          ],
+          correctIndex: 2,
+          explanation: "By default, `.` matches any character except a newline. With `re.DOTALL`, `.` also matches `\\n`, allowing patterns to span multiple lines. This is useful for parsing multi-line text blocks."
         }
       ]
     }
@@ -1032,6 +1236,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 3,
           explanation: "`asyncio.run()` (Python 3.7+) is the modern, preferred way to run the top-level coroutine. The older `loop.run_until_complete()` pattern still works but is more verbose."
+        },
+        {
+          question: "What happens if you call a coroutine function without `await`?",
+          options: [
+            "The coroutine executes immediately and returns its result",
+            "A `SyntaxError` is raised",
+            "A coroutine object is created but never executed, and Python emits a `RuntimeWarning`",
+            "The function runs in a background thread"
+          ],
+          correctIndex: 2,
+          explanation: "Calling an `async def` function without `await` creates a coroutine object but does not run it. Python detects unawaited coroutines and emits `RuntimeWarning: coroutine was never awaited`. Always `await` or schedule coroutines as tasks."
+        },
+        {
+          question: "What does `asyncio.create_task(coro)` do differently from `await coro`?",
+          options: [
+            "There is no difference; both run the coroutine immediately",
+            "`create_task` schedules the coroutine to run concurrently on the event loop; `await` runs it sequentially",
+            "`create_task` runs the coroutine in a separate thread",
+            "`create_task` caches the result for future calls"
+          ],
+          correctIndex: 1,
+          explanation: "`create_task()` wraps the coroutine in a `Task` and schedules it on the event loop immediately, allowing it to run concurrently with other tasks. `await coro` runs the coroutine sequentially, blocking the caller until it completes."
         }
       ]
     },
@@ -1100,6 +1326,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "Metaclasses offer full control over class creation including `__new__` and `__init__`. `__init_subclass__` is a lighter hook that runs after the subclass is created, sufficient for registration or simple validation."
+        },
+        {
+          question: "What does `__prepare__` do in a metaclass?",
+          options: [
+            "Initializes instance attributes before `__init__`",
+            "Prepares the metaclass for garbage collection",
+            "Validates the class name before creation",
+            "Returns the namespace object (usually a dict) used during class body execution"
+          ],
+          correctIndex: 3,
+          explanation: "`__prepare__` is a classmethod on the metaclass called before the class body executes. It returns the namespace (dict-like object) used to collect the class body definitions. Returning an `OrderedDict` was historically used to track definition order."
+        },
+        {
+          question: "How can you prevent a class from being subclassed without using a metaclass?",
+          options: [
+            "Set `__subclass__ = False` on the class",
+            "Use `__init_subclass__` to raise `TypeError` when a subclass is created",
+            "Mark the class with `@final` and Python enforces it at runtime",
+            "It is impossible without a metaclass"
+          ],
+          correctIndex: 1,
+          explanation: "You can override `__init_subclass__` in the base class to raise `TypeError`, preventing subclassing. The `@typing.final` decorator only signals intent to type checkers — it does not enforce anything at runtime."
         }
       ]
     },
@@ -1168,6 +1416,28 @@ export const topicQuizzes = {
           options: ["gc", "sys", "tracemalloc", "memory_profiler"],
           correctIndex: 2,
           explanation: "`tracemalloc` (standard library, Python 3.4+) traces Python memory allocations. `tracemalloc.get_traced_memory()` returns `(current, peak)` in bytes since tracing started."
+        },
+        {
+          question: "What does `gc.collect()` do and when might you call it manually?",
+          options: [
+            "Frees all Python objects from memory",
+            "Disables the garbage collector permanently",
+            "Counts the total number of objects in memory",
+            "Forces the cyclic garbage collector to run, collecting unreachable objects involved in reference cycles"
+          ],
+          correctIndex: 3,
+          explanation: "`gc.collect()` manually triggers the cyclic garbage collector. You might call it before a memory-sensitive operation or benchmarking to ensure reference cycles are cleaned up. Reference counting handles most deallocation automatically."
+        },
+        {
+          question: "What does `sys.getrefcount(obj)` return and why is the count higher than expected?",
+          options: [
+            "The number of variables pointing to `obj`; the count is exact",
+            "The reference count of `obj`; it includes a temporary reference from the `getrefcount()` argument itself",
+            "The number of times `obj` has been accessed; it resets on each call",
+            "The number of weak references to `obj`; it excludes strong references"
+          ],
+          correctIndex: 1,
+          explanation: "`sys.getrefcount()` returns the current reference count. The result is always at least one higher than expected because passing `obj` as an argument to `getrefcount()` temporarily creates an additional reference."
         }
       ]
     },
@@ -1225,6 +1495,17 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "`timeit.timeit(stmt, number=n)` runs `stmt` exactly `n` times and returns the total elapsed time. Running many iterations averages out variability, giving reliable micro-benchmarks."
+        },
+        {
+          question: "What does `cProfile`'s `cumtime` column represent in profiling output?",
+          options: [
+            "The time spent only in the function itself, excluding subcalls",
+            "The total number of times the function was called",
+            "The cumulative time spent in the function including all subcalls",
+            "The memory allocated by the function"
+          ],
+          correctIndex: 2,
+          explanation: "`cumtime` (cumulative time) includes time spent in the function and all functions it calls. `tottime` shows only the function's own time. Sorting by `cumtime` reveals the most expensive call chains."
         }
       ]
     },
@@ -1272,6 +1553,17 @@ export const topicQuizzes = {
           options: ["__types__.py", "py.typed", "typing.marker", "__typed__.py"],
           correctIndex: 1,
           explanation: "An empty `py.typed` marker file in the package directory tells type checkers (like `mypy`) that the package ships type information. This is specified in PEP 561."
+        },
+        {
+          question: "What is the difference between a wheel (`.whl`) and a source distribution (`.tar.gz`)?",
+          options: [
+            "Wheels are compressed; source distributions are not",
+            "A wheel is a pre-built binary format that installs without a build step; a source distribution requires building during install",
+            "Source distributions are newer and preferred over wheels",
+            "Wheels only work on Linux; source distributions are cross-platform"
+          ],
+          correctIndex: 1,
+          explanation: "Wheels (PEP 427) are pre-built packages that `pip` can install directly without running `setup.py`. Source distributions contain raw source code and may require compilation. Wheels make installs faster and more reproducible."
         }
       ]
     },
@@ -1334,6 +1626,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 1,
           explanation: "The GoF structural Decorator wraps objects (not functions) to add behavior while preserving the interface. Python's `@decorator` syntax is a language feature for wrapping callable objects at definition time."
+        },
+        {
+          question: "How is the Observer pattern typically implemented in Python using an `Event` class?",
+          options: [
+            "Using `os.signal` handlers",
+            "Using a list of callback functions that are called when the event is triggered",
+            "Using `threading.Event` objects",
+            "Using metaclasses to intercept attribute access"
+          ],
+          correctIndex: 1,
+          explanation: "A simple Python `Event` class maintains a list of subscriber callbacks. `subscribe(handler)` appends to the list, and `emit(*args)` iterates over all handlers and calls each one. This decouples the event source from its consumers."
+        },
+        {
+          question: "What is the Pythonic alternative to the classic Singleton pattern?",
+          options: [
+            "Global variables with no encapsulation",
+            "Using `__del__` to enforce a single instance",
+            "Module-level instances, since Python modules are cached and imported only once",
+            "There is no alternative; Singleton is the only approach"
+          ],
+          correctIndex: 2,
+          explanation: "Python modules are singletons by nature: they are imported once and cached in `sys.modules`. Creating an instance at module level and importing it provides singleton behavior without metaclass complexity."
         }
       ]
     },
@@ -1407,6 +1721,28 @@ export const topicQuizzes = {
           ],
           correctIndex: 2,
           explanation: "`asyncio` handles I/O-bound concurrency most efficiently for async-compatible code: a single thread handles thousands of concurrent operations via an event loop with no thread overhead."
+        },
+        {
+          question: "What does `multiprocessing.Queue` provide that a regular `queue.Queue` does not?",
+          options: [
+            "Thread safety",
+            "Inter-process communication: it uses pipes and serialization to share data between separate processes",
+            "Faster performance for single-threaded programs",
+            "Automatic load balancing across CPU cores"
+          ],
+          correctIndex: 1,
+          explanation: "`multiprocessing.Queue` uses OS-level pipes and pickle serialization to allow safe data exchange between separate Python processes. `queue.Queue` only works between threads within a single process."
+        },
+        {
+          question: "What is `concurrent.futures.as_completed(futures)` used for?",
+          options: [
+            "Cancelling all pending futures",
+            "Running all futures in parallel on separate processes",
+            "Waiting until all futures complete before returning",
+            "Yielding futures as they finish, regardless of submission order"
+          ],
+          correctIndex: 3,
+          explanation: "`as_completed()` returns an iterator that yields `Future` objects as they complete. This lets you process results as they become available rather than waiting for all tasks. It works with both `ThreadPoolExecutor` and `ProcessPoolExecutor`."
         }
       ]
     }
