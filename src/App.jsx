@@ -23,6 +23,7 @@ const LanguageLevelPage = lazy(() => import('./pages/LanguageLevelPage'))
 const PendingApprovalPage = lazy(() => import('./pages/PendingApprovalPage'))
 const DeniedPage = lazy(() => import('./pages/DeniedPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
+const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 
 
 function PageTracker() {
@@ -102,6 +103,7 @@ function App() {
                 <Route path="/dashboard/language/:languageId/:level" element={<LanguageLevelPage />} />
                 <Route path="/dashboard/progress" element={<ProgressPage />} />
                 <Route path="/dashboard/prerequisites" element={<PrerequisitesPage />} />
+                <Route path="/dashboard/settings" element={<SettingsPage />} />
                 <Route path="/dashboard/admin" element={<AdminPage />} />
               </Route>
             </Route>

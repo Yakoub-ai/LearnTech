@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Navigate } from 'react-router-dom'
-import { CheckCircle2, XCircle, Clock, Users, Shield, RefreshCw, Flag } from 'lucide-react'
+import { CheckCircle2, XCircle, Clock, Users, Shield, RefreshCw, Flag, Bell, BellOff } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import UserProgressTable from '../components/admin/UserProgressTable'
 import UsageStats from '../components/admin/UsageStats'
 import QuizReportsPanel from '../components/admin/QuizReportsPanel'
+import {
+  requestNotificationPermission,
+  subscribeToPush,
+  getNotificationPreferences,
+  updateNotificationPreferences,
+} from '../utils/notifications'
 
 const STATUS_TABS = ['pending', 'approved', 'denied', 'all']
 
@@ -38,6 +44,8 @@ export default function AdminPage() {
   const [reportsKey, setReportsKey] = useState(0)
   const [newReportCount, setNewReportCount] = useState(0)
   const [error, setError] = useState(null)
+  const [signupAlertsEnabled, setSignupAlertsEnabled] = useState(false)
+  const [alertsLoading, setAlertsLoading] = useState(false)
 
   const fetchUsers = useCallback(async () => {
     if (!supabase) return
@@ -98,6 +106,33 @@ export default function AdminPage() {
     fetchNewReportCount()
   }, [reportsKey])
 
+  useEffect(() => {
+    async function fetchAdminAlertPref() {
+      if (!user) return
+      const prefs = await getNotificationPreferences(supabase, user.id)
+      if (prefs) setSignupAlertsEnabled(prefs.admin_signup_alerts)
+    }
+    fetchAdminAlertPref()
+  }, [user])
+
+  async function handleToggleSignupAlerts() {
+    setAlertsLoading(true)
+    const newValue = !signupAlertsEnabled
+    if (newValue) {
+      const perm = await requestNotificationPermission()
+      if (perm !== 'granted') {
+        setAlertsLoading(false)
+        return
+      }
+      await subscribeToPush(supabase, user.id)
+    }
+    await updateNotificationPreferences(supabase, user.id, {
+      admin_signup_alerts: newValue,
+    })
+    setSignupAlertsEnabled(newValue)
+    setAlertsLoading(false)
+  }
+
   // Guard after all hooks — placing it earlier violates Rules of Hooks
   if (!isAdmin) return <Navigate to="/dashboard" replace />
 
@@ -141,13 +176,28 @@ export default function AdminPage() {
           <Shield className="w-6 h-6 text-[var(--color-primary)]" />
           <h1 className="text-2xl font-bold text-[var(--color-text)]">Admin Dashboard</h1>
         </div>
-        <button
-          onClick={handleRefresh}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] cursor-pointer transition-colors"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleToggleSignupAlerts}
+            disabled={alertsLoading}
+            title={signupAlertsEnabled ? 'Signup alerts enabled' : 'Enable signup alerts'}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm cursor-pointer transition-colors disabled:opacity-50 ${
+              signupAlertsEnabled
+                ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                : 'border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+            }`}
+          >
+            {signupAlertsEnabled ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
+            <span className="hidden sm:inline">{signupAlertsEnabled ? 'Alerts on' : 'Alerts off'}</span>
+          </button>
+          <button
+            onClick={handleRefresh}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] cursor-pointer transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Section nav */}
