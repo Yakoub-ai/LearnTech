@@ -19,6 +19,7 @@ export default function YouTubeEmbed({ videoId, title }) {
           alt={title || 'Video thumbnail'}
           className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
           loading="lazy"
+          decoding="async"
           onError={() => {
             const fallback = getYouTubeThumbnail(videoId, 'default')
             if (thumbSrc !== fallback) setThumbSrc(fallback)
@@ -41,7 +42,7 @@ export default function YouTubeEmbed({ videoId, title }) {
   return (
     <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-black">
       <iframe
-        src={getYouTubeEmbedUrl(videoId)}
+        src={getYouTubeEmbedUrl(videoId) + '&autoplay=1'}
         title={title || 'YouTube video'}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
