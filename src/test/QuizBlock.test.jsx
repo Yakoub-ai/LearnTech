@@ -2,6 +2,10 @@ import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import QuizBlock from '../components/interactive/QuizBlock'
 
+vi.mock('../utils/quizShuffle', () => ({
+  shuffleQuiz: (questions) => questions,
+}))
+
 // framer-motion can cause issues in jsdom — provide a minimal stub
 vi.mock('framer-motion', () => ({
   motion: {

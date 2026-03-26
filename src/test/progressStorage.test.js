@@ -45,10 +45,12 @@ describe('getProgress', () => {
 
   it('returns initial state (does not throw) when localStorage has corrupted JSON', () => {
     localStorage.setItem(STORAGE_KEY, 'not-valid-json{{{')
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     expect(() => getProgress()).not.toThrow()
     const progress = getProgress()
     expect(progress.roles).toEqual({})
     expect(progress.languages).toEqual({})
+    warnSpy.mockRestore()
   })
 })
 
