@@ -1080,5 +1080,944 @@ WHERE schemaname = 'public'
 ORDER BY pg_relation_size(indexrelid) DESC;`
       }
     ]
+  },
+
+  // ============================================================
+  // SQL LAB 7 — Subqueries & CTEs
+  // ============================================================
+  {
+    id: 'sql-lab-7',
+    languageId: 'sql',
+    level: 'beginner',
+    title: 'Subqueries & CTEs',
+    description: 'Learn to write scalar subqueries, correlated subqueries, and Common Table Expressions (CTEs) to break complex queries into readable, reusable building blocks.',
+    estimatedMinutes: 25,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before you begin, make sure your PostgreSQL environment is ready. Head to the <strong>Dev Setup</strong> tab for step-by-step instructions.',
+        starterCode: null,
+        hints: [],
+        expectedOutput: 'A running PostgreSQL instance with psql access.',
+        solution: null
+      },
+      {
+        title: 'Step 2: Scalar Subqueries in SELECT',
+        instruction: 'A scalar subquery returns exactly one row and one column — you can use it anywhere a single value is expected, including the SELECT list. Here, add a column to each employee row showing the average salary of their department. This avoids a self-join and keeps the query readable. The subquery runs once per row, so it is convenient for small tables; for large tables a window function is more efficient.',
+        starterCode: `-- Setup: create and populate the schema
+CREATE TABLE departments (
+    id   SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE employees (
+    id            SERIAL PRIMARY KEY,
+    name          VARCHAR(100) NOT NULL,
+    department_id INT REFERENCES departments(id),
+    salary        NUMERIC(10,2) NOT NULL
+);
+
+INSERT INTO departments (name) VALUES
+    ('Engineering'),
+    ('Design'),
+    ('Marketing');
+
+INSERT INTO employees (name, department_id, salary) VALUES
+    ('Alice',   1, 95000),
+    ('Bob',     1, 85000),
+    ('Carol',   1, 105000),
+    ('Dave',    2, 72000),
+    ('Eve',     2, 78000),
+    ('Frank',   3, 65000),
+    ('Grace',   3, 68000);
+
+-- TODO: Write a SELECT that returns each employee's name, salary,
+-- and a column "dept_avg_salary" showing the average salary of
+-- their own department, using a scalar subquery in the SELECT list.`,
+        hints: [
+          'A scalar subquery in SELECT looks like: SELECT name, (SELECT AVG(...) FROM ... WHERE ...) AS alias',
+          'Correlate the subquery to the outer row with: WHERE department_id = e.department_id',
+          'Alias the outer table: FROM employees e'
+        ],
+        expectedOutput: `name  | salary   | dept_avg_salary
+------+----------+----------------
+Alice | 95000.00 | 95000.00
+Bob   | 85000.00 | 95000.00
+Carol | 105000.00| 95000.00
+Dave  | 72000.00 | 75000.00
+...`,
+        solution: `SELECT
+    e.name,
+    e.salary,
+    (
+        SELECT AVG(e2.salary)
+        FROM employees e2
+        WHERE e2.department_id = e.department_id
+    ) AS dept_avg_salary
+FROM employees e
+ORDER BY e.department_id, e.salary DESC;`
+      },
+      {
+        title: 'Step 3: Subqueries in WHERE (IN / NOT IN)',
+        instruction: 'Subqueries in the WHERE clause let you filter rows based on the result of another query. IN returns rows whose column value appears in the subquery result set. NOT IN is useful for finding "missing" relationships — but beware: NOT IN returns no rows at all if the subquery contains any NULL values. Always filter NULLs out of NOT IN subqueries, or prefer NOT EXISTS instead.',
+        starterCode: `-- Using the employees and departments tables from Step 2.
+
+-- TODO: Query 1 — Find all employees who earn more than the
+-- company-wide average salary. Use a subquery in the WHERE clause.
+
+-- TODO: Query 2 — Find departments that have NO employees.
+-- Use NOT IN with a subquery that lists all department_id values
+-- present in the employees table. Filter out NULLs in the subquery.`,
+        hints: [
+          'WHERE salary > (SELECT AVG(salary) FROM employees)',
+          'WHERE id NOT IN (SELECT department_id FROM employees WHERE department_id IS NOT NULL)',
+          'Always add WHERE department_id IS NOT NULL inside a NOT IN subquery to avoid returning zero rows'
+        ],
+        expectedOutput: `Query 1: Employees above company average (e.g. Alice, Carol)
+Query 2: Departments with no employees (none in this seed data — try deleting an employee to test)`,
+        solution: `-- Query 1: above-average earners
+SELECT name, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees)
+ORDER BY salary DESC;
+
+-- Query 2: departments with no employees
+SELECT name
+FROM departments
+WHERE id NOT IN (
+    SELECT department_id
+    FROM employees
+    WHERE department_id IS NOT NULL
+);`
+      },
+      {
+        title: 'Step 4: Correlated Subqueries',
+        instruction: 'A correlated subquery references a column from the outer query — it re-executes for every row the outer query processes. Use this to compute per-row context that depends on the outer row\'s values. Here, rank each employee within their department: count how many employees in the same department earn strictly more than this employee, then add 1 to get the rank. This is a classic interview pattern and teaches how correlation works before window functions are introduced.',
+        starterCode: `-- Using the employees table from Step 2.
+
+-- TODO: Write a query that returns each employee's name,
+-- department_id, salary, and "dept_rank" — their salary rank
+-- within their department (1 = highest earner).
+-- Use a correlated subquery in the SELECT list:
+-- count employees in the same department who earn MORE,
+-- then +1 gives the rank.`,
+        hints: [
+          'SELECT name, department_id, salary, (SELECT COUNT(*) + 1 FROM ...) AS dept_rank',
+          'Correlate on both department_id AND salary: WHERE department_id = e.department_id AND salary > e.salary',
+          'This is equivalent to RANK() OVER (PARTITION BY department_id ORDER BY salary DESC)'
+        ],
+        expectedOutput: `name  | department_id | salary    | dept_rank
+------+---------------+-----------+----------
+Carol | 1             | 105000.00 | 1
+Alice | 1             |  95000.00 | 2
+Bob   | 1             |  85000.00 | 3
+Eve   | 2             |  78000.00 | 1
+...`,
+        solution: `SELECT
+    e.name,
+    e.department_id,
+    e.salary,
+    (
+        SELECT COUNT(*) + 1
+        FROM employees e2
+        WHERE e2.department_id = e.department_id
+          AND e2.salary > e.salary
+    ) AS dept_rank
+FROM employees e
+ORDER BY e.department_id, dept_rank;`
+      },
+      {
+        title: 'Step 5: CTEs with WITH',
+        instruction: 'Common Table Expressions (CTEs) defined with the WITH clause give a subquery a name, making complex queries dramatically easier to read and maintain. You can chain multiple CTEs in one WITH block — each CTE can reference the CTEs defined before it. Rewrite the correlated subquery from Step 4 as a CTE, then chain a second CTE to find the single top earner in each department.',
+        starterCode: `-- Using the employees and departments tables from Step 2.
+
+-- TODO Part A: Rewrite the dept_rank correlated subquery from Step 4
+-- as a CTE called "ranked_employees". Then SELECT from it,
+-- filtering to WHERE dept_rank = 1 to get top earners per department.
+
+-- TODO Part B: Chain a second CTE called "dept_names" that joins
+-- ranked_employees with departments to also show the department name.
+-- Final SELECT: department name, top earner's name, and their salary.`,
+        hints: [
+          'WITH ranked_employees AS ( ... ), dept_names AS ( ... ) SELECT ... FROM dept_names',
+          'The second CTE can JOIN ranked_employees with departments on department_id = id',
+          'CTEs are evaluated once and referenced by name — they act like temporary views'
+        ],
+        expectedOutput: `dept_name   | top_earner | salary
+------------+------------+-----------
+Engineering | Carol      | 105000.00
+Design      | Eve        |  78000.00
+Marketing   | Grace      |  68000.00`,
+        solution: `WITH ranked_employees AS (
+    SELECT
+        e.name,
+        e.department_id,
+        e.salary,
+        (
+            SELECT COUNT(*) + 1
+            FROM employees e2
+            WHERE e2.department_id = e.department_id
+              AND e2.salary > e.salary
+        ) AS dept_rank
+    FROM employees e
+),
+dept_top_earners AS (
+    SELECT
+        d.name  AS dept_name,
+        re.name AS top_earner,
+        re.salary
+    FROM ranked_employees re
+    JOIN departments d ON d.id = re.department_id
+    WHERE re.dept_rank = 1
+)
+SELECT dept_name, top_earner, salary
+FROM dept_top_earners
+ORDER BY salary DESC;`
+      }
+    ]
+  },
+
+  // ============================================================
+  // SQL LAB 8 — Transactions & Integrity
+  // ============================================================
+  {
+    id: 'sql-lab-8',
+    languageId: 'sql',
+    level: 'mid',
+    title: 'Transactions & Integrity',
+    description: 'Master PostgreSQL transaction control — BEGIN/COMMIT/ROLLBACK, SAVEPOINTs for partial rollback, and constraint types that enforce business rules at the database level.',
+    estimatedMinutes: 30,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before you begin, make sure your PostgreSQL environment is ready. Head to the <strong>Dev Setup</strong> tab for step-by-step instructions.',
+        starterCode: null,
+        hints: [],
+        expectedOutput: 'A running PostgreSQL instance with psql access.',
+        solution: null
+      },
+      {
+        title: 'Step 2: Basic Transaction — Transfer Money',
+        instruction: 'A transaction groups multiple SQL statements into an atomic unit: either all succeed (COMMIT) or all are reverted (ROLLBACK). This is critical for financial operations — if you debit one account but the credit fails, you must roll back the debit. PostgreSQL wraps every statement in an implicit transaction; use explicit BEGIN/COMMIT to group multiple statements. Run the failing version first to see the inconsistent state it would create without a transaction.',
+        starterCode: `-- Setup: create accounts table
+CREATE TABLE accounts (
+    id      SERIAL PRIMARY KEY,
+    owner   VARCHAR(50) NOT NULL,
+    balance NUMERIC(12,2) NOT NULL DEFAULT 0
+);
+
+INSERT INTO accounts (owner, balance) VALUES
+    ('Alice', 1000.00),
+    ('Bob',     500.00);
+
+-- TODO: Write a transaction that transfers $200 from Alice to Bob.
+-- Step 1: BEGIN the transaction
+-- Step 2: Deduct $200 from Alice
+-- Step 3: Add $200 to Bob
+-- Step 4: COMMIT
+
+-- Then write a second version that shows ROLLBACK:
+-- Deduct $200 from Alice, then deliberately ROLLBACK.
+-- Verify Alice still has her original balance.`,
+        hints: [
+          'BEGIN; ... COMMIT; wraps the two UPDATEs in one atomic operation',
+          'To test rollback: BEGIN; UPDATE accounts SET balance = balance - 200 WHERE owner = \'Alice\'; ROLLBACK;',
+          'After ROLLBACK, run SELECT * FROM accounts to verify balances are unchanged'
+        ],
+        expectedOutput: `After COMMIT: Alice=800.00, Bob=700.00
+After ROLLBACK test: Alice=1000.00 (original balance restored)`,
+        solution: `-- Successful transfer
+BEGIN;
+
+UPDATE accounts SET balance = balance - 200 WHERE owner = 'Alice';
+UPDATE accounts SET balance = balance + 200 WHERE owner = 'Bob';
+
+COMMIT;
+
+-- Verify
+SELECT owner, balance FROM accounts ORDER BY owner;
+
+-- Rollback demo: start a transfer but abort it
+BEGIN;
+
+UPDATE accounts SET balance = balance - 200 WHERE owner = 'Alice';
+
+-- Something went wrong — roll back the entire transaction
+ROLLBACK;
+
+-- Alice's balance is unchanged
+SELECT owner, balance FROM accounts ORDER BY owner;`
+      },
+      {
+        title: 'Step 3: SAVEPOINTs for Partial Rollback',
+        instruction: 'SAVEPOINTs let you mark an intermediate point inside a transaction so you can roll back to that point without aborting the whole transaction. This is useful when inserting a batch of rows where some may violate constraints — roll back just the bad insert and continue processing the rest. Real-world use: importing CSV rows where some are invalid; skip the bad rows rather than rejecting the entire batch.',
+        starterCode: `-- Using the accounts table from Step 2.
+
+-- TODO: Open a transaction and:
+-- 1. Insert a new account for 'Carol' with balance 300
+-- 2. Create a SAVEPOINT called after_carol
+-- 3. Insert a new account for 'Dave' with balance -50  (intentionally bad)
+-- 4. ROLLBACK TO SAVEPOINT after_carol  (undo Dave's insert only)
+-- 5. Insert a valid account for 'Eve' with balance 250
+-- 6. COMMIT
+
+-- Verify: Carol and Eve exist, Dave does not.`,
+        hints: [
+          'SAVEPOINT after_carol; — marks the point after Carol\'s insert',
+          'ROLLBACK TO SAVEPOINT after_carol; — undoes Dave\'s insert but keeps Carol\'s',
+          'RELEASE SAVEPOINT after_carol; is optional cleanup before COMMIT'
+        ],
+        expectedOutput: `owner | balance
+------+---------
+Alice | 800.00
+Bob   | 700.00
+Carol | 300.00
+Eve   | 250.00
+(Dave is NOT present)`,
+        solution: `BEGIN;
+
+INSERT INTO accounts (owner, balance) VALUES ('Carol', 300.00);
+
+SAVEPOINT after_carol;
+
+-- This insert is "bad" — we'll roll it back
+INSERT INTO accounts (owner, balance) VALUES ('Dave', -50.00);
+
+-- Oops — roll back only to after_carol
+ROLLBACK TO SAVEPOINT after_carol;
+
+-- Continue with a valid insert
+INSERT INTO accounts (owner, balance) VALUES ('Eve', 250.00);
+
+COMMIT;
+
+-- Verify
+SELECT owner, balance FROM accounts ORDER BY owner;`
+      },
+      {
+        title: 'Step 4: Foreign Key Constraints & ON DELETE CASCADE',
+        instruction: 'Foreign key constraints enforce referential integrity at the database level — the database rejects any insert or update that would create a dangling reference. ON DELETE CASCADE automatically deletes child rows when the parent is deleted. This is convenient but powerful: accidentally deleting a parent row can silently wipe thousands of child rows. Always choose the ON DELETE behaviour that matches your business rules (CASCADE, SET NULL, RESTRICT, or the default NO ACTION).',
+        starterCode: `-- TODO: Create two tables: customers and orders.
+-- customers: id SERIAL PK, name VARCHAR(100)
+-- orders: id SERIAL PK, customer_id INT FK → customers(id) ON DELETE CASCADE,
+--         amount NUMERIC(10,2)
+
+-- TODO: Insert 2 customers and 3 orders (at least 2 orders for the same customer).
+
+-- TODO: DELETE one customer.
+-- Then SELECT from orders to show that their orders were also deleted (cascade).
+
+-- TODO: Try to insert an order with a customer_id that doesn't exist.
+-- Observe the foreign key violation error.`,
+        hints: [
+          'REFERENCES customers(id) ON DELETE CASCADE — adds the FK with cascade behaviour',
+          'After deleting a customer, SELECT * FROM orders to see cascade in action',
+          'INSERT INTO orders (customer_id, amount) VALUES (999, 100) will fail with: "violates foreign key constraint"'
+        ],
+        expectedOutput: `Before delete: 3 orders exist
+After deleting customer 1: only orders for customer 2 remain
+FK violation test: ERROR: insert or update on table "orders" violates foreign key constraint`,
+        solution: `CREATE TABLE customers (
+    id   SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE orders (
+    id          SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customers(id) ON DELETE CASCADE,
+    amount      NUMERIC(10,2) NOT NULL
+);
+
+INSERT INTO customers (name) VALUES ('Alice'), ('Bob');
+
+INSERT INTO orders (customer_id, amount) VALUES
+    (1, 150.00),
+    (1, 200.00),
+    (2, 75.00);
+
+-- Delete Alice — her orders cascade-delete automatically
+DELETE FROM customers WHERE id = 1;
+
+SELECT * FROM orders;  -- only Bob's order remains
+
+-- FK violation: customer 999 doesn't exist
+INSERT INTO orders (customer_id, amount) VALUES (999, 100.00);`
+      },
+      {
+        title: 'Step 5: CHECK Constraints',
+        instruction: 'CHECK constraints let you encode business rules inside the schema itself, so the database enforces them regardless of which application or script inserts data. Rules enforced in the schema are more reliable than application-layer validation alone — they cannot be bypassed by a migration script or a direct psql session. Common patterns: non-negative balances, valid email format, enumerated status values.',
+        starterCode: `-- TODO: Create a "bank_accounts" table with these CHECK constraints:
+-- - balance must be >= 0
+-- - email must contain '@' (use LIKE '%@%')
+-- - account_type must be one of: 'checking', 'savings', 'business'
+
+-- TODO: Insert a valid row to confirm it works.
+
+-- TODO: Try to insert a row with balance = -100. Observe the violation.
+-- TODO: Try to insert a row with email = 'not-an-email'. Observe the violation.
+-- TODO: Try to insert a row with account_type = 'crypto'. Observe the violation.`,
+        hints: [
+          'CHECK (balance >= 0) — added inline or as a table-level constraint',
+          'CHECK (email LIKE \'%@%\') — a simple format check; production apps use stricter regex via CHECK or a domain',
+          'CHECK (account_type IN (\'checking\', \'savings\', \'business\')) — enumeration constraint',
+          'See: PostgreSQL docs "CHECK Constraints" — https://www.postgresql.org/docs/current/ddl-constraints.html'
+        ],
+        expectedOutput: `Valid insert: success
+balance = -100: ERROR: new row violates check constraint "bank_accounts_balance_check"
+bad email: ERROR: new row violates check constraint "bank_accounts_email_check"
+bad type: ERROR: new row violates check constraint "bank_accounts_account_type_check"`,
+        solution: `CREATE TABLE bank_accounts (
+    id           SERIAL PRIMARY KEY,
+    owner        VARCHAR(100) NOT NULL,
+    email        VARCHAR(200) NOT NULL CHECK (email LIKE '%@%'),
+    balance      NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (balance >= 0),
+    account_type VARCHAR(20) NOT NULL
+        CHECK (account_type IN ('checking', 'savings', 'business'))
+);
+
+-- Valid insert
+INSERT INTO bank_accounts (owner, email, balance, account_type)
+VALUES ('Alice', 'alice@example.com', 500.00, 'checking');
+
+-- Constraint violations (each will ERROR — run them one at a time)
+INSERT INTO bank_accounts (owner, email, balance, account_type)
+VALUES ('Bob', 'bob@example.com', -100.00, 'savings');
+
+INSERT INTO bank_accounts (owner, email, balance, account_type)
+VALUES ('Carol', 'not-an-email', 200.00, 'checking');
+
+INSERT INTO bank_accounts (owner, email, balance, account_type)
+VALUES ('Dave', 'dave@example.com', 300.00, 'crypto');`
+      }
+    ]
+  },
+
+  // ============================================================
+  // SQL LAB 9 — Schema Design
+  // ============================================================
+  {
+    id: 'sql-lab-9',
+    languageId: 'sql',
+    level: 'mid',
+    title: 'Schema Design',
+    description: 'Learn to design well-structured relational schemas: identify and fix normalization violations, choose correct index types, and understand when denormalization makes sense.',
+    estimatedMinutes: 30,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before you begin, make sure your PostgreSQL environment is ready. Head to the <strong>Dev Setup</strong> tab for step-by-step instructions.',
+        starterCode: null,
+        hints: [],
+        expectedOutput: 'A running PostgreSQL instance with psql access.',
+        solution: null
+      },
+      {
+        title: 'Step 2: Identify Normalization Violations',
+        instruction: 'Normalization eliminates redundancy and update anomalies. 1NF requires atomic values and no repeating groups. 2NF requires every non-key column to depend on the whole primary key (relevant when the PK is composite). 3NF requires no transitive dependencies — non-key columns must not depend on other non-key columns. Violations cause update anomalies: change a customer\'s city in one row but not another, and the data becomes inconsistent. Identify all violations in the table below before writing any SQL.',
+        starterCode: `-- This poorly designed orders table violates multiple normal forms.
+-- Study it carefully.
+
+CREATE TABLE orders_bad (
+    order_id        INT,
+    product_id      INT,
+    -- Repeating group violation (1NF): multiple values in one column
+    product_tags    VARCHAR(200),   -- stores 'electronics,sale,featured'
+    -- Partial dependency (2NF): product_name depends only on product_id,
+    --   not the full (order_id, product_id) composite key
+    product_name    VARCHAR(100),
+    unit_price      NUMERIC(10,2),
+    quantity        INT,
+    -- Transitive dependency (3NF): customer_city depends on customer_id,
+    --   not on the order
+    customer_id     INT,
+    customer_name   VARCHAR(100),
+    customer_city   VARCHAR(50),
+    customer_country VARCHAR(50),
+    PRIMARY KEY (order_id, product_id)
+);
+
+-- TODO: In comments below this CREATE TABLE, write out:
+-- 1. Which columns violate 1NF and why
+-- 2. Which columns violate 2NF and why
+-- 3. Which columns violate 3NF and why
+-- (No SQL needed yet — this is an analysis step)`,
+        hints: [
+          '1NF violation: product_tags stores a comma-separated list — not atomic. Each tag should be its own row in a join table.',
+          '2NF violation: product_name and unit_price depend only on product_id, not on (order_id, product_id). They belong in a products table.',
+          '3NF violation: customer_city and customer_country depend on customer_id (a non-key column), not on the composite PK. They belong in a customers table.'
+        ],
+        expectedOutput: `Analysis documented in comments:
+-- 1NF violation: product_tags (non-atomic, comma-separated list)
+-- 2NF violation: product_name, unit_price (depend only on product_id, not full PK)
+-- 3NF violation: customer_name, customer_city, customer_country (depend on customer_id, not the PK)`,
+        solution: `-- 1NF violation:
+--   product_tags VARCHAR(200) stores 'electronics,sale,featured' — multiple values
+--   in one column. Not atomic. Fix: create a product_tags join table.
+
+-- 2NF violation (composite PK is order_id + product_id):
+--   product_name and unit_price depend only on product_id, not on order_id.
+--   Changing a product's name would require updating every row with that product.
+--   Fix: move them to a separate products table.
+
+-- 3NF violation:
+--   customer_name, customer_city, customer_country depend on customer_id
+--   (a non-key attribute), not on the composite PK (order_id, product_id).
+--   Changing a customer's city would require updating every order row.
+--   Fix: move them to a separate customers table.`
+      },
+      {
+        title: 'Step 3: Normalize to 3NF',
+        instruction: 'Decompose the problematic orders_bad table into properly normalized tables. Each table should have a single, clear responsibility. The order_items table becomes a pure junction table: it records which product appeared in which order, plus the quantity. No redundant customer or product data lives in order_items — changes to a product\'s name or a customer\'s city are made in exactly one place.',
+        starterCode: `-- TODO: Create these 4 tables in 3NF:
+--
+-- 1. customers (id, name, city, country)
+-- 2. products   (id, name, unit_price)
+-- 3. orders     (id, customer_id FK→customers, order_date DATE)
+-- 4. order_items (order_id FK→orders, product_id FK→products,
+--                 quantity INT, PRIMARY KEY (order_id, product_id))
+-- 5. product_tags (product_id FK→products, tag VARCHAR(50),
+--                  PRIMARY KEY (product_id, tag))
+--
+-- After creating the tables, insert sample data:
+-- 2 customers, 2 products, 1 order with 2 line items, tags for each product.`,
+        hints: [
+          'order_items has a composite PK: PRIMARY KEY (order_id, product_id)',
+          'product_tags eliminates the comma-separated list: one row per tag per product',
+          'orders.order_date DEFAULT CURRENT_DATE is a convenient default',
+          'Use REFERENCES with ON DELETE CASCADE where child rows should not orphan'
+        ],
+        expectedOutput: `Tables created: customers, products, orders, order_items, product_tags
+Sample data inserted — query with JOINs to reconstruct original order view`,
+        solution: `CREATE TABLE customers (
+    id      SERIAL PRIMARY KEY,
+    name    VARCHAR(100) NOT NULL,
+    city    VARCHAR(50),
+    country VARCHAR(50)
+);
+
+CREATE TABLE products (
+    id         SERIAL PRIMARY KEY,
+    name       VARCHAR(100) NOT NULL,
+    unit_price NUMERIC(10,2) NOT NULL CHECK (unit_price >= 0)
+);
+
+CREATE TABLE orders (
+    id          SERIAL PRIMARY KEY,
+    customer_id INT NOT NULL REFERENCES customers(id),
+    order_date  DATE NOT NULL DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE order_items (
+    order_id   INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    product_id INT NOT NULL REFERENCES products(id),
+    quantity   INT NOT NULL CHECK (quantity > 0),
+    PRIMARY KEY (order_id, product_id)
+);
+
+CREATE TABLE product_tags (
+    product_id INT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    tag        VARCHAR(50) NOT NULL,
+    PRIMARY KEY (product_id, tag)
+);
+
+-- Sample data
+INSERT INTO customers (name, city, country) VALUES
+    ('Alice', 'Stockholm', 'Sweden'),
+    ('Bob',   'Oslo',      'Norway');
+
+INSERT INTO products (name, unit_price) VALUES
+    ('Laptop',  999.00),
+    ('Monitor', 349.00);
+
+INSERT INTO orders (customer_id, order_date) VALUES (1, '2024-06-01');
+
+INSERT INTO order_items (order_id, product_id, quantity) VALUES
+    (1, 1, 1),
+    (1, 2, 2);
+
+INSERT INTO product_tags (product_id, tag) VALUES
+    (1, 'electronics'), (1, 'sale'),
+    (2, 'electronics'), (2, 'featured');`
+      },
+      {
+        title: 'Step 4: Choose Appropriate Indexes',
+        instruction: 'Indexes speed up reads at the cost of write overhead and storage. Choosing the right index type and column order is one of the highest-leverage tuning decisions you can make. A composite index on (a, b) can satisfy queries on (a) alone or (a, b) together — but NOT on (b) alone. Put the most selective column first. Partial indexes index only a subset of rows, making them smaller and faster for filtered queries. Use EXPLAIN ANALYZE to confirm an index is actually used.',
+        starterCode: `-- Using the normalized tables from Step 3.
+-- Analyze these three common query patterns and add the right indexes:
+
+-- Pattern 1: "Find all orders for a given customer"
+--   SELECT * FROM orders WHERE customer_id = $1;
+-- Pattern 2: "Find all order_items for a given order, most recent first"
+--   SELECT * FROM order_items WHERE order_id = $1;
+--   (order_items doesn't have a date, but orders does — join needed)
+-- Pattern 3: "Find all orders placed in the last 30 days"
+--   SELECT * FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '30 days';
+
+-- TODO: Create the following indexes:
+-- 1. Single-column index on orders(customer_id) — for Pattern 1
+-- 2. The composite PK on order_items already covers Pattern 2 — verify it exists
+-- 3. Partial index on orders(order_date) WHERE order_date >= '2024-01-01'
+--    — for Pattern 3, covering only recent orders
+
+-- After creating indexes, run EXPLAIN ANALYZE on Pattern 1 and Pattern 3
+-- to confirm "Index Scan" appears in the plan.`,
+        hints: [
+          'CREATE INDEX idx_orders_customer ON orders(customer_id);',
+          'The PRIMARY KEY (order_id, product_id) on order_items is already an index — check with \\d order_items in psql',
+          'CREATE INDEX idx_orders_recent ON orders(order_date) WHERE order_date >= \'2024-01-01\';',
+          'EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 1; — look for "Index Scan using idx_orders_customer"'
+        ],
+        expectedOutput: `Indexes created:
+  idx_orders_customer on orders(customer_id)
+  idx_orders_recent   on orders(order_date) WHERE order_date >= '2024-01-01'
+EXPLAIN ANALYZE output shows "Index Scan" for both queries`,
+        solution: `-- Single-column index for customer lookups
+CREATE INDEX idx_orders_customer ON orders(customer_id);
+
+-- Partial index for recent-order queries (only indexes rows after 2024-01-01)
+CREATE INDEX idx_orders_recent ON orders(order_date)
+WHERE order_date >= '2024-01-01';
+
+-- Verify the order_items composite PK index exists
+SELECT indexname, indexdef
+FROM pg_indexes
+WHERE tablename = 'order_items';
+
+-- Confirm index usage with EXPLAIN ANALYZE
+EXPLAIN ANALYZE
+SELECT * FROM orders WHERE customer_id = 1;
+
+EXPLAIN ANALYZE
+SELECT * FROM orders
+WHERE order_date >= CURRENT_DATE - INTERVAL '30 days';`
+      },
+      {
+        title: 'Step 5: Denormalization Decision',
+        instruction: 'Normalization minimises redundancy; denormalization deliberately reintroduces it to improve read performance. A common pattern is storing a precomputed aggregate — like a user\'s total order count — on the parent row so dashboards can read it without a GROUP BY scan. The trade-off: you must keep the cached value in sync on every write, which adds complexity. Denormalization is appropriate for read-heavy reporting workloads where the aggregate is queried far more often than it changes.',
+        starterCode: `-- TODO Part A: Add a "total_orders" column to the customers table.
+-- ALTER TABLE customers ADD COLUMN total_orders INT NOT NULL DEFAULT 0;
+
+-- TODO Part B: Backfill the column from the actual orders data.
+-- UPDATE customers SET total_orders = (
+--     SELECT COUNT(*) FROM orders WHERE customer_id = customers.id
+-- );
+
+-- TODO Part C: Write a query that shows customer name and total_orders
+-- side-by-side with the live COUNT(*) to verify they match.
+
+-- TODO Part D: In a comment, answer:
+-- When is this denormalization a good idea?
+-- When would you avoid it and query the live count instead?`,
+        hints: [
+          'The backfill UPDATE uses a correlated subquery — the same pattern from Lab 7 Step 2',
+          'To keep total_orders in sync in production: use a trigger or update it in the same transaction as the INSERT INTO orders',
+          'Good for: dashboard widgets, leaderboards, reporting tables queried millions of times per day',
+          'Avoid when: order inserts are very frequent (lock contention on the customers row), or the count must be 100% real-time'
+        ],
+        expectedOutput: `total_orders column added and backfilled
+name  | total_orders | live_count
+------+--------------+------------
+Alice |            1 |          1
+Bob   |            0 |          0`,
+        solution: `-- Part A: Add the column
+ALTER TABLE customers ADD COLUMN total_orders INT NOT NULL DEFAULT 0;
+
+-- Part B: Backfill from live data
+UPDATE customers
+SET total_orders = (
+    SELECT COUNT(*) FROM orders WHERE orders.customer_id = customers.id
+);
+
+-- Part C: Verify the cached value matches the live count
+SELECT
+    c.name,
+    c.total_orders            AS cached_count,
+    COUNT(o.id)               AS live_count
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id
+GROUP BY c.id, c.name, c.total_orders
+ORDER BY c.name;
+
+-- Part D: Analysis
+-- GOOD for denormalization:
+--   - Read-heavy dashboards where total_orders is displayed on every page load
+--   - The count changes infrequently relative to how often it is read
+--   - You control all writes through an application layer (triggers or app code keep it in sync)
+--
+-- AVOID denormalization when:
+--   - High-frequency inserts would cause lock contention on the customers row
+--   - You need the count to be strictly real-time (billing, rate-limiting)
+--   - Multiple uncoordinated processes write orders (cache gets out of sync)`
+      }
+    ]
+  },
+
+  // ============================================================
+  // SQL LAB 10 — Zero-Downtime Migrations
+  // ============================================================
+  {
+    id: 'sql-lab-10',
+    languageId: 'sql',
+    level: 'senior',
+    title: 'Zero-Downtime Migrations',
+    description: 'Learn safe, production-grade schema migration patterns: add columns without table locks, build indexes concurrently, and validate constraints without blocking reads or writes.',
+    estimatedMinutes: 40,
+    steps: [
+      {
+        title: 'Step 1: Set Up Your Environment',
+        setupReference: true,
+        instruction: 'Before you begin, make sure your PostgreSQL environment is ready. Head to the <strong>Dev Setup</strong> tab for step-by-step instructions.',
+        starterCode: null,
+        hints: [],
+        expectedOutput: 'A running PostgreSQL instance with psql access.',
+        solution: null
+      },
+      {
+        title: 'Step 2: The Naive Approach and Its Problems',
+        instruction: 'When you run ALTER TABLE ADD COLUMN with a NOT NULL constraint and no DEFAULT, PostgreSQL must rewrite the entire table to fill in the value for every existing row. On a table with millions of rows, this holds an AccessExclusiveLock for minutes — blocking every SELECT, INSERT, UPDATE, and DELETE. In PostgreSQL 11+, adding a column with a constant DEFAULT is safe (stored as metadata, no rewrite), but a volatile default or removing the DEFAULT later can still trigger a rewrite. Understanding what causes a lock is the first step to avoiding it.',
+        starterCode: `-- Setup: simulate a large-ish table
+CREATE TABLE user_events (
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    INT NOT NULL,
+    event_type VARCHAR(50) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Insert enough rows to make the problem visible
+INSERT INTO user_events (user_id, event_type)
+SELECT
+    (random() * 10000)::INT,
+    (ARRAY['click','view','purchase','login'])[ceil(random()*4)::INT]
+FROM generate_series(1, 100000);
+
+-- TODO: Run the UNSAFE migration and observe the lock.
+-- In one psql session, run:
+--   ALTER TABLE user_events ADD COLUMN processed BOOLEAN NOT NULL DEFAULT false;
+-- In PostgreSQL 11+ this is actually safe for a constant DEFAULT.
+-- Now try the UNSAFE version that forces a table rewrite:
+--   ALTER TABLE user_events ADD COLUMN score INT NOT NULL;
+-- (No DEFAULT — PostgreSQL cannot fill in the value without a rewrite)
+
+-- TODO: In a comment, explain WHY this blocks and what the safe alternative is.`,
+        hints: [
+          'ALTER TABLE acquires AccessExclusiveLock — the strongest lock, incompatible with all other operations',
+          'In PostgreSQL 11+, ADD COLUMN ... DEFAULT <constant> is safe (no rewrite); ADD COLUMN NOT NULL without a default still rewrites on older versions',
+          'Check lock activity with: SELECT pid, query, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event IS NOT NULL;',
+          'See: PostgreSQL docs "ALTER TABLE" — https://www.postgresql.org/docs/current/sql-altertable.html'
+        ],
+        expectedOutput: `user_events table created with 100,000 rows
+Unsafe ALTER TABLE observed to lock the table
+Explanation documented in comments:
+-- AccessExclusiveLock blocks all concurrent queries for the duration of the rewrite`,
+        solution: `-- The unsafe migration
+-- ALTER TABLE user_events ADD COLUMN score INT NOT NULL;
+-- This fails without a DEFAULT and would require a full table rewrite with a lock
+-- on PostgreSQL 10 and below even with a constant DEFAULT.
+
+-- Why it blocks:
+-- PostgreSQL acquires AccessExclusiveLock for the entire duration of the table rewrite.
+-- Every other session — reads included — must wait. On a 100M-row table this can
+-- take minutes, causing timeouts and cascading failures in production.
+
+-- PostgreSQL 11+ improvement:
+-- ADD COLUMN ... DEFAULT <constant> is safe: the default is stored as table metadata
+-- and returned for existing rows without rewriting any data.
+-- But: if you later ALTER COLUMN SET DEFAULT to a volatile expression, or add NOT NULL
+-- to an existing nullable column without a backfill, you still risk a full rewrite.
+
+-- The safe pattern (previewed in Step 3):
+-- 1. Add the column as nullable, no default — instant metadata-only operation
+-- 2. Backfill in small batches (no long lock)
+-- 3. Add NOT NULL in a separate transaction once every row has a value
+
+-- Check for lock contention during migrations:
+SELECT pid, query, wait_event_type, wait_event
+FROM pg_stat_activity
+WHERE wait_event IS NOT NULL;`
+      },
+      {
+        title: 'Step 3: Safe Column Addition — Nullable First, Backfill, Then NOT NULL',
+        instruction: 'The production-safe pattern for adding a required column to a large table has three steps, each in a separate transaction: (1) add the column as nullable — this is a metadata-only change with a brief lock; (2) backfill existing rows in small batches so each batch holds the lock for only milliseconds; (3) add the NOT NULL constraint once every row has a value. Step 3 still needs a brief lock to validate the constraint, but since all rows already have a value, the validation is instant.',
+        starterCode: `-- Using user_events from Step 2.
+
+-- TODO Step A: Add the column as nullable (no DEFAULT, no NOT NULL)
+-- ALTER TABLE user_events ADD COLUMN score INT;
+-- This is a metadata-only change — completes in milliseconds.
+
+-- TODO Step B: Backfill in batches of 10,000 rows.
+-- Write a DO block (or just repeated UPDATE statements) that updates
+-- score for rows where score IS NULL, 10,000 at a time.
+-- Use a WHERE id BETWEEN range approach or a loop.
+
+-- TODO Step C: In a new transaction, add the NOT NULL constraint.
+-- ALTER TABLE user_events ALTER COLUMN score SET NOT NULL;
+-- This validates that no NULLs remain — fast since we already backfilled.
+
+-- TODO Step D: Verify with:
+-- SELECT COUNT(*) FROM user_events WHERE score IS NULL;  -- should be 0`,
+        hints: [
+          'Step A: ALTER TABLE user_events ADD COLUMN score INT; — no NOT NULL, no DEFAULT',
+          'Step B batch update: UPDATE user_events SET score = 0 WHERE id IN (SELECT id FROM user_events WHERE score IS NULL LIMIT 10000);',
+          'Repeat the batch UPDATE until 0 rows are affected — each iteration holds a row-level lock for milliseconds',
+          'Step C: ALTER TABLE user_events ALTER COLUMN score SET NOT NULL; — validates instantly since no NULLs remain',
+          'See: PostgreSQL docs "ALTER TABLE ... SET NOT NULL" — https://www.postgresql.org/docs/current/sql-altertable.html'
+        ],
+        expectedOutput: `Step A: ALTER TABLE completes instantly (metadata-only)
+Step B: Batched UPDATEs each affect 10,000 rows; repeat until 0 rows updated
+Step C: SET NOT NULL completes instantly (no NULLs to find)
+Verification: SELECT COUNT(*) WHERE score IS NULL → 0`,
+        solution: `-- Step A: Add nullable column (instant metadata change)
+ALTER TABLE user_events ADD COLUMN score INT;
+
+-- Step B: Backfill in batches — each batch completes quickly
+-- Run this repeatedly until 0 rows are updated
+DO $$
+DECLARE
+    rows_updated INT;
+BEGIN
+    LOOP
+        UPDATE user_events
+        SET score = 0
+        WHERE id IN (
+            SELECT id FROM user_events
+            WHERE score IS NULL
+            LIMIT 10000
+        );
+        GET DIAGNOSTICS rows_updated = ROW_COUNT;
+        EXIT WHEN rows_updated = 0;
+        RAISE NOTICE 'Updated % rows', rows_updated;
+    END LOOP;
+END $$;
+
+-- Step C: Add NOT NULL — validates instantly since all rows now have a value
+ALTER TABLE user_events ALTER COLUMN score SET NOT NULL;
+
+-- Step D: Verify no NULLs remain
+SELECT COUNT(*) AS null_count FROM user_events WHERE score IS NULL;`
+      },
+      {
+        title: 'Step 4: CREATE INDEX CONCURRENTLY',
+        instruction: 'A standard CREATE INDEX acquires a ShareLock on the table, blocking all writes for the duration of the build. On a large table that can take many minutes. CREATE INDEX CONCURRENTLY builds the index in the background using multiple table scans — it only takes brief locks at the start and end. Reads and writes continue normally throughout. The trade-off: the build takes longer (roughly 2x), and if it fails you are left with an INVALID index that must be dropped and rebuilt. Always check pg_indexes after a concurrent build to confirm the index is VALID.',
+        starterCode: `-- Using user_events from Step 2.
+
+-- TODO: Create an index on user_events(user_id) using CREATE INDEX CONCURRENTLY.
+-- This should complete without blocking any reads or writes.
+
+-- After the index is built, verify it appears in pg_indexes and is valid:
+-- SELECT indexname, indexdef
+-- FROM pg_indexes
+-- WHERE tablename = 'user_events';
+
+-- TODO: Also check for INVALID indexes (a concurrent build that was interrupted
+-- leaves an invalid index that must be cleaned up):
+-- SELECT indexname, indisvalid
+-- FROM pg_class c
+-- JOIN pg_index i ON i.indexrelid = c.oid
+-- JOIN pg_class t ON t.oid = i.indrelid
+-- WHERE t.relname = 'user_events';
+
+-- TODO: Run EXPLAIN ANALYZE on a query filtering by user_id to confirm
+-- the index is used.`,
+        hints: [
+          'CREATE INDEX CONCURRENTLY idx_user_events_user_id ON user_events(user_id);',
+          'Cannot run inside a transaction block — run it outside BEGIN/COMMIT',
+          'If interrupted, DROP INDEX CONCURRENTLY idx_user_events_user_id; then rebuild',
+          'indisvalid = true in pg_index confirms the index is usable',
+          'See: PostgreSQL docs "CREATE INDEX CONCURRENTLY" — https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY'
+        ],
+        expectedOutput: `Index created without blocking writes
+pg_indexes shows: idx_user_events_user_id on user_events(user_id)
+indisvalid = true
+EXPLAIN ANALYZE shows "Index Scan using idx_user_events_user_id"`,
+        solution: `-- Build the index without blocking writes
+-- NOTE: must run outside a transaction block
+CREATE INDEX CONCURRENTLY idx_user_events_user_id
+ON user_events(user_id);
+
+-- Verify the index exists and is valid
+SELECT indexname, indexdef
+FROM pg_indexes
+WHERE tablename = 'user_events';
+
+-- Check for INVALID indexes (concurrent build interrupted)
+SELECT
+    c.relname  AS index_name,
+    i.indisvalid AS is_valid
+FROM pg_class c
+JOIN pg_index i ON i.indexrelid = c.oid
+JOIN pg_class t ON t.oid = i.indrelid
+WHERE t.relname = 'user_events';
+
+-- Confirm the index is used by the query planner
+EXPLAIN ANALYZE
+SELECT * FROM user_events WHERE user_id = 42;`
+      },
+      {
+        title: 'Step 5: Constraint Validation Split — NOT VALID + VALIDATE CONSTRAINT',
+        instruction: 'Adding a foreign key or CHECK constraint normally acquires a ShareRowExclusiveLock and scans every existing row to validate it — blocking writes for the duration. The NOT VALID option splits this into two steps: (1) add the constraint with NOT VALID — this immediately enforces it on new inserts and updates but skips the historical scan, taking only a brief lock; (2) VALIDATE CONSTRAINT — scans existing rows in a separate transaction using a weaker lock that allows concurrent reads and writes. This is the safe pattern for adding constraints to live, high-traffic tables.',
+        starterCode: `-- Setup: create a referenced table and a large child table
+CREATE TABLE users (
+    id   SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+INSERT INTO users (name)
+SELECT 'user_' || i FROM generate_series(1, 1000) i;
+
+-- Add user_id to user_events (from previous steps)
+-- (If user_events already has a user_id column as INT, we can add the FK)
+
+-- TODO Step A: Add the FK constraint with NOT VALID.
+-- This enforces the FK on new rows immediately but skips scanning existing rows.
+-- ALTER TABLE user_events
+--   ADD CONSTRAINT fk_user_events_user
+--   FOREIGN KEY (user_id) REFERENCES users(id)
+--   NOT VALID;
+
+-- TODO Step B: In a separate transaction, validate the constraint.
+-- PostgreSQL acquires only ShareUpdateExclusiveLock — reads and writes continue.
+-- ALTER TABLE user_events VALIDATE CONSTRAINT fk_user_events_user;
+
+-- TODO Step C: Confirm the constraint is now valid using pg_constraint:
+-- SELECT conname, convalidated
+-- FROM pg_constraint
+-- WHERE conrelid = 'user_events'::regclass;`,
+        hints: [
+          'ADD CONSTRAINT ... NOT VALID — enforces on new writes immediately; skips historical scan',
+          'VALIDATE CONSTRAINT — held lock is ShareUpdateExclusiveLock, compatible with reads and most writes',
+          'If validation finds a bad row, it will ERROR — fix the data first, then re-validate',
+          'convalidated = true in pg_constraint means the constraint covers all rows',
+          'See: PostgreSQL docs "ALTER TABLE ... NOT VALID" — https://www.postgresql.org/docs/current/sql-altertable.html'
+        ],
+        expectedOutput: `Step A: FK added with NOT VALID — completes instantly, no historical scan
+Step B: VALIDATE CONSTRAINT — runs without blocking reads or writes
+Step C: pg_constraint shows convalidated = true for fk_user_events_user`,
+        solution: `-- Ensure user_id values in user_events are within the users range
+-- (Our seed data used random() * 10000 but only 1000 users exist — fix first)
+UPDATE user_events SET user_id = (user_id % 1000) + 1;
+
+-- Step A: Add FK as NOT VALID — new inserts/updates are checked immediately,
+-- but existing rows are NOT scanned yet (fast, minimal lock)
+ALTER TABLE user_events
+    ADD CONSTRAINT fk_user_events_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    NOT VALID;
+
+-- Step B: Validate the constraint in a separate transaction.
+-- Uses ShareUpdateExclusiveLock — reads and writes are NOT blocked.
+ALTER TABLE user_events VALIDATE CONSTRAINT fk_user_events_user;
+
+-- Step C: Confirm constraint is fully valid
+SELECT
+    conname        AS constraint_name,
+    contype        AS type,        -- 'f' = foreign key
+    convalidated   AS is_valid
+FROM pg_constraint
+WHERE conrelid = 'user_events'::regclass;`
+      }
+    ]
   }
 ];
