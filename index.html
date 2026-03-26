@@ -45,13 +45,11 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon-180x180.png" />
     <link rel="manifest" href="/manifest.json" />
 
-    <!-- Fonts (all four weights preloaded so the browser fetches them in parallel
-         rather than discovering them one-by-one as CSS is parsed) -->
-    <link rel="preload" href="/fonts/IBMPlexSans-Regular.ttf" as="font" type="font/ttf" crossorigin />
-    <link rel="preload" href="/fonts/IBMPlexSans-Medium.ttf" as="font" type="font/ttf" crossorigin />
-    <link rel="preload" href="/fonts/IBMPlexSans-SemiBold.ttf" as="font" type="font/ttf" crossorigin />
-    <link rel="preload" href="/fonts/IBMPlexSans-Bold.ttf" as="font" type="font/ttf" crossorigin />
-    <link rel="preload" href="/fonts/LFRubrik2-Regular.otf" as="font" type="font/otf" crossorigin />
+    <!-- Preload only the most critical font weights; Medium and Bold load on
+         demand via CSS @font-face with font-display:swap (fewer edge requests) -->
+    <link rel="preload" href="/fonts/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/IBMPlexSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/LFRubrik2-Regular.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Preconnect to YouTube thumbnail CDN for faster thumbnail loading -->
     <link rel="preconnect" href="https://img.youtube.com" crossorigin />
