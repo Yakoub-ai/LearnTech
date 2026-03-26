@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { roles } from '../../data/roles'
 import { getRoleIcon } from '../../data/roles'
 import { languages, getLanguageIcon } from '../../data/languages'
-import { ChevronDown, ChevronRight, ShieldCheck } from 'lucide-react'
+import { ChevronDown, ChevronRight, ShieldCheck, Settings } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 
@@ -168,6 +168,20 @@ export default function Sidebar() {
             }`}
           >
             My Progress
+          </Link>
+        </div>
+
+        <div className="pt-2">
+          <Link
+            to="/dashboard/settings"
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors ${
+              location.pathname === '/dashboard/settings'
+                ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
+                : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)] hover:text-[var(--color-text)]'
+            }`}
+          >
+            <Settings className="w-4 h-4 shrink-0" />
+            Settings
           </Link>
         </div>
 

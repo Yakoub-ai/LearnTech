@@ -26,9 +26,9 @@ export default function Header() {
       <header className="sticky top-0 z-50 bg-[var(--color-surface)]/80 backdrop-blur-xl border-b border-[var(--color-border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link to="/dashboard" className="flex items-center gap-3 no-underline">
-              <span className="font-bold text-lg text-[var(--color-text)]">
-                Tech Hubben Learning
+            <Link to="/dashboard" className="flex items-center gap-3 no-underline shrink-0">
+              <span className="font-bold text-lg text-[var(--color-text)] whitespace-nowrap">
+                TechHubb<span className="hidden md:inline"> Learning</span>
               </span>
             </Link>
 
@@ -65,7 +65,7 @@ export default function Header() {
 
               <button
                 onClick={() => setDarkMode(!darkMode)}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-[var(--color-surface-2)] transition-colors cursor-pointer text-[var(--color-text-secondary)] border-none bg-transparent"
+                className="hidden md:flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg hover:bg-[var(--color-surface-2)] transition-colors cursor-pointer text-[var(--color-text-secondary)] border-none bg-transparent"
                 aria-label="Toggle theme"
               >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -94,6 +94,16 @@ export default function Header() {
               <Link to="/dashboard/progress" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)] no-underline">
                 Progress
               </Link>
+              <Link to="/dashboard/settings" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)] no-underline">
+                Settings
+              </Link>
+              <button
+                onClick={() => { setDarkMode(!darkMode); setMobileMenuOpen(false) }}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)] cursor-pointer border-none bg-transparent text-left w-full"
+              >
+                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {darkMode ? 'Light mode' : 'Dark mode'}
+              </button>
             </nav>
           )}
         </div>

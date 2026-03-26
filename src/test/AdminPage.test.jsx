@@ -15,6 +15,11 @@ vi.mock('../lib/supabase', () => {
       select: vi.fn(),
       order: vi.fn(),
       eq: vi.fn(),
+      single: vi.fn(),
+      in: vi.fn(),
+      match: vi.fn(),
+      upsert: vi.fn(),
+      delete: vi.fn(),
       then: (res, rej) => Promise.resolve(result).then(res, rej),
       catch: (rej) => Promise.resolve(result).catch(rej),
       finally: (fn) => Promise.resolve(result).finally(fn),
@@ -22,6 +27,11 @@ vi.mock('../lib/supabase', () => {
     q.select.mockReturnValue(q)
     q.order.mockReturnValue(q)
     q.eq.mockReturnValue(q)
+    q.single.mockReturnValue(q)
+    q.in.mockReturnValue(q)
+    q.match.mockReturnValue(q)
+    q.upsert.mockReturnValue(q)
+    q.delete.mockReturnValue(q)
     return q
   }
   return {
