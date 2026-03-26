@@ -23,15 +23,15 @@ function ExpectedOutputToggle({ output }) {
 }
 import CopyButton from '../common/CopyButton'
 import { getLabProgress, setLabStepComplete } from '../../utils/progressStorage'
+import { interactiveLabs } from '../../data/labs/index.js'
 
-function StepCard({ step, stepIndex, labId, isActive, onActivate, onSwitchTab }) {
+function StepCard({ step, stepIndex, labProgress, isActive, onActivate, onSwitchTab, onStepToggle }) {
   const [showHints, setShowHints] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
-  const labProgress = getLabProgress(labId)
   const isComplete = labProgress?.steps?.[stepIndex]?.completed || false
 
   const handleComplete = () => {
-    setLabStepComplete(labId, stepIndex, !isComplete)
+    onStepToggle(stepIndex, !isComplete)
   }
 
   return (
@@ -169,7 +169,31 @@ function StepCard({ step, stepIndex, labId, isActive, onActivate, onSwitchTab })
 
 export default function InteractiveLab({ lab, onSwitchTab }) {
   const [activeStep, setActiveStep] = useState(0)
-  const labProgress = getLabProgress(lab.id)
+  const [labProgress, setLabProgressState] = useState(() => getLabProgress(lab.id))
+
+  const handleStepToggle = (stepIndex, newComplete) => {
+    setLabStepComplete(lab.id, stepIndex, newComplete)
+
+    // Propagate setup completion across sibling labs (only on completion, not un-completion)
+    const step = lab.steps[stepIndex]
+    if (step?.setupReference && newComplete) {
+      const siblingLabs = interactiveLabs.filter(other => {
+        if (other.id === lab.id) return false
+        if (lab.roleId && other.roleId === lab.roleId) return true
+        if (lab.languageId && other.languageId === lab.languageId) return true
+        return false
+      })
+      siblingLabs.forEach(sibling => {
+        const setupIdx = sibling.steps.findIndex(s => s.setupReference)
+        if (setupIdx !== -1) {
+          setLabStepComplete(sibling.id, setupIdx, true)
+        }
+      })
+    }
+
+    setLabProgressState(getLabProgress(lab.id))
+  }
+
   const completedSteps = lab.steps.filter((_, i) => labProgress?.steps?.[i]?.completed).length
   const progressPercent = lab.steps.length > 0 ? Math.round((completedSteps / lab.steps.length) * 100) : 0
 
@@ -214,10 +238,11 @@ export default function InteractiveLab({ lab, onSwitchTab }) {
             key={i}
             step={step}
             stepIndex={i}
-            labId={lab.id}
+            labProgress={labProgress}
             isActive={activeStep === i}
             onActivate={() => setActiveStep(activeStep === i ? -1 : i)}
             onSwitchTab={onSwitchTab}
+            onStepToggle={handleStepToggle}
           />
         ))}
       </div>

@@ -140,8 +140,27 @@ export function getRoleProgress(roleId) {
     const totalResources = resources.length;
     const completedResources = resources.filter(res => res.completed).length;
 
-    const total = totalObjectives + totalResources;
-    const completed = completedObjectives + completedResources;
+    let total = totalObjectives + totalResources;
+    let completed = completedObjectives + completedResources;
+
+    // Include assessments with 2x weight (only for levels the user has started)
+    if (total > 0) {
+      // Quiz score: 2x weight
+      total += 2;
+      if (levelData.quizScore) completed += 2;
+
+      // Topic quizzes (as a group): 2x weight
+      const topicQuizzes = levelData.topicQuizzes || {};
+      if (Object.keys(topicQuizzes).length > 0) {
+        total += 2;
+        completed += 2;
+      }
+
+      // Level exam: 2x weight
+      total += 2;
+      if (levelData.levelExam) completed += 2;
+    }
+
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
     result[level] = {
@@ -155,6 +174,8 @@ export function getRoleProgress(roleId) {
         total: totalResources
       },
       quizScore: levelData.quizScore,
+      topicQuizzes: levelData.topicQuizzes,
+      levelExam: levelData.levelExam,
       completed: levelData.completed,
       startedAt: levelData.startedAt,
       completedAt: levelData.completedAt
@@ -574,12 +595,29 @@ export function getLanguageProgress(languageId) {
     const resources = levelData.resources || [];
     const completedObjectives = objectives.filter(o => o.completed).length;
     const completedResources = resources.filter(r => r.completed).length;
-    const total = objectives.length + resources.length;
-    const completed = completedObjectives + completedResources;
+    let total = objectives.length + resources.length;
+    let completed = completedObjectives + completedResources;
+
+    // Include assessments with 2x weight (only for levels the user has started)
+    if (total > 0) {
+      total += 2;
+      if (levelData.quizScore) completed += 2;
+
+      const topicQuizzes = levelData.topicQuizzes || {};
+      if (Object.keys(topicQuizzes).length > 0) {
+        total += 2;
+        completed += 2;
+      }
+
+      total += 2;
+      if (levelData.levelExam) completed += 2;
+    }
 
     result[level] = {
       percentage: total > 0 ? Math.round((completed / total) * 100) : 0,
       quizScore: levelData.quizScore,
+      topicQuizzes: levelData.topicQuizzes,
+      levelExam: levelData.levelExam,
       completed: levelData.completed
     };
     totalItems += total;
