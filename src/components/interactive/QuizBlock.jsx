@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { CheckCircle2, XCircle, RotateCcw, Trophy, Flag } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { shuffleQuiz } from '../../utils/quizShuffle'
 
 export default function QuizBlock({ questions = [], _roleId, _level, onComplete, topicTitle, onReport }) {
   const [currentQ, setCurrentQ] = useState(0)
@@ -9,10 +10,13 @@ export default function QuizBlock({ questions = [], _roleId, _level, onComplete,
   const [score, setScore] = useState(0)
   const [finished, setFinished] = useState(false)
   const [answers, setAnswers] = useState([])
+  const [shuffleSeed, setShuffleSeed] = useState(0)
 
-  if (!questions || questions.length === 0) return null
+  const shuffledQuestions = useMemo(() => shuffleQuiz(questions), [questions, shuffleSeed])
 
-  const question = questions[currentQ]
+  if (!questions || shuffledQuestions.length === 0) return null
+
+  const question = shuffledQuestions[currentQ]
 
   const handleSelect = (index) => {
     if (showResult) return
@@ -28,10 +32,10 @@ export default function QuizBlock({ questions = [], _roleId, _level, onComplete,
   }
 
   const handleNext = () => {
-    if (currentQ + 1 >= questions.length) {
+    if (currentQ + 1 >= shuffledQuestions.length) {
       setFinished(true)
       const finalCorrect = answers.filter(a => a.correct).length
-      const finalScore = Math.round((finalCorrect / questions.length) * 100)
+      const finalScore = Math.round((finalCorrect / shuffledQuestions.length) * 100)
       onComplete?.(finalScore)
     } else {
       setCurrentQ((q) => q + 1)
@@ -47,6 +51,7 @@ export default function QuizBlock({ questions = [], _roleId, _level, onComplete,
     setScore(0)
     setFinished(false)
     setAnswers([])
+    setShuffleSeed((s) => s + 1)
   }
 
   function handleAnswerKeyDown(e, index, totalAnswers) {
@@ -65,12 +70,12 @@ export default function QuizBlock({ questions = [], _roleId, _level, onComplete,
   }
 
   if (finished) {
-    const percentage = Math.round((score / questions.length) * 100)
+    const percentage = Math.round((score / shuffledQuestions.length) * 100)
     return (
       <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 text-center">
         <Trophy className={`w-12 h-12 mx-auto mb-4 ${percentage >= 70 ? 'text-amber-500' : 'text-[var(--color-text-secondary)]'}`} />
         <h3 className="text-xl font-bold text-[var(--color-text)] mb-2">Quiz Complete!</h3>
-        <p className="text-3xl font-bold text-[var(--color-primary)] mb-1">{score}/{questions.length}</p>
+        <p className="text-3xl font-bold text-[var(--color-primary)] mb-1">{score}/{shuffledQuestions.length}</p>
         <p className="text-sm text-[var(--color-text-secondary)] mb-6">{percentage}% correct</p>
         <button
           onClick={handleReset}
@@ -105,7 +110,7 @@ export default function QuizBlock({ questions = [], _roleId, _level, onComplete,
             </button>
           )}
           <span className="text-xs text-[var(--color-text-secondary)]">
-            Question {currentQ + 1} of {questions.length}
+            Question {currentQ + 1} of {shuffledQuestions.length}
           </span>
         </div>
       </div>
@@ -114,7 +119,7 @@ export default function QuizBlock({ questions = [], _roleId, _level, onComplete,
         <div className="h-1.5 bg-[var(--color-surface-3)] rounded-full mb-6 overflow-hidden">
           <div
             className="h-full bg-[var(--color-primary)] rounded-full transition-all duration-300"
-            style={{ width: `${((currentQ + (showResult ? 1 : 0)) / questions.length) * 100}%` }}
+            style={{ width: `${((currentQ + (showResult ? 1 : 0)) / shuffledQuestions.length) * 100}%` }}
           />
         </div>
 
@@ -190,7 +195,7 @@ export default function QuizBlock({ questions = [], _roleId, _level, onComplete,
                   onClick={handleNext}
                   className="px-5 py-2.5 rounded-lg bg-[var(--color-primary)] text-white text-sm font-medium hover:bg-[var(--color-primary-dark)] transition-colors border-none cursor-pointer"
                 >
-                  {currentQ + 1 >= questions.length ? 'See Results' : 'Next Question'}
+                  {currentQ + 1 >= shuffledQuestions.length ? 'See Results' : 'Next Question'}
                 </button>
               )}
             </div>
