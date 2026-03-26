@@ -81,7 +81,7 @@ export default function QuizReportsPanel() {
   return (
     <div>
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         {[
           { label: 'New', value: counts.new, icon: AlertCircle, color: 'text-yellow-500' },
           { label: 'Reviewed', value: counts.reviewed, icon: Eye, color: 'text-blue-500' },
@@ -98,8 +98,8 @@ export default function QuizReportsPanel() {
       </div>
 
       {/* Filters + refresh */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-2">
+      <div className="flex items-center justify-between mb-4 gap-2">
+        <div className="flex gap-2 flex-wrap">
           {STATUS_OPTIONS.map((s) => (
             <button
               key={s}
@@ -136,8 +136,8 @@ export default function QuizReportsPanel() {
           <p>No {statusFilter === 'all' ? '' : statusFilter} reports</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-[var(--color-border)] overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="rounded-xl border border-[var(--color-border)] overflow-hidden overflow-x-auto">
+          <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="bg-[var(--color-surface-2)] border-b border-[var(--color-border)]">
                 <th className="text-left p-3 font-medium text-[var(--color-text-secondary)]">Date</th>

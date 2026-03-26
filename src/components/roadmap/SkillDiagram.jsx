@@ -51,7 +51,7 @@ export default function SkillDiagram({ diagram, title = 'Skill Roadmap' }) {
         <div className="fixed inset-0 bg-black/50 -z-10" onClick={() => setExpanded(false)} />
       )}
 
-      <div className={`p-4 overflow-auto ${expanded ? 'h-[calc(100%-3rem)]' : 'max-h-[500px]'}`}>
+      <div className={`p-4 overflow-auto ${expanded ? 'h-[calc(100%-3rem)]' : 'max-h-[350px] sm:max-h-[500px]'}`}>
         {error ? (
           <div className="text-center py-8 text-[var(--color-text-secondary)] text-sm">{error}</div>
         ) : (

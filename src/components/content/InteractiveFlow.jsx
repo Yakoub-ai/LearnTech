@@ -105,7 +105,7 @@ export default function InteractiveFlow({ flowName }) {
       )}
 
       {/* Flow canvas */}
-      <div className={`relative ${expanded ? 'h-[calc(100%-3.5rem)]' : 'h-[420px]'}`}>
+      <div className={`relative ${expanded ? 'h-[calc(100%-3.5rem)]' : 'h-[280px] sm:h-[420px]'}`}>
         <ReactFlow
           nodes={nodes}
           edges={edges}

@@ -79,7 +79,7 @@ export default function ProgressTracker() {
                 </span>
               </div>
               <ProgressBar value={rp.overall} size="sm" showLabel={false} />
-              <div className="flex gap-4 mt-2">
+              <div className="flex gap-2 sm:gap-4 mt-2">
                 {['beginner', 'mid', 'senior'].map((level) => (
                   <div key={level} className="flex-1">
                     <div className="flex justify-between text-xs text-[var(--color-text-secondary)] mb-1">
@@ -119,7 +119,7 @@ export default function ProgressTracker() {
                 </span>
               </div>
               <ProgressBar value={lp.overall} size="sm" showLabel={false} />
-              <div className="flex gap-4 mt-2">
+              <div className="flex gap-2 sm:gap-4 mt-2">
                 {['beginner', 'mid', 'senior'].map((level) => (
                   <div key={level} className="flex-1">
                     <div className="flex justify-between text-xs text-[var(--color-text-secondary)] mb-1">

@@ -187,7 +187,7 @@ export default function AdminPage() {
             </div>
           )}
           {/* Summary cards */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             {[
               { label: 'Pending', count: counts.pending, icon: Clock, color: 'text-amber-500' },
               { label: 'Approved', count: counts.approved, icon: CheckCircle2, color: 'text-emerald-500' },
@@ -236,8 +236,8 @@ export default function AdminPage() {
               <p className="text-[var(--color-text-secondary)]">No {activeTab === 'all' ? '' : activeTab} users found.</p>
             </div>
           ) : (
-            <div className="border border-[var(--color-border)] rounded-xl overflow-hidden">
-              <table className="w-full" aria-label="User approvals">
+            <div className="border border-[var(--color-border)] rounded-xl overflow-hidden overflow-x-auto">
+              <table className="w-full min-w-[600px]" aria-label="User approvals">
                 <thead>
                   <tr className="bg-[var(--color-surface-2)] border-b border-[var(--color-border)]">
                     <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide">User</th>
