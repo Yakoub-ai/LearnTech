@@ -147,28 +147,28 @@ export default function UserProgressTable() {
                     : <ChevronRight className="w-4 h-4 text-[var(--color-text-secondary)] flex-shrink-0" />
                   }
                   <span className="text-sm font-medium text-[var(--color-text)] flex-1">{formatRoleName(roleId)}</span>
-                  <div className="flex items-center gap-3 ml-4">
-                    <div className="w-32">
+                  <div className="flex items-center gap-2 sm:gap-3 ml-2 sm:ml-4">
+                    <div className="w-20 sm:w-32">
                       <ProgressBar value={stats.overall} />
                     </div>
-                    <span className="text-sm font-semibold text-[var(--color-text)] w-10 text-right">{stats.overall}%</span>
+                    <span className="text-xs sm:text-sm font-semibold text-[var(--color-text)] w-8 sm:w-10 text-right">{stats.overall}%</span>
                   </div>
                 </button>
 
                 {/* Level breakdown (expanded) */}
                 {expanded[user.id]?.[roleId] && (
-                  <div className="px-10 pb-3 space-y-2">
+                  <div className="px-4 sm:px-10 pb-3 space-y-2">
                     {['beginner', 'mid', 'senior'].map(level => {
                       const l = stats.levels[level]
                       if (l.objectives.total === 0 && l.resources.total === 0) return null
                       return (
-                        <div key={level} className="flex items-center gap-4 py-1">
-                          <span className="text-xs text-[var(--color-text-secondary)] capitalize w-16">{level}</span>
+                        <div key={level} className="flex items-center gap-2 sm:gap-4 py-1">
+                          <span className="text-xs text-[var(--color-text-secondary)] capitalize w-12 sm:w-16">{level}</span>
                           <div className="flex-1">
                             <ProgressBar value={l.percentage} />
                           </div>
                           <span className="text-xs text-[var(--color-text)] w-8 text-right">{l.percentage}%</span>
-                          <div className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] w-28">
+                          <div className="hidden sm:flex items-center gap-1 text-xs text-[var(--color-text-secondary)] w-28">
                             <Target className="w-3 h-3" />
                             <span>{l.objectives.completed}/{l.objectives.total}</span>
                             <BookOpen className="w-3 h-3 ml-2" />

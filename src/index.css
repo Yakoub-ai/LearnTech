@@ -126,7 +126,7 @@
     @apply text-[var(--color-primary)] hover:text-[var(--color-primary-light)] underline decoration-[var(--color-primary)]/30 hover:decoration-[var(--color-primary)] transition-colors;
   }
   .prose table {
-    @apply w-full border-collapse mb-6;
+    @apply w-full border-collapse mb-6 block overflow-x-auto;
   }
   .prose th {
     @apply text-left p-3 bg-[var(--color-surface-3)] border-b-2 border-[var(--color-border)] font-semibold text-sm text-[var(--color-text)];

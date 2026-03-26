@@ -50,7 +50,7 @@ export default function AuthButton() {
         <div className="w-6 h-6 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white text-xs font-bold">
           {(user.email?.[0] ?? 'U').toUpperCase()}
         </div>
-        <span className="max-w-[120px] truncate">{user.email}</span>
+        <span className="hidden sm:inline max-w-[120px] truncate">{user.email}</span>
       </button>
 
       {showMenu && (
