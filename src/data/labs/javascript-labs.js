@@ -2447,7 +2447,7 @@ console.log(oldStyle);
 const newStyle = \`TODO: rewrite me\`;
 console.log(newStyle);
 
-// TODO: Use an expression inside ${ }: calculate birth year and embed it
+// TODO: Use an expression inside \${ }: calculate birth year and embed it
 const currentYear = 2025;
 // const withExpr = \`...\`;
 
