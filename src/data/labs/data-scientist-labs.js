@@ -106,7 +106,7 @@ for dept, stats in dept_salary.items():
     print(f"{dept}: avg=\${stats['mean']:,.0f}, range=\${stats['min']:,}-\${stats['max']:,}")`,
         hints: [
           'Use dict.setdefault(key, []).append(record) for grouping',
-          'Reuse the statistics logic from Step 1',
+          'Reuse the statistics logic from Step 2',
           'Format currency with f"\${value:,.0f}"'
         ],
         expectedOutput: `=== Salary by Department ===

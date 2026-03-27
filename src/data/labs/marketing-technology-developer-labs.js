@@ -590,11 +590,11 @@ test.print_report()`,
         expectedOutput: `=== A/B Test Report: Original Landing Page vs New Hero Image Variant ===
 Control:  5.02% (412/8200)
 Variant:  6.00% (489/8150)
-Lift:     +19.5%
-p-value:  0.0021 (SIGNIFICANT)
-95% CI:   [+0.0037, +0.0160] absolute difference
+Lift:     +19.4%
+p-value:  0.0063 (SIGNIFICANT)
+95% CI:   [+0.0028, +0.0168] absolute difference
 
-Recommendation: Ship the variant. The result is statistically significant with a 19.5% lift. Monitor for novelty effect over the next 2 weeks.`,
+Recommendation: Ship the variant. The result is statistically significant with a 19.4% lift. Monitor for novelty effect over the next 2 weeks.`,
         solution: `import numpy as np
 from scipy.stats import proportions_ztest
 

@@ -188,7 +188,7 @@ Stockholm (2 employees):
   - Alice: mid
   - Eve: mid
 
-Gothenburg (1 employee):
+Gothenburg (1 employees):
   - Bob: junior
 ...`,
         solution: `def load_grouped(records, group_by='city'):
@@ -412,8 +412,7 @@ LIMIT 10;`,
         COUNT(o.order_id) AS total_orders,
         SUM(o.amount) AS total_spent
     FROM customers c
-    LEFT JOIN orders o ON c.customer_id = o.customer_id
-    WHERE o.order_date >= NOW() - INTERVAL '1 year'
+    LEFT JOIN orders o ON c.customer_id = o.customer_id AND o.order_date >= NOW() - INTERVAL '1 year'
     GROUP BY c.customer_id, c.customer_name, c.signup_date
     HAVING COUNT(o.order_id) > 5
 )
@@ -690,7 +689,7 @@ WHY: Transformations in Spark are lazy — they build a logical plan but don't e
 
 HOW: Chain .filter(), .withColumn(), and .groupBy().agg() calls. Use Spark SQL functions (not Python built-ins) for column expressions so they run on the Spark executors, not the driver.`,
         starterCode: `# PySpark ETL — Step 3: Transform
-from pyspark.sql.functions import col, sum as spark_sum, avg, date_format, when, lit
+from pyspark.sql.functions import col, sum as spark_sum, avg, count, date_format, when, lit
 
 # TODO 1: Filter out rows where amount <= 0 or customer_id is null
 filtered_df = raw_df  # replace with filter chain

@@ -17,15 +17,15 @@ export const topicQuizzes = {
           explanation: "DNS translates human-readable domain names into IP addresses, allowing the client to locate and connect to the correct server.",
         },
         {
-          question: "According to the CAP theorem, which two guarantees can a distributed system achieve during a network partition?",
+          question: "The CAP theorem states that during a network partition, a distributed system must sacrifice one guarantee. Which two properties are in direct tension during a partition?",
           options: [
             "Consistency and availability",
             "Availability and partition tolerance",
             "Consistency and partition tolerance",
             "All three can be achieved simultaneously",
           ],
-          correctIndex: 2,
-          explanation: "The CAP theorem states a distributed system can guarantee at most two of consistency, availability and partition tolerance. Since partitions are unavoidable in practice, the real trade-off is between consistency and availability.",
+          correctIndex: 0,
+          explanation: "During a network partition, a system must choose between consistency (all nodes see the same data) and availability (every request receives a response). This means the system operates as either CP (consistent but may reject requests) or AP (available but may return stale data). The partition tolerance itself is not optional in distributed systems — partitions will happen.",
         },
         {
           question: "Which component in a distributed system is responsible for distributing incoming traffic across multiple application servers?",
@@ -1120,17 +1120,6 @@ export const topicQuizzes = {
           ],
           correctIndex: 2,
           explanation: "Growing others is a core expectation of senior engineers. The tech lead should address it directly and supportively — clarifying the expectation, co-creating a plan that plays to the engineer's strengths, and recognising effort. Avoidance or indirect pressure are ineffective.",
-        },
-        {
-          question: "What is the Observer design pattern and when is it commonly used?",
-          options: [
-            "A pattern where one object creates copies of itself to distribute processing",
-            "A pattern where a subject maintains a list of dependents (observers) and notifies them of state changes, enabling loose coupling between event producers and consumers",
-            "A pattern where a single object mediates all communication between components",
-            "A pattern that ensures only one instance of a class exists throughout the application",
-          ],
-          correctIndex: 1,
-          explanation: "The Observer pattern defines a one-to-many dependency: when the subject changes state, all registered observers are notified. This is the foundation of event-driven programming and is used extensively in UI frameworks, message systems and reactive architectures.",
         },
       ],
     },

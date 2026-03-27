@@ -934,17 +934,6 @@ export const topicQuizzes = {
           correctIndex: 1,
           explanation: "The 'screen' object is bound to document.body and provides all RTL query methods (getByRole, findByText, etc.). Using screen instead of destructuring render() makes tests more readable and avoids stale references.",
         },
-        {
-          question: "Why should you prefer getByRole over getByTestId in React Testing Library tests?",
-          options: [
-            "getByRole is faster than getByTestId",
-            "getByRole queries the accessibility tree, ensuring elements are accessible to assistive technologies — not just present in the DOM",
-            "getByTestId does not work with React 18",
-            "getByRole supports regular expressions while getByTestId does not",
-          ],
-          correctIndex: 1,
-          explanation: "getByRole queries the accessibility tree, verifying that elements have the correct ARIA roles and are perceivable by screen readers. getByTestId only checks for a data attribute and tells you nothing about accessibility.",
-        },
       ],
     },
     {

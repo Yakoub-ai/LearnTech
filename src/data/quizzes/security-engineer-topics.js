@@ -1531,15 +1531,15 @@ export const topicQuizzes = {
       objectiveIndex: 5,
       questions: [
         {
-          question: 'What is the NIST Cybersecurity Framework\'s five-function structure?',
+          question: 'What are the six core functions of the NIST Cybersecurity Framework 2.0?',
           options: [
+            'Govern, Identify, Protect, Detect, Respond, Recover',
             'Identify, Protect, Detect, Respond, Recover',
-            'Plan, Do, Check, Act, Improve',
-            'Govern, Assess, Implement, Test, Report',
-            'Threat, Vulnerability, Risk, Control, Audit',
+            'Govern, Assess, Protect, Detect, Respond, Recover',
+            'Plan, Identify, Protect, Detect, Respond, Recover',
           ],
           correctIndex: 0,
-          explanation: 'The NIST CSF organises security activities into Identify (asset management, risk assessment), Protect (controls), Detect (monitoring), Respond (incident response), and Recover (resilience).',
+          explanation: 'NIST CSF 2.0 introduced Govern as a new sixth core function that wraps around the original five (Identify, Protect, Detect, Respond, Recover). Govern establishes and monitors the organisation\'s cybersecurity risk management strategy, expectations, and policy, providing context for how the other five functions are prioritised and executed.',
         },
         {
           question: 'What is the distinction between security compliance and security?',

@@ -916,7 +916,7 @@ ORDER BY total_reports DESC, oc.name;`
         ],
         expectedOutput: `Table "orders" created
 INSERT 0 100000
-Row distribution: ~33% pending, ~20% cancelled, ~47% completed`,
+Row distribution: ~53% pending, ~13% cancelled, ~33% completed`,
         solution: `CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     customer_id INT NOT NULL,

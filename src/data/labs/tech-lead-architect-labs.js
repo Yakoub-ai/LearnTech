@@ -2166,8 +2166,8 @@ console.log(\`Effort used: \${sprint.effortUsed}/\${sprint.effortBudget}\`);`,
         expectedOutput: `Sprint suggestion (budget: 8):
   [TD-003] Add integration tests for payment flow (effort: 3, priority: 17)
   [TD-004] Upgrade PostgreSQL from 12 to 16 (effort: 3, priority: 15)
-  [TD-005] Document API rate limiting strategy (effort: 1, priority: 5)
-Effort used: 7/8`,
+  [TD-001] Migrate from Moment.js to date-fns (effort: 2, priority: 8)
+Effort used: 8/8`,
         solution: `resolve(id) {
   const item = this.items.find(i => i.id === id);
   if (item) item.resolve();
@@ -2283,8 +2283,8 @@ TOP PRIORITY ITEMS:
 SPRINT SUGGESTION (budget: 8 effort points):
   [TD-003] Add integration tests for payment flow (effort: 3)
   [TD-004] Upgrade PostgreSQL from 12 to 16 (effort: 3)
-  [TD-005] Document API rate limiting strategy (effort: 1)
-  Effort used: 7/8
+  [TD-001] Migrate from Moment.js to date-fns (effort: 2)
+  Effort used: 8/8
 
 Debt Trend: STABLE (delta: 3)
 Debt is growing slowly. Consider allocating 20% sprint capacity to debt reduction.`,

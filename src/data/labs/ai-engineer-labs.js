@@ -68,7 +68,7 @@ for i, chunk in enumerate(chunks):
           'For chunking, use a while loop stepping by (chunk_size - overlap)',
           'Make sure to include the last chunk even if it is shorter than chunk_size'
         ],
-        expectedOutput: `Document length: ~220 chars
+        expectedOutput: `Document length: ~265 chars
 Number of chunks: 3-4
 Chunk 0: Machine learning is a subset of artificial intelli...
 Chunk 1: ...without being explicitly programmed. Deep learni...`,
@@ -151,7 +151,7 @@ print(f"Similarity between chunk 0 and 1: {sim:.3f}")`,
           'Cosine similarity = sum(a*b) / (sqrt(sum(a^2)) * sqrt(sum(b^2)))'
         ],
         expectedOutput: `Vocabulary size: ~15
-Similarity between chunk 0 and 1: ~0.4-0.6`,
+Similarity between chunk 0 and 1: ~0.2-0.5`,
         solution: `import math
 from collections import Counter
 
@@ -304,7 +304,7 @@ chunks = [
 vocab = build_vocabulary(chunks)
 embeddings = [embed_chunk(c, vocab) for c in chunks]
 
-query = "Tell me about Python's design philosophy"
+query = "Tell me about Python design philosophy"
 prompt = rag_pipeline(query, chunks, vocab, embeddings, top_k=2)
 print("=== Generated RAG Prompt ===")
 print(prompt)`,
@@ -350,7 +350,7 @@ chunks = [
 vocab = build_vocabulary(chunks)
 embeddings = [embed_chunk(c, vocab) for c in chunks]
 
-query = "Tell me about Python's design philosophy"
+query = "Tell me about Python design philosophy"
 prompt = rag_pipeline(query, chunks, vocab, embeddings, top_k=2)
 print("=== Generated RAG Prompt ===")
 print(prompt)`
@@ -791,7 +791,7 @@ for i, doc in enumerate(result["context"], 1):
   {
     id: 'ai-lab-4',
     roleId: 'ai-engineer',
-    level: 'senior',
+    level: 'mid',
     title: 'Few-Shot Prompting and Structured Classification',
     description: 'Master few-shot prompting — the technique of teaching the model a task by example rather than explicit instructions. You will build a reusable sentiment classifier that constructs dynamic few-shot prompts, enforces structured output format, and evaluates accuracy across a test set. This pattern is the most cost-effective way to adapt a general LLM to domain-specific tasks without fine-tuning.',
     estimatedMinutes: 25,

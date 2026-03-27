@@ -234,7 +234,7 @@ export const topicQuizzes = {
         {
           question: 'When you slice a NumPy array, what is returned — a copy or a view?',
           options: [
-            'A view — modifications to the slice also modify the original array, unlike pandas which uses Copy-on-Write from version 3.0',
+            'A view — modifications to the slice also modify the original array, unlike pandas which uses Copy-on-Write from version 2.1+',
             'A copy — NumPy always copies data to prevent accidental mutation',
             'It depends on the dtype; float arrays return views, integer arrays return copies',
             'A view by default, but NumPy automatically switches to copies for arrays larger than 1 MB',
@@ -272,7 +272,7 @@ export const topicQuizzes = {
           explanation: 'Use `loc` for label-based selection using row and column names, and `iloc` for integer-position-based selection using row and column numbers. Mixing them up causes bugs that can be silent.',
         },
         {
-          question: 'You need to assign values to a subset of a pandas DataFrame (version 3.0+). Which pattern is correct?',
+          question: 'You need to assign values to a subset of a pandas DataFrame (version 2.1+). Which pattern is correct?',
           options: [
             '`df.loc[df["x"] > 0, "y"] = 1` — single-step assignment directly on the original DataFrame using `.loc`',
             '`df[df["x"] > 0]["y"] = 1` — chained indexing to select and then assign',

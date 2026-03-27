@@ -271,7 +271,7 @@ type AdminUser = User & {
     permissions: string[];
 };
 
-type Readonly<T> = {
+type MyReadonly<T> = {
     readonly [P in keyof T]: T[P];
 };
 \`\`\`
@@ -1618,8 +1618,8 @@ interface User {
 }
 
 const query = new QueryBuilder<User>()
-    .select("name", "email")
     .where("age", 30)
+    .select("name", "email")
     .build();
 \`\`\`
 

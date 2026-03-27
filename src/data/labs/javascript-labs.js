@@ -3351,13 +3351,13 @@ console.log('discount accessible?', typeof shoppingCart.discount); // undefined`
 Added 1x Gadget @ $24.99
 Added 1x Widget @ $9.99
 Discount set: 10%
-Total: 56.88
+Total: 58.46
 Summary: {
   "items": [
     { "name": "Widget", "price": 9.99, "quantity": 4 },
     { "name": "Gadget", "price": 24.99, "quantity": 1 }
   ],
-  "total": 56.88,
+  "total": 58.46,
   "discount": "10%"
 }
 items accessible? undefined
