@@ -1121,17 +1121,6 @@ export const topicQuizzes = {
           correctIndex: 2,
           explanation: "Growing others is a core expectation of senior engineers. The tech lead should address it directly and supportively — clarifying the expectation, co-creating a plan that plays to the engineer's strengths, and recognising effort. Avoidance or indirect pressure are ineffective.",
         },
-        {
-          question: "What is the Observer design pattern and when is it commonly used?",
-          options: [
-            "A pattern where one object creates copies of itself to distribute processing",
-            "A pattern where a subject maintains a list of dependents (observers) and notifies them of state changes, enabling loose coupling between event producers and consumers",
-            "A pattern where a single object mediates all communication between components",
-            "A pattern that ensures only one instance of a class exists throughout the application",
-          ],
-          correctIndex: 1,
-          explanation: "The Observer pattern defines a one-to-many dependency: when the subject changes state, all registered observers are notified. This is the foundation of event-driven programming and is used extensively in UI frameworks, message systems and reactive architectures.",
-        },
       ],
     },
     {

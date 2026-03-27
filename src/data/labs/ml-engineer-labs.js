@@ -25,7 +25,7 @@ export const labs = [
       },
       {
         title: 'Step 2: Prepare Training Data',
-        instruction: 'Create a function that splits a dataset into training and test sets with stratified sampling.',
+        instruction: 'Create a function that splits a dataset into training and test sets.',
         starterCode: `# ML Pipeline — Step 2: Data Preparation
 import random
 

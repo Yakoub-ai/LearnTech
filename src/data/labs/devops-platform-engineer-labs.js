@@ -144,7 +144,7 @@ services:
         hints: [
           'Use depends_on with condition: service_healthy for proper startup order',
           'Database URL format: postgres://user:password@db:5432/dbname',
-          'Health check: pg_isready -U postgres'
+          'Health check: pg_isready -U appuser -d myapp'
         ],
         expectedOutput: `docker compose up -d
 Creating network...

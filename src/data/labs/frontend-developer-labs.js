@@ -726,7 +726,7 @@ export function PostList() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10', {
+      const response = await fetch('/api/posts', {
         signal
       });
       if (!response.ok) throw new Error(\`HTTP error! status: \${response.status}\`);

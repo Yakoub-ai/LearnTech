@@ -582,7 +582,7 @@ export const topicQuizzes = {
           question: 'What does TIMESTAMP WITH TIME ZONE store compared to plain TIMESTAMP?',
           options: [
             'It stores the timezone abbreviation alongside the timestamp',
-            'It normalizes the timestamp to UTC and records the original timezone offset',
+            'It converts the input to UTC for storage and displays it in the session timezone on retrieval',
             'It stores the timestamp in the server\'s local timezone',
             'They store identical data — WITH TIME ZONE is just a label',
           ],

@@ -1342,7 +1342,7 @@ Responsive design ensures your website works well on all screen sizes — from p
   Relative units scale with context, making designs flexible.
 
   rem  — relative to root font-size (usually 16px)
-  em   — relative to parent's font-size
+  em   — relative to the element's own computed font-size (or the parent's font-size when used on the font-size property itself)
   %    — relative to parent's dimension
   vw   — 1% of viewport width
   vh   — 1% of viewport height

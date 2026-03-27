@@ -791,7 +791,7 @@ for i, doc in enumerate(result["context"], 1):
   {
     id: 'ai-lab-4',
     roleId: 'ai-engineer',
-    level: 'senior',
+    level: 'mid',
     title: 'Few-Shot Prompting and Structured Classification',
     description: 'Master few-shot prompting — the technique of teaching the model a task by example rather than explicit instructions. You will build a reusable sentiment classifier that constructs dynamic few-shot prompts, enforces structured output format, and evaluates accuracy across a test set. This pattern is the most cost-effective way to adapt a general LLM to domain-specific tasks without fine-tuning.',
     estimatedMinutes: 25,

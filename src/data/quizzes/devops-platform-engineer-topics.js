@@ -595,7 +595,7 @@ export const topicQuizzes = {
           explanation: "Separating environment-specific values (subscriptions, names, sizes) from the structural template using parameter files allows the same template to be reused across dev, staging, and production environments.",
         },
         {
-          question: "When is it most critical to skip the plan/preview step before applying IaC changes?",
+          question: "Should the plan/preview step ever be skipped before applying IaC changes to production?",
           options: [
             "Never — the plan step should never be skipped, especially in production",
             "When deploying to development environments only",
