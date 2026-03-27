@@ -394,7 +394,7 @@ const fruits = ["apple", "banana", "cherry"];
 
 const upper     = fruits.map(f => f.toUpperCase());             // ["APPLE","BANANA","CHERRY"]
 const longNames = fruits.filter(f => f.length > 5);             // ["banana","cherry"]
-const totalLen  = fruits.reduce((sum, f) => sum + f.length, 0); // 18
+const totalLen  = fruits.reduce((sum, f) => sum + f.length, 0); // 17
 const found     = fruits.find(f => f.startsWith("b"));          // "banana"
 
 // Destructuring and spread

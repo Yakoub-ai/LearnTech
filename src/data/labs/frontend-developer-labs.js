@@ -722,13 +722,12 @@ export function PostList() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchPosts = useCallback(async () => {
-    const controller = new AbortController();
+  const fetchPosts = useCallback(async (signal) => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10', {
-        signal: controller.signal
+        signal
       });
       if (!response.ok) throw new Error(\`HTTP error! status: \${response.status}\`);
       const data = await response.json();
@@ -740,11 +739,12 @@ export function PostList() {
     } finally {
       setLoading(false);
     }
-    return () => controller.abort();
   }, []);
 
   useEffect(() => {
-    fetchPosts();
+    const controller = new AbortController();
+    fetchPosts(controller.signal);
+    return () => controller.abort();
   }, [fetchPosts]);
 
   if (loading) return <p>Loading posts...</p>;

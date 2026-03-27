@@ -433,19 +433,14 @@ A penetration test follows a methodology: reconnaissance (gathering information 
 
 **Key things to understand:**
 
-### Zero-Trust Architecture
+### Penetration Testing Methodology
 
 \`\`\`mermaid
 flowchart LR
-    User[User / Device] --> IdP[Identity Provider]
-    IdP --> CA[Conditional Access]
-    CA --> MFA{MFA Required?}
-    MFA -->|Yes| Verify[MFA Verification]
-    MFA -->|No| Deny[Deny Access]
-    Verify --> Policy[Policy Engine]
-    Policy --> Micro[Micro-segmented Resource]
-    Policy --> Monitor[Continuous Monitoring]
-    Monitor -->|Anomaly| Revoke[Revoke Session]
+    Recon[Reconnaissance] --> Enum[Enumeration]
+    Enum --> Exploit[Exploitation]
+    Exploit --> Post[Post-exploitation]
+    Post --> Report[Reporting]
 \`\`\`
 
 - Methodology: reconnaissance → enumeration → vulnerability analysis → exploitation → post-exploitation → reporting
@@ -732,20 +727,6 @@ A security incident is any event that compromises the confidentiality, integrity
 **Why it matters:** Every organisation will experience security incidents. The difference between a minor disruption and a catastrophic breach often comes down to how quickly and effectively the incident is detected and contained. A senior Security Engineer must be able to lead incident response, coordinate across teams, and make time-critical decisions under pressure.
 
 **Key things to understand:**
-
-### Threat Modeling Flow
-
-\`\`\`mermaid
-flowchart TB
-    Assets[Identify Assets] --> DFD[Create Data Flow Diagram]
-    DFD --> Threats[Enumerate Threats: STRIDE]
-    Threats --> Risk[Analyze Risk: Likelihood x Impact]
-    Risk --> Prioritize[Prioritize Threats]
-    Prioritize --> Mitigate[Design Mitigations]
-    Mitigate --> Validate[Validate Controls]
-    Validate --> Update[Update on Architecture Change]
-    Update --> Assets
-\`\`\`
 
 ### Incident Response Lifecycle
 

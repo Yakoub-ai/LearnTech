@@ -64,7 +64,7 @@ name = "Alice"
 greeting = 'Hello, World!'
 multiline = """This is a
 multi-line string."""
-raw = r"C:\\Users\\alice"  # Raw string – backslashes are literal
+raw = r"C:\Users\alice"  # Raw string – backslashes are literal
 print(f"name: {name}, length: {len(name)}")  # name: Alice, length: 5
 
 # --- Boolean ---
@@ -1559,7 +1559,7 @@ print(f"UUID: {unique_id}")
 random.seed(42)  # For reproducibility
 print(f"Random int: {random.randint(1, 100)}")   # Random int: 52
 print(f"Random choice: {random.choice(['a', 'b', 'c'])}")  # Random choice: a
-print(f"Shuffled: {random.sample(range(10), 5)}")  # Shuffled: [1, 0, 4, 3, 3] (varies with seed)
+print(f"Sample: {random.sample(range(10), 5)}")  # Sample: [0, 1, 3, 4, 9]  (5 unique values; varies with seed)
 
 # itertools: efficient looping
 pairs = list(itertools.combinations(["A", "B", "C", "D"], 2))

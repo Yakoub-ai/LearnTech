@@ -694,7 +694,7 @@ print("Warm Fahrenheit:", warm_f)`,
           'Celsius to Fahrenheit: (c * 9/5) + 32 — filter with if ((c * 9/5) + 32) >= 32'
         ],
         expectedOutput: `Top engineers: ['Alice', 'Charlie']
-Mid-age scores: {'alice': 91, 'bob': 74, 'eve': 62}
+Mid-age scores: {'alice': 91, 'diana': 95, 'eve': 62}
 Labels: ['Alice: senior', 'Bob: junior', 'Charlie: senior', 'Diana: senior', 'Eve: junior']
 Warm Fahrenheit: [32.0, 41.0, 68.0, 95.0]`,
         solution: `users = [

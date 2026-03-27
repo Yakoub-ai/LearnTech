@@ -345,10 +345,10 @@ The video below walks through the Data Warehouse Toolkit concepts, covering fact
 
 \`\`\`mermaid
 erDiagram
-    fact_orders ||--o{ dim_customer : "customer_key"
-    fact_orders ||--o{ dim_product : "product_key"
-    fact_orders ||--o{ dim_date : "date_key"
-    fact_orders ||--o{ dim_geography : "geo_key"
+    dim_customer ||--o{ fact_orders : "customer_key"
+    dim_product ||--o{ fact_orders : "product_key"
+    dim_date ||--o{ fact_orders : "date_key"
+    dim_geography ||--o{ fact_orders : "geo_key"
     fact_orders {
         int order_key PK
         int customer_key FK

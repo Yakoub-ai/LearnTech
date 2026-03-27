@@ -1612,7 +1612,7 @@ class SecretFinding:
 
 SECRET_PATTERNS = {
     "AWS Access Key": {"regex": r"AKIA[0-9A-Z]{16}", "severity": "critical"},
-    "GitHub Token":   {"regex": r"gh[pousr]_[A-Za-z0-9_]{36,}", "severity": "critical"},
+    "GitHub Token":   {"regex": r"gh[pousr]_[A-Za-z0-9_]{20,}", "severity": "critical"},
     "Private Key":    {"regex": r"-----BEGIN (RSA |EC )?PRIVATE KEY-----", "severity": "critical"},
 }
 
@@ -1650,7 +1650,7 @@ os.unlink(tmp_path)`,
           'Prune dirs in-place: dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]',
           'Check extension: if Path(filename).suffix in SCAN_EXTENSIONS'
         ],
-        expectedOutput: `  [CRITICAL] GitHub Token at line 1: ghp_ab***3pqr"`,
+        expectedOutput: `  [CRITICAL] GitHub Token at line 1: ghp_ab***5pqr`,
         solution: `import re
 import os
 from pathlib import Path
@@ -1666,7 +1666,7 @@ class SecretFinding:
 
 SECRET_PATTERNS = {
     "AWS Access Key": {"regex": r"AKIA[0-9A-Z]{16}", "severity": "critical"},
-    "GitHub Token":   {"regex": r"gh[pousr]_[A-Za-z0-9_]{36,}", "severity": "critical"},
+    "GitHub Token":   {"regex": r"gh[pousr]_[A-Za-z0-9_]{20,}", "severity": "critical"},
     "Private Key":    {"regex": r"-----BEGIN (RSA |EC )?PRIVATE KEY-----", "severity": "critical"},
 }
 

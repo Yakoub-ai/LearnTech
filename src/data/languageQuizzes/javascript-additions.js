@@ -342,9 +342,9 @@ export const additions = {
     {
       question: 'What is the output of: async function foo() { return 1; } console.log(foo())?',
       options: ['1', 'Promise { 1 }', 'undefined', 'Promise { <pending> }'],
-      correctIndex: 3,
+      correctIndex: 1,
       explanation:
-        'An async function always returns a Promise. When you log the result of foo() without awaiting it, you see Promise { <pending> }. The promise resolves to 1, but console.log runs synchronously before the microtask that resolves the internal value is processed.',
+        'An async function always returns a Promise. Since `return 1` resolves the promise immediately (not via a microtask), `console.log(foo())` outputs `Promise { 1 }` in Node.js. The promise is already fulfilled by the time console.log processes it.',
     },
     {
       question: 'What does the following code produce? const obj = {}; obj[{}] = "A"; obj[{x:1}] = "B"; console.log(obj[{}])',
