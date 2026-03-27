@@ -412,8 +412,7 @@ LIMIT 10;`,
         COUNT(o.order_id) AS total_orders,
         SUM(o.amount) AS total_spent
     FROM customers c
-    LEFT JOIN orders o ON c.customer_id = o.customer_id
-    WHERE o.order_date >= NOW() - INTERVAL '1 year'
+    LEFT JOIN orders o ON c.customer_id = o.customer_id AND o.order_date >= NOW() - INTERVAL '1 year'
     GROUP BY c.customer_id, c.customer_name, c.signup_date
     HAVING COUNT(o.order_id) > 5
 )

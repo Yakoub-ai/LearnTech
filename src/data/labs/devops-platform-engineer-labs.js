@@ -1144,6 +1144,16 @@ variable "max_instances" {
   description = "Maximum number of instances in the ASG"
   type        = number
   default     = 4
+}
+
+variable "subnet_ids" {
+  description = "List of subnet IDs for the Auto Scaling Group"
+  type        = list(string)
+}
+
+variable "alb_security_group_ids" {
+  description = "Security group IDs for the ALB"
+  type        = list(string)
 }`,
         solution: `variable "app_name" {
   description = "Name of the application"
@@ -1184,6 +1194,11 @@ variable "max_instances" {
 
 variable "subnet_ids" {
   description = "List of subnet IDs for the Auto Scaling Group"
+  type        = list(string)
+}
+
+variable "alb_security_group_ids" {
+  description = "Security group IDs for the ALB"
   type        = list(string)
 }`
       },
@@ -1236,13 +1251,24 @@ resource "aws_launch_template" "app" {
     resource_type = "instance"
     tags          = local.common_tags
   }
+
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    yum update -y
+    yum install -y docker
+    systemctl start docker
+    docker pull myrepo/\${var.app_name}:latest
+    docker run -d -p 80:8000 myrepo/\${var.app_name}:latest
+  EOF
+  )
 }
 
 resource "aws_autoscaling_group" "app" {
-  name             = "\${var.app_name}-\${var.environment}-asg"
-  min_size         = var.min_instances
-  max_size         = var.max_instances
-  desired_capacity = var.min_instances
+  name                = "\${var.app_name}-\${var.environment}-asg"
+  min_size            = var.min_instances
+  max_size            = var.max_instances
+  desired_capacity    = var.min_instances
+  vpc_zone_identifier = var.subnet_ids
 
   launch_template {
     id      = aws_launch_template.app.id

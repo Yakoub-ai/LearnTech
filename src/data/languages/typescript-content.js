@@ -1618,8 +1618,8 @@ interface User {
 }
 
 const query = new QueryBuilder<User>()
-    .select("name", "email")
     .where("age", 30)
+    .select("name", "email")
     .build();
 \`\`\`
 

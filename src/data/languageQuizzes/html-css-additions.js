@@ -339,10 +339,10 @@ export const additions = {
         'CSS nesting is identical to Sass nesting in every way; Sass merely compiled it ahead of time',
         'Native CSS nesting requires the & selector to be the first character of any nested rule, whereas Sass allows bare element selectors to be nested directly',
         'CSS nesting only supports pseudo-class nesting, not element or class selectors',
-        'Native CSS nesting uses & to refer to the parent selector, but unlike Sass it does not support nesting element selectors directly without & in all contexts'
+        'Native CSS nesting uses & to reference the parent selector, similar to Sass. Modern browsers (2024+) support bare element selectors like `.card { p { } }` without &. The main difference from Sass is that native nesting resolves at runtime in the browser\'s cascade, while Sass compiles to flat selectors at build time.'
       ],
       correctIndex: 3,
-      explanation: 'In native CSS nesting, .card { &:hover { } .title { } } is valid, but bare element selectors like .card { p { } } required & in early implementations and still have edge-case differences across browsers. Sass always resolved nesting at compile time and supported any selector type freely. Native CSS nesting is resolved by the browser and participates in the live cascade, which means specificity and inheritance behave slightly differently than in preprocessors.'
+      explanation: 'Native CSS nesting uses & to reference the parent selector. Since Chrome 120+, Firefox 117+, and Safari 17.2+, bare element selectors like .card { p { } } work without &. The key difference from Sass is that native CSS nesting resolves at runtime in the browser\'s cascade, meaning specificity and inheritance follow live cascade rules, while Sass compiles nesting to flat selectors at build time.'
     },
     {
       question: 'What is the View Transitions API, and what problem did it eliminate?',
