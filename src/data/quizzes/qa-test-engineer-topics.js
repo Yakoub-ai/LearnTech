@@ -2008,7 +2008,7 @@ export const topicQuizzes = {
           'Scientific Computing with Python Certification',
         ],
         correctIndex: 0,
-        explanation: "freeCodeCamp's QA certification specifically covers Chai, Mocha, Helmer, and test-driven development in Node.js.",
+        explanation: "freeCodeCamp's QA certification specifically covers Chai, Mocha, Helmet, and test-driven development in Node.js.",
       },
       {
         question: 'What does the ISTQB term "test oracle" refer to?',
@@ -2156,7 +2156,7 @@ export const topicQuizzes = {
         explanation: 'Gherkin bridges the communication gap — business analysts can review scenarios as living specifications and flag misunderstandings before development begins.',
       },
       {
-        question: 'What output format does Newman use by default for CI systems like GitHub Actions or Jenkins?',
+        question: 'Which output format does Newman commonly generate for CI systems like GitHub Actions or Jenkins?',
         options: [
           'JUnit XML',
           'Markdown',

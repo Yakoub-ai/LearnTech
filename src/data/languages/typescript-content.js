@@ -271,7 +271,7 @@ type AdminUser = User & {
     permissions: string[];
 };
 
-type Readonly<T> = {
+type MyReadonly<T> = {
     readonly [P in keyof T]: T[P];
 };
 \`\`\`

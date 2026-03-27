@@ -1444,7 +1444,7 @@ export const topicQuizzes = {
           options: [
             'WebSockets — they maintain a persistent bidirectional connection, avoiding the overhead of establishing a new HTTP connection for each location update',
             'Standard HTTP POST — it is universally supported and each update can be sent as a separate stateless request',
-            'Server-Sent Events — they are designed for high-frequency bidirectional communication and handle reconnection automatically',
+            'Server-Sent Events — they support efficient server-to-client push with automatic reconnection, but are unidirectional',
             'Long polling — it is the lowest-latency option because the server holds the connection open and pushes data the moment it is available',
           ],
           correctIndex: 0,

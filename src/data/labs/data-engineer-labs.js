@@ -188,7 +188,7 @@ Stockholm (2 employees):
   - Alice: mid
   - Eve: mid
 
-Gothenburg (1 employee):
+Gothenburg (1 employees):
   - Bob: junior
 ...`,
         solution: `def load_grouped(records, group_by='city'):
@@ -689,7 +689,7 @@ WHY: Transformations in Spark are lazy — they build a logical plan but don't e
 
 HOW: Chain .filter(), .withColumn(), and .groupBy().agg() calls. Use Spark SQL functions (not Python built-ins) for column expressions so they run on the Spark executors, not the driver.`,
         starterCode: `# PySpark ETL — Step 3: Transform
-from pyspark.sql.functions import col, sum as spark_sum, avg, date_format, when, lit
+from pyspark.sql.functions import col, sum as spark_sum, avg, count, date_format, when, lit
 
 # TODO 1: Filter out rows where amount <= 0 or customer_id is null
 filtered_df = raw_df  # replace with filter chain

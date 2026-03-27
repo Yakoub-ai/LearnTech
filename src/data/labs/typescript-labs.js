@@ -1772,10 +1772,7 @@ log(LogLevel.Error, "Connection failed");`,
           'const enums are ideal for simple switch/if comparisons where you never need the name at runtime'
         ],
         expectedOutput: `[Info] Server started
-[Error] Connection failed
-
-// With const enum the compiled JS inlines the number:
-// if (level >= 2) { ... }  — no LogLevel object in output`,
+[Error] Connection failed`,
         solution: `// Regular enum — keeps a runtime object, supports reverse lookup
 enum HttpMethod {
   GET,
@@ -1883,19 +1880,19 @@ handleEvent({ kind: "mouse", x: 100, y: 200 });
 handleEvent({ kind: "keyboard", key: "Enter" });
 handleEvent({ kind: "resize", width: 1920, height: 1080 });`,
         hints: [
-          'type MouseEvent = { kind: "mouse"; x: number; y: number }',
-          'type AppEvent = MouseEvent | KeyboardEvent | ResizeEvent',
+          'type AppMouseEvent = { kind: "mouse"; x: number; y: number }',
+          'type AppEvent = AppMouseEvent | AppKeyboardEvent | AppResizeEvent',
           'switch (event.kind) { case "mouse": ... } — TypeScript narrows the type in each case',
           'Add a default branch that calls a never-typed variable to ensure exhaustive handling'
         ],
         expectedOutput: `Mouse click at (100, 200)
 Key pressed: Enter
 Window resized to 1920x1080`,
-        solution: `type MouseEvent = { kind: "mouse"; x: number; y: number };
-type KeyboardEvent = { kind: "keyboard"; key: string };
-type ResizeEvent = { kind: "resize"; width: number; height: number };
+        solution: `type AppMouseEvent = { kind: "mouse"; x: number; y: number };
+type AppKeyboardEvent = { kind: "keyboard"; key: string };
+type AppResizeEvent = { kind: "resize"; width: number; height: number };
 
-type AppEvent = MouseEvent | KeyboardEvent | ResizeEvent;
+type AppEvent = AppMouseEvent | AppKeyboardEvent | AppResizeEvent;
 
 function handleEvent(event: AppEvent): void {
   switch (event.kind) {

@@ -467,7 +467,7 @@ export const topicQuizzes = {
           explanation: "The principle of least privilege requires using only the permissions needed for a task. Unnecessary root access means a mistake or exploit can affect the entire system rather than just the current user's files."
         },
         {
-          question: "Which command displays the last 20 lines of a log file in real-time as it is being written to?",
+          question: "Which command displays the tail of a log file and follows it in real-time as new lines are appended?",
           options: ["head -20 logfile", "tail -f logfile", "cat logfile | tail", "less +F logfile"],
           correctIndex: 1,
           explanation: "`tail -f` follows a file, continuously displaying new lines as they are appended. This is the standard command for monitoring live log output."
@@ -1247,7 +1247,7 @@ export const topicQuizzes = {
     {
       topicId: 'advanced-sql',
       topicTitle: 'Advanced SQL – Window Functions, CTEs and Performance',
-      objectiveIndex: 1,
+      objectiveIndex: 7,
       questions: [
         {
           question: "What is the key difference between `PARTITION BY` in a window function and `GROUP BY`?",
@@ -1889,7 +1889,7 @@ export const topicQuizzes = {
     {
       topicId: 'change-data-capture',
       topicTitle: 'Change Data Capture (CDC) – Real-Time Data Synchronisation',
-      objectiveIndex: 0,
+      objectiveIndex: 6,
       questions: [
         {
           question: "What is the key advantage of CDC over traditional batch ETL for data synchronisation?",
@@ -1962,7 +1962,7 @@ export const topicQuizzes = {
     {
       topicId: 'ai-powered-development',
       topicTitle: 'AI-Powered Development for Data Engineers',
-      objectiveIndex: 5,
+      objectiveIndex: 7,
       questions: [
         {
           question: "What context should a data engineer provide to an AI assistant to get the best results when generating pipeline code?",
