@@ -4,9 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { loadLanguageMarkdownContent, loadLanguageQuizzes } from '../data/loaders/languageDataLoader'
-import { setLanguageQuizScore, syncProgressItemToSupabase } from '../utils/progressStorage'
-import { useAuth } from '../contexts/AuthContext'
-import { supabase } from '../lib/supabase'
+import useLanguageProgress from '../components/progress/useLanguageProgress'
 import MarkdownRenderer from '../components/content/MarkdownRenderer'
 import QuizBlock from '../components/interactive/QuizBlock'
 import ReportQuestionModal from '../components/interactive/ReportQuestionModal'
@@ -27,7 +25,7 @@ const colorMap = {
 export default function LanguageLevelPage() {
   const { languageId, level } = useParams()
   const language = getLanguageById(languageId)
-  const { user } = useAuth()
+  const { saveQuizScore } = useLanguageProgress(languageId)
 
   const [content, setContent] = useState(null)
   const [levelQuizzes, setLevelQuizzes] = useState([])
@@ -45,15 +43,15 @@ export default function LanguageLevelPage() {
   useEffect(() => {
     if (!language) return
     setContentLoading(true)
-    Promise.all([
+    Promise.allSettled([
       loadLanguageMarkdownContent(languageId),
       loadLanguageQuizzes(languageId)
-    ]).then(([data, quizData]) => {
+    ]).then(([contentResult, quizzesResult]) => {
+      const data     = contentResult.status  === 'fulfilled' ? contentResult.value  : {}
+      const quizData = quizzesResult.status  === 'fulfilled' ? quizzesResult.value  : {}
       setContent(data[level] || '')
       setLevelQuizzes(quizData[level] || [])
-      setContentLoading(false)
-    }).catch(() => {
-      setLoadError('Failed to load content. Please refresh.')
+      if (contentResult.status === 'rejected') setLoadError('Failed to load content. Please refresh.')
       setContentLoading(false)
     })
   }, [languageId, level, language])
@@ -163,10 +161,7 @@ export default function LanguageLevelPage() {
             questions={levelQuizzes}
             roleId={languageId}
             level={level}
-            onComplete={(score) => {
-              setLanguageQuizScore(languageId, level, score)
-              syncProgressItemToSupabase(supabase, user?.id, languageId, level, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
-            }}
+            onComplete={(score) => saveQuizScore(level, score)}
             onReport={openReportModal}
           />
         </div>

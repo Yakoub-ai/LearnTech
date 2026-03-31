@@ -4,9 +4,8 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, BookOpen, Wrench, BrainCircuit, FlaskConical, Lock, ArrowRight } from 'lucide-react'
 import { getLanguageById, getLanguageIcon } from '../data/languages'
 import { getRoleById } from '../data/roles'
-import { setLanguageQuizScore, syncProgressItemToSupabase, getLanguageProgress, isLanguageLevelFullyComplete, getLanguageLevelStats } from '../utils/progressStorage'
-import { useAuth } from '../contexts/AuthContext'
-import { supabase } from '../lib/supabase'
+import { getLanguageProgress, isLanguageLevelFullyComplete, getLanguageLevelStats } from '../utils/progressStorage'
+import useLanguageProgress from '../components/progress/useLanguageProgress'
 import PageHelmet from '../components/seo/PageHelmet'
 import StructuredData from '../components/seo/StructuredData'
 
@@ -47,7 +46,7 @@ const colorMap = {
 export default function LanguagePage() {
   const { languageId } = useParams()
   const language = getLanguageById(languageId)
-  const { user } = useAuth()
+  const { saveQuizScore } = useLanguageProgress(languageId)
   const [activeTab, setActiveTab] = useState('roadmap')
 
   const [content, setContent] = useState(null)
@@ -70,17 +69,15 @@ export default function LanguagePage() {
   useEffect(() => {
     if (!language) return
     setContentLoading(true)
-    Promise.all([
+    Promise.allSettled([
       loadLanguageMarkdownContent(languageId),
       loadLanguageQuizzes(languageId),
       loadLanguageGlossary(languageId)
-    ]).then(([c, q, g]) => {
-      setContent(c)
-      setLangQuizzes(q)
-      setGlossary(g)
-      setContentLoading(false)
-    }).catch(() => {
-      setLoadError('Failed to load content. Please refresh.')
+    ]).then(([contentResult, quizzesResult, glossaryResult]) => {
+      setContent(contentResult.status   === 'fulfilled' ? contentResult.value   : null)
+      setLangQuizzes(quizzesResult.status === 'fulfilled' ? quizzesResult.value : null)
+      setGlossary(glossaryResult.status === 'fulfilled' ? glossaryResult.value  : null)
+      if (contentResult.status === 'rejected') setLoadError('Failed to load content. Please refresh.')
       setContentLoading(false)
     })
   }, [languageId, language])
@@ -265,10 +262,7 @@ export default function LanguagePage() {
                           questions={levelQuizzes}
                           roleId={languageId}
                           level={levelKey}
-                          onComplete={(score) => {
-                            setLanguageQuizScore(languageId, levelKey, score)
-                            syncProgressItemToSupabase(supabase, user?.id, languageId, levelKey, 'quiz', 'score', { score, scoredAt: new Date().toISOString() })
-                          }}
+                          onComplete={(score) => saveQuizScore(levelKey, score)}
                         />
                       </div>
                     )}

@@ -67,21 +67,17 @@ export default function LevelPage() {
   useEffect(() => {
     if (role?.fileName) {
       setContentLoading(true)
-      Promise.all([
+      Promise.allSettled([
         loadRoleMarkdownContent(role.fileName),
         loadRoleTopicQuizzes(roleId),
         loadRoleQuizzes(roleId),
-      ])
-        .then(([contentData, topicData, quizData]) => {
-          setMarkdownContent(contentData)
-          setTopicQuizzesByLevel(topicData)
-          setLevelQuizzes(quizData[level] || [])
-          setContentLoading(false)
-        })
-        .catch(() => {
-          setLoadError('Failed to load content. Please refresh.')
-          setContentLoading(false)
-        })
+      ]).then(([contentResult, topicResult, quizzesResult]) => {
+        setMarkdownContent(contentResult.status  === 'fulfilled' ? contentResult.value  : {})
+        setTopicQuizzesByLevel(topicResult.status === 'fulfilled' ? topicResult.value   : {})
+        setLevelQuizzes(quizzesResult.status      === 'fulfilled' ? (quizzesResult.value[level] || []) : [])
+        if (contentResult.status === 'rejected') setLoadError('Failed to load content. Please refresh.')
+        setContentLoading(false)
+      })
     }
   }, [role?.fileName, roleId, level])
 
