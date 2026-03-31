@@ -25,6 +25,7 @@ import SkillDiagram from '../components/roadmap/SkillDiagram'
 import SetupGuide from '../components/interactive/SetupGuide'
 import InteractiveLab from '../components/interactive/InteractiveLab'
 import useProgress from '../components/progress/useProgress'
+import { ProgressProvider } from '../contexts/ProgressContext'
 
 const tabs = [
   { id: 'roadmap', label: 'Roadmap', icon: BookOpen },
@@ -37,7 +38,8 @@ export default function RolePage() {
   const { roleId } = useParams()
   const role = getRoleById(roleId)
   const [activeTab, setActiveTab] = useState('roadmap')
-  const { roleProgress, isObjectiveComplete, isResourceComplete, toggleObjective, toggleResource, saveQuizScore } = useProgress(roleId)
+  const progressValue = useProgress(roleId)
+  const { roleProgress, saveQuizScore } = progressValue
 
   const [markdownContent, setMarkdownContent] = useState(null)
   const [quizzes, setQuizzes] = useState(null)
@@ -59,17 +61,15 @@ export default function RolePage() {
   useEffect(() => {
     if (!role) return
     setContentLoading(true)
-    Promise.all([
+    Promise.allSettled([
       loadRoleMarkdownContent(role.fileName),
       loadRoleQuizzes(roleId),
       loadRoleGlossary(roleId)
-    ]).then(([content, q, g]) => {
-      setMarkdownContent(content)
-      setQuizzes(q)
-      setGlossary(g)
-      setContentLoading(false)
-    }).catch(() => {
-      setLoadError('Failed to load content. Please refresh.')
+    ]).then(([contentResult, quizzesResult, glossaryResult]) => {
+      setMarkdownContent(contentResult.status  === 'fulfilled' ? contentResult.value  : null)
+      setQuizzes(quizzesResult.status          === 'fulfilled' ? quizzesResult.value  : null)
+      setGlossary(glossaryResult.status        === 'fulfilled' ? glossaryResult.value : null)
+      if (contentResult.status === 'rejected') setLoadError('Failed to load content. Please refresh.')
       setContentLoading(false)
     })
   }, [roleId, role])
@@ -114,6 +114,7 @@ export default function RolePage() {
   }
 
   return (
+    <ProgressProvider value={progressValue}>
     <div className="max-w-4xl mx-auto p-6 sm:p-8">
       <PageHelmet
         title={role.name}
@@ -238,10 +239,6 @@ export default function RolePage() {
                         levelIndex={index}
                         resources={ld.resources}
                         objectives={ld.objectives}
-                        isResourceComplete={isResourceComplete}
-                        isObjectiveComplete={isObjectiveComplete}
-                        toggleResource={toggleResource}
-                        toggleObjective={toggleObjective}
                         levelProgress={roleProgress[levelKey]}
                         isComplete={isComplete}
                         isPreviousComplete={isPreviousComplete}
@@ -290,5 +287,6 @@ export default function RolePage() {
         </div>
       )}
     </div>
+    </ProgressProvider>
   )
 }

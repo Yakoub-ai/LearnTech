@@ -3,8 +3,14 @@ import ObjectiveChecklist from './ObjectiveChecklist'
 import Badge from '../common/Badge'
 import { Link } from 'react-router-dom'
 import { BookOpen, ArrowRight } from 'lucide-react'
+import { useProgressContext } from '../../contexts/ProgressContext'
 
-export default function LevelSection({ roleId, level, resources, objectives, isResourceComplete, isObjectiveComplete, toggleResource, toggleObjective, levelProgress = 0, embedded = false, type = 'role' }) {
+export default function LevelSection({ roleId, level, resources, objectives, levelProgress = 0, embedded = false, type = 'role' }) {
+  const ctx = useProgressContext()
+  const isObjectiveComplete = ctx?.isObjectiveComplete
+  const isResourceComplete  = ctx?.isResourceComplete
+  const toggleObjective     = ctx?.toggleObjective
+  const toggleResource      = ctx?.toggleResource
   const levelKey = level.toLowerCase()
   const deepDiveUrl = type === 'role'
     ? `/dashboard/role/${roleId}/${levelKey}`

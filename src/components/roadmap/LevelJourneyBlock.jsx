@@ -12,10 +12,6 @@ export default function LevelJourneyBlock({
   levelIndex,
   resources,
   objectives,
-  isResourceComplete,
-  isObjectiveComplete,
-  toggleResource,
-  toggleObjective,
   levelProgress,
   isComplete,
   isPreviousComplete,
@@ -48,10 +44,6 @@ export default function LevelJourneyBlock({
               level={level}
               resources={resources}
               objectives={objectives}
-              isResourceComplete={isResourceComplete}
-              isObjectiveComplete={isObjectiveComplete}
-              toggleResource={toggleResource}
-              toggleObjective={toggleObjective}
               levelProgress={levelProgress}
               embedded
             />
@@ -91,10 +83,6 @@ export default function LevelJourneyBlock({
           level={level}
           resources={resources}
           objectives={objectives}
-          isResourceComplete={isResourceComplete}
-          isObjectiveComplete={isObjectiveComplete}
-          toggleResource={toggleResource}
-          toggleObjective={toggleObjective}
           levelProgress={levelProgress}
           type={type}
         />

@@ -41,7 +41,7 @@ export default function RoadmapTimeline({ roleId, levels = ['Beginner', 'Mid', '
       <div className="space-y-6">
         {levels.map((level, index) => {
           const config = levelConfig[level]
-          const levelProgress = progress[level.toLowerCase()] || 0
+          const levelProgress = progress[level.toLowerCase()]?.percentage || 0
           const isComplete = levelProgress >= 100
           const isActive = location.pathname.includes(level.toLowerCase())
 
