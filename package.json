@@ -44,7 +44,7 @@
     "jsdom": "^29.0.1",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.2.2",
-    "vite": "^8.0.1",
+    "vite": "^8.0.5",
     "vitest": "^3.2.0"
   },
   "overrides": {
