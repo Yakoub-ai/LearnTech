@@ -59,14 +59,6 @@ function CodeBlock({ className, children }) {
   )
 }
 
-function extractTextContent(node) {
-  if (typeof node === 'string') return node
-  if (typeof node === 'number') return String(node)
-  if (Array.isArray(node)) return node.map(extractTextContent).join('')
-  if (node?.props?.children) return extractTextContent(node.props.children)
-  return ''
-}
-
 function processContent(markdown) {
   if (!markdown) return ''
 
@@ -74,17 +66,17 @@ function processContent(markdown) {
 
   processed = processed.replace(
     /\*\*Why it matters:\*\*\s*([\s\S]*?)(?=\n\n\*\*|\n---|\n##|$)/g,
-    '<div data-callout="takeaway">$1</div>'
+    '\n\n<div data-callout="takeaway">\n\n$1\n\n</div>\n\n'
   )
 
   processed = processed.replace(
     /\*\*Common pitfalls:\*\*\s*([\s\S]*?)(?=\n\n\*\*|\n---|\n##|$)/g,
-    '<div data-callout="pitfall">$1</div>'
+    '\n\n<div data-callout="pitfall">\n\n$1\n\n</div>\n\n'
   )
 
   processed = processed.replace(
     /\*\*Key things to understand:\*\*\s*([\s\S]*?)(?=\n\n\*\*|\n---|\n##|$)/g,
-    '<div data-callout="key">$1</div>'
+    '\n\n<div data-callout="key">\n\n$1\n\n</div>\n\n'
   )
 
   return processed
@@ -207,16 +199,9 @@ export default function MarkdownRenderer({ content, className = '' }) {
     div: ({ children, ...props }) => {
       const calloutType = props['data-callout']
       if (calloutType) {
-        const rawText = extractTextContent(children)
-        const { div: _div, ...innerComponents } = components
-        const parsed = (
-          <ReactMarkdown remarkPlugins={[remarkGfm]} components={innerComponents}>
-            {rawText}
-          </ReactMarkdown>
-        )
-        if (calloutType === 'takeaway') return <KeyTakeaway>{parsed}</KeyTakeaway>
-        if (calloutType === 'pitfall') return <PitfallAlert>{parsed}</PitfallAlert>
-        if (calloutType === 'key') return <ConceptCard>{parsed}</ConceptCard>
+        if (calloutType === 'takeaway') return <KeyTakeaway>{children}</KeyTakeaway>
+        if (calloutType === 'pitfall') return <PitfallAlert>{children}</PitfallAlert>
+        if (calloutType === 'key') return <ConceptCard>{children}</ConceptCard>
       }
       return <div {...props}>{children}</div>
     },
