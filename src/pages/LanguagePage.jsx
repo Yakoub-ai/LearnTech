@@ -235,6 +235,11 @@ export default function LanguagePage() {
                 const isSoftLocked = index > 0 && !isPreviousComplete
                 const stats = isComplete ? getLanguageLevelStats(languageId, levelKey) : null
                 const deepDiveUrl = `/dashboard/language/${languageId}/${levelKey}`
+                const maxPreview = 2000
+                const isTruncated = levelContent && levelContent.length > maxPreview
+                const previewContent = isTruncated
+                  ? levelContent.slice(0, Math.max(levelContent.lastIndexOf('\n\n', maxPreview), 1))
+                  : levelContent
 
                 const levelContentBlock = (
                   <div className="space-y-4">
@@ -250,7 +255,19 @@ export default function LanguagePage() {
                       </Link>
                     </div>
                     {levelContent ? (
-                      <MarkdownRenderer content={levelContent.slice(0, 2000) + '\n\n---\n\n*[View the complete guide →](' + deepDiveUrl + ')*'} />
+                      <>
+                        <MarkdownRenderer content={previewContent} />
+                        {isTruncated && (
+                          <div className="mt-4 pt-4 border-t border-[var(--color-border)]">
+                            <Link
+                              to={deepDiveUrl}
+                              className="text-sm font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-light)] no-underline transition-colors"
+                            >
+                              View the complete guide →
+                            </Link>
+                          </div>
+                        )}
+                      </>
                     ) : (
                       <div className="p-6 rounded-lg border border-dashed border-[var(--color-border)] text-center">
                         <p className="text-[var(--color-text-secondary)]">Content coming soon for {level}</p>

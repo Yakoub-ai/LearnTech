@@ -323,7 +323,7 @@ export function extractContentSections(markdown) {
         sections.push({
           heading: currentHeading,
           slug: currentHeading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
-          content: currentLines.join('\n').trim(),
+          content: currentLines.join('\n').trim().replace(/\n---\s*$/, '').trim(),
         })
       }
       currentHeading = match[1]
@@ -337,7 +337,7 @@ export function extractContentSections(markdown) {
     sections.push({
       heading: currentHeading,
       slug: currentHeading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
-      content: currentLines.join('\n').trim(),
+      content: currentLines.join('\n').trim().replace(/\n---\s*$/, '').trim(),
     })
   }
 
