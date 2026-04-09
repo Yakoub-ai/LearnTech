@@ -3861,6 +3861,12 @@ flowchart LR
     E --- E1["Layer composition on GPU"]
 \\\`\\\`\\\`
 
+Explore the interactive version below — click any node for details and performance tips:
+
+\\\`\\\`\\\`interactive-flow
+browserRendering
+\\\`\\\`\\\`
+
 ### CSS Architecture Patterns
 
 \\\`\\\`\\\`mermaid

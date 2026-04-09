@@ -617,6 +617,12 @@ flowchart LR
     UP --> Analytics[Analytics]
 \`\`\`
 
+Explore the interactive version below — click any node for details and practical guidance:
+
+\`\`\`interactive-flow
+marTechDataFlow
+\`\`\`
+
 - CDP architecture: data collection (SDKs, APIs, event streams), identity resolution (matching anonymous and known user profiles across devices and channels), profile unification (merging data into a single customer view), activation (sending unified profiles to downstream tools like email platforms, ad networks, personalisation engines)
 - GA4 event model: everything is an event. Automatically collected events (page_view, session_start), enhanced measurement events (scroll, outbound_click, file_download), recommended events (purchase, sign_up), and custom events. Each event can have custom parameters for additional context
 - Consent management: GDPR requires explicit consent before collecting personal data for analytics. Consent Management Platforms (CMPs) must be integrated with analytics and CDP tools to respect user choices — no consent means no tracking

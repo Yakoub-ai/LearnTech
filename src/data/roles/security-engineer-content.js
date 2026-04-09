@@ -743,6 +743,12 @@ stateDiagram-v2
     PostIncident --> [*]
 \`\`\`
 
+Explore the interactive version below — click any node for details and practical guidance:
+
+\`\`\`interactive-flow
+incidentResponse
+\`\`\`
+
 - Preparation: incident response plan, contact lists, communication templates, forensic toolkits, log collection and retention policies, tabletop exercises
 - Detection and Analysis: monitoring (SIEM, EDR, network analysis), alert triage (true positive vs false positive), severity classification, initial scoping (what systems are affected?)
 - Containment: short-term (isolate affected systems to stop the spread) and long-term (apply patches, disable compromised accounts, block malicious IPs) containment strategies

@@ -3186,6 +3186,12 @@ flowchart LR
     F --- F1["Generate .js and .d.ts"]
 \`\`\`
 
+Explore the interactive version below — click any node for details and code examples:
+
+\`\`\`interactive-flow
+typeCompilation
+\`\`\`
+
 ### Conditional Type Resolution
 
 \`\`\`mermaid

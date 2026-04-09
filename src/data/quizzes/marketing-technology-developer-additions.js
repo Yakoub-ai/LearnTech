@@ -44,6 +44,34 @@ export const additions = {
       correctIndex: 2,
       explanation: 'The networking course explains that a hub is a Layer 1 device that simply replicates any incoming electrical signal to every other port — it has no awareness of addressing. A switch operates at Layer 2 (Data Link) and builds a table of MAC addresses mapped to ports. When a frame arrives, the switch checks its table and forwards the frame only to the port where the destination device is connected. This makes switches far more efficient and is why hubs are no longer used in modern networks.'
     },
+    {
+      question: 'Why must all systems transmitting customer data use HTTPS rather than plain HTTP?',
+      options: [
+        'HTTPS is faster than HTTP due to compression',
+        'HTTP is only available on port 80 which is blocked by most firewalls',
+        'HTTPS encrypts data in transit with TLS, preventing interception and tampering — a legal requirement under GDPR',
+        'HTTPS automatically validates API credentials on every request',
+      ],
+      correctIndex: 2,
+      explanation: 'HTTPS adds TLS encryption so data in transit cannot be intercepted or tampered with. Any system processing personal data must use HTTPS — this is a legal requirement under GDPR as well as a basic security expectation. Marketing platforms routinely transmit customer PII between systems, making HTTPS non-negotiable.',
+    },
+    {
+      question: 'Which Python library is the standard tool for loading, cleaning, and transforming tabular campaign data?',
+      options: ['numpy', 'pandas', 'requests', 'sqlalchemy'],
+      correctIndex: 1,
+      explanation: 'pandas is the standard library for working with tabular data such as campaign exports or CRM records. It provides DataFrame structures, filtering, joins, and aggregations that map directly to the kind of data manipulation marketing technology developers perform daily.',
+    },
+    {
+      question: 'What is the primary difference between a content management system (CMS) and a static site generator for marketing websites?',
+      options: [
+        'A CMS can only host blog content; a static site generator can host any type of page',
+        'A CMS generates pages dynamically at request time from a database, while a static site generator builds all pages at build time into pre-rendered HTML files',
+        'A static site generator requires a database; a CMS does not',
+        'A CMS is always open source; static site generators are always proprietary',
+      ],
+      correctIndex: 1,
+      explanation: 'A traditional CMS like WordPress generates each page dynamically when a user requests it, querying a database and assembling HTML on the fly. A static site generator like Hugo or Next.js (in static export mode) builds all pages at build time into pre-rendered HTML files. Static sites are faster, more secure, and cheaper to host, but lack the real-time content editing workflow that marketers expect from a CMS. Headless CMS platforms bridge this gap by providing an editing interface with a static or server-rendered frontend.',
+    },
   ],
   mid: [
     {
@@ -90,6 +118,39 @@ export const additions = {
       correctIndex: 1,
       explanation: 'Peeking — checking significance repeatedly and stopping as soon as p < 0.05 appears — inflates the false positive rate well above the nominal 5% level. This is because if you check a test at many points in time, random fluctuations will occasionally produce a "significant" result purely by chance. A pre-specified sample size calculated before the test begins, combined with a commitment to run until that sample is reached, is what keeps the false positive rate at the intended level. Seasonality bias is also a real concern but is a separate issue from the statistical validity of stopping early.'
     },
+    {
+      question: 'What do the three components of RFM stand for, and what do they measure?',
+      options: [
+        'Revenue, Frequency, Market — total revenue, purchase frequency, and market share',
+        'Recency, Frequency, Monetary — how recently, how often, and how much a customer has bought',
+        'Retention, Funnel, Marketing — customer retention rate, funnel conversion, and marketing spend',
+        'Reach, Frequency, Message — campaign reach, exposure frequency, and message effectiveness',
+      ],
+      correctIndex: 1,
+      explanation: 'RFM stands for Recency (how recently a customer bought), Frequency (how often they buy), and Monetary (how much they spend). These three features together are a powerful and interpretable basis for customer segmentation and propensity modelling.',
+    },
+    {
+      question: 'What is few-shot prompting and why does it improve consistency for marketing content generation?',
+      options: [
+        'Providing the model with a very short, minimal instruction to reduce token usage',
+        'Running multiple variations of the same prompt and selecting the best output',
+        'Providing the model with concrete examples of the desired output format before the actual request',
+        'Using a low temperature setting to make the model produce shorter responses',
+      ],
+      correctIndex: 2,
+      explanation: 'Few-shot prompting provides the model with concrete demonstrations of the desired output format. This significantly improves consistency compared to a zero-shot instruction, because the model has explicit examples of the expected style, length, and structure.',
+    },
+    {
+      question: 'What is the key difference between a Customer Data Platform (CDP) and a Data Management Platform (DMP)?',
+      options: [
+        'A CDP is for B2B companies; a DMP is for B2C companies',
+        'A CDP builds persistent, identified customer profiles from first-party data; a DMP aggregates anonymous audience segments primarily from third-party cookie data for advertising targeting',
+        'A CDP handles email marketing; a DMP handles social media advertising',
+        'A CDP and DMP are the same technology with different vendor naming conventions',
+      ],
+      correctIndex: 1,
+      explanation: 'A CDP collects and unifies first-party data (from your own website, CRM, transactions) into persistent, identified customer profiles. A DMP historically aggregated anonymous audience segments from third-party cookies for programmatic advertising. With third-party cookie deprecation accelerating, DMPs are declining in relevance while CDPs — built on first-party data — have become the central platform for customer data in modern martech stacks.',
+    },
   ],
   senior: [
     {
@@ -124,6 +185,28 @@ export const additions = {
       ],
       correctIndex: 1,
       explanation: 'Lambda architecture runs two separate pipelines: a batch layer for comprehensive historical computation and a speed layer for low-latency real-time updates, merging results in a serving layer. This provides flexibility but means maintaining two codebases that implement the same business logic differently, plus reconciliation logic to merge their outputs consistently. Kappa simplifies this by treating all data as a stream and reprocessing historical data through the same pipeline — one codebase, one paradigm. The trade-off is that the stream processor must be capable of handling both high throughput real-time events and large-scale historical reprocessing efficiently. For marketing platforms where the batch and streaming logic diverges significantly, Lambda remains valid; where they are substantially the same, Kappa reduces long-term operational burden.'
+    },
+    {
+      question: 'What is the trade-off involved in choosing a small chunk size versus a large chunk size in a RAG system for marketing documents?',
+      options: [
+        'Smaller chunks are faster to embed but larger chunks are faster to retrieve',
+        'Smaller chunks require more storage; larger chunks require less storage',
+        'Chunks too large reduce retrieval precision; chunks too small lose the surrounding context needed to answer a question',
+        'Smaller chunks produce better results with GPT-4; larger chunks produce better results with Claude',
+      ],
+      correctIndex: 2,
+      explanation: 'Chunking strategy significantly affects retrieval quality. Too-large chunks return too much irrelevant text, reducing precision. Too-small chunks lose the surrounding context that gives a fact its meaning. The optimal size depends on document structure and must be tested empirically.',
+    },
+    {
+      question: 'In a medallion architecture for a marketing data lakehouse, what transformations occur in the Silver layer?',
+      options: [
+        'Raw data lands from source systems exactly as it arrives, with no transformation',
+        'Data is cleaned, standardised, and conformed — making it consistent and reliable for downstream use cases',
+        'Data is aggregated into the business-ready metrics used by dashboards and models',
+        'Data is encrypted and archived for long-term compliance storage',
+      ],
+      correctIndex: 1,
+      explanation: 'In a medallion architecture, Bronze stores raw data exactly as it arrives; Silver applies cleaning, standardisation, and conforming to make data reliable and consistent; Gold applies business-level aggregations for specific use cases like dashboards or model training. The Silver layer is where data quality is enforced, making it the foundation for all downstream analytics.',
     },
   ],
 }

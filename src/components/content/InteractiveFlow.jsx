@@ -20,6 +20,14 @@ const flowRegistry = {
   reactRendering: () => import('./flows/reactRendering'),
   sqlQueryExecution: () => import('./flows/sqlQueryExecution'),
   pythonAsyncio: () => import('./flows/pythonAsyncio'),
+  mlTrainingPipeline: () => import('./flows/mlTrainingPipeline'),
+  dataAnalysisPipeline: () => import('./flows/dataAnalysisPipeline'),
+  incidentResponse: () => import('./flows/incidentResponse'),
+  testingPipeline: () => import('./flows/testingPipeline'),
+  systemDesignFlow: () => import('./flows/systemDesignFlow'),
+  marTechDataFlow: () => import('./flows/marTechDataFlow'),
+  browserRendering: () => import('./flows/browserRendering'),
+  typeCompilation: () => import('./flows/typeCompilation'),
 }
 
 export default function InteractiveFlow({ flowName }) {

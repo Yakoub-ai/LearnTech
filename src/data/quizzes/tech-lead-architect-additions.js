@@ -33,6 +33,50 @@ export const additions = {
       correctIndex: 1,
       explanation: 'REST organises APIs around resources and uses fixed endpoints that return a predefined shape of data. If a UI needs only a subset of that data, it over-fetches; if it needs data from multiple resources, it must make multiple requests (under-fetching). GraphQL, introduced by Facebook in 2015, solves both problems by allowing clients to declare exactly which fields they need across any number of resources in a single query — though this comes with more complex server-side processing and reduced HTTP cache effectiveness.'
     },
+    {
+      question: 'What is the primary role of a message queue in a distributed system?',
+      options: [
+        'Translating domain names to IP addresses',
+        'Decoupling producers and consumers of data',
+        'Caching frequently accessed database reads',
+        'Enforcing authentication on incoming requests'
+      ],
+      correctIndex: 1,
+      explanation: 'Message queues decouple producers and consumers, allowing asynchronous communication. The producer places a message and moves on; the consumer processes it independently.'
+    },
+    {
+      question: 'What is the key distinction between continuous delivery and continuous deployment?',
+      options: [
+        'Continuous delivery deploys to all environments automatically; continuous deployment requires manual approval',
+        'Continuous delivery requires a human approval gate before production; continuous deployment removes that gate',
+        'Continuous delivery only covers testing; continuous deployment only covers deployment',
+        'They are synonyms for the same practice'
+      ],
+      correctIndex: 1,
+      explanation: 'Continuous delivery automatically deploys to environments but retains a human approval gate before production. Continuous deployment goes further by deploying to production automatically whenever all checks pass.'
+    },
+    {
+      question: 'Why is a single-point-of-failure (SPOF) problematic in system design?',
+      options: [
+        'It increases the cost of the system unnecessarily',
+        'If that single component fails, the entire system becomes unavailable because no redundancy exists',
+        'It makes the system harder to monitor',
+        'It violates software licensing agreements'
+      ],
+      correctIndex: 1,
+      explanation: 'A SPOF means that one component\'s failure brings down the entire system. Architects eliminate SPOFs through redundancy — adding replicas, failover mechanisms or distributed designs so no single failure is catastrophic.'
+    },
+    {
+      question: 'Which of the following signals best indicates the health of a team\'s delivery process?',
+      options: [
+        'Number of lines of code written per sprint',
+        'Deployment frequency, lead time and change failure rate',
+        'Total number of automated tests in the test suite',
+        'Number of feature requests completed per quarter'
+      ],
+      correctIndex: 1,
+      explanation: 'Deployment frequency, lead time for changes, and change failure rate are key DORA metrics that signal delivery health — how often a team ships, how fast they ship, and how often those changes cause problems.'
+    },
   ],
   mid: [
     {
@@ -68,6 +112,50 @@ export const additions = {
       correctIndex: 2,
       explanation: 'The video recommends geohashing for its simplicity: latitude and longitude are encoded into a hierarchical alphanumeric string, and finding nearby drivers becomes a Redis prefix query on adjacent geohash cells. The video explicitly notes that Uber uses H3 in production for its better geometric uniformity and K-nearest-neighbour efficiency, and explains the trade-off: H3 is more accurate but more complex to implement and integrate. Quadtrees adapt to data density but are more complex. The recommendation to start with geohashing reflects the principle that complexity should be introduced only when simpler approaches are demonstrably insufficient.'
     },
+    {
+      question: 'What is a bounded context in Domain-Driven Design?',
+      options: [
+        'A limit on the number of microservices in a system',
+        'An explicit boundary within which a particular domain model is defined and applicable',
+        'A database schema that contains all entities for a given service',
+        'A network boundary enforced by a firewall'
+      ],
+      correctIndex: 1,
+      explanation: 'A bounded context is an explicit boundary within which terms have precise meanings and the model is internally consistent. The same word may mean different things in different bounded contexts.'
+    },
+    {
+      question: 'What is an Architecture Decision Record (ADR)?',
+      options: [
+        'A formal document submitted to the CTO for approval of major purchases',
+        'A short version-controlled document capturing an architectural decision, its context, options considered and rationale',
+        'A diagram showing all services in the system and their interactions',
+        'A retrospective document written after a system failure'
+      ],
+      correctIndex: 1,
+      explanation: 'An ADR is a short, version-controlled document (stored in the repository) that captures an architectural decision, the context in which it was made, the options considered and the rationale for the choice.'
+    },
+    {
+      question: 'What is idempotency and why is it critical in distributed systems?',
+      options: [
+        'Idempotency ensures requests are processed in order; retries may reorder them',
+        'Idempotency ensures a retried request produces the same outcome as the original, preventing duplicate side effects (e.g. double charging a customer)',
+        'Idempotency is a caching strategy that stores previous responses',
+        'Idempotency and rate limiting are independent concerns and order does not matter'
+      ],
+      correctIndex: 1,
+      explanation: 'Idempotency assigns a unique ID to each request and checks if it was already processed before acting. Without it, a rate-limited retry can trigger the same action twice — for example charging a customer twice.'
+    },
+    {
+      question: 'What is the Strangler Fig pattern used for in system design?',
+      options: [
+        'Replacing a monolithic system all at once with a complete rewrite',
+        'Gradually replacing parts of a legacy system by routing traffic to new services while the old system still handles unchanged functionality',
+        'Removing unused database tables to reduce storage costs',
+        'Splitting a monolith into microservices by duplicating the entire codebase'
+      ],
+      correctIndex: 1,
+      explanation: 'The Strangler Fig pattern incrementally replaces a legacy system. New functionality is built in a new service, and a routing layer gradually redirects traffic from old to new. This avoids the risk of a big-bang rewrite while steadily modernising the system.'
+    },
   ],
   senior: [
     {
@@ -102,6 +190,50 @@ export const additions = {
       ],
       correctIndex: 1,
       explanation: 'Prompt engineering focuses on crafting effective individual prompts — the right instructions, examples and format to elicit good outputs from a model. Context engineering elevates this to a systems concern: at production scale, the context is assembled dynamically from multiple sources (retrieved documents, conversation history, tool results, user input, system instructions), and that assembly logic is code that must be versioned, tested against golden datasets, monitored for quality regressions and updated with the same discipline as any other production service. A change to context ordering or compression logic can silently degrade output quality across all users; without engineering rigour around context construction, these regressions are invisible until user complaints surface them.'
+    },
+    {
+      question: 'What is a distributed monolith, and why is it a worse outcome than either a monolith or true microservices?',
+      options: [
+        'A distributed monolith is a monolith deployed in multiple cloud regions',
+        'It is a set of services that are deployed independently but remain tightly coupled, combining the operational complexity of microservices with the coupling problems of a monolith',
+        'It is a microservices architecture with a single shared API gateway',
+        'It is an architecture where a single team owns all services'
+      ],
+      correctIndex: 1,
+      explanation: 'Premature service extraction without clear domain boundaries creates a distributed monolith — services that look separate but are tightly coupled. This gives you the worst of both worlds: microservices\' operational complexity without the benefits of independent deployability.'
+    },
+    {
+      question: 'What is the relationship between SLIs, SLOs and SLAs?',
+      options: [
+        'They are synonyms for the same measurement at different levels of precision',
+        'SLI is the specific measurement; SLO is the target for that measurement; SLA is the formal external commitment, set with more headroom than the SLO',
+        'SLA is set first; SLO derives from it; SLI is an internal metric irrelevant to customers',
+        'SLOs are set by customers; SLIs are set by engineers; SLAs are legal documents only'
+      ],
+      correctIndex: 1,
+      explanation: 'SLI is what you measure (e.g. % of requests under 300ms). SLO is the target (99.5%). SLA is the external commitment, set with headroom below the SLO so internal targets can be breached without immediately violating the SLA.'
+    },
+    {
+      question: 'Output governance for an enterprise AI system addresses which concern?',
+      options: [
+        'Which foundation models are approved for use in the organisation',
+        'What data can be sent to model APIs and how privacy is maintained',
+        'How model outputs are reviewed, who is accountable for AI-assisted decisions and how errors are remediated',
+        'The compute cost of running inference at production scale'
+      ],
+      correctIndex: 2,
+      explanation: 'Output governance covers how model outputs are reviewed before being acted on, who is accountable for decisions made with AI assistance and how errors or harmful outputs are reported and remediated.'
+    },
+    {
+      question: 'Which pillar of the Azure Well-Architected Framework asks "what happens when this component fails?"',
+      options: [
+        'Cost Optimisation',
+        'Operational Excellence',
+        'Reliability',
+        'Performance Efficiency'
+      ],
+      correctIndex: 2,
+      explanation: 'Reliability is the pillar focused on designing for failure. It covers availability zones, health probes, retry policies and disaster recovery — the key question is what happens when any component fails.'
     },
   ],
 }

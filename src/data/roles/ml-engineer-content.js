@@ -216,6 +216,12 @@ flowchart LR
     Monitor -->|Drift detected| Data
 \`\`\`
 
+Explore the interactive version below — click any node for details, code examples, and tips:
+
+\`\`\`interactive-flow
+mlTrainingPipeline
+\`\`\`
+
 **Data collection and preparation** is almost always the longest phase. Raw data is messy: it contains missing values, inconsistent formatting, duplicates, and noise. Engineers must clean it, handle missing entries (by imputation or removal), and split it into training, validation, and test sets. The split ensures that the model is evaluated on data it has never seen during training. The training set teaches the model; the validation set tunes hyperparameters; the test set gives a final unbiased estimate of real-world performance. Using the test set to make decisions about the model defeats its purpose — this is data leakage.
 
 **Feature engineering** transforms raw data into a format the model can learn from. A column of raw timestamps is rarely useful as-is; extracting the hour of day, day of week, or whether a date is a public holiday may each be far more informative. Numerical features may need scaling. Categorical features need encoding (one-hot encoding or ordinal encoding). The quality of features has a larger impact on model performance than the choice of algorithm.

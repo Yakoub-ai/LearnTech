@@ -15,7 +15,18 @@ export async function loadRoleMarkdownContent(roleFileName) {
 
 export async function loadRoleQuizzes(roleId) {
   const { quizzes } = await import('../quizzes.js')
-  return quizzes[roleId] || {}
+  const base = quizzes[roleId] || {}
+  try {
+    const mod = await import(`../quizzes/${roleId}-additions.js`)
+    const addns = mod.additions || {}
+    const merged = {}
+    for (const level of ['beginner', 'mid', 'senior']) {
+      merged[level] = [...(base[level] || []), ...(addns[level] || [])]
+    }
+    return merged
+  } catch {
+    return base
+  }
 }
 
 export async function loadRoleSkillDiagram(roleId) {
