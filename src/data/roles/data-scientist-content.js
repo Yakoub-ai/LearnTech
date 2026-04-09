@@ -169,6 +169,12 @@ Python is the lingua franca of data science. Every tool, tutorial, and job posti
 - Installing packages with \`pip\` inside a conda environment without understanding the interaction between the two tools.
 - Assuming code that works on a small sample will perform acceptably on the full dataset without testing.
 
+Explore the interactive data analysis pipeline below — click any node for details, code examples, and tips:
+
+\`\`\`interactive-flow
+dataAnalysisPipeline
+\`\`\`
+
 ---
 
 ## NumPy – Arrays, Vectorisation and Why It Replaces Loops

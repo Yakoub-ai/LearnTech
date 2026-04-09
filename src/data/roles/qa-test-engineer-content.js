@@ -152,6 +152,12 @@ flowchart TB
     style Manual fill:#F44336
 \`\`\`
 
+Explore the interactive version below — click any node for details, code examples, and tips:
+
+\`\`\`interactive-flow
+testingPipeline
+\`\`\`
+
 The test pyramid is a model that describes the ideal distribution of test types in a software project. At the base are unit tests -- fast, isolated, and numerous. In the middle are integration tests (sometimes called service tests) that verify the interaction between components. At the top are end-to-end (E2E) tests that exercise the full system through its user interface. The pyramid shape reflects the principle that you should have many fast, cheap tests at the bottom and fewer slow, expensive tests at the top.
 
 The Fireship "Software Testing Explained in 100 Seconds" video captures this clearly: software is dynamic with evolving requirements, and no one fully understands every layer of the stack. The goal is not perfect understanding -- it is to ensure the code matches the product requirements. At the most granular level, unit tests check individual functions ("does this function return the proper value when given arguments A and B?"). Integration tests check how components work together ("can this component use the database service to fetch data?"). End-to-end tests simulate actual user behaviour in a browser or device -- like having a robot perform all your manual testing. Test runners like Jest or Karma can execute all tests automatically in the background or on a CI server before deployment.

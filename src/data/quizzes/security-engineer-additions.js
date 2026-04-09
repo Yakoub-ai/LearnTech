@@ -55,6 +55,17 @@ export const additions = {
       correctIndex: 1,
       explanation: 'Parameterised queries (also called prepared statements) separate the SQL command from the user-supplied data at the database protocol level — the database engine never parses the user\'s input as SQL. Input validation can help as an additional layer but is not sufficient on its own because attackers can use encoding, Unicode normalisation, and other techniques to bypass character-level filters. Using parameterised queries removes the fundamental cause of SQL injection rather than trying to detect all possible attack payloads.'
     },
+    {
+      question: 'Why should SSH root login be disabled on internet-facing servers?',
+      options: [
+        'A successful brute-force or credential attack immediately grants full system control',
+        'Root accounts cannot use SSH key pairs',
+        'SSH does not support root authentication on Linux',
+        'Root login increases TLS handshake time'
+      ],
+      correctIndex: 0,
+      explanation: 'Disabling root SSH login forces attackers to compromise a regular account first, then escalate — adding a layer of defence. Root login gives full system control instantly.'
+    },
   ],
   mid: [
     {
@@ -112,6 +123,28 @@ export const additions = {
       correctIndex: 1,
       explanation: 'Spoofing in STRIDE means claiming an identity that does not belong to you. Replaying a valid token is a form of spoofing — the attacker presents legitimate credentials (the captured token) to impersonate the original user without modifying anything. Tampering would involve altering the token\'s contents (e.g., changing the user ID or permissions). Repudiation is about denying having performed an action. Elevation of Privilege specifically refers to gaining higher permissions than authorised — which may be a consequence of successful spoofing but is not the primary category for this scenario.'
     },
+    {
+      question: 'SCA (Software Composition Analysis) tools like Snyk and Dependabot primarily address which risk?',
+      options: [
+        'Known vulnerabilities (CVEs) in third-party dependencies used by the application',
+        'Insecure code patterns written by developers in the application source',
+        'Runtime misconfigurations in cloud infrastructure',
+        'Weak authentication in the application login flow'
+      ],
+      correctIndex: 0,
+      explanation: 'SCA scans the dependency tree for packages with known CVEs, corresponding to OWASP A06 (Vulnerable and Outdated Components). It complements SAST (which scans application source code).'
+    },
+    {
+      question: 'What distinguishes a grey-box penetration test from a black-box test?',
+      options: [
+        'Grey-box testers have partial knowledge of the system (e.g., architecture docs or credentials); black-box testers have no prior knowledge',
+        'Grey-box testing is automated; black-box testing is manual',
+        'Grey-box tests target the network layer only; black-box tests target the application layer',
+        'Grey-box tests are performed externally; black-box tests are performed internally'
+      ],
+      correctIndex: 0,
+      explanation: 'Grey-box testing simulates an attacker with some insider knowledge, making it more efficient than black-box while still testing real-world attack paths.'
+    },
   ],
   senior: [
     {
@@ -146,6 +179,28 @@ export const additions = {
       ],
       correctIndex: 1,
       explanation: 'This is indirect prompt injection — attacker-controlled content in the LLM\'s retrieval context (the malicious document) overwrites the system instructions. The document acts as a vector for injecting commands rather than being injected directly by the user. The primary architectural mitigation is limiting the LLM\'s agency: the model should not have direct email-sending capability, and any action that accesses or transmits data should require explicit human confirmation (human-in-the-loop). This is the Excessive Agency risk from the OWASP LLM Top 10. Encrypting documents at rest does not help because the LLM legitimately decrypts and reads them. Sanitising LLM output does not address the fact that the injection was already successful.'
+    },
+    {
+      question: 'What is the correct order of the NIST incident response phases?',
+      options: [
+        'Preparation → Detection and Analysis → Containment → Eradication → Recovery → Post-incident Activity',
+        'Detection → Preparation → Containment → Recovery → Eradication → Reporting',
+        'Containment → Detection → Preparation → Eradication → Reporting → Recovery',
+        'Preparation → Eradication → Detection → Containment → Recovery → Lessons Learned'
+      ],
+      correctIndex: 0,
+      explanation: 'The NIST IR lifecycle flows from Preparation through Detection and Analysis, Containment, Eradication, Recovery, and finally Post-incident Activity (lessons learned).'
+    },
+    {
+      question: 'In a Zero Trust model, why is investing in identity infrastructure (MFA, conditional access, device management) the correct first step before implementing network-level controls?',
+      options: [
+        'Identity is the control plane in Zero Trust — network controls alone cannot compensate for weak identity verification',
+        'Network controls are more expensive and should be purchased after identity tools',
+        'Regulatory frameworks require identity controls before network segmentation',
+        'Identity infrastructure is simpler to implement than network controls'
+      ],
+      correctIndex: 0,
+      explanation: 'Zero Trust treats identity as the primary security boundary. If identity is weak (no MFA, no conditional access), network micro-segmentation provides minimal protection as attackers use legitimate credentials to bypass network controls.'
     },
   ],
 }

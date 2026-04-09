@@ -129,6 +129,12 @@ flowchart LR
     F -->|Feedback| A
 \`\`\`
 
+Explore the interactive version below — click any node for details, code examples, and tips:
+
+\`\`\`interactive-flow
+systemDesignFlow
+\`\`\`
+
 ### Team Topology
 
 \`\`\`mermaid

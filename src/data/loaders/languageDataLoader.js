@@ -20,7 +20,10 @@ export async function loadLanguageQuizzes(languageId) {
     const addns = mod.additions || {}
     const merged = {}
     for (const level of ['beginner', 'mid', 'senior']) {
-      merged[level] = [...(base[level] || []), ...(addns[level] || [])]
+      const baseQs = base[level] || []
+      const addQs = addns[level] || []
+      const seen = new Set(baseQs.map((q) => q.question))
+      merged[level] = [...baseQs, ...addQs.filter((q) => !seen.has(q.question))]
     }
     return merged
   } catch {
